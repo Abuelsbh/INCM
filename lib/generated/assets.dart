@@ -2,9 +2,27 @@
 class Assets {
   Assets._();
 
+  static const String fontsAloeveraDisplaySemiBold = 'assets/fonts/AloeveraDisplay-SemiBold.ttf';
+  static const String fontsOptimal = 'assets/fonts/optimal.TTF';
   static const String i18nAr = 'i18n/ar.json';
   static const String i18nEn = 'i18n/en.json';
   static const String iconsAppIcon = 'assets/icons/app_icon.png';
   static const String iconsBrush = 'assets/icons/brush.svg';
+  static const String imagesAboutUsBackground = 'assets/images/aboutUsBackground.png';
+  static const String imagesContactUsBackground = 'assets/images/contactUsBackground.png';
+  static const String imagesFollowUsBackground = 'assets/images/followUsBackground.png';
+  static const String imagesINCMLogo = 'assets/images/INCMLogo.png';
+  static const String imagesIncomercialWordsLogo = 'assets/images/IncomercialWordsLogo.png';
+  static const String imagesLearnServices = 'assets/images/learnServices.jpeg';
+  static const String imagesLearnServicesBackground = 'assets/images/learnServicesBackground.png';
+  static const String imagesLogo5 = 'assets/images/logo5.png';
+  static const String imagesLogosBackground = 'assets/images/logosBackground.png';
+  static const String imagesPerformanceBackground = 'assets/images/performanceBackground.png';
+  static const String imagesSearchBackground = 'assets/images/searchBackground.png';
+  static const String imagesSlogany = 'assets/images/slogany.png';
+  static const String logosLogo2 = 'assets/logos/logo2.svg';
+  static const String logosLogo3 = 'assets/logos/logo3.svg';
+  static const String logosLogo4 = 'assets/logos/logo4.svg';
+  static const String logosLogo6 = 'assets/logos/logo6.svg';
 
 }

@@ -63,7 +63,7 @@ class EntryPoint extends StatelessWidget {
             scrollBehavior: MyCustomScrollBehavior(),
             routerConfig: GoRouterConfig.router,
             debugShowCheckedModeBanner: false,
-            title: 'RUSH ERP',
+            title: 'INCOMERCIAL',
             locale: Locale(appLan.appLang.name),
             theme: appTheme.appThemeMode,
             supportedLocales: Languages.values.map((e) => Locale(e.name)).toList(),
@@ -75,6 +75,14 @@ class EntryPoint extends StatelessWidget {
               DefaultCupertinoLocalizations.delegate,
               DefaultMaterialLocalizations.delegate
             ],
+            builder: (context, child) {
+              return Directionality(
+                textDirection: appLan.appLang == Languages.ar 
+                    ? TextDirection.rtl 
+                    : TextDirection.ltr,
+                child: child!,
+              );
+            },
           ),
         );
       },

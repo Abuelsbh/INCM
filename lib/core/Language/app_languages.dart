@@ -9,7 +9,7 @@ enum Languages {en,ar}
 Languages appLanguage(BuildContext context) => Provider.of<AppLanguage>(context, listen: false).appLang;
 
 class AppLanguage extends ChangeNotifier {
-  static const Languages defaultLanguage = Languages.ar;
+  static const Languages defaultLanguage = Languages.en;
 
   Languages _appLanguage = defaultLanguage;
 

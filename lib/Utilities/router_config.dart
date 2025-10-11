@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../Modules/Splash/splash_screen.dart';
+import '../Modules/Home/home_screen.dart';
 
 BuildContext? get currentContext_ =>
     GoRouterConfig.router.routerDelegate.navigatorKey.currentContext;
@@ -8,22 +8,20 @@ BuildContext? get currentContext_ =>
 class GoRouterConfig{
   static GoRouter get router => _router;
   static final GoRouter _router = GoRouter(
+    initialLocation: HomeScreen.routeName,
     routes: <RouteBase>[
       GoRoute(
-        path: SplashScreen.routeName,
+        path: HomeScreen.routeName,
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
-            child: const SplashScreen(),
+            child: HomeScreen(),
           );
         },
-        routes: const <RouteBase>[],
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
-      // if(!SharedPref.isLogin()) return LoginScreen.routeName;
-      // if(state.matchedLocation == LoginScreen.routeName && SharedPref.isLogin()) return "/${HomeScreen.routeName}";
-      return  null;
+      return null; // No redirects needed for single page app
     },
   );
 
