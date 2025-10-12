@@ -1,16 +1,26 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rush/rush.dart';
+import '../../Widgets/about_content_section_mob.dart';
+import '../../Widgets/bottom_navbar_widget.dart';
+import '../../Widgets/contacts_content_section_mob.dart';
 import '../../Widgets/custom_app_bar.dart';
+import '../../Widgets/custom_app_bar_mob.dart';
 import '../../Widgets/footer_section.dart';
+import '../../Widgets/footer_section_mob.dart';
+import '../../Widgets/home_search_section_mob.dart';
 import '../../Widgets/home_welcome_section.dart';
 import '../../Widgets/home_search_section.dart';
 import '../../Widgets/about_content_section.dart';
 import '../../Widgets/performance_highlights_section.dart';
+import '../../Widgets/performance_highlights_section_mob.dart';
 import '../../Widgets/services_content_section.dart';
 import '../../Widgets/contacts_content_section.dart';
 import '../../Widgets/animated_logos_footer.dart';
+import '../../Widgets/services_content_section_mob.dart';
 
 // Global key for accessing scroll controller
 final GlobalKey<_HomeScreenState> homeScreenKey = GlobalKey<_HomeScreenState>();
@@ -99,7 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
+      bottomNavigationBar: MediaQuery.of(context).size.width < 600 ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
+      body: MediaQuery.of(context).size.width >= 600 ? Stack(
         children: [
           // المحتوى القابل للتمرير
           ScrollConfiguration(
@@ -132,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Performance Highlights Section
                   const PerformanceHighlightsSection(),
                   //SizedBox(height: 100.h),
-                  AnimatedLogosFooterV2(),
+                  const AnimatedLogosFooterV2(),
                   // Services Section
                   Container(
                     key: _servicesKey,
@@ -147,8 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   //SizedBox(height: 50.h),
 
-                    // Animated Logos Footer
-                    //const AnimatedLogosFooterV2(),
+                  // Animated Logos Footer
+                  //const AnimatedLogosFooterV2(),
                   const FooterSection()
                 ],
               ),
@@ -156,12 +167,67 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           // ✅ الـAppBar الشفاف فوق الكل
+          MediaQuery.of(context).size.width >= 600 ?
           const Positioned(
             top: 0,
             left: 0,
             right: 0,
             child: CustomAppBar(),
+          ) : const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: CustomAppBarMob(),
+          )
+        ],
+      ) : Stack(
+        children: [
+          // المحتوى القابل للتمرير
+          ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              dragDevices: {
+                // هنا تقدر تحدد الأجهزة المسموح لها بالـscroll
+                PointerDeviceKind.touch, // تسمح باللمس فقط، وتمنع الماوس
+              },
+            ),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                children: [
+                  const HomeSearchSectionMob(),
+                  Container(
+                    key: _aboutKey,
+                    child: const AboutContentSectionMob(),
+                  ),
+                  const PerformanceHighlightsSectionMob(),
+                  const AnimatedLogosFooterV2(),
+                  Container(
+                    key: _servicesKey,
+                    child: const ServicesContentSectionMob(),
+                  ),
+                  Container(
+                    key: _contactsKey,
+                    child: const ContactsContentSectionMob(),
+                  ),
+                  const FooterSectionMob()
+                ],
+              ),
+            ),
           ),
+
+          // ✅ الـAppBar الشفاف فوق الكل
+          MediaQuery.of(context).size.width >= 600 ?
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: CustomAppBar(),
+          ) : const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: CustomAppBarMob(),
+          )
         ],
       )
 

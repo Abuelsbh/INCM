@@ -186,11 +186,11 @@ class ButtonStyles {
       enabled: enabled,
       width: width ?? double.infinity,
       normalBackgroundColor: const Color(0xFF8B0000),
-      normalTextColor: Colors.white,
+      normalTextColor:  const Color(0xFFFFC700),
       hoverBackgroundColor: const Color(0xFFFFC700),
-      hoverTextColor: Colors.black,
+      hoverTextColor: const Color(0xFF8B0000),
       fontSize: 16.sp,
-      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
     );
   }
 }

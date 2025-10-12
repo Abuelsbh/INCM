@@ -6,8 +6,13 @@ class Assets {
   static const String fontsOptimal = 'assets/fonts/optimal.TTF';
   static const String i18nAr = 'i18n/ar.json';
   static const String i18nEn = 'i18n/en.json';
+  static const String iconsAboutUs = 'assets/icons/aboutUs.png';
   static const String iconsAppIcon = 'assets/icons/app_icon.png';
   static const String iconsBrush = 'assets/icons/brush.svg';
+  static const String iconsContacts = 'assets/icons/contacts.png';
+  static const String iconsHome = 'assets/icons/home.png';
+  static const String iconsSellYourUnit = 'assets/icons/sellYourUnit.png';
+  static const String iconsServices = 'assets/icons/services.png';
   static const String imagesAboutUsBackground = 'assets/images/aboutUsBackground.png';
   static const String imagesAboutUsBackgroundMob = 'assets/images/aboutUsBackgroundMob.png';
   static const String imagesContactUsBackground = 'assets/images/contactUsBackground.png';

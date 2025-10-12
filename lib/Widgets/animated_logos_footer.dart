@@ -60,7 +60,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
     final allLogos = [...companyLogos, ...companyLogos]; // مضاعفة للّوب السلس
 
     return Container(
-      height: 320.h,
+      height: MediaQuery.of(context).size.width >= 600 ? 320.h : 260,
       width: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -76,7 +76,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
               'OUR SUCCESS PARTNERS',
               style: TextStyle(
                 color: const Color(0xFF8B0000),
-                fontSize: 24.sp,
+                fontSize:  MediaQuery.of(context).size.width >= 600 ? 24.sp : 18.sp,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 2,
               ),
@@ -92,7 +92,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
               itemCount: allLogos.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 40.w),
+                  margin: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.width >= 600 ? 40.w : 10.w),
                   child: _buildLogoItem(allLogos[index]),
                 );
               },
@@ -110,7 +110,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
 
   Widget _buildLogoItem(String logoPath) {
     return Container(
-      width: 120.w,
+      width:  MediaQuery.of(context).size.width >= 600 ? 120.w : 60.w,
       height: 60.h,
       child: Padding(
         padding: EdgeInsets.all(8.w),
