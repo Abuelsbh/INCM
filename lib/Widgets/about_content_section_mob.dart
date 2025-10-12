@@ -54,7 +54,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                       text: 'ABOUT ',
                       style: TextStyle(
                         color: const Color(0xFFFFC700), // أصفر
-                        fontSize: 32.sp,
+                        fontSize: 28.sp,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 3,
                       ),
@@ -63,7 +63,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                       text: 'US',
                       style: TextStyle(
                         color: Colors.white, // أبيض
-                        fontSize: 32.sp,
+                        fontSize: 28.sp,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 3,
                       ),
@@ -93,7 +93,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                   style: TextStyle(
                     fontFamily: Assets.fontsAloeveraDisplaySemiBold,
                     color: Colors.white,
-                    fontSize: 18.sp,
+                    fontSize: 16.sp,
                     height: 1.8,
                     letterSpacing: 1,
                   ),
@@ -110,7 +110,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                   opacity: _hasAnimated ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 1400),
                   curve: Curves.easeInOut,
-                  child: ButtonStyles.learnMoreButton(
+                  child: ButtonStyles.learnMoreButtonMob(
                     onPressed: () {
                       // Add learn more action
                     },

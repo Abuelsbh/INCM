@@ -24,7 +24,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          height: 80.h,
+          height: 60.h,
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.5),

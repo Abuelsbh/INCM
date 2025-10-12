@@ -61,10 +61,15 @@ flutter:
     - assets/images/
     - assets/logos/
     - assets/fonts/
-flutter_icons:
+flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icon/app_icon.png"
+  web:
+    generate: true
+  image_path: "assets/images/INCMLogoMob.png"
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/images/INCMLogoMob.png"
+  remove_alpha_ios: true
 
   # fonts:
   #   - family: Schyler

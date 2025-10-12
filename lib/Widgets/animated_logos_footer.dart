@@ -99,8 +99,10 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
             ),
           ),
 
-          ButtonStyles.learnMoreButton(
+          MediaQuery.of(context).size.width >= 600 ? ButtonStyles.learnMoreButton(
             onPressed: () {},
+          ) : ButtonStyles.learnMoreButtonMob(
+              onPressed: () {},
           ),
           Gap(30.h),
         ],

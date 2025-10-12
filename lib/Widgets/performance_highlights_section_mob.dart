@@ -55,7 +55,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(70.h),
+        Gap(80.h),
         Center(
           child: AnimatedOpacity(
             opacity: _hasAnimated ? 1.0 : 0.0,
@@ -64,7 +64,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
             child: RichText(
               text: TextSpan(
                 style: TextStyle(
-                  fontSize: 20.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
                   color: Colors.white, // اللون الافتراضي للنص
@@ -150,7 +150,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                   style: TextStyle(
                     fontFamily: Assets.fontsOptimal,
                     color: const Color(0xFFFFC700),
-                    fontSize: 32.sp,
+                    fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 );
@@ -163,7 +163,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
               style: TextStyle(
                 fontFamily: Assets.fontsAloeveraDisplaySemiBold,
                 color: Colors.white,
-                fontSize: 20.sp,
+                fontSize: 16.sp,
                 height: 1.4,
                 fontWeight: FontWeight.w400,
               ),

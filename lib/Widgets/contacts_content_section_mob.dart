@@ -278,8 +278,8 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                           SizedBox(height: 40.h),
 
                           // Submit button
-                          ButtonStyles.submitButton(
-                            width: 120.w,
+                          ButtonStyles.submitButtonMob(
+                            width: 100.w,
                             onPressed: _handleSubmit,
                           ),
                         ],

@@ -107,130 +107,132 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      bottomNavigationBar: MediaQuery.of(context).size.width < 600 ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
-      body: MediaQuery.of(context).size.width >= 600 ? Stack(
-        children: [
-          // المحتوى القابل للتمرير
-          ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(
-              dragDevices: {
-                // هنا تقدر تحدد الأجهزة المسموح لها بالـscroll
-                PointerDeviceKind.touch, // تسمح باللمس فقط، وتمنع الماوس
-              },
-            ),
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  // Home Section
-                  // Container(
-                  //   key: _homeKey,
-                  //   child: const HomeWelcomeSection(),
-                  // ),
-                  //SizedBox(height: 100.h),
-                  const HomeSearchSection(),
-                  //SizedBox(height: 100.h),
-
-                  // About Us Section
-                  Container(
-                    key: _aboutKey,
-                    child: const AboutContentSection(),
-                  ),
-                  //SizedBox(height: 100.h),
-
-                  // Performance Highlights Section
-                  const PerformanceHighlightsSection(),
-                  //SizedBox(height: 100.h),
-                  const AnimatedLogosFooterV2(),
-                  // Services Section
-                  Container(
-                    key: _servicesKey,
-                    child: const ServicesContentSection(),
-                  ),
-                  //SizedBox(height: 100.h),
-
-                  // Contacts Section
-                  Container(
-                    key: _contactsKey,
-                    child: const ContactsContentSection(),
-                  ),
-                  //SizedBox(height: 50.h),
-
-                  // Animated Logos Footer
-                  //const AnimatedLogosFooterV2(),
-                  const FooterSection()
-                ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        bottomNavigationBar: MediaQuery.of(context).size.width < 600 ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
+        body: MediaQuery.of(context).size.width >= 600 ? Stack(
+          children: [
+            // المحتوى القابل للتمرير
+            ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  // هنا تقدر تحدد الأجهزة المسموح لها بالـscroll
+                  PointerDeviceKind.touch, // تسمح باللمس فقط، وتمنع الماوس
+                },
+              ),
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    // Home Section
+                    // Container(
+                    //   key: _homeKey,
+                    //   child: const HomeWelcomeSection(),
+                    // ),
+                    //SizedBox(height: 100.h),
+                    const HomeSearchSection(),
+                    //SizedBox(height: 100.h),
+      
+                    // About Us Section
+                    Container(
+                      key: _aboutKey,
+                      child: const AboutContentSection(),
+                    ),
+                    //SizedBox(height: 100.h),
+      
+                    // Performance Highlights Section
+                    const PerformanceHighlightsSection(),
+                    //SizedBox(height: 100.h),
+                    const AnimatedLogosFooterV2(),
+                    // Services Section
+                    Container(
+                      key: _servicesKey,
+                      child: const ServicesContentSection(),
+                    ),
+                    //SizedBox(height: 100.h),
+      
+                    // Contacts Section
+                    Container(
+                      key: _contactsKey,
+                      child: const ContactsContentSection(),
+                    ),
+                    //SizedBox(height: 50.h),
+      
+                    // Animated Logos Footer
+                    //const AnimatedLogosFooterV2(),
+                    const FooterSection()
+                  ],
+                ),
               ),
             ),
-          ),
-
-          // ✅ الـAppBar الشفاف فوق الكل
-          MediaQuery.of(context).size.width >= 600 ?
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: CustomAppBar(),
-          ) : const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: CustomAppBarMob(),
-          )
-        ],
-      ) : Stack(
-        children: [
-          // المحتوى القابل للتمرير
-          ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(
-              dragDevices: {
-                // هنا تقدر تحدد الأجهزة المسموح لها بالـscroll
-                PointerDeviceKind.touch, // تسمح باللمس فقط، وتمنع الماوس
-              },
-            ),
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  const HomeSearchSectionMob(),
-                  Container(
-                    key: _aboutKey,
-                    child: const AboutContentSectionMob(),
-                  ),
-                  const PerformanceHighlightsSectionMob(),
-                  const AnimatedLogosFooterV2(),
-                  Container(
-                    key: _servicesKey,
-                    child: const ServicesContentSectionMob(),
-                  ),
-                  Container(
-                    key: _contactsKey,
-                    child: const ContactsContentSectionMob(),
-                  ),
-                  const FooterSectionMob()
-                ],
+      
+            // ✅ الـAppBar الشفاف فوق الكل
+            MediaQuery.of(context).size.width >= 600 ?
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: CustomAppBar(),
+            ) : const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: CustomAppBarMob(),
+            )
+          ],
+        ) : Stack(
+          children: [
+            // المحتوى القابل للتمرير
+            ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  // هنا تقدر تحدد الأجهزة المسموح لها بالـscroll
+                  PointerDeviceKind.touch, // تسمح باللمس فقط، وتمنع الماوس
+                },
+              ),
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    const HomeSearchSectionMob(),
+                    Container(
+                      key: _aboutKey,
+                      child: const AboutContentSectionMob(),
+                    ),
+                    const PerformanceHighlightsSectionMob(),
+                    const AnimatedLogosFooterV2(),
+                    Container(
+                      key: _servicesKey,
+                      child: const ServicesContentSectionMob(),
+                    ),
+                    Container(
+                      key: _contactsKey,
+                      child: const ContactsContentSectionMob(),
+                    ),
+                    const FooterSectionMob()
+                  ],
+                ),
               ),
             ),
-          ),
-
-          // ✅ الـAppBar الشفاف فوق الكل
-          MediaQuery.of(context).size.width >= 600 ?
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: CustomAppBar(),
-          ) : const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: CustomAppBarMob(),
-          )
-        ],
-      )
-
+      
+            // ✅ الـAppBar الشفاف فوق الكل
+            MediaQuery.of(context).size.width >= 600 ?
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: CustomAppBar(),
+            ) : const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: CustomAppBarMob(),
+            )
+          ],
+        )
+      
+      ),
     );
   }
 

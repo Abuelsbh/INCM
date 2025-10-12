@@ -175,6 +175,24 @@ class ButtonStyles {
     );
   }
 
+  static Widget learnMoreButtonMob({
+    required VoidCallback onPressed,
+    bool enabled = true,
+  }) {
+    return CustomButton(
+      text: 'LEARN MORE',
+      onPressed: onPressed,
+      borderRadius: 24.r,
+      width: 115.w,
+      enabled: enabled,
+      normalBackgroundColor: const Color(0xFF8B0000),
+      normalTextColor: const Color(0xFFFFC700),
+      hoverBackgroundColor: const Color(0xFFFFC700),
+      hoverTextColor: const Color(0xFF8B0000),
+      fontSize: 10.sp,
+    );
+  }
+
   static Widget submitButton({
     required VoidCallback onPressed,
     bool enabled = true,
@@ -191,6 +209,25 @@ class ButtonStyles {
       hoverTextColor: const Color(0xFF8B0000),
       fontSize: 16.sp,
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+    );
+  }
+
+  static Widget submitButtonMob({
+    required VoidCallback onPressed,
+    bool enabled = true,
+    double? width,
+  }) {
+    return CustomButton(
+      text: 'SUBMIT',
+      onPressed: onPressed,
+      enabled: enabled,
+      width: width ?? double.infinity,
+      normalBackgroundColor: const Color(0xFF8B0000),
+      normalTextColor:  const Color(0xFFFFC700),
+      hoverBackgroundColor: const Color(0xFFFFC700),
+      hoverTextColor: const Color(0xFF8B0000),
+      fontSize: 14.sp,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
     );
   }
 }
