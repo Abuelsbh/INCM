@@ -36,7 +36,7 @@ class HomeWelcomeSection extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 200.sp,
                   fontWeight: FontWeight.w900,
-                  color: const Color(0xFF8B0000).withOpacity(0.3),
+                  color: const Color(0xFFC63424).withOpacity(0.3),
                   letterSpacing: -10,
                   height: 0.8,
                 ),
@@ -56,7 +56,7 @@ class HomeWelcomeSection extends StatelessWidget {
                   center: Alignment.topRight,
                   radius: 1.5,
                   colors: [
-                    const Color(0xFFFFC700).withOpacity(0.1),
+                    const Color(0xFFF4ED47).withOpacity(0.1),
                     Colors.transparent,
                   ],
                 ),
@@ -88,7 +88,7 @@ class HomeWelcomeSection extends StatelessWidget {
                 Text(
                   'INCOMERCIAL™️',
                   style: TextStyle(
-                    color: const Color(0xFFFFC700),
+                    color: const Color(0xFFF4ED47),
                     fontSize: 48.sp,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,

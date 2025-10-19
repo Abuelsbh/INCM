@@ -75,8 +75,9 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
             child: Text(
               'OUR SUCCESS PARTNERS',
               style: TextStyle(
-                color: const Color(0xFF8B0000),
-                fontSize:  MediaQuery.of(context).size.width >= 600 ? 24.sp : 18.sp,
+                fontFamily: 'OptimalBold',
+                color: const Color(0xFFC63424),
+                fontSize:  MediaQuery.of(context).size.width >= 600 ? 32.sp : 24.sp,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 2,
               ),
@@ -98,7 +99,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
               },
             ),
           ),
-
+          Gap(10.h),
           MediaQuery.of(context).size.width >= 600 ? ButtonStyles.learnMoreButton(
             onPressed: () {},
           ) : ButtonStyles.learnMoreButtonMob(
@@ -112,7 +113,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
 
   Widget _buildLogoItem(String logoPath) {
     return Container(
-      width:  MediaQuery.of(context).size.width >= 600 ? 120.w : 60.w,
+      width:  MediaQuery.of(context).size.width >= 600 ? 200.w : 120.w,
       height: 60.h,
       child: Padding(
         padding: EdgeInsets.all(8.w),
@@ -123,7 +124,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
                   height: 200.h, fit: BoxFit.contain);
             } catch (e) {
               debugPrint('Error loading $logoPath: $e');
-              return const Icon(Icons.error, color: Colors.red);
+              return const Icon(Icons.error, color: const Color(0xFFC63424),);
             }
           },
         ),

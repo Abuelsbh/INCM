@@ -14,7 +14,7 @@ class BottomNavBarWidget extends StatelessWidget {
       width: double.infinity,
       height: 85.h,
       decoration: BoxDecoration(
-        color: const Color(0xFFf6e848),
+        color: const Color(0xFFF4ED47),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -109,7 +109,7 @@ class _BottomNavBarItemWidgetState extends State<_BottomNavBarItemWidget> {
             style: TextStyle(
               fontSize: 10.sp,
               fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.w500,
-              color: const Color(0xFF8B0000),
+              color: const Color(0xFFC63424),
             ),
             textAlign: TextAlign.center,
             maxLines: 1,

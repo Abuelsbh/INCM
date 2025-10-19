@@ -170,20 +170,15 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
           image: DecorationImage(
             image: const AssetImage(Assets.imagesLearnServicesBackground), // your background image asset
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), // dark overlay for readability
-              BlendMode.darken,
-            ),
           ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Gap(60.h),
             Text(
               'EXPLORE OUR SERVICES',
               style: TextStyle(
-                fontFamily: Assets.fontsOptimal, // 👈 أضف هذا
+                fontFamily: 'OptimalBold',
                 color: Colors.white,
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold, // سيختار ملف Optimal-Bold تلقائيًا
@@ -234,7 +229,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                                 height: 12,
                                 decoration: BoxDecoration(
                                   color: isActive ? Colors.red : Colors.transparent,
-                                  border: Border.all(color: const Color(0xFFFFC700), width: 2),
+                                  border: Border.all(color: const Color(0xFFF4ED47), width: 2),
                                   borderRadius: BorderRadius.circular(1),
                                 ),
                               ),
@@ -243,7 +238,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                                 Container(
                                   width: 30,
                                   height: 2,
-                                  color: const Color(0xFFFFC700),
+                                  color: const Color(0xFFF4ED47),
                                 ),
                             ],
                           ),
@@ -274,7 +269,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                             TextSpan(
                               text: "IT' A ",
                               style: TextStyle(
-                                fontFamily: Assets.fontsOptimal,
+                                fontFamily: 'OptimalBold',
                                 color: Colors.white,
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
@@ -283,8 +278,8 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                             TextSpan(
                               text: serviceData[currentIndex]['title']!,
                               style: TextStyle(
-                                fontFamily: Assets.fontsOptimal,
-                                color: const Color(0xFF8B0000),
+                                fontFamily: 'OptimalBold',
+                                color: const Color(0xFFC63424),
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -293,7 +288,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                             TextSpan(
                               text: " SERVICES",
                               style: TextStyle(
-                                fontFamily: Assets.fontsOptimal,
+                                fontFamily: 'OptimalBold',
                                 color: Colors.white,
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.bold,
@@ -313,9 +308,9 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                         child: Text(
                           serviceData[currentIndex]['description']!,
                           style: TextStyle(
-                            fontFamily: Assets.fontsAloeveraDisplaySemiBold,
+                            fontFamily: 'AloeveraDisplaySemiBold',
                             color: Colors.white,
-                            fontSize: 16.sp,
+                            fontSize: 14.sp,
                             height: 1.6,
                             letterSpacing: 2,
                           ),
@@ -333,7 +328,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                         child: Container(
                           height: 300.h,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFFFC700),
+                            color: const Color(0xFFF4ED47),
                             borderRadius: BorderRadius.circular(12.r),
                             boxShadow: [
                               BoxShadow(
@@ -352,7 +347,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          color: const Color(0xFFFFC700),
+                                          color: const Color(0xFFF4ED47),
                                           width: 1,            // Border thickness
                                         ),
                                         borderRadius: BorderRadius.circular(2), // Optional: rounded corners

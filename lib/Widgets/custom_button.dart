@@ -66,8 +66,8 @@ class _CustomButtonState extends State<CustomButton> {
         height: widget.height,
         decoration: BoxDecoration(
           color: isHovering 
-              ? (widget.hoverBackgroundColor ?? const Color(0xFF8B0000))
-              : (widget.normalBackgroundColor ?? const Color(0xFFFFC700)),
+              ? (widget.hoverBackgroundColor ?? const Color(0xFFC63424))
+              : (widget.normalBackgroundColor ?? const Color(0xFFF4ED47)),
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 4.r),
           boxShadow: widget.boxShadow ?? [
             BoxShadow(
@@ -82,9 +82,9 @@ class _CustomButtonState extends State<CustomButton> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
             foregroundColor: isHovering 
-                ? (widget.hoverTextColor ?? const Color(0xFFFFC700))
+                ? (widget.hoverTextColor ?? const Color(0xFFF4ED47))
                 : (widget.normalTextColor ?? Colors.black),
-            padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius ?? 4.r),
             ),
@@ -93,8 +93,9 @@ class _CustomButtonState extends State<CustomButton> {
           child: Text(
             widget.text,
             style: TextStyle(
+              fontFamily: 'OptimalBold',
               fontSize: widget.fontSize ?? 18.sp,
-              fontWeight: widget.fontWeight ?? FontWeight.bold,
+              fontWeight: widget.fontWeight ?? FontWeight.w900,
               letterSpacing: widget.letterSpacing ?? 0.8,
             ),
           ),
@@ -111,13 +112,15 @@ class ButtonStyles {
     bool enabled = true,
   }) {
     return CustomButton(
-      text: 'EXPLORE US',
+      text: 'CONTACT US',
       onPressed: onPressed,
       enabled: enabled,
-      normalBackgroundColor: const Color(0xFFFFC700),
+      normalBackgroundColor: const Color(0xFFF4ED47),
       normalTextColor: Colors.black,
-      hoverBackgroundColor: const Color(0xFF8B0000),
-      hoverTextColor: const Color(0xFFFFC700),
+      hoverBackgroundColor: const Color(0xFFC63424),
+      hoverTextColor: const Color(0xFFF4ED47),
+      fontSize: 20.sp,
+      fontWeight: FontWeight.w900,
     );
   }
 
@@ -132,9 +135,9 @@ class ButtonStyles {
       onPressed: onPressed,
       enabled: enabled,
       width: width,
-      normalBackgroundColor: const Color(0xFF8B0000),
+      normalBackgroundColor: const Color(0xFFC63424),
       normalTextColor: Colors.white,
-      hoverBackgroundColor: const Color(0xFFFFC700),
+      hoverBackgroundColor: const Color(0xFFF4ED47),
       hoverTextColor: Colors.black,
     );
   }
@@ -151,8 +154,8 @@ class ButtonStyles {
       enabled: enabled,
       width: width,
       normalBackgroundColor: Colors.transparent,
-      normalTextColor: const Color(0xFFFFC700),
-      hoverBackgroundColor: const Color(0xFFFFC700),
+      normalTextColor: const Color(0xFFF4ED47),
+      hoverBackgroundColor: const Color(0xFFF4ED47),
       hoverTextColor: Colors.black,
       boxShadow: [],
     );
@@ -165,13 +168,13 @@ class ButtonStyles {
     return CustomButton(
       text: 'LEARN MORE',
       onPressed: onPressed,
-      borderRadius: 24.r,
+      borderRadius: 12.r,
       enabled: enabled,
-      normalBackgroundColor: const Color(0xFF8B0000),
-      normalTextColor: const Color(0xFFFFC700),
-      hoverBackgroundColor: const Color(0xFFFFC700),
-      hoverTextColor: const Color(0xFF8B0000),
-      fontSize: 18.sp,
+      normalBackgroundColor: const Color(0xFFC63424),
+      normalTextColor: const Color(0xFFF4ED47),
+      hoverBackgroundColor: const Color(0xFFF4ED47),
+      hoverTextColor: const Color(0xFFC63424),
+      fontSize: 24.sp,
     );
   }
 
@@ -182,14 +185,14 @@ class ButtonStyles {
     return CustomButton(
       text: 'LEARN MORE',
       onPressed: onPressed,
-      borderRadius: 24.r,
-      width: 115.w,
+      borderRadius: 8.r,
+      width: 100.w,
       enabled: enabled,
-      normalBackgroundColor: const Color(0xFF8B0000),
-      normalTextColor: const Color(0xFFFFC700),
-      hoverBackgroundColor: const Color(0xFFFFC700),
-      hoverTextColor: const Color(0xFF8B0000),
-      fontSize: 10.sp,
+      normalBackgroundColor: const Color(0xFFC63424),
+      normalTextColor: const Color(0xFFF4ED47),
+      hoverBackgroundColor: const Color(0xFFF4ED47),
+      hoverTextColor: const Color(0xFFC63424),
+      fontSize: 12.sp,
     );
   }
 
@@ -203,12 +206,12 @@ class ButtonStyles {
       onPressed: onPressed,
       enabled: enabled,
       width: width ?? double.infinity,
-      normalBackgroundColor: const Color(0xFF8B0000),
-      normalTextColor:  const Color(0xFFFFC700),
-      hoverBackgroundColor: const Color(0xFFFFC700),
-      hoverTextColor: const Color(0xFF8B0000),
-      fontSize: 16.sp,
-      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+      normalBackgroundColor: const Color(0xFFC63424),
+      normalTextColor:  const Color(0xFFF4ED47),
+      hoverBackgroundColor: const Color(0xFFF4ED47),
+      hoverTextColor: const Color(0xFFC63424),
+      fontSize: 26.sp,
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
     );
   }
 
@@ -221,13 +224,13 @@ class ButtonStyles {
       text: 'SUBMIT',
       onPressed: onPressed,
       enabled: enabled,
+      borderRadius: 2.r,
       width: width ?? double.infinity,
-      normalBackgroundColor: const Color(0xFF8B0000),
-      normalTextColor:  const Color(0xFFFFC700),
-      hoverBackgroundColor: const Color(0xFFFFC700),
-      hoverTextColor: const Color(0xFF8B0000),
-      fontSize: 14.sp,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      normalBackgroundColor: const Color(0xFFC63424),
+      normalTextColor:  const Color(0xFFF4ED47),
+      hoverBackgroundColor: const Color(0xFFF4ED47),
+      hoverTextColor: const Color(0xFFC63424),
+      fontSize: 18.sp,
     );
   }
 }

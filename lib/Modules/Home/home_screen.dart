@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rush/rush.dart';
@@ -21,6 +22,8 @@ import '../../Widgets/services_content_section.dart';
 import '../../Widgets/contacts_content_section.dart';
 import '../../Widgets/animated_logos_footer.dart';
 import '../../Widgets/services_content_section_mob.dart';
+import '../../Widgets/floating_contact_buttons.dart';
+import '../../Widgets/scroll_to_top_button.dart';
 
 // Global key for accessing scroll controller
 final GlobalKey<_HomeScreenState> homeScreenKey = GlobalKey<_HomeScreenState>();
@@ -110,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
+        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
         body: MediaQuery.of(context).size.width >= 600 ? Stack(
           children: [
             // المحتوى القابل للتمرير
@@ -140,16 +143,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const AboutContentSection(),
                     ),
                     //SizedBox(height: 100.h),
-      
-                    // Performance Highlights Section
-                    const PerformanceHighlightsSection(),
-                    //SizedBox(height: 100.h),
-                    const AnimatedLogosFooterV2(),
                     // Services Section
                     Container(
                       key: _servicesKey,
                       child: const ServicesContentSection(),
                     ),
+                    // Performance Highlights Section
+                    const PerformanceHighlightsSection(),
+                    //SizedBox(height: 100.h),
+                    const AnimatedLogosFooterV2(),
+
                     //SizedBox(height: 100.h),
       
                     // Contacts Section
@@ -179,7 +182,13 @@ class _HomeScreenState extends State<HomeScreen> {
               left: 0,
               right: 0,
               child: CustomAppBarMob(),
-            )
+            ),
+            
+            // الأيقونات الثابتة للتواصل
+            const FloatingContactButtons(),
+            
+            // زر العودة لأعلى الصفحة
+            ScrollToTopButton(scrollController: _scrollController),
           ],
         ) : Stack(
           children: [
@@ -200,12 +209,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       key: _aboutKey,
                       child: const AboutContentSectionMob(),
                     ),
-                    const PerformanceHighlightsSectionMob(),
-                    const AnimatedLogosFooterV2(),
                     Container(
                       key: _servicesKey,
                       child: const ServicesContentSectionMob(),
                     ),
+                    const PerformanceHighlightsSectionMob(),
+                    const AnimatedLogosFooterV2(),
+
                     Container(
                       key: _contactsKey,
                       child: const ContactsContentSectionMob(),
@@ -228,7 +238,13 @@ class _HomeScreenState extends State<HomeScreen> {
               left: 0,
               right: 0,
               child: CustomAppBarMob(),
-            )
+            ),
+            
+            // الأيقونات الثابتة للتواصل
+            const FloatingContactButtons(),
+            
+            // زر العودة لأعلى الصفحة
+            ScrollToTopButton(scrollController: _scrollController),
           ],
         )
       

@@ -13,13 +13,17 @@ class PerformanceHighlightsSection extends StatefulWidget {
 }
 
 class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSection> {
-  bool _hasAnimated = false;
+  bool _isVisible = false;
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    // Start animation when at least 30% of the widget is visible
-    if (!_hasAnimated && info.visibleFraction >= 0.3) {
+    // Show animation when at least 30% visible, hide when less than 10%
+    if (info.visibleFraction >= 0.3 && !_isVisible) {
       setState(() {
-        _hasAnimated = true;
+        _isVisible = true;
+      });
+    } else if (info.visibleFraction < 0.1 && _isVisible) {
+      setState(() {
+        _isVisible = false;
       });
     }
   }
@@ -30,16 +34,12 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
       key: const Key('performance-highlights-section'),
       onVisibilityChanged: _onVisibilityChanged,
       child: Container(
-        height: 900.h,
+        height: 1200.h,
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage(Assets.imagesPerformanceBackground), // your background image asset
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), // dark overlay for readability
-              BlendMode.darken,
-            ),
+            fit: BoxFit.fill,
           ),
         ),
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 80.h),
@@ -55,39 +55,44 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Title
-        AnimatedOpacity(
-          opacity: _hasAnimated ? 1.0 : 0.0,
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeInOut,
-          child: RichText(
-            text: TextSpan(
-              style: TextStyle(
-                fontSize: 32.sp,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-                color: Colors.white, // اللون الافتراضي للنص
+        AnimatedScale(
+          scale: _isVisible ? 1.0 : 0.8,
+          duration: const Duration(milliseconds: 2000),
+          curve: Curves.easeOutCubic,
+          child: AnimatedOpacity(
+            opacity: _isVisible ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 2000),
+            curve: Curves.easeInOut,
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontFamily: 'OptimalBold',
+                  fontSize: 50.sp,
+                  letterSpacing: 2,
+                  color: Colors.white, // اللون الافتراضي للنص
+                ),
+                children: const [
+                  TextSpan(
+                    text: 'ACHIEVEMENTS ',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  TextSpan(
+                    text: 'HIGHLIGHTS:',
+                    style: TextStyle(color: Color(0xFFF4ED47)), // أصفر
+                  ),
+                ],
               ),
-              children: const [
-                TextSpan(
-                  text: 'PERFORMANCE ',
-                  style: TextStyle(color: Colors.white),
-                ),
-                TextSpan(
-                  text: 'HIGHLIGHTS:',
-                  style: TextStyle(color: Color(0xFFFFC700)), // أصفر
-                ),
-              ],
             ),
           ),
         ),
 
 
-        SizedBox(height: 50.h),
+        SizedBox(height: 120.h),
         
         // Metrics Grid
         Container(
 
-          constraints: BoxConstraints(maxWidth: 1200.w),
+
           child: Row(
             children: [
               // Left column metrics
@@ -98,7 +103,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                       '+2,000',
                       'Successful lease agreements across commercial units',
                     ),
-                    SizedBox(height: 100.h),
+                    SizedBox(height: 150.h),
                     _buildMetricCard(
                       '+100',
                       'Of assets under active facility management',
@@ -107,7 +112,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                 ),
               ),
               
-              SizedBox(width: 500.w),
+              SizedBox(width: 700.w),
               
               // Right column metrics
               Expanded(
@@ -117,7 +122,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                       '+100',
                       'Franchise agreements established across key markets',
                     ),
-                    SizedBox(height: 100.h),
+                    SizedBox(height: 150.h),
                     _buildMetricCard(
                       '+120',
                       'Real estate consulting engagements completed',
@@ -137,49 +142,51 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
     final int targetValue = int.tryParse(number.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
     final bool hasPlus = number.startsWith('+');
 
-    return AnimatedOpacity(
-      opacity: _hasAnimated ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 1000),
-      curve: Curves.easeInOut,
-      child: SizedBox(
-        width: 200.w,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(
-                begin: 0, 
-                end: _hasAnimated ? targetValue.toDouble() : 0,
+    return AnimatedSlide(
+      offset: _isVisible ? Offset.zero : const Offset(0, 0.3),
+      duration: const Duration(milliseconds: 2000),
+      curve: Curves.easeOutCubic,
+      child: AnimatedOpacity(
+        opacity: _isVisible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 2000),
+        curve: Curves.easeInOut,
+        child: SizedBox(
+          width: 300.w,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TweenAnimationBuilder<double>(
+                tween: Tween<double>(
+                  begin: 0, 
+                  end: _isVisible ? targetValue.toDouble() : 0,
+                ),
+                duration: const Duration(seconds: 2),
+                curve: Curves.easeOut,
+                builder: (context, value, child) {
+                  return Text(
+                    "${hasPlus ? '+' : ''}${value.toInt().toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',')}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'OptimalBold',
+                      color: const Color(0xFFF4ED47),
+                      fontSize: 50.sp,
+                    ),
+                  );
+                },
               ),
-              duration: const Duration(seconds: 3),
-              curve: Curves.easeOut,
-              builder: (context, value, child) {
-                return Text(
-                  "${hasPlus ? '+' : ''}${value.toInt().toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',')}",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: Assets.fontsOptimal,
-                    color: const Color(0xFFFFC700),
-                    fontSize: 32.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              description,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: Assets.fontsAloeveraDisplaySemiBold,
-                color: Colors.white,
-                fontSize: 20.sp,
-                height: 1.4,
-                fontWeight: FontWeight.w400,
+              SizedBox(height: 8.h),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'AloeveraDisplayRegular',
+                  color: Colors.white,
+                  fontSize: 28.sp,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

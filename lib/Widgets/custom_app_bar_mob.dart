@@ -30,7 +30,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> {
             color: Colors.white.withOpacity(0.5),
             border: Border(
               bottom: BorderSide(
-                color: const Color(0xFFFFC700).withOpacity(0.2),
+                color: const Color(0xFFF4ED47).withOpacity(0.2),
                 width: 1,
               ),
             ),

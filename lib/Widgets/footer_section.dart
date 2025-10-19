@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/assets.dart';
 
-class FooterSection extends StatelessWidget {
+class FooterSection extends StatefulWidget {
   const FooterSection({super.key});
 
+  @override
+  State<FooterSection> createState() => _FooterSectionState();
+}
+
+class _FooterSectionState extends State<FooterSection> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,20 +44,20 @@ class FooterSection extends StatelessWidget {
                           Text(
                             'FOLLOW US',
                             style: TextStyle(
-                              color: const Color(0xFF8B0000),
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFC63424),
+                              fontSize: 28.sp,
+                              fontWeight: FontWeight.w700,
                               letterSpacing: 1,
                             ),
                           ),
+                          SizedBox(width: 28.w),
+                          _buildSocialIcon(Assets.iconsFace),
                           SizedBox(width: 16.w),
-                          _buildSocialIcon(Icons.facebook),
+                          _buildSocialIcon(Assets.iconsInsta),
                           SizedBox(width: 16.w),
-                          _buildSocialIcon(Icons.camera_alt),
+                          _buildSocialIcon(Assets.iconsLinked),
                           SizedBox(width: 16.w),
-                          _buildSocialIcon(Icons.business),
-                          SizedBox(width: 16.w),
-                          _buildSocialIcon(Icons.music_note),
+                          _buildSocialIcon(Assets.iconsTik),
                         ],
                       ),
 
@@ -58,23 +65,28 @@ class FooterSection extends StatelessWidget {
                       SizedBox(height: 40.h),
 
                       // Contact information
-                      _buildContactInfo(
-                        Icons.email,
-                        'Incomercial@gmail.com',
+                      _AnimatedContactInfo(
+                        icon: Assets.iconsMail,
+                        text: 'Incomercial@gmail.com',
+                        isClickable: true,
+                        onTap: () => _sendEmail('Incomercial@gmail.com'),
                       ),
 
                       SizedBox(height: 16.h),
 
-                      _buildContactInfo(
-                        Icons.location_on,
-                        '14 A/2 Admin building, New Cairo, Egypt',
+                      _AnimatedContactInfo(
+                        icon: Assets.iconsLocation,
+                        text: '14 A/2 Admin building, New Cairo, Egypt',
+                        isClickable: false,
                       ),
 
                       SizedBox(height: 16.h),
 
-                      _buildContactInfo(
-                        Icons.phone,
-                        '0111-032-7777',
+                      _AnimatedContactInfo(
+                        icon: Assets.iconsCall,
+                        text: '0111-032-7777',
+                        isClickable: true,
+                        onTap: () => _makePhoneCall('0111-032-7777'),
                       ),
                     ],
                   ),
@@ -96,27 +108,46 @@ class FooterSection extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 30.h),
 
                       // QR Code placeholder
-                      Container(
-                        width: 120.w,
-                        height: 120.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 60.w,
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                Assets.iconsGooglePlay,
+                                width: 60.w,
+                                height: 60.h,
+                              ),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.qr_code,
-                            size: 100.sp,
-                            color: Colors.black,
+
+                          Gap(30.w),
+                          Container(
+                            width: 60.w,
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                Assets.iconsAppStore,
+                                width: 60.w,
+                                height: 60.h,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
 
                     ],
@@ -131,16 +162,32 @@ class FooterSection extends StatelessWidget {
             bottom: 20.h,
             left: 0,
             right: 0,
-            child: Center(
-              child: Text(
-                'Powered by E-code Wave',
-                style: TextStyle(
-                  color: const Color(0xFF8B0000),
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 1,
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    'INCOMERCIAL REAL ESTATE 2025',
+                    style: TextStyle(
+                      color: const Color(0xFF000000),
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1,
+                    ),
+                  ),
                 ),
-              ),
+                Gap(10.h),
+                Center(
+                  child: Text(
+                    'Powered by E-code Wave',
+                    style: TextStyle(
+                      color: const Color(0xFF000000),
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -148,42 +195,150 @@ class FooterSection extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialIcon(IconData icon) {
+  // دالة لفتح البريد الإلكتروني
+  Future<void> _sendEmail(String email) async {
+    final Uri launchUri = Uri(
+      scheme: 'mailto',
+      path: email,
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    }
+  }
+
+  // دالة لفتح رابط الاتصال
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    }
+  }
+
+  Widget _buildSocialIcon(String icon) {
     return Container(
       width: 40.w,
       height: 40.h,
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Icon(
+
+      child: Image.asset(
         icon,
-        color: Colors.white,
-        size: 20.sp,
+        height: 20.r,
+        width: 20.r,
       ),
     );
   }
 
-  Widget _buildContactInfo(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: const Color(0xFF000000),
-          size: 20.sp,
-        ),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              color: const Color(0xFF000000),
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w700,
+}
+
+// Widget منفصل للتأثيرات الحركية
+class _AnimatedContactInfo extends StatefulWidget {
+  final String icon;
+  final String text;
+  final bool isClickable;
+  final VoidCallback? onTap;
+
+  const _AnimatedContactInfo({
+    Key? key,
+    required this.icon,
+    required this.text,
+    this.isClickable = false,
+    this.onTap,
+  }) : super(key: key);
+
+  @override
+  State<_AnimatedContactInfo> createState() => _AnimatedContactInfoState();
+}
+
+class _AnimatedContactInfoState extends State<_AnimatedContactInfo>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+  late Animation<Color?> _colorAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(0, -0.2), // يتحرك للأعلى قليلاً
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+
+    _colorAnimation = ColorTween(
+      begin: const Color(0xFF000000),
+      end: const Color(0xFFC63424), // يتغير للون الأحمر
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleTap() {
+    if (widget.isClickable && widget.onTap != null) {
+      widget.onTap!();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: widget.isClickable ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      onEnter: (_) {
+        if (widget.isClickable) {
+          _controller.forward();
+        }
+      },
+      onExit: (_) {
+        if (widget.isClickable) {
+          _controller.reverse();
+        }
+      },
+      child: GestureDetector(
+        onTap: _handleTap,
+        child: Row(
+          children: [
+            Image.asset(
+              widget.icon,
+              height: 22.r,
+              width: 22.r,
             ),
-          ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: SlideTransition(
+                position: _offsetAnimation,
+                child: AnimatedBuilder(
+                  animation: _colorAnimation,
+                  builder: (context, child) {
+                    return Text(
+                      widget.text,
+                      style: TextStyle(
+                        color: _colorAnimation.value ?? const Color(0xFF000000),
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

@@ -40,6 +40,7 @@ dependencies:
   gap: ^3.0.1
   visibility_detector: ^0.4.0+2
   fluttertoast: ^8.2.4
+  url_launcher: ^6.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,6 +62,38 @@ flutter:
     - assets/images/
     - assets/logos/
     - assets/fonts/
+
+  fonts:
+    - family: AloeveraDisplay
+      fonts:
+        - asset: assets/fonts/AloeveraDisplay-SemiBold.ttf
+          weight: 600
+    - family: Optimal
+      fonts:
+        - asset: assets/fonts/Optimal.ttf
+          weight: 400
+
+    - family: OptimalBold
+      fonts:
+        - asset: assets/fonts/OptimalBold.ttf
+          weight: 400
+    - family: AloeveraDisplaySemiBold
+      fonts:
+        - asset: assets/fonts/AloeveraDisplaySemiBold.ttf
+          weight: 400
+    - family: AloeveraDisplayRegular
+      fonts:
+        - asset: assets/fonts/AloeveraDisplayRegular.ttf
+          weight: 400
+    - family: AloeveraDisplayBold
+      fonts:
+        - asset: assets/fonts/AloeveraDisplayBold.ttf
+          weight: 400
+
+
+
+
+
 flutter_launcher_icons:
   android: true
   ios: true
@@ -70,15 +103,3 @@ flutter_launcher_icons:
   adaptive_icon_background: "#000000"
   adaptive_icon_foreground: "assets/images/INCMLogoMob.png"
   remove_alpha_ios: true
-
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700

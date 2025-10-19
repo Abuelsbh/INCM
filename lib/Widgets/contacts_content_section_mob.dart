@@ -169,10 +169,6 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
           image: DecorationImage(
             image: AssetImage(Assets.imagesContactUsBackgroundMob), // your background image asset
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), // dark overlay for readability
-              BlendMode.darken,
-            ),
           ),
         ),
         width: double.infinity,
@@ -203,8 +199,8 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                       Text(
                         'CONTACT US',
                         style: TextStyle(
-                          fontFamily: Assets.fontsOptimal,
-                          color: const Color(0xFFFFC700),
+                          fontFamily: 'OptimalBold',
+                          color: const Color(0xFFF4ED47),
                           fontSize: 22.sp,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2,
@@ -218,7 +214,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           style: TextStyle(
-                            fontFamily: Assets.fontsOptimal, // 🔹 نفس الخط
+                            fontFamily: 'OptimalBold',
                             color: Colors.white,
                             fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
@@ -228,7 +224,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                             TextSpan(text: 'READY TO BUILD SOMETHING '),
                             TextSpan(
                               text: 'GREAT',
-                              style: TextStyle(color: Color(0xFFFFC700)), // 🔸 أصفر
+                              style: TextStyle(color: Color(0xFFF4ED47)), // 🔸 أصفر
                             ),
                             TextSpan(text: '?'),
                           ],
@@ -279,7 +275,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
 
                           // Submit button
                           ButtonStyles.submitButtonMob(
-                            width: 100.w,
+                            width: 90.w,
                             onPressed: _handleSubmit,
                           ),
                         ],
@@ -307,7 +303,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
         Text(
           label,
           style: TextStyle(
-            fontFamily: Assets.fontsOptimal,
+            fontFamily: 'OptimalBold',
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
@@ -339,6 +335,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                 ),
                 hintText: label.toLowerCase(),
                 hintStyle: TextStyle(
+                  fontFamily: 'OptimalBold',
                   color: Colors.grey[500],
                   fontSize: 16.sp,
                 ),
@@ -364,7 +361,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
         Text(
           'YOUR NUMBER',
           style: TextStyle(
-            fontFamily: Assets.fontsOptimal,
+            fontFamily: 'OptimalBold',
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
@@ -410,12 +407,13 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                           children: [
                             Text(
                               country['flag']!,
-                              style: TextStyle(fontSize: 14.sp),
+                              style: TextStyle( fontFamily: 'OptimalBold',fontSize: 14.sp),
                             ),
                             SizedBox(width: 2.w),
                             Text(
                               country['code']!,
                               style: TextStyle(
+                                fontFamily: 'OptimalBold',
                                 fontSize: 16.sp,
                                 color: Colors.black,
                               ),

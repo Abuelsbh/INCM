@@ -127,7 +127,7 @@ class _AnimatedButtonState extends State<AnimatedButton>
                   vertical: 12.h,
                 ),
                 decoration: BoxDecoration(
-                  color: widget.backgroundColor ?? const Color(0xFFFFC700),
+                  color: widget.backgroundColor ?? const Color(0xFFF4ED47),
                   borderRadius: widget.borderRadius ?? BorderRadius.circular(8.r),
                   border: widget.borderColor != null
                       ? Border.all(
@@ -137,7 +137,7 @@ class _AnimatedButtonState extends State<AnimatedButton>
                       : null,
                   boxShadow: [
                     BoxShadow(
-                      color: (widget.backgroundColor ?? const Color(0xFFFFC700))
+                      color: (widget.backgroundColor ?? const Color(0xFFF4ED47))
                           .withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
@@ -235,7 +235,7 @@ class PrimaryButton extends StatelessWidget {
     return AnimatedButton(
       text: text,
       onPressed: onPressed,
-      backgroundColor: const Color(0xFFFFC700),
+      backgroundColor: const Color(0xFFF4ED47),
       textColor: Colors.black,
       width: width,
       isLoading: isLoading,
@@ -269,8 +269,8 @@ class SecondaryButton extends StatelessWidget {
       text: text,
       onPressed: onPressed,
       backgroundColor: Colors.transparent,
-      textColor: const Color(0xFFFFC700),
-      borderColor: const Color(0xFFFFC700),
+      textColor: const Color(0xFFF4ED47),
+      borderColor: const Color(0xFFF4ED47),
       width: width,
       isLoading: isLoading,
       loadingText: loadingText,

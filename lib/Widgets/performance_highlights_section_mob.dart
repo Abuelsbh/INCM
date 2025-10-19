@@ -14,13 +14,17 @@ class PerformanceHighlightsSectionMob extends StatefulWidget {
 }
 
 class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSectionMob> {
-  bool _hasAnimated = false;
+  bool _isVisible = false;
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    // Start animation when at least 30% of the widget is visible
-    if (!_hasAnimated && info.visibleFraction >= 0.3) {
+    // Show animation when at least 30% visible, hide when less than 10%
+    if (info.visibleFraction >= 0.3 && !_isVisible) {
       setState(() {
-        _hasAnimated = true;
+        _isVisible = true;
+      });
+    } else if (info.visibleFraction < 0.1 && _isVisible) {
+      setState(() {
+        _isVisible = false;
       });
     }
   }
@@ -35,12 +39,9 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(Assets.imagesPerformanceBackgroundMob), // your background image asset
+            image: AssetImage(Assets.imagesImagee), // your background image asset
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), // dark overlay for readability
-              BlendMode.darken,
-            ),
+
           ),
         ),
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
@@ -52,33 +53,38 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
   Widget _buildPerformanceSection() {
     return Column(
 
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(80.h),
         Center(
-          child: AnimatedOpacity(
-            opacity: _hasAnimated ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 800),
-            curve: Curves.easeInOut,
-            child: RichText(
-              text: TextSpan(
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                  color: Colors.white, // اللون الافتراضي للنص
+          child: AnimatedScale(
+            scale: _isVisible ? 1.0 : 0.8,
+            duration: const Duration(milliseconds: 2000),
+            curve: Curves.easeOutCubic,
+            child: AnimatedOpacity(
+              opacity: _isVisible ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 2000),
+              curve: Curves.easeInOut,
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontFamily: 'OptimalBold',
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                    color: Colors.white, // اللون الافتراضي للنص
+                  ),
+                  children: const [
+                    TextSpan(
+                      text: 'PERFORMANCE ',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    TextSpan(
+                      text: 'HIGHLIGHTS:',
+                      style: TextStyle(color: Color(0xFFF4ED47)), // أصفر
+                    ),
+                  ],
                 ),
-                children: const [
-                  TextSpan(
-                    text: 'PERFORMANCE ',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  TextSpan(
-                    text: 'HIGHLIGHTS:',
-                    style: TextStyle(color: Color(0xFFFFC700)), // أصفر
-                  ),
-                ],
               ),
             ),
           ),
@@ -126,49 +132,54 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
     final int targetValue = int.tryParse(number.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
     final bool hasPlus = number.startsWith('+');
 
-    return AnimatedOpacity(
-      opacity: _hasAnimated ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 1000),
-      curve: Curves.easeInOut,
-      child: SizedBox(
-        width: 220.w,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(
-                begin: 0, 
-                end: _hasAnimated ? targetValue.toDouble() : 0,
+    return AnimatedSlide(
+      offset: _isVisible ? Offset.zero : const Offset(0, 0.3),
+      duration: const Duration(milliseconds: 2000),
+      curve: Curves.easeOutCubic,
+      child: AnimatedOpacity(
+        opacity: _isVisible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 2000),
+        curve: Curves.easeInOut,
+        child: SizedBox(
+          width: 200.w,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TweenAnimationBuilder<double>(
+                tween: Tween<double>(
+                  begin: 0, 
+                  end: _isVisible ? targetValue.toDouble() : 0,
+                ),
+                duration: const Duration(seconds: 2),
+                curve: Curves.easeOut,
+                builder: (context, value, child) {
+                  return Text(
+                    "${hasPlus ? '+' : ''}${value.toInt().toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',')}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'OptimalBold',
+                      color: const Color(0xFFF4ED47),
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
               ),
-              duration: const Duration(seconds: 3),
-              curve: Curves.easeOut,
-              builder: (context, value, child) {
-                return Text(
-                  "${hasPlus ? '+' : ''}${value.toInt().toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',')}",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: Assets.fontsOptimal,
-                    color: const Color(0xFFFFC700),
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              description,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: Assets.fontsAloeveraDisplaySemiBold,
-                color: Colors.white,
-                fontSize: 16.sp,
-                height: 1.4,
-                fontWeight: FontWeight.w400,
+              SizedBox(height: 8.h),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'AloeveraDisplayRegular',
+                  color: Colors.white,
+                  fontSize: 16.sp,
+                  height: 1.4,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -170,10 +170,6 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
           image: DecorationImage(
             image: const AssetImage(Assets.imagesLearnServicesBackground), // your background image asset
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), // dark overlay for readability
-              BlendMode.darken,
-            ),
           ),
         ),
         child: Column(
@@ -183,79 +179,76 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
             Text(
               'EXPLORE OUR SERVICES',
               style: TextStyle(
-                fontFamily: Assets.fontsOptimal, // 👈 أضف هذا
+                fontFamily: 'OptimalBold',
                 color: Colors.white,
-                fontSize: 28.sp,
+                fontSize: 40.sp,
                 fontWeight: FontWeight.bold, // سيختار ملف Optimal-Bold تلقائيًا
                 letterSpacing: 2,
               ),
             ),
 
-            SizedBox(height: 40.h),
+            SizedBox(height: 80.h),
 
             // Service indicator (1-9)
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(9, (index) {
-                  final isActive = index == currentIndex;
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(9, (index) {
+                final isActive = index == currentIndex;
 
-                  return MouseRegion(
-                    onEnter: (_) => _timer?.cancel(), // Pause timer on hover
-                    onExit: (_) => _startTimer(), // Resume timer when mouse leaves
-                    child: GestureDetector(
-                      onTap: () => _onPaginationTap(index),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Number above the box
-                          Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: Text(
-                              '${index + 1}',
-                              style: TextStyle(
-                                color: const Color(0xFFFFFFFF),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 8,
-                              ),
+                return MouseRegion(
+                  onEnter: (_) => _timer?.cancel(), // Pause timer on hover
+                  onExit: (_) => _startTimer(), // Resume timer when mouse leaves
+                  child: GestureDetector(
+                    onTap: () => _onPaginationTap(index),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Number above the box
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(
+                              color: const Color(0xFFFFFFFF),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                        ),
+                        const SizedBox(height: 2),
 
-                          // Box itself
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 12,
-                                height: 12,
-                                decoration: BoxDecoration(
-                                  color: isActive ? Colors.red : Colors.transparent,
-                                  border: Border.all(color: const Color(0xFFFFC700), width: 2),
-                                  borderRadius: BorderRadius.circular(1),
-                                ),
+                        // Box itself
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 18,
+                              height: 18,
+                              decoration: BoxDecoration(
+                                color: isActive ? const Color(0xFFC63424) : Colors.transparent,
+                                border: Border.all(color: const Color(0xFFF4ED47), width: 2),
+                                borderRadius: BorderRadius.circular(1),
                               ),
-                              // Connecting line between boxes
-                              if (index < 8)
-                                Container(
-                                  width: 40,
-                                  height: 2,
-                                  color: const Color(0xFFFFC700),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                            // Connecting line between boxes
+                            if (index < 8)
+                              Container(
+                                width: 50,
+                                height: 3,
+                                color: const Color(0xFFF4ED47),
+                              ),
+                          ],
+                        ),
+                      ],
                     ),
-                  );
-                }),
-              ),
+                  ),
+                );
+              }),
             ),
 
-            SizedBox(height: 40.h),
+            SizedBox(height: 60.h),
 
             // Service highlight section
             Container(
@@ -264,47 +257,47 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
               child: Column(
                 children: [
                   // Service title with slide animation
-                  SlideTransition(
-                    position: _slideAnimation,
-                    child: FadeTransition(
-                      opacity: _slideController,
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "IT' A ",
-                              style: TextStyle(
-                                fontFamily: Assets.fontsOptimal,
-                                color: Colors.white,
-                                fontSize: 60.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: serviceData[currentIndex]['title']!,
-                              style: TextStyle(
-                                fontFamily: Assets.fontsOptimal,
-                                color: const Color(0xFF8B0000),
-                                fontSize: 60.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
 
-                            TextSpan(
-                              text: " SERVICES",
-                              style: TextStyle(
-                                fontFamily: Assets.fontsOptimal,
-                                color: Colors.white,
-                                fontSize: 60.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "IT' A ",
+                        style: TextStyle(
+                          fontFamily: 'OptimalBold',
+                          color: Colors.white,
+                          fontSize: 60.sp,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
+                      FadeTransition(
+                        opacity: _slideController,
+                        child: Text(
+                          serviceData[currentIndex]['title']!,
+                          style: TextStyle(
+                            fontFamily: 'OptimalBold',
+                            color: currentIndex % 2 == 0 ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
+                            fontSize: 60.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+
+                      Text(
+                        " SERVICES",
+                        style: TextStyle(
+                          fontFamily: 'OptimalBold',
+                          color: Colors.white,
+                          fontSize: 60.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  Gap(30.h),
+
+                  Gap(60.h),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -313,87 +306,80 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                         flex: 1,
                         child: Padding(
                           padding: EdgeInsets.only(right: 40.w),
-                          child:  SlideTransition(
-                            position: _slideAnimation,
-                            child: FadeTransition(
-                              opacity: _slideController,
-                              child: Text(
-                                serviceData[currentIndex]['description']!,
-                                style: TextStyle(
-                                  fontFamily: Assets.fontsAloeveraDisplaySemiBold,
-                                  color: Colors.white,
-                                  fontSize: 32.sp,
-                                  height: 1.6,
-                                  letterSpacing: 2,
-                                ),
+                          child: FadeTransition(
+                            opacity: _slideController,
+                            child: Text(
+                              serviceData[currentIndex]['description']!,
+                              style: TextStyle(
+                                fontFamily: 'AloeveraDisplaySemiBold',
+                                color: Colors.white,
+                                fontSize: 34.sp,
+                                height: 1.6,
+                                letterSpacing: 2,
                               ),
                             ),
                           ),
                         ),
                       ),
 
+
+                      Gap(40.w),
                       // Right visual with slide animation
                       Expanded(
                         flex: 1,
-                        child: SlideTransition(
-                          position: _slideAnimation,
-                          child: ScaleTransition(
-                            scale: _scaleAnimation,
-                            child: FadeTransition(
-                              opacity: _slideController,
-                              child: Container(
-                                height: 400.h,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFFC700),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.3),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 10),
-                                    ),
-                                  ],
+                        child:  FadeTransition(
+                          opacity: _slideController,
+                          child: Container(
+                            height: 400.h,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF4ED47),
+                              borderRadius: BorderRadius.circular(12.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
                                 ),
-                                child: Stack(
-                                  children: [
-                                    // خلفية مزخرفة أو تدرج
-                                    Positioned.fill(
-                                      child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(2.r),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: const Color(0xFFFFC700),
-                                                width: 1,            // Border thickness
-                                              ),
-                                              borderRadius: BorderRadius.circular(2), // Optional: rounded corners
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(2), // Same radius to clip image corners
-                                              child: Image.asset(
-                                                Assets.imagesLearnServices,
-                                                fit: BoxFit.cover,
-                                                key: ValueKey(currentIndex), // Force rebuild on index change
-                                              ),
-                                            ),
-                                          )
+                              ],
+                            ),
+                            child: Stack(
+                              children: [
+                                // خلفية مزخرفة أو تدرج
+                                Positioned.fill(
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(2.r),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: const Color(0xFFF4ED47),
+                                            width: 1,            // Border thickness
+                                          ),
+                                          borderRadius: BorderRadius.circular(2), // Optional: rounded corners
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(2), // Same radius to clip image corners
+                                          child: Image.asset(
+                                            Assets.imagesLearnServices,
+                                            fit: BoxFit.cover,
+                                            key: ValueKey(currentIndex), // Force rebuild on index change
+                                          ),
+                                        ),
+                                      )
 
-                                      ),
-                                    ),
-
-                                    // زر LEARN MORE في الأسفل إلى اليمين
-                                    Positioned(
-                                      bottom: 20.h,
-                                      right: 20.w,
-                                      child: ButtonStyles.learnMoreButton(
-                                        onPressed: () {
-                                          // Add learn more action
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+
+                                // زر LEARN MORE في الأسفل إلى اليمين
+                                Positioned(
+                                  bottom: 20.h,
+                                  right: 20.w,
+                                  child: ButtonStyles.learnMoreButton(
+                                    onPressed: () {
+                                      // Add learn more action
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

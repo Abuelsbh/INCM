@@ -15,10 +15,7 @@ class HomeSearchSectionMob extends StatelessWidget {
         image: DecorationImage(
           image: AssetImage(Assets.imagesSearchBackgroundMob),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.3), // Lighter overlay for better contrast
-            BlendMode.darken,
-          ),
+
         ),
         // Additional gradient overlay for warm tones like in the image
         gradient: LinearGradient(
@@ -36,6 +33,27 @@ class HomeSearchSectionMob extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Text(
+            'EXPLORE INCM WORLD',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'AloeveraDisplayBold',
+              color: const Color(0xFFF4ED47),
+              fontSize: 50.sp,
+            ),
+          ),
+          SizedBox(height: 15.h), // مسافة صغيرة بين الجملتين
+          Text(
+            'STEP INTO A WORLD WHERE REAL ESTATE MEETS INNOVATION AND EXCELLENCE.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'AloeveraDisplayRegular',
+              color: Colors.white,
+              fontSize: 16.sp,
+            ),
+          ),
+          SizedBox(height: 30.h), // مسافة قبل شريط البحث
+          
           // Search Bar - Like the image
           Container(
             width: double.infinity,
@@ -59,7 +77,7 @@ class HomeSearchSectionMob extends StatelessWidget {
                   // Search icon (yellow magnifying glass)
                   Icon(
                     Icons.search,
-                    color: const Color(0xFFFFC700),
+                    color: const Color(0xFFF4ED47),
                     size: 28.sp,
                   ),
                   SizedBox(width: 20.w),
