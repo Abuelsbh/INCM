@@ -34,11 +34,7 @@ class _IncmAnimatedSplashState extends State<IncmAnimatedSplash> with SingleTick
       CurvedAnimation(parent: _controller, curve: const Interval(0.65, 1.0, curve: Curves.easeIn)),
     );
 
-    _controller.forward().whenComplete(() async {
-      await Future.delayed(const Duration(milliseconds: 250));
-      if (!mounted) return;
-      GoRouter.of(context).go(HomeScreen.routeName);
-    });
+    _controller.forward();
   }
 
   @override
@@ -93,6 +89,17 @@ class _IncmAnimatedSplashState extends State<IncmAnimatedSplash> with SingleTick
                     fit: BoxFit.contain,
                   ),
                 ),
+
+                // Navigation trigger overlay at the end of the animation timeline
+                if (_controller.status == AnimationStatus.completed)
+                  FutureBuilder(
+                    future: Future<void>.delayed(const Duration(milliseconds: 200), () {
+                      if (mounted) {
+                        GoRouter.of(context).go(HomeScreen.routeName);
+                      }
+                    }),
+                    builder: (_, __) => const SizedBox.shrink(),
+                  ),
               ],
             );
           },

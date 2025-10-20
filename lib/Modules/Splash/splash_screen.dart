@@ -6,7 +6,7 @@ import 'ScreensLayout/s_splash_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
-  static const routeName = "/";
+  static const routeName = "/splash";
 
   const SplashScreen({super.key});
 

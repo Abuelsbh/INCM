@@ -272,7 +272,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ),
       ),
       width: double.infinity,
-      height: isMobile ? 1086.h : (isTablet ? 1100.h : 1200.h),
+      height: isMobile ? 786.h : (isTablet ? 1100.h : 1200.h),
       child: Center(
         child: SingleChildScrollView(
           child: AnimatedBuilder(
@@ -299,14 +299,14 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                     style: TextStyle(
                       fontFamily: 'OptimalBold',
                       color: const Color(0xFFF4ED47),
-                      fontSize: isMobile ? 30.sp : (isTablet ? 60.sp : 80.sp),
+                      fontSize: isMobile ? 26.sp : (isTablet ? 60.sp : 80.sp),
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2,
                     ),
                   ),
-                  SizedBox(height: isMobile ? 30.h : (isTablet ? 60.h : 80.h)),
+                  SizedBox(height: isMobile ? 10.h : (isTablet ? 60.h : 80.h)),
                   _buildContactForm(context, isMobile, isTablet),
-                  Gap(isMobile ? 30.h : (isTablet ? 75.h : 100.h)),
+                  Gap(isMobile ? 10.h : (isTablet ? 75.h : 100.h)),
                   _buildGetInTouchSection(context, isMobile, isTablet),
                 ],
               ),
@@ -414,15 +414,15 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             'GET IN TOUCH',
             style: TextStyle(
               color: const Color(0xFFFFFFFF),
-              fontSize: 28.sp,
+              fontSize: 22.sp,
               fontFamily: 'OptimalBold',
               fontWeight: FontWeight.w700,
               letterSpacing: 1,
             ),
           ),
-          Gap(20.h),
+
           _buildSocialMediaRow(isMobile, isTablet),
-          Gap(30.h),
+          Gap(10.h),
           _buildContactInfoColumn(isMobile, isTablet),
         ],
       );
@@ -472,7 +472,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           'FOLLOW US',
           style: TextStyle(
             color: const Color(0xFFFFFFFF),
-            fontSize: isMobile ? 18.sp : (isTablet ? 40.sp : 58.sp),
+            fontSize: isMobile ? 16.sp : (isTablet ? 40.sp : 58.sp),
             fontWeight: FontWeight.w700,
             letterSpacing: 1,
           ),
@@ -593,7 +593,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                       style: TextStyle(
                         fontFamily: 'OptimalBold',
                         color: const Color(0xFFF4ED47),
-                        fontSize: isMobile ? 22.sp : (isTablet ? 50.sp : 70.sp),
+                        fontSize: isMobile ? 20.sp : (isTablet ? 50.sp : 70.sp),
                         fontWeight: FontWeight.bold,
                         letterSpacing: 2,
                       ),
@@ -624,7 +624,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                             color: _isAddressHovered
                                 ? const Color(0xFFC63424)
                                 : const Color(0xFFFFFFFF),
-                            fontSize: isMobile ? 16.sp : (isTablet ? 30.sp : 40.sp),
+                            fontSize: isMobile ? 14.sp : (isTablet ? 30.sp : 40.sp),
                             fontFamily: 'OptimalBold',
                             fontWeight: FontWeight.w700,
                             letterSpacing: 1,
@@ -686,9 +686,9 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             letterSpacing: 1,
           ),
         ),
-        SizedBox(height: 2.h),
+        SizedBox(height: 1.h),
         SizedBox(
-          height: height ?? (isMobile ? 42.h : (isTablet ? 55.h : 60.h)),
+          height: height ?? (isMobile ? 36.h : (isTablet ? 55.h : 60.h)),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
