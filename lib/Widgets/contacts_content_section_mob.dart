@@ -197,37 +197,13 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                     children: [
                       // Title
                       Text(
-                        'CONTACT US',
+                        'Need experts advice?',
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: const Color(0xFFF4ED47),
                           fontSize: 22.sp,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2,
-                        ),
-                      ),
-
-                      SizedBox(height: 16.h),
-
-                      // Subtitle
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontFamily: 'OptimalBold',
-                            color: Colors.white,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                          ),
-                          children: const [
-                            TextSpan(text: 'READY TO BUILD SOMETHING '),
-                            TextSpan(
-                              text: 'GREAT',
-                              style: TextStyle(color: Color(0xFFF4ED47)), // 🔸 أصفر
-                            ),
-                            TextSpan(text: '?'),
-                          ],
                         ),
                       ),
 
@@ -248,15 +224,14 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
 
                           SizedBox(height: 20.h),
 
-                          // Area field
                           _buildFormField(
-                            'AREA',
-                            controller: _areaController,
+                            'E-MAIL',
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
                           ),
 
                           SizedBox(height: 20.h),
 
-                          // Location field
                           _buildFormField(
                             'LOCATION',
                             controller: _locationController,
@@ -264,11 +239,11 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
 
                           SizedBox(height: 20.h),
 
-                          // Email field
                           _buildFormField(
-                            'E-MAIL',
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
+                            'MESSAGE',
+                            hint: 'type your message',
+                            height: 80.h,
+                            controller: _locationController,
                           ),
 
                           SizedBox(height: 40.h),
@@ -296,6 +271,8 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
       String label, {
         required TextEditingController controller,
         TextInputType? keyboardType,
+        String? hint,
+        double? height
       }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +289,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
         ),
         SizedBox(height: 8.h),
         SizedBox(
-          height: 30.h, // ثابت لكل الحقول
+          height: height ?? 38.h, // ثابت لكل الحقول
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -333,7 +310,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                   horizontal: 12.w,
                   vertical: 6.h, // ✅ يجعل النص في المنتصف عموديًا
                 ),
-                hintText: label.toLowerCase(),
+                hintText: hint ?? label.toLowerCase(),
                 hintStyle: TextStyle(
                   fontFamily: 'OptimalBold',
                   color: Colors.grey[500],
@@ -370,7 +347,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
         ),
         SizedBox(height: 8.h),
         SizedBox(
-          height: 30.h, // 🔹 نفس الارتفاع
+          height: 38.h, // 🔹 نفس الارتفاع
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -442,7 +419,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                         horizontal: 12.w,
                         vertical: 6.h, // ✅ يجعل النص في المنتصف عموديًا
                       ),
-                      hintText: 'your number',
+                      hintText: 'xxxxxxxxxx',
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
                         fontSize: 16.sp,

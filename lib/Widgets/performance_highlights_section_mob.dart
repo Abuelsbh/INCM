@@ -53,9 +53,10 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
   Widget _buildPerformanceSection() {
     return Column(
 
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(height: 50.h),
         Center(
           child: AnimatedScale(
             scale: _isVisible ? 1.0 : 0.8,
@@ -76,7 +77,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                   ),
                   children: const [
                     TextSpan(
-                      text: 'PERFORMANCE ',
+                      text: 'ACHIEVEMENTS ',
                       style: TextStyle(color: Colors.white),
                     ),
                     TextSpan(
@@ -91,7 +92,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
         ),
 
 
-        SizedBox(height: 30.h),
+        SizedBox(height: 20.h),
         
         // Metrics Grid
         Container(
@@ -105,17 +106,17 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                 '+2,000',
                 'Successful lease agreements across commercial units',
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 18.h),
               _buildMetricCard(
                 '+100',
                 'Of assets under active facility management',
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 18.h),
               _buildMetricCard(
                 '+100',
                 'Franchise agreements established across key markets',
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 18.h),
               _buildMetricCard(
                 '+120',
                 'Real estate consulting engagements completed',
@@ -174,7 +175,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                   fontFamily: 'AloeveraDisplayRegular',
                   color: Colors.white,
                   fontSize: 16.sp,
-                  height: 1.4,
+                  height: 1,
                   fontWeight: FontWeight.w400,
                 ),
               ),

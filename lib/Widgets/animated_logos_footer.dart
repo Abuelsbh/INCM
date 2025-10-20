@@ -60,7 +60,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
     final allLogos = [...companyLogos, ...companyLogos]; // مضاعفة للّوب السلس
 
     return Container(
-      height: MediaQuery.of(context).size.width >= 600 ? 320.h : 260,
+      height: MediaQuery.of(context).size.width >= 600 ? 320.h : 210,
       width: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -99,13 +99,13 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
               },
             ),
           ),
-          Gap(10.h),
+          Gap(6.h),
           MediaQuery.of(context).size.width >= 600 ? ButtonStyles.learnMoreButton(
             onPressed: () {},
           ) : ButtonStyles.learnMoreButtonMob(
               onPressed: () {},
           ),
-          Gap(30.h),
+          Gap(12.h),
         ],
       ),
     );
@@ -113,10 +113,10 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
 
   Widget _buildLogoItem(String logoPath) {
     return Container(
-      width:  MediaQuery.of(context).size.width >= 600 ? 200.w : 120.w,
+      width:  MediaQuery.of(context).size.width >= 600 ? 200.w : 140.w,
       height: 60.h,
       child: Padding(
-        padding: EdgeInsets.all(8.w),
+        padding: EdgeInsets.all(2.w),
         child:  Builder(
           builder: (_) {
             try {

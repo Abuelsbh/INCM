@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import '../Modules/Home/home_screen.dart';
+import '../Modules/Contacts/contacts_screen.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -15,7 +18,11 @@ class _CustomAppBarState extends State<CustomAppBarMob> {
   bool isMenuOpen = false;
 
   void _scrollToSection(String sectionId) {
-    HomeScreen.scrollToSection(sectionId);
+    if (sectionId == 'contacts') {
+      context.go(ContactsScreen.routeName);
+    } else {
+      HomeScreen.scrollToSection(sectionId);
+    }
   }
 
   @override
@@ -36,13 +43,15 @@ class _CustomAppBarState extends State<CustomAppBarMob> {
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            padding: EdgeInsets.symmetric(horizontal: 5.w),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
             // Logo Section (Left) - INCOMERCIAL with tagline
             GestureDetector(
-              onTap: () => _scrollToSection('home'),
-              child: Image.asset(Assets.imagesINCMLogoMob, height: double.infinity,fit: BoxFit.cover,)
+              onTap: () =>  context.go(HomeScreen.routeName),
+              child: Image.asset(Assets.imagesINCMLogoMob, height: double.infinity,fit: BoxFit.cover, width: 50.w,)
               // Column(
               //   crossAxisAlignment: CrossAxisAlignment.start,
               //   mainAxisSize: MainAxisSize.min,
@@ -73,26 +82,27 @@ class _CustomAppBarState extends State<CustomAppBarMob> {
             const Spacer(),
 
             // Explore Us Button (Right side)
-            if (MediaQuery.of(context).size.width > 768)
-              ButtonStyles.exploreUsButton(
-                onPressed: () => _scrollToSection('about'),
-              ),
+                if(kIsWeb)
+                ButtonStyles.getAppButton(
+                  onPressed: () => {},
+                  width: 55.w
+                ),
 
             SizedBox(width: 16.w),
 
-            // Mobile Menu Button (Right)
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  isMenuOpen = !isMenuOpen;
-                });
-              },
-              icon: Icon(
-                isMenuOpen ? Icons.close : Icons.menu,
-                color: Colors.white,
-                size: 20.sp,
-              ),
-            ),
+
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      isMenuOpen = !isMenuOpen;
+                    });
+                  },
+                  child: Icon(
+                    isMenuOpen ? Icons.close : Icons.menu,
+                    color: Colors.white,
+                    size: 24.sp,
+                  ),
+                )
               ],
             ),
           ),

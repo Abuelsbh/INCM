@@ -220,7 +220,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       key: _contactsKey,
                       child: const ContactsContentSectionMob(),
                     ),
-                    const FooterSectionMob()
+                    if(kIsWeb)
+                      const FooterSectionMob()
                   ],
                 ),
               ),

@@ -129,7 +129,7 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                         child: _ContactButton(
                           icon: Assets.iconsCall,
                           onTap: () => _openWhatsApp(ContactInfo.whatsappNumber),
-                          backgroundColor: const Color(0xFF25D366),
+                          backgroundColor: const Color(0xFF4CAF50),
                           useAsset: true,
                           iconData: Icons.chat_bubble_outline,
                         ),
@@ -147,7 +147,8 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                         child: _ContactButton(
                           icon: Assets.iconsCall,
                           onTap: () => _makePhoneCall(ContactInfo.phoneNumber),
-                          backgroundColor: const Color(0xFF4CAF50),
+                          backgroundColor: const Color(0xFFF4ED47),
+                          iconColor: const Color(0xFFC63424),
                           useAsset: true,
                         ),
                       ),
@@ -175,8 +176,10 @@ class _ContactButton extends StatefulWidget {
   final String icon;
   final VoidCallback onTap;
   final Color backgroundColor;
+  final Color? iconColor;
   final bool useAsset;
   final IconData? iconData;
+
 
   const _ContactButton({
     Key? key,
@@ -184,7 +187,7 @@ class _ContactButton extends StatefulWidget {
     required this.onTap,
     required this.backgroundColor,
     this.useAsset = true,
-    this.iconData,
+    this.iconData, this.iconColor,
   }) : super(key: key);
 
   @override
@@ -228,8 +231,8 @@ class _ContactButtonState extends State<_ContactButton>
         child: GestureDetector(
           onTap: widget.onTap,
           child: Container(
-            width: 50.w,
-            height: 50.w,
+            width: MediaQuery.of(context).size.width < 600 ? 48.r : 60.r,
+            height: MediaQuery.of(context).size.width < 600 ? 48.r : 60.r,
             decoration: BoxDecoration(
               color: widget.backgroundColor,
               borderRadius: BorderRadius.circular(10),
@@ -245,27 +248,27 @@ class _ContactButtonState extends State<_ContactButton>
               child: widget.iconData != null
                   ? Icon(
                       widget.iconData,
-                      color: Colors.white,
-                      size: 24.w,
+                      color: widget.iconColor ?? Colors.white,
+                      size: MediaQuery.of(context).size.width < 600 ? 18.sp : 28.sp,
                     )
                   : widget.useAsset
                       ? Image.asset(
                           widget.icon,
-                          width: 24.w,
-                          height: 24.w,
-                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,
+                          height: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,
+                          color: widget.iconColor ?? Colors.white,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
                               Icons.error,
-                              color: Colors.white,
+                              color: widget.iconColor ?? Colors.white,
                               size: 24.w,
                             );
                           },
                         )
                       : Icon(
                           Icons.phone,
-                          color: Colors.white,
-                          size: 24.w,
+                          color: widget.iconColor ?? Colors.white,
+                          size: MediaQuery.of(context).size.width < 600 ? 18.sp : 28.sp,
                         ),
             ),
           ),

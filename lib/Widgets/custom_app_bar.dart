@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import '../Modules/Home/home_screen.dart';
+import '../Modules/Contacts/contacts_screen.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -15,7 +17,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
   bool isMenuOpen = false;
 
   void _scrollToSection(String sectionId) {
-    HomeScreen.scrollToSection(sectionId);
+    if (sectionId == 'home') {
+      context.go(HomeScreen.routeName);
+    }
+    else if (sectionId == 'contacts') {
+      context.go(ContactsScreen.routeName);
+    } else {
+      HomeScreen.scrollToSection(sectionId);
+    }
   }
 
   @override
@@ -406,6 +415,7 @@ class _HoverMenuItemState extends State<_HoverMenuItem> {
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
                 style: TextStyle(
+                  fontFamily: 'AloeveraDisplay',
                   color: _isHovered ? const Color(0xFFC63424) : Colors.white,
                   fontSize: 20.sp,
                   fontWeight: _isHovered ? FontWeight.w700 : FontWeight.w500,

@@ -25,6 +25,8 @@ class Assets {
   static const String iconsMail = 'assets/icons/mail.png';
   static const String iconsSellYourUnit = 'assets/icons/sellYourUnit.png';
   static const String iconsServices = 'assets/icons/services.png';
+  static const String iconsSplash1 = 'assets/icons/splash1.png';
+  static const String iconsSplash2 = 'assets/icons/splash2.png';
   static const String iconsTik = 'assets/icons/tik.png';
   static const String imagesAboutUsBackground = 'assets/images/aboutUsBackground.png';
   static const String imagesAboutUsBackgroundMob = 'assets/images/aboutUsBackgroundMob.png';

@@ -67,7 +67,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
               text: TextSpan(
                 style: TextStyle(
                   fontFamily: 'OptimalBold',
-                  fontSize: 50.sp,
+                  fontSize: 60.sp,
                   letterSpacing: 2,
                   color: Colors.white, // اللون الافتراضي للنص
                 ),
@@ -112,7 +112,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                 ),
               ),
               
-              SizedBox(width: 700.w),
+              SizedBox(width: 560.w),
               
               // Right column metrics
               Expanded(

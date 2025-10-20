@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:state_extended/state_extended.dart';
-import '../../../generated/assets.dart';
 import '../splash_controller.dart';
+import '../incm_animated_splash.dart';
 
 class MediumSplashScreen extends StatefulWidget {
   const MediumSplashScreen({super.key});
@@ -28,17 +28,6 @@ class _MediumSplashScreenState extends StateX<MediumSplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(Assets.iconsBrush, width: 240.r, height: 240.r,),
-            SizedBox(height: 100.h,),
-            const CircularProgressIndicator(),
-          ],
-        ),
-      ),
-    );
+    return const IncmAnimatedSplash();
   }
 }

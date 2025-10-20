@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../Modules/Home/home_screen.dart';
+import '../Modules/Contacts/contacts_screen.dart';
+import '../Modules/Splash/splash_screen.dart';
 
 BuildContext? get currentContext_ =>
     GoRouterConfig.router.routerDelegate.navigatorKey.currentContext;
@@ -8,14 +10,32 @@ BuildContext? get currentContext_ =>
 class GoRouterConfig{
   static GoRouter get router => _router;
   static final GoRouter _router = GoRouter(
-    initialLocation: HomeScreen.routeName,
+    initialLocation: SplashScreen.routeName,
     routes: <RouteBase>[
+      GoRoute(
+        path: SplashScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const SplashScreen(),
+          );
+        },
+      ),
       GoRoute(
         path: HomeScreen.routeName,
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
             child: HomeScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: ContactsScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: ContactsScreen(),
           );
         },
       ),

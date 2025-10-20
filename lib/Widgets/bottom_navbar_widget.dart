@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:incm/Modules/Contacts/contacts_screen.dart';
+import 'package:incm/Modules/Home/home_screen.dart';
 import '../Utilities/theme_helper.dart';
 import '../generated/assets.dart';
 
@@ -85,7 +88,9 @@ class _BottomNavBarItemWidgetState extends State<_BottomNavBarItemWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: widget.model.onTap ?? () {},
+        onTap: widget.model.onTap ?? () {
+          context.go(widget.model.routeName);
+        },
       child: Container(
       width: 60.w,
       height: 60.h,
@@ -156,7 +161,7 @@ class _BottomNavBarItemModel {
     title: 'HOME',
     iconPath: Assets.iconsHome,
     type: SelectedBottomNavBar.home,
-    //routeName: InboxScreen.routeName,
+    routeName: HomeScreen.routeName,
   );
 
   static _BottomNavBarItemModel aboutUs = _BottomNavBarItemModel(
@@ -170,7 +175,7 @@ class _BottomNavBarItemModel {
       title: 'CONTACTS',
       iconPath: Assets.iconsContacts,
       type: SelectedBottomNavBar.contacts,
-      //routeName: "menu"
+      routeName: ContactsScreen.routeName
   );
 }
 

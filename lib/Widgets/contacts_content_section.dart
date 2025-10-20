@@ -186,9 +186,9 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                     );
                   },
               child: Container(
-                width: MediaQuery.of(context).size.width * 0.6,
+                width: MediaQuery.of(context).size.width * 0.8,
                 constraints: BoxConstraints(
-                    maxWidth: 750.w,
+                    maxWidth: 950.w,
                   maxHeight: MediaQuery.of(context).size.height * 0.9,
                 ),
                 padding: EdgeInsets.all(40.w),
@@ -201,38 +201,38 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                     style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: const Color(0xFFF4ED47),
-                          fontSize: 38.sp,
+                          fontSize: 60.sp,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2,
                     ),
                   ),
                   
-                  SizedBox(height: 16.h),
-                  
-                  // Subtitle
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                    style: TextStyle(
-                            fontFamily: 'OptimalBold',
-                      color: Colors.white,
-                            fontSize: 32.sp,
-                            fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                          ),
-                          children: const [
-                            TextSpan(text: 'READY TO BUILD SOMETHING '),
-                            TextSpan(
-                              text: 'GREAT',
-                              style: TextStyle(color: Color(0xFFF4ED47)), // 🔸 أصفر
-                            ),
-                            TextSpan(text: '?'),
-                          ],
-                        ),
-                      ),
+                  // SizedBox(height: 16.h),
+                  //
+                  // // Subtitle
+                  //     RichText(
+                  //       textAlign: TextAlign.center,
+                  //       text: TextSpan(
+                  //   style: TextStyle(
+                  //           fontFamily: 'OptimalBold',
+                  //     color: Colors.white,
+                  //           fontSize: 32.sp,
+                  //           fontWeight: FontWeight.bold,
+                  //     letterSpacing: 1,
+                  //         ),
+                  //         children: const [
+                  //           TextSpan(text: 'READY TO BUILD SOMETHING '),
+                  //           TextSpan(
+                  //             text: 'GREAT',
+                  //             style: TextStyle(color: Color(0xFFF4ED47)), // 🔸 أصفر
+                  //           ),
+                  //           TextSpan(text: '?'),
+                  //         ],
+                  //       ),
+                  //     ),
 
                   
-                  SizedBox(height: 40.h),
+                  SizedBox(height: 65.h),
                   
                   // Contact form
                   Column(
@@ -318,9 +318,9 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
         Text(
           label,
           style: TextStyle(
-            fontFamily: 'OptimalBold',
+            fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
-            fontSize: 20.sp,
+            fontSize: 26.sp,
             fontWeight: FontWeight.bold,
             letterSpacing: 1,
           ),
@@ -331,7 +331,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
           child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(4.r),
+            borderRadius: BorderRadius.circular(8.r),
             border: Border.all(
               color: Colors.grey[300]!,
               width: 1,
@@ -346,13 +346,13 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
               contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               hintText: hint ?? label.toLowerCase(),
               hintStyle: TextStyle(
-                  fontFamily: 'OptimalBold',
+                  fontFamily: 'AloeveraDisplayBold',
                 color: Colors.grey[500],
-                  fontSize: 22.sp,
+                  fontSize: 26.sp,
                 ),
               ),
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 26.sp,
                 color: Colors.black,
               ),
             ),
@@ -372,7 +372,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
           style: TextStyle(
             fontFamily: 'OptimalBold',
             color: Colors.white,
-            fontSize: 20.sp,
+            fontSize: 26.sp,
             fontWeight: FontWeight.bold,
             letterSpacing: 1,
           ),
@@ -383,7 +383,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(4.r),
+              borderRadius: BorderRadius.circular(8.r),
               border: Border.all(
                 color: Colors.grey[300]!,
                 width: 1,
@@ -451,11 +451,11 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                       hintText: 'Phone',
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
-                        fontSize: 22.sp,
+                        fontSize: 26.sp,
               ),
             ),
             style: TextStyle(
-                      fontSize: 22.sp,
+                      fontSize: 26.sp,
               color: Colors.black,
                     ),
                   ),

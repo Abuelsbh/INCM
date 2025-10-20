@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/assets.dart';
+import 'animated_contact_info.dart';
 
 class FooterSection extends StatefulWidget {
   const FooterSection({super.key});
@@ -65,7 +66,7 @@ class _FooterSectionState extends State<FooterSection> {
                       SizedBox(height: 40.h),
 
                       // Contact information
-                      _AnimatedContactInfo(
+                      AnimatedContactInfo(
                         icon: Assets.iconsMail,
                         text: 'Incomercial@gmail.com',
                         isClickable: true,
@@ -74,7 +75,7 @@ class _FooterSectionState extends State<FooterSection> {
 
                       SizedBox(height: 16.h),
 
-                      _AnimatedContactInfo(
+                      AnimatedContactInfo(
                         icon: Assets.iconsLocation,
                         text: '14 A/2 Admin building, New Cairo, Egypt',
                         isClickable: false,
@@ -82,7 +83,7 @@ class _FooterSectionState extends State<FooterSection> {
 
                       SizedBox(height: 16.h),
 
-                      _AnimatedContactInfo(
+                      AnimatedContactInfo(
                         icon: Assets.iconsCall,
                         text: '0111-032-7777',
                         isClickable: true,
@@ -230,115 +231,4 @@ class _FooterSectionState extends State<FooterSection> {
     );
   }
 
-}
-
-// Widget منفصل للتأثيرات الحركية
-class _AnimatedContactInfo extends StatefulWidget {
-  final String icon;
-  final String text;
-  final bool isClickable;
-  final VoidCallback? onTap;
-
-  const _AnimatedContactInfo({
-    Key? key,
-    required this.icon,
-    required this.text,
-    this.isClickable = false,
-    this.onTap,
-  }) : super(key: key);
-
-  @override
-  State<_AnimatedContactInfo> createState() => _AnimatedContactInfoState();
-}
-
-class _AnimatedContactInfoState extends State<_AnimatedContactInfo>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _offsetAnimation;
-  late Animation<Color?> _colorAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-
-    _offsetAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(0, -0.2), // يتحرك للأعلى قليلاً
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-
-    _colorAnimation = ColorTween(
-      begin: const Color(0xFF000000),
-      end: const Color(0xFFC63424), // يتغير للون الأحمر
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _handleTap() {
-    if (widget.isClickable && widget.onTap != null) {
-      widget.onTap!();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: widget.isClickable ? SystemMouseCursors.click : SystemMouseCursors.basic,
-      onEnter: (_) {
-        if (widget.isClickable) {
-          _controller.forward();
-        }
-      },
-      onExit: (_) {
-        if (widget.isClickable) {
-          _controller.reverse();
-        }
-      },
-      child: GestureDetector(
-        onTap: _handleTap,
-        child: Row(
-          children: [
-            Image.asset(
-              widget.icon,
-              height: 22.r,
-              width: 22.r,
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: SlideTransition(
-                position: _offsetAnimation,
-                child: AnimatedBuilder(
-                  animation: _colorAnimation,
-                  builder: (context, child) {
-                    return Text(
-                      widget.text,
-                      style: TextStyle(
-                        color: _colorAnimation.value ?? const Color(0xFF000000),
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

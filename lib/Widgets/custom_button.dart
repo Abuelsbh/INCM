@@ -124,6 +124,26 @@ class ButtonStyles {
     );
   }
 
+  static Widget getAppButton({
+    required VoidCallback onPressed,
+    bool enabled = true,
+    double? width,
+  }) {
+    return CustomButton(
+      text: 'GET APP',
+      onPressed: onPressed,
+      enabled: enabled,
+      normalBackgroundColor: const Color(0xFFF4ED47),
+      normalTextColor: Colors.black,
+      hoverBackgroundColor: const Color(0xFFC63424),
+      hoverTextColor: const Color(0xFFF4ED47),
+      fontSize: 11.sp,
+      padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.h),
+      width: width,
+      fontWeight: FontWeight.w900,
+    );
+  }
+
   static Widget primaryButton({
     required String text,
     required VoidCallback onPressed,
@@ -186,6 +206,7 @@ class ButtonStyles {
       text: 'LEARN MORE',
       onPressed: onPressed,
       borderRadius: 8.r,
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
       width: 100.w,
       enabled: enabled,
       normalBackgroundColor: const Color(0xFFC63424),
@@ -200,6 +221,7 @@ class ButtonStyles {
     required VoidCallback onPressed,
     bool enabled = true,
     double? width,
+    double? fontSize,
   }) {
     return CustomButton(
       text: 'SUBMIT',
@@ -210,7 +232,7 @@ class ButtonStyles {
       normalTextColor:  const Color(0xFFF4ED47),
       hoverBackgroundColor: const Color(0xFFF4ED47),
       hoverTextColor: const Color(0xFFC63424),
-      fontSize: 26.sp,
+      fontSize: fontSize??26.sp,
       padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
     );
   }
