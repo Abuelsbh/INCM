@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,6 +15,14 @@ class FooterSection extends StatefulWidget {
 }
 
 class _FooterSectionState extends State<FooterSection> {
+  Future<void> _openLink(String link) async {
+    final Uri googleMapsUri = Uri.parse(link);
+
+    if (await canLaunchUrl(googleMapsUri)) {
+      await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,20 +54,25 @@ class _FooterSectionState extends State<FooterSection> {
                           Text(
                             'FOLLOW US',
                             style: TextStyle(
+                              fontFamily: 'AloeveraDisplayBold',
+                              fontWeight: FontWeight.bold,
                               color: const Color(0xFFC63424),
                               fontSize: 28.sp,
-                              fontWeight: FontWeight.w700,
                               letterSpacing: 1,
                             ),
                           ),
                           SizedBox(width: 28.w),
-                          _buildSocialIcon(Assets.iconsFace),
-                          SizedBox(width: 16.w),
-                          _buildSocialIcon(Assets.iconsInsta),
-                          SizedBox(width: 16.w),
-                          _buildSocialIcon(Assets.iconsLinked),
-                          SizedBox(width: 16.w),
-                          _buildSocialIcon(Assets.iconsTik),
+                          AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,
+                            onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 40.r,),
+                          SizedBox(width: 8.w),
+                          AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,
+                            onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 40.r,),
+                          SizedBox(width: 8.w),
+                          AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,
+                            onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 40.r,),
+                          SizedBox(width: 8.w),
+                          AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,
+                            onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 40.r,),
                         ],
                       ),
 
@@ -78,7 +92,8 @@ class _FooterSectionState extends State<FooterSection> {
                       AnimatedContactInfo(
                         icon: Assets.iconsLocation,
                         text: '14 A/2 Admin building, New Cairo, Egypt',
-                        isClickable: false,
+                        isClickable: true,
+                        onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
                       ),
 
                       SizedBox(height: 16.h),
@@ -102,54 +117,43 @@ class _FooterSectionState extends State<FooterSection> {
                       Text(
                         'DOWNLOAD OUR \nAPP NOW!',
                         style: TextStyle(
+                          fontFamily: 'AloeveraDisplayBold',
                           color: const Color(0xFF000000),
                           fontSize: 32.sp,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
 
                       SizedBox(height: 30.h),
 
                       // QR Code placeholder
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 60.w,
-                            height: 60.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.r),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   crossAxisAlignment: CrossAxisAlignment.center,
+                      //   children: [
+                      //
+                      //
+                      //     Gap(30.w),
+                      //     Container(
+                      //       width: 60.w,
+                      //       height: 60.h,
+                      //       decoration: BoxDecoration(
+                      //         borderRadius: BorderRadius.circular(8.r),
+                      //
+                      //       ),
+                      //       child: Center(
+                      //         child: Image.asset(
+                      //           Assets.iconsAppStore,
+                      //           width: 60.w,
+                      //           height: 60.h,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
 
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                Assets.iconsGooglePlay,
-                                width: 60.w,
-                                height: 60.h,
-                              ),
-                            ),
-                          ),
-
-                          Gap(30.w),
-                          Container(
-                            width: 60.w,
-                            height: 60.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.r),
-
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                Assets.iconsAppStore,
-                                width: 60.w,
-                                height: 60.h,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      Image.asset(Assets.imagesDownloadAppStore,height: 80.h, width: 300.w,),
+                      Image.asset(Assets.imagesDownloadGooglePlay,height: 120.h, width: 450.w,)
 
                     ],
                   ),
@@ -218,17 +222,5 @@ class _FooterSectionState extends State<FooterSection> {
     }
   }
 
-  Widget _buildSocialIcon(String icon) {
-    return Container(
-      width: 40.w,
-      height: 40.h,
-
-      child: Image.asset(
-        icon,
-        height: 20.r,
-        width: 20.r,
-      ),
-    );
-  }
 
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import '../Modules/About/about_screen.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -101,8 +103,8 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Text(
-                    'We provide solutions based on experience, with professional support and specialized analysis of the real estate market to help you make informed decisions. We provide solutions based on experience, along with professional support and specialized analysis of the real estate market to help you make informed decisions.',
-                    textAlign: TextAlign.center, // ✅ يجعل النص في المنتصف
+                    'We were established in 2019 as a comprehensive real estate company, entering a competitive market with a clear vision and ambitious goals. Our unique synergy and team of experts have enabled us to stand out In the industry by offering a full spectrum of services tailored to diverse client needs',
+                    textAlign: TextAlign.justify,// ✅ يجعل النص في المنتصف
                     style: TextStyle(
                       fontFamily: 'AloeveraDisplaySemiBold',
                       color: Colors.white,
@@ -130,7 +132,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                     curve: Curves.easeInOut,
                     child: ButtonStyles.learnMoreButtonMob(
                       onPressed: () {
-                        // Add learn more action
+                        context.push(AboutScreen.routeName);
                       },
                     ),
                   ),

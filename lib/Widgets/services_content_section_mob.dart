@@ -28,40 +28,36 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
   // Service content data
   final List<Map<String, String>> serviceData = [
     {
-      'title': 'LEASING',
-      'description': 'We provide solutions based on experience, along with professional support and specialized analysis of the real estate market to help you make well informed decisions.',
+      'title': 'Consultation',
+      'description': 'Our real estate consulting services are designed to provide clients with strategic insights and expert guidance across all stages of projects development, acquisition, and investment.',
     },
     {
-      'title': 'PROPERTY',
-      'description': 'Comprehensive property management services ensuring optimal performance and maintenance of your real estate assets with professional care and attention.',
+      'title': 'Retail leasing',
+      'description': 'We provide comprehensive support across all stages of the retail leasing process, offering a wide selection of units in prime locations with flexible space configurations. By curating the right tenant mix — including brands, services, and experiences — we foster strong customer engagement and maintain a balanced, high- performing commercial environment',
     },
     {
-      'title': 'CONSULTING',
-      'description': 'Expert consulting to guide your real estate decisions with market insights, investment strategies, and professional recommendations.',
+      'title': 'Medical Leasing',
+      'description': 'We offer dedicated medical leasing services tailored to meet the unique requirements of healthcare providers, medical practitioners, and institutional tenants. With a deep understanding of the complexities of medical real estate, we help clients secure optimal spaces that align with both clinical needs and long-term business objectives',
     },
     {
-      'title': 'FRANCHISE',
-      'description': 'Complete franchise development and management services to expand your business presence across multiple locations successfully.',
+      'title': 'Corporate Leasing',
+      'description': 'We have extensive experience in commercial real estate leasing transactions. Whether you are looking for an office space, an entire building, or even an industrial facility, we provide all that and more — with a variety of spaces tailored to different needs and in strategic locations close to business hubs',
     },
     {
-      'title': 'ASSET',
-      'description': 'Professional property valuation services using industry-standard methodologies to determine accurate market values for your assets.',
+      'title': 'Facility Management',
+      'description': 'To ensure the seamless operation, safety, and sustainability of commercial properties, we provide comprehensive property and facility management solutions. Our services cover day- to-day operations, preventive maintenance, and the optimization of building systems and infrastructure.',
     },
     {
-      'title': 'MARKET',
-      'description': 'In-depth real estate market research and analysis to identify trends, opportunities, and risks in your target markets.',
+      'title': 'Franchise Investment',
+      'description': 'For investors seeking stable, and scalable opportunities in the franchise sector, we provide expert guidance in identifying, evaluating, and securing high-performing franchise brands. From market research and brand vetting to location sourcing and lease negotiation.',
     },
     {
-      'title': 'INVESTMENT',
-      'description': 'Strategic investment guidance to maximize returns and minimize risks in your real estate portfolio with expert insights.',
+      'title': 'Primary Investment',
+      'description': 'We specialize in sourcing and securing high- potential real estate assets at early development stages or during market entry. By collaborating closely with investors, we identify opportunities in emerging markets, growth corridors, and strategically located assets with strong long-term return potential.',
     },
     {
-      'title': 'DEVELOPMENT',
-      'description': 'End-to-end real estate development services from planning and design to construction and delivery of quality properties.',
-    },
-    {
-      'title': 'TENANT',
-      'description': 'Professional tenant management services ensuring smooth operations, timely communications, and positive relationships.',
+      'title': 'Marketing',
+      'description': 'We provide comprehensive marketing solutions tailored for developers, agents, and real estate projects seeking to promote their listings effectively and achieve measurable results. Our strategy is built on a deep understanding of each unit’s unique features, enabling us to craft targeted, results-driven campaigns that reach the right audience.',
     },
   ];
 
@@ -83,13 +79,13 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
     ));
     _animationController.forward();
 
-    // Slide animation for content
+    // Slide animation for content (slide in from left)
     _slideController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0), // Start from right
+      begin: const Offset(-1.0, 0.0), // Start from left
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _slideController,
@@ -107,44 +103,67 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
     _startTimer();
   }
 
+  void _cancelTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
   void _startTimer() {
+    // Always cancel existing timer first to prevent multiple timers
+    _cancelTimer();
+    
+    if (!mounted) return;
+    
     isTimerRunning = true;
     timeRemaining = 10; // Reset time
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (isTimerRunning) {
-        setState(() {
-          timeRemaining--;
-          if (timeRemaining <= 0) {
-            currentIndex = (currentIndex + 1) % 9; // Cycle through 0-8
-            timeRemaining = 10; // Reset for next cycle
-            _animationController.reset();
-            _animationController.forward();
-            _slideController.reset();
-            _slideController.forward();
-          }
-        });
+      if (!mounted || !isTimerRunning) {
+        timer.cancel();
+        return;
       }
+      
+      setState(() {
+        timeRemaining--;
+        if (timeRemaining <= 0) {
+          currentIndex = (currentIndex + 1) % serviceData.length; // Cycle through 0-8
+          timeRemaining = 10; // Reset for next cycle
+          _animationController.reset();
+          _animationController.forward();
+          _slideController.reset();
+          _slideController.forward();
+        }
+      });
     });
   }
 
+  void _restartTimer() {
+    if (!mounted) return;
+    _cancelTimer();
+    _startTimer();
+  }
+
   void _toggleTimer() {
+    if (!mounted) return;
     setState(() {
       isTimerRunning = !isTimerRunning;
       if (isTimerRunning) {
         _startTimer();
       } else {
-        _timer?.cancel();
+        _cancelTimer();
       }
     });
   }
 
   void _onPaginationTap(int index) {
+    if (!mounted) return;
+    
     setState(() {
       currentIndex = index;
     });
-    // Restart timer after manual selection
-    _timer?.cancel();
-    _startTimer();
+    
+    // Cancel and restart timer after manual selection
+    _restartTimer();
+    
     _animationController.reset();
     _animationController.forward();
     _slideController.reset();
@@ -153,7 +172,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _cancelTimer();
     _animationController.dispose();
     _slideController.dispose();
     super.dispose();
@@ -191,36 +210,49 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
             // Service indicator (1-9)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(9, (index) {
+              children: List.generate(serviceData.length, (index) {
                 final isActive = index == currentIndex;
 
                 return MouseRegion(
-                  onEnter: (_) => _timer?.cancel(), // Pause timer on hover
-                  onExit: (_) => _startTimer(), // Resume timer when mouse leaves
+                  onEnter: (_) {
+                    // Pause timer on hover
+                    _timer?.cancel();
+                    isTimerRunning = false;
+                  },
+                  onExit: (_) {
+                    // Resume timer when mouse leaves
+                    if (mounted) {
+                      _restartTimer();
+                    }
+                  },
                   child: GestureDetector(
                     onTap: () => _onPaginationTap(index),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Number above the box
-                        Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Text(
-                            '${index + 1}',
-                            style: TextStyle(
-                              color: const Color(0xFFFFFFFF),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 8,
+                        // Number above the box - perfectly centered
+                        SizedBox(
+                          width: 12, // Same width as box
+                          child: Center(
+                            child: Text(
+                              '${index + 1}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: const Color(0xFFFFFFFF),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 8,
+                              ),
                             ),
                           ),
                         ),
                         const SizedBox(height: 2),
 
-                        // Box itself
+                        // Box itself with connecting line
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
                               width: 12,
@@ -232,7 +264,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                               ),
                             ),
                             // Connecting line between boxes
-                            if (index < 8)
+                            if (index < serviceData.length - 1)
                               Container(
                                 width: 30,
                                 height: 2,
@@ -247,7 +279,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
               }),
             ),
 
-            SizedBox(height: 40.h),
+            Gap(40.h),
 
             // Service highlight section
             Container(
@@ -270,7 +302,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                         ),
                       ),
                       FadeTransition(
-                        opacity: _slideController,
+                        opacity: _fadeAnimation,
                         child: Text(
                           serviceData[currentIndex]['title']!,
                           style: TextStyle(
@@ -296,10 +328,14 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                   ),
                   Gap(30.h),
                   Center(
-                    child: FadeTransition(
-                      opacity: _slideController,
-                      child: Text(
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child:
+                      Text(
                         serviceData[currentIndex]['description']!,
+                        textAlign: TextAlign.justify,
+                        maxLines: 5,                    // ✅ limit to 6 lines
+                        overflow: TextOverflow.ellipsis, // ✅ show "..."
                         style: TextStyle(
                           fontFamily: 'AloeveraDisplaySemiBold',
                           color: Colors.white,
@@ -311,8 +347,8 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                     ),
                   ),
                   Gap(12.h),
-                  FadeTransition(
-                    opacity: _slideController,
+                  SlideTransition(
+                    position: _slideAnimation,
                     child: Container(
                       height: 300.h,
                       decoration: BoxDecoration(

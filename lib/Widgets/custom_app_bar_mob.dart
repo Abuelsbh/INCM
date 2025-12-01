@@ -20,8 +20,6 @@ class _CustomAppBarState extends State<CustomAppBarMob> {
   void _scrollToSection(String sectionId) {
     if (sectionId == 'contacts') {
       context.go(ContactsScreen.routeName);
-    } else {
-      HomeScreen.scrollToSection(sectionId);
     }
   }
 
@@ -51,7 +49,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> {
             // Logo Section (Left) - INCOMERCIAL with tagline
             GestureDetector(
               onTap: () =>  context.go(HomeScreen.routeName),
-              child: Image.asset(Assets.imagesINCMLogoMob, height: double.infinity,fit: BoxFit.cover, width: 50.w,)
+              child: Image.asset(kIsWeb ? Assets.imagesINCMLogo : Assets.imagesINCMLogoMob, height: double.infinity,fit: BoxFit.cover, width: kIsWeb ? 100.w : 50.w,)
               // Column(
               //   crossAxisAlignment: CrossAxisAlignment.start,
               //   mainAxisSize: MainAxisSize.min,

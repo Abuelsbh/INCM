@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/assets.dart';
+import 'animated_contact_info.dart';
 
 class FooterSectionMob extends StatefulWidget {
   const FooterSectionMob({super.key});
@@ -13,6 +14,13 @@ class FooterSectionMob extends StatefulWidget {
 }
 
 class _FooterSectionMobState extends State<FooterSectionMob> {
+  Future<void> _openLink(String link) async {
+    final Uri googleMapsUri = Uri.parse(link);
+
+    if (await canLaunchUrl(googleMapsUri)) {
+      await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
@@ -56,13 +64,29 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                             ),
                           ),
                           SizedBox(width: 12.w),
-                          _buildSocialIcon(Assets.iconsFace),
-                          SizedBox(width: 10.w),
-                          _buildSocialIcon(Assets.iconsInsta),
-                          SizedBox(width: 10.w),
-                          _buildSocialIcon(Assets.iconsLinked),
-                          SizedBox(width: 10.w),
-                          _buildSocialIcon(Assets.iconsTik),
+                          // _buildSocialIcon(Assets.iconsFace),
+                          // SizedBox(width: 10.w),
+                          // _buildSocialIcon(Assets.iconsInsta),
+                          // SizedBox(width: 10.w),
+                          // _buildSocialIcon(Assets.iconsLinked),
+                          // SizedBox(width: 10.w),
+                          // _buildSocialIcon(Assets.iconsTik),
+                          // SizedBox(width: 28.w),
+
+
+
+                          AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,
+                            onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
+                          SizedBox(width: 8.w),
+                          AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,
+                            onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 24.r,),
+                          SizedBox(width: 8.w),
+                          AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,
+                            onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
+                          SizedBox(width: 8.w),
+                          AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,
+                            onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 24.r,),
+
                         ],
                       ),
 
@@ -82,8 +106,10 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                       _AnimatedContactInfoMob(
                         icon: Assets.iconsLocation,
                         text: '14 A/2 Admin building, New Cairo, Egypt',
-                        isClickable: false,
+                        isClickable: true,
+                        onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
                       ),
+
 
                       SizedBox(height: 4.h),
 

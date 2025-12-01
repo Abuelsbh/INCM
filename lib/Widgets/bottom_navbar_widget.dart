@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incm/Modules/About/about_screen.dart';
+import 'package:incm/Modules/Career/career_screen.dart';
 import 'package:incm/Modules/Contacts/contacts_screen.dart';
 import 'package:incm/Modules/Home/home_screen.dart';
+import 'package:incm/Modules/Sell/sell_screen.dart';
 import '../Utilities/theme_helper.dart';
 import '../generated/assets.dart';
 
@@ -89,7 +92,7 @@ class _BottomNavBarItemWidgetState extends State<_BottomNavBarItemWidget> {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: widget.model.onTap ?? () {
-          context.go(widget.model.routeName);
+          context.push(widget.model.routeName);
         },
       child: Container(
       width: 60.w,
@@ -147,13 +150,14 @@ class _BottomNavBarItemModel {
     title: 'SELL YOUR UNIT',
     iconPath: Assets.iconsSellYourUnit,
     type: SelectedBottomNavBar.sellYourUnit,
-    //routeName: DraftScreen.routeName,
+    routeName: SellScreen.routeName,
   );
 
   static _BottomNavBarItemModel services = _BottomNavBarItemModel(
     title: 'SERVICES',
     iconPath: Assets.iconsServices,
     type: SelectedBottomNavBar.services,
+    routeName: CareerScreen.routeName,
     //routeName: AiScreen.routeName,
   );
 
@@ -168,6 +172,7 @@ class _BottomNavBarItemModel {
     title: 'ABOUT US',
     iconPath: Assets.iconsAboutUs,
     type: SelectedBottomNavBar.aboutUs,
+    routeName: AboutScreen.routeName,
     //routeName: OutboxScreen.routeName,
   );
 

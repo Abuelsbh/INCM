@@ -1,27 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:video_player/video_player.dart';
 
 import '../generated/assets.dart';
 
-class HomeSearchSection extends StatelessWidget {
+class HomeSearchSection extends StatefulWidget {
   const HomeSearchSection({super.key});
+
+  @override
+  State<HomeSearchSection> createState() => _HomeSearchSectionState();
+}
+
+class _HomeSearchSectionState extends State<HomeSearchSection> {
+  late VideoPlayerController _videoController;
+  bool _isVideoInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+  }
+
+  void _initializeVideo() async {
+    try {
+      _videoController = VideoPlayerController.asset(Assets.videosWebsite);
+      await _videoController.initialize();
+      _videoController.setLooping(true);
+      _videoController.setVolume(0.0); // Mute the video for background
+      await _videoController.play();
+      if (mounted) {
+        setState(() {
+          _isVideoInitialized = true;
+        });
+      }
+    } catch (e) {
+      print('Error initializing video: $e');
+      if (mounted) {
+        setState(() {
+          _isVideoInitialized = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 1200.h,
       width: double.infinity,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesSearchBackground),
-          fit: BoxFit.cover,
-        ),
-        // Additional gradient overlay for warm tones like in the image
-
-      ),
       child: Stack(
         children: [
+          // Video Background
+          Positioned.fill(
+            child: _isVideoInitialized
+                ? FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: _videoController.value.size.width,
+                      height: _videoController.value.size.height,
+                      child: VideoPlayer(_videoController),
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(Assets.imagesSearchBackground),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+          ),
           // Background INCM text/logo
           Positioned.fill(
             child: Align(

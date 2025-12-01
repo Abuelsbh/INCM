@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incm/Modules/Career/career_screen.dart';
+import 'package:incm/Modules/Lease/lease_screen.dart';
+import 'package:incm/Modules/Sell/sell_screen.dart';
+import '../Modules/About/about_screen.dart';
+import '../Modules/Buy/buy_screen.dart';
 import '../Modules/Home/home_screen.dart';
 import '../Modules/Contacts/contacts_screen.dart';
 import '../generated/assets.dart';
@@ -22,8 +27,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     }
     else if (sectionId == 'contacts') {
       context.go(ContactsScreen.routeName);
-    } else {
-      HomeScreen.scrollToSection(sectionId);
     }
   }
 
@@ -67,37 +70,51 @@ class _CustomAppBarState extends State<CustomAppBar> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+
             // Logo Section (Left) - INCOMERCIAL with tagline
-            GestureDetector(
-              onTap: () => _scrollToSection('home'),
-              child: Image.asset(Assets.imagesIncomercialLogo, width: 350.w, height: double.infinity,fit: BoxFit.cover,)
+            Expanded(
+              flex: 1,
+              child: GestureDetector(
+                onTap: () => _scrollToSection('home'),
+                child: Image.asset(Assets.imagesIncomercialLogo, width: 340.w,height: 100.h,fit: BoxFit.cover,)
+              ),
             ),
 
-                const Spacer(),
 
             // Desktop Menu Items (Center) with separators
             if (MediaQuery.of(context).size.width > 768)
-              Row(
-                children: [
-                  _buildMenuItemWithSeparator('HOME', 'home', true),
-                  _buildMenuItemWithSeparator('ABOUT US', 'about', true),
-                  _buildMenuItemWithSeparator('SERVICES', 'services', true),
-                  _buildMenuItemWithSeparator('BUY', '', true),
-                  _buildMenuItemWithSeparator('SELL', '', true),
-                  _buildMenuItemWithSeparator('CAREERS', '', false),
-                ],
+              Expanded(
+                flex: 7,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildMenuItemWithSeparator('HOME', true, () {context.go(HomeScreen.routeName);}),
+                    _buildMenuItemWithSeparator('ABOUT US', true, () {context.go(AboutScreen.routeName);}),
+                    _buildMenuItemWithSeparator('SERVICES', true, () {}),
+                    _buildMenuItemWithSeparator('BUY', true, () {context.go(BuyScreen.routeName);}),
+                    _buildMenuItemWithSeparator('SELL', true, () {context.go(SellScreen.routeName);}),
+                    _buildMenuItemWithSeparator('CAREERS', true, () {context.go(CareerScreen.routeName);}),
+                    _buildMenuItemWithSeparator('LEASE', false, () {context.go(LeaseScreen.routeName);}),
+                  ],
+                ),
               ),
-
-            const Spacer(),
 
             // Explore Us Button (Right side)
             if (MediaQuery.of(context).size.width > 768)
-              ButtonStyles.exploreUsButton(
-                onPressed: () => _scrollToSection('contacts'),
+              Expanded(
+              flex: 1,
+                child: Container(
+                  child: ButtonStyles.exploreUsButton(
+                    onPressed: () => _scrollToSection('contacts'),
+                  ),
+                ),
               ),
 
-            SizedBox(width: 16.w),
+            SizedBox(width: MediaQuery.of(context).size.width > 768 ? 32.w : 16.w),
 
             // Mobile Menu Button (Right)
             if (MediaQuery.of(context).size.width <= 768)
@@ -199,10 +216,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 child: ListView(
                   padding: EdgeInsets.symmetric(vertical: 20.h),
                   children: [
-                    _buildSideMenuItem('HOME', Icons.home, 'home'),
-                    _buildSideMenuItem('ABOUT US', Icons.info, 'about'),
-                    _buildSideMenuItem('SERVICES', Icons.work, 'services'),
-                    _buildSideMenuItem('CONTACTS', Icons.contact_phone, 'contacts'),
+                    _buildSideMenuItem('HOME', Icons.home, 'home', (){ context.go(HomeScreen.routeName);}),
+                    _buildSideMenuItem('ABOUT US', Icons.info, 'about', () { context.go(AboutScreen.routeName);}),
+                    _buildSideMenuItem('SERVICES', Icons.work, 'services', () {}),
+                    _buildSideMenuItem('CONTACTS', Icons.contact_phone, 'contacts',() {}),
                   ],
                 ),
               ),
@@ -243,16 +260,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
-  Widget _buildSideMenuItem(String text, IconData icon, String sectionId) {
+  Widget _buildSideMenuItem(String text, IconData icon, String sectionId, VoidCallback? onTap) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {
-          setState(() {
-            isMenuOpen = false;
-          });
-          _scrollToSection(sectionId);
-        },
+        onTap: ()=> onTap,
         splashColor: const Color(0xFFF4ED47).withOpacity(0.2),
         highlightColor: const Color(0xFFF4ED47).withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.r),
@@ -323,23 +335,28 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
-  Widget _buildMenuItemWithSeparator(String text, String sectionId, bool showSeparator) {
-    return Row(
-      children: [
-        _HoverMenuItem(
-          text: text,
-          onTap: () => _scrollToSection(sectionId),
-        ),
-        if (showSeparator) ...[
-          SizedBox(width: 20.w),
-          Container(
-            height: 12.h,
-            width: 1.w,
-            color: const Color(0xFFF4ED47),
+  Widget _buildMenuItemWithSeparator(String text, bool showSeparator,  VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _HoverMenuItem(
+            text: text,
+            onTap: onTap,
           ),
-          SizedBox(width: 20.w),
+          if (showSeparator) ...[
+            SizedBox(width: 20.w),
+            Container(
+              height: 12.h,
+              width: 2.w,
+              color: const Color(0xFFF4ED47),
+            ),
+            SizedBox(width: 20.w),
+          ],
         ],
-      ],
+      ),
     );
   }
 

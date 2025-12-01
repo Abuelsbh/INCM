@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incm/Modules/Buy/buy_screen.dart';
+import 'package:incm/Modules/Career/career_screen.dart';
+import 'package:incm/Modules/Lease/lease_screen.dart';
+import 'package:incm/Modules/Sell/sell_screen.dart';
+import '../Modules/About/about_screen.dart';
 import '../Modules/Home/home_screen.dart';
 import '../Modules/Contacts/contacts_screen.dart';
 import '../Modules/Splash/splash_screen.dart';
@@ -36,6 +41,51 @@ class GoRouterConfig{
           return getCustomTransitionPage(
             state: state,
             child: ContactsScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AboutScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: AboutScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: CareerScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: CareerScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: BuyScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: BuyScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: SellScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: SellScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: LeaseScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: LeaseScreen(),
           );
         },
       ),

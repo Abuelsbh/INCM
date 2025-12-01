@@ -77,7 +77,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                     style: TextStyle(color: Colors.white),
                   ),
                   TextSpan(
-                    text: 'HIGHLIGHTS:',
+                    text: 'HIGHLIGHTS',
                     style: TextStyle(color: Color(0xFFF4ED47)), // أصفر
                   ),
                 ],
@@ -100,12 +100,12 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                 child: Column(
                   children: [
                     _buildMetricCard(
-                      '+2,000',
-                      'Successful lease agreements across commercial units',
+                      '+84,321',
+                      'SQM of retail space successfully leased',
                     ),
                     SizedBox(height: 150.h),
                     _buildMetricCard(
-                      '+100',
+                      '+32',
                       'Of assets under active facility management',
                     ),
                   ],
@@ -124,7 +124,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                     ),
                     SizedBox(height: 150.h),
                     _buildMetricCard(
-                      '+120',
+                      '+45',
                       'Real estate consulting engagements completed',
                     ),
                   ],

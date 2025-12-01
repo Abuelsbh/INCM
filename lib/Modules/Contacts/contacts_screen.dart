@@ -102,8 +102,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     }
   }
 
-  Future<void> _openGoogleMaps(String address) async {
-    final Uri googleMapsUri = Uri.parse('https://maps.app.goo.gl/xcCQnFRxJymzVune6');
+  Future<void> _openLink(String link) async {
+    final Uri googleMapsUri = Uri.parse(link);
 
     if (await canLaunchUrl(googleMapsUri)) {
       await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
@@ -229,22 +229,6 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                 child: Column(
                   children: [
                     _buildContactFormSection(context, isMobile, isTablet),
-                    _buildLocationSection(context, isMobile, isTablet),
-
-                    if(isMobile)
-                      InkWell(
-                        onTap: ()=> _openGoogleMaps('14 A/2 Admin building, New Cairo, Egypt'),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(Assets.imagesContactMob3),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                          width: double.infinity,
-                          height: 232.h,
-                        ),
-                      )
                   ],
                 ),
               ),
@@ -267,12 +251,12 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(isMobile ? Assets.imagesContactMob1 : Assets.imagesContact1),
+          image: AssetImage(isMobile ? Assets.imagesContactPageMob : Assets.imagesContactPage),
           fit: BoxFit.fill,
         ),
       ),
       width: double.infinity,
-      height: isMobile ? 786.h : (isTablet ? 1100.h : 1200.h),
+      height: isMobile ? 1280.h : (isTablet ? 2000.h : 2074.h),
       child: Center(
         child: SingleChildScrollView(
           child: AnimatedBuilder(
@@ -293,21 +277,87 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Gap(isMobile? 60.h : isTablet ? 70.h : 80.h),
                   Text(
                     'CONTACT US',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'OptimalBold',
                       color: const Color(0xFFF4ED47),
-                      fontSize: isMobile ? 26.sp : (isTablet ? 60.sp : 80.sp),
+                      fontSize: isMobile ? 26.sp : (isTablet ? 50.sp : 70.sp),
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2,
                     ),
                   ),
-                  SizedBox(height: isMobile ? 10.h : (isTablet ? 60.h : 80.h)),
+                  SizedBox(height: isMobile ? 20.h : (isTablet ? 20.h : 30.h)),
                   _buildContactForm(context, isMobile, isTablet),
-                  Gap(isMobile ? 10.h : (isTablet ? 75.h : 100.h)),
+                  Gap(isMobile ? 50.h : (isTablet ? 20.h : 100.h)),
                   _buildGetInTouchSection(context, isMobile, isTablet),
+
+                  Gap(isMobile ? 15.h : (isTablet ? 40.h : 180.h)),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFC63424),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
+                    child: Text(
+                      'OUR LOCATION',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'OptimalBold',
+                        color: const Color(0xFFF4ED47),
+                        fontSize: isMobile ? 20.sp : (isTablet ? 38.sp : 50.sp),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Gap(4.h),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onEnter: (_) => setState(() => _isAddressHovered = true),
+                    onExit: (_) => setState(() => _isAddressHovered = false),
+                    child: GestureDetector(
+                      onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
+                      child: TweenAnimationBuilder<double>(
+                        duration: const Duration(milliseconds: 200),
+                        tween: Tween<double>(
+                          begin: 0,
+                          end: _isAddressHovered ? -10 : 0,
+                        ),
+                        builder: (context, dy, child) {
+                          return Transform.translate(
+                            offset: Offset(0, dy),
+                            child: child,
+                          );
+                        },
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: TextStyle(
+                            color: _isAddressHovered
+                                ? const Color(0xFFC63424)
+                                : const Color(0xFFFFFFFF),
+                            fontSize: isMobile ? 14.sp : (isTablet ? 30.sp : 40.sp),
+                            fontFamily: 'OptimalBold',
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1,
+                            decorationColor: _isAddressHovered
+                                ? const Color(0xFFC63424)
+                                : const Color(0xFFFFFFFF),
+                          ),
+                          child: const Text('14 A/2 Admin building. New Cairo, Egypt'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Gap(isMobile ? 15.h : (isTablet ? 70.h : 20.h)),
+
+                    InkWell(
+                        onTap: ()=> _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
+                        child: Container(
+                          height: isMobile ? 225.h : 550.h,
+                        )
+                    )
                 ],
               ),
             ),
@@ -328,9 +378,9 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             isMobile: isMobile,
             isTablet: isTablet,
           ),
-          SizedBox(height: 30.h),
+          SizedBox(height: 15.h),
           _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
-          SizedBox(height: 30.h),
+          SizedBox(height: 15.h),
           _buildFormField(
             'E-MAIL',
             controller: _emailController,
@@ -338,7 +388,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             isMobile: isMobile,
             isTablet: isTablet,
           ),
-          SizedBox(height: 30.h),
+          SizedBox(height: 15.h),
           _buildFormField(
             'LOCATION',
             controller: _locationController,
@@ -387,18 +437,24 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             ],
           ),
         ],
-        SizedBox(height: isMobile ? 30.h : (isTablet ? 40.h : 60.h)),
+        SizedBox(height: isMobile ? 15.h : isTablet ? 40.h : 60.h),
         _buildFormField(
           'MESSAGE',
           hint: 'type your message',
-          controller: _locationController,
+          controller: _areaController,
           isMobile: isMobile,
           isTablet: isTablet,
         ),
-        SizedBox(height: isMobile ? 20.h : (isTablet ? 30.h : 40.h)),
+        SizedBox(height: isMobile ? 70.h : (isTablet ? 70.h : 80.h)),
+        if(isMobile)
+          ButtonStyles.submitButtonMob(
+            width: isMobile ? 90.w : (isTablet ? 120.w : 180.w),
+            onPressed: _handleSubmit,
+          ),
+        if(!isMobile)
         ButtonStyles.submitButton(
-          fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 32.sp),
-          width: isMobile ? 100.w : (isTablet ? 120.w : 140.w),
+          fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 43.sp),
+          width: isMobile ? 100.w : (isTablet ? 120.w : 180.w),
           onPressed: _handleSubmit,
         ),
       ],
@@ -423,6 +479,30 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
 
           _buildSocialMediaRow(isMobile, isTablet),
           Gap(10.h),
+          if(isMobile)
+            Column(
+              children: [
+                Gap(24.h),
+                Text(
+                  'WORKING HOURS: 10AM TO 6PM',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '  FROM SUNDAY TO THURSDAY',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.sp,
+                  ),
+                ),
+                Gap(24.h),
+              ],
+            ),
           _buildContactInfoColumn(isMobile, isTablet),
         ],
       );
@@ -432,6 +512,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        Gap(60.w),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -439,7 +520,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               'GET IN TOUCH',
               style: TextStyle(
                 color: const Color(0xFFFFFFFF),
-                fontSize: isTablet ? 60.sp : 90.sp,
+                fontSize: isTablet ? 48.sp : 70.sp,
                 fontFamily: 'OptimalBold',
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1,
@@ -472,39 +553,23 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           'FOLLOW US',
           style: TextStyle(
             color: const Color(0xFFFFFFFF),
-            fontSize: isMobile ? 16.sp : (isTablet ? 40.sp : 58.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 32.sp : 50.sp),
             fontWeight: FontWeight.w700,
             letterSpacing: 1,
           ),
         ),
         SizedBox(width: spacing),
-        Image.asset(
-          Assets.iconsFace,
-          height: iconSize,
-          width: iconSize,
-          color: const Color(0xFFF4ED47),
-        ),
-        SizedBox(width: spacing),
-        Image.asset(
-          Assets.iconsInsta,
-          height: iconSize,
-          width: iconSize,
-          color: const Color(0xFFF4ED47),
-        ),
-        SizedBox(width: spacing),
-        Image.asset(
-          Assets.iconsLinked,
-          height: iconSize,
-          width: iconSize,
-          color: const Color(0xFFF4ED47),
-        ),
-        SizedBox(width: spacing),
-        Image.asset(
-          Assets.iconsTik,
-          height: iconSize,
-          width: iconSize,
-          color: const Color(0xFFF4ED47),
-        ),
+        AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true, iconColor: const Color(0xFFF4ED47),
+          onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: isMobile ? 20.r : (isTablet ? 36.r : 40.r)),
+        SizedBox(width: isMobile ? 4.w : (isTablet ? 10.w : 14.w)),
+        AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true, iconColor: const Color(0xFFF4ED47),
+          onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: isMobile ? 20.r : (isTablet ? 36.r : 40.r)),
+        SizedBox(width: isMobile ? 4.w : (isTablet ? 10.w : 14.w)),
+        AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true, iconColor: const Color(0xFFF4ED47),
+          onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: isMobile ? 20.r : (isTablet ? 36.r : 40.r)),
+        SizedBox(width: isMobile ? 4.w : (isTablet ? 10.w : 14.w)),
+        AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true, iconColor: const Color(0xFFF4ED47),
+          onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: isMobile ? 20.r : (isTablet ? 36.r : 40.r)),
       ],
     );
   }
@@ -534,6 +599,9 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           isClickable: true,
           onTap: () => _makePhoneCall('0111-032-7777'),
         ),
+        
+
+
       ],
     ) : Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,125 +612,44 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           iconColor: const Color(0xFFF4ED47),
           textColor: Colors.white,
           iconSize: isMobile ? 36.r : (isTablet ? 44.r : 52.r),
-          textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 50.sp),
+          textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 42.sp),
           isClickable: true,
           onTap: () => _makePhoneCall('0111-032-7777'),
         ),
-        SizedBox(height: isMobile ? 16.h : 24.h),
+        //SizedBox(height: isMobile ? 16.h : 16.h),
         AnimatedContactInfo(
           icon: Assets.iconsMail,
           text: 'Incomercial@gmail.com',
           iconColor: const Color(0xFFF4ED47),
           textColor: Colors.white,
           iconSize: isMobile ? 36.r : (isTablet ? 44.r : 52.r),
-          textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 50.sp),
+          textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 42.sp),
           isClickable: true,
           onTap: () => _sendEmail('Incomercial@gmail.com'),
+        ),
+
+        Text(
+          'WORKING HOURS: 10AM TO 6PM',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: isMobile ? 26.sp : (isTablet ? 30.sp : 38.sp),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          '  FROM SUNDAY TO THURSDAY',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: isMobile ? 26.sp : (isTablet ? 20.sp : 28.sp),
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildLocationSection(BuildContext context, bool isMobile, bool isTablet) {
-    return InkWell(
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(isMobile ? Assets.imagesContactMob2 : Assets.imagesContact2),
-            fit: BoxFit.fill,
-          ),
-        ),
-        width: double.infinity,
-        height: isMobile ? 232.h : (isTablet ? 737.h : 874.h),
-        child: Stack(
-          children: [
-            Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Gap(20.h),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFC63424),
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    child: Text(
-                      'OUR LOCATION',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'OptimalBold',
-                        color: const Color(0xFFF4ED47),
-                        fontSize: isMobile ? 20.sp : (isTablet ? 50.sp : 70.sp),
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                  ),
-                  Gap(20.h),
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    onEnter: (_) => setState(() => _isAddressHovered = true),
-                    onExit: (_) => setState(() => _isAddressHovered = false),
-                    child: GestureDetector(
-                      onTap: () => _openGoogleMaps('14 A/2 Admin building, New Cairo, Egypt'),
-                      child: TweenAnimationBuilder<double>(
-                        duration: const Duration(milliseconds: 200),
-                        tween: Tween<double>(
-                          begin: 0,
-                          end: _isAddressHovered ? -10 : 0,
-                        ),
-                        builder: (context, dy, child) {
-                          return Transform.translate(
-                            offset: Offset(0, dy),
-                            child: child,
-                          );
-                        },
-                        child: AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 200),
-                          style: TextStyle(
-                            color: _isAddressHovered
-                                ? const Color(0xFFC63424)
-                                : const Color(0xFFFFFFFF),
-                            fontSize: isMobile ? 14.sp : (isTablet ? 30.sp : 40.sp),
-                            fontFamily: 'OptimalBold',
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 1,
-                            decoration: TextDecoration.underline,
-                            decorationColor: _isAddressHovered
-                                ? const Color(0xFFC63424)
-                                : const Color(0xFFFFFFFF),
-                          ),
-                          child: const Text('14 A/2 Admin building. New Cairo, Egypt'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Gap(isMobile ? 60.h : (isTablet ? 90.h : 120.h)),
-                  if(!isMobile)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Opacity(
-                        opacity: 0.02,
-                        child: ElevatedButton(
-                          onPressed: () => _openGoogleMaps('14 A/2 Admin building, New Cairo, Egypt'),
-                          child: Container(
-                            height: isMobile ? 300 : (isTablet ? 370 : 420),
-                            color: Colors.transparent,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildFormField(
       String label, {
@@ -671,13 +658,13 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         String? hint,
         double? height,
         required bool isMobile,
-        required bool isTablet,
+        required bool isTablet
       }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          label,
+          label??'',
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
@@ -688,7 +675,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ),
         SizedBox(height: 1.h),
         SizedBox(
-          height: height ?? (isMobile ? 36.h : (isTablet ? 55.h : 60.h)),
+          height: height ?? (isMobile ? 34.h : (isTablet ? 48.h : 60.h)),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -698,25 +685,28 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                 width: 1,
               ),
             ),
-            child: TextField(
-              controller: controller,
-              keyboardType: keyboardType,
-              decoration: InputDecoration(
-                isDense: true,
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 12.h,
+            child: Center(
+              child: TextField(
+                controller: controller,
+                keyboardType: keyboardType,
+                decoration: InputDecoration(
+                  isDense: true,
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
+                  hintStyle: TextStyle(
+                    fontFamily: 'AloeveraDisplayBold',
+                    color: Colors.grey[500],
+                    fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 28.sp),
+                  ),
                 ),
-                hintStyle: TextStyle(
-                  fontFamily: 'AloeveraDisplayBold',
-                  color: Colors.grey[500],
-                  fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 22.sp),
+
+                style: TextStyle(
+                  fontSize: isMobile ? 14.sp : 28.sp,
+                  color: Colors.black,
                 ),
-              ),
-              style: TextStyle(
-                fontSize: isMobile ? 14.sp : 16.sp,
-                color: Colors.black,
               ),
             ),
           ),
@@ -741,7 +731,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ),
         SizedBox(height: 2.h),
         SizedBox(
-          height: isMobile ? 42.h : (isTablet ? 55.h : 60.h),
+          height: isMobile ? 34.h : (isTablet ? 48.h : 60.h),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -808,24 +798,27 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                   ),
                 ),
                 Expanded(
-                  child: TextField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 12.h,
+                  child: Center(
+                    child: TextField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        hintText: '01XXXXXXXXX',
+                        isDense: true,
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 0.h,
+                        ),
+                        hintStyle: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 22.sp),
+                        ),
                       ),
-                      hintStyle: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 22.sp),
+                      style: TextStyle(
+                        fontSize: isMobile ? 14.sp : 28.sp,
+                        color: Colors.black,
                       ),
-                    ),
-                    style: TextStyle(
-                      fontSize: isMobile ? 14.sp : (isTablet ? 18.sp : 22.sp),
-                      color: Colors.black,
                     ),
                   ),
                 ),

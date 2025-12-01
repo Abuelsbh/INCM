@@ -106,10 +106,12 @@ class _AnimatedContactInfoState extends State<AnimatedContactInfo>
                         );
                       },
                     ),
+                    if(widget.text.isNotEmpty)
                     SizedBox(width: 12.w),
+                    if(widget.text.isNotEmpty)
                     Flexible(
                       child: Text(
-                        widget.text,
+                        widget.text??'',
                         style: TextStyle(
                           color: _colorAnimation.value ?? Colors.black,
                           fontSize: widget.textSize ?? 20.sp,

@@ -28,15 +28,22 @@ class Assets {
   static const String iconsSplash1 = 'assets/icons/splash1.png';
   static const String iconsSplash2 = 'assets/icons/splash2.png';
   static const String iconsTik = 'assets/icons/tik.png';
+  static const String imagesAboutUsBacground1 = 'assets/images/aboutUsBacground1.png';
   static const String imagesAboutUsBackground = 'assets/images/aboutUsBackground.png';
+  static const String imagesAboutUsBackground2 = 'assets/images/aboutUsBackground2.png';
   static const String imagesAboutUsBackgroundMob = 'assets/images/aboutUsBackgroundMob.png';
-  static const String imagesContact1 = 'assets/images/contact1.png';
-  static const String imagesContact2 = 'assets/images/contact2.png';
-  static const String imagesContactMob1 = 'assets/images/contactMob1.png';
-  static const String imagesContactMob2 = 'assets/images/contactMob2.png';
-  static const String imagesContactMob3 = 'assets/images/contactMob3.png';
+  static const String imagesAboutUsBackgroundMob1 = 'assets/images/aboutUsBackgroundMob1.png';
+  static const String imagesAboutUsBackgroundMob2 = 'assets/images/aboutUsBackgroundMob2.png';
+  static const String imagesBuyBackground = 'assets/images/buyBackground.png';
+  static const String imagesBuyBackgroundMob = 'assets/images/buyBackgroundMob.png';
+  static const String imagesCareerBackground = 'assets/images/careerBackground.png';
+  static const String imagesCareerBackgroundMob = 'assets/images/careerBackgroundMob.png';
+  static const String imagesContactPage = 'assets/images/contactPage.png';
+  static const String imagesContactPageMob = 'assets/images/contactPageMob.png';
   static const String imagesContactUsBackground = 'assets/images/contactUsBackground.png';
   static const String imagesContactUsBackgroundMob = 'assets/images/contactUsBackgroundMob.png';
+  static const String imagesDownloadAppStore = 'assets/images/downloadAppStore.png';
+  static const String imagesDownloadGooglePlay = 'assets/images/downloadGooglePlay.png';
   static const String imagesFollowUsBackground = 'assets/images/followUsBackground.png';
   static const String imagesFollowUsBackgroundMob = 'assets/images/followUsBackgroundMob.png';
   static const String imagesINCM = 'assets/images/INCM.png';
@@ -48,11 +55,18 @@ class Assets {
   static const String imagesLearnServices = 'assets/images/learnServices.jpeg';
   static const String imagesLearnServicesBackground = 'assets/images/learnServicesBackground.png';
   static const String imagesLearnServicesBackgroundMob = 'assets/images/learnServicesBackgroundMob.png';
+  static const String imagesLeastBackground = 'assets/images/leastBackground.png';
+  static const String imagesLeastBackgroundMob = 'assets/images/leastBackgroundMob.png';
   static const String imagesLogo5 = 'assets/images/logo5.png';
+  static const String imagesLogoINCM = 'assets/images/logoINCM.png';
   static const String imagesLogosBackground = 'assets/images/logosBackground.png';
   static const String imagesLogosBackgroundMob = 'assets/images/logosBackgroundMob.png';
   static const String imagesPerformanceBackground = 'assets/images/performanceBackground.png';
   static const String imagesPerformanceBackgroundMob = 'assets/images/performanceBackgroundMob.png';
+  static const String imagesPic1 = 'assets/images/pic1.jpeg';
+  static const String imagesPic2 = 'assets/images/pic2.jpeg';
+  static const String imagesPic3 = 'assets/images/pic3.jpeg';
+  static const String imagesPic4 = 'assets/images/pic4.jpeg';
   static const String imagesSearchBackground = 'assets/images/searchBackground.png';
   static const String imagesSearchBackgroundMob = 'assets/images/searchBackgroundMob.png';
   static const String imagesSlogany = 'assets/images/slogany.png';
@@ -60,5 +74,7 @@ class Assets {
   static const String logosLogo3 = 'assets/logos/logo3.svg';
   static const String logosLogo4 = 'assets/logos/logo4.svg';
   static const String logosLogo6 = 'assets/logos/logo6.svg';
+  static const String videosMobile = 'assets/videos/mobile.mp4';
+  static const String videosWebsite = 'assets/videos/website.mp4';
 
 }

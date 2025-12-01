@@ -21,7 +21,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
   // Form controllers
   final _fullNameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _areaController = TextEditingController();
+  final _messageController = TextEditingController();
   final _locationController = TextEditingController();
   final _emailController = TextEditingController();
 
@@ -75,7 +75,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
     _animationController.dispose();
     _fullNameController.dispose();
     _phoneController.dispose();
-    _areaController.dispose();
+    _messageController.dispose();
     _locationController.dispose();
     _emailController.dispose();
     super.dispose();
@@ -126,8 +126,8 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
     }
 
     // Validate area
-    if (_areaController.text.trim().isEmpty) {
-      _showToast('Please enter the area');
+    if (_messageController.text.trim().isEmpty) {
+      _showToast('Please enter the message');
       return;
     }
 
@@ -154,7 +154,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
     // Clear form after successful submission
     _fullNameController.clear();
     _phoneController.clear();
-    _areaController.clear();
+    _messageController.clear();
     _locationController.clear();
     _emailController.clear();
   }
@@ -196,17 +196,32 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                   mainAxisSize: MainAxisSize.min,
                 children: [
                   // Title
-                  Text(
-                    'Need experts advice?',
-                    style: TextStyle(
-                          fontFamily: 'OptimalBold',
-                          color: const Color(0xFFF4ED47),
-                          fontSize: 60.sp,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'NEED EXPERTS ADVICE',
+                          style: TextStyle(
+                            fontFamily: 'OptimalBold',
+                            color: const Color(0xFFF4ED47),
+                            fontSize: 60.sp,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '?',
+                          style: TextStyle(
+                            color: const Color(0xFFF4ED47),
+                            fontSize: 55.sp,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  
+
                   // SizedBox(height: 16.h),
                   //
                   // // Subtitle
@@ -280,7 +295,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                         'MESSAGE',
                         hint: 'type your message',
                         height: 100.h,
-                        controller: _locationController,
+                        controller: _messageController,
                       ),
 
                       
@@ -310,7 +325,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
         required TextEditingController controller,
         TextInputType? keyboardType,
         String? hint,
-        double? height
+        double? height,
       }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,7 +336,6 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
             fontSize: 26.sp,
-            fontWeight: FontWeight.bold,
             letterSpacing: 1,
           ),
         ),
@@ -344,16 +358,12 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                 isDense: true,
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-              hintText: hint ?? label.toLowerCase(),
-              hintStyle: TextStyle(
-                  fontFamily: 'AloeveraDisplayBold',
-                color: Colors.grey[500],
-                  fontSize: 26.sp,
-                ),
               ),
               style: TextStyle(
-                fontSize: 26.sp,
+                fontFamily: 'AloeveraDisplayBold',
                 color: Colors.black,
+                fontSize: 26.sp,
+                letterSpacing: 1,
               ),
             ),
           ),
@@ -448,7 +458,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                       isDense: true,
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-                      hintText: 'Phone',
+                      hintText: '01XXXXXXXXX',
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
                         fontSize: 26.sp,

@@ -419,7 +419,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                         horizontal: 12.w,
                         vertical: 6.h, // ✅ يجعل النص في المنتصف عموديًا
                       ),
-                      hintText: 'xxxxxxxxxx',
+                      hintText: '01xxxxxxxxx',
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
                         fontSize: 16.sp,

@@ -81,14 +81,19 @@ class _CustomButtonState extends State<CustomButton> {
           onPressed: widget.enabled ? widget.onPressed : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
-            foregroundColor: isHovering 
+            foregroundColor: isHovering
                 ? (widget.hoverTextColor ?? const Color(0xFFF4ED47))
                 : (widget.normalTextColor ?? Colors.black),
-            padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+            padding: widget.padding ??
+                EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius ?? 4.r),
             ),
             elevation: 0,
+          ).copyWith(
+            elevation: WidgetStateProperty.all(0), // remove shadow always
+            shadowColor: WidgetStateProperty.all(Colors.transparent), // no shadow color
+            overlayColor: WidgetStateProperty.all(Colors.transparent), // remove hover splash
           ),
           child: Text(
             widget.text,
@@ -96,7 +101,7 @@ class _CustomButtonState extends State<CustomButton> {
               fontFamily: 'OptimalBold',
               fontSize: widget.fontSize ?? 18.sp,
               fontWeight: widget.fontWeight ?? FontWeight.w900,
-              letterSpacing: widget.letterSpacing ?? 0.8,
+              //letterSpacing: widget.letterSpacing ?? 0.8,
             ),
           ),
         ),
@@ -133,6 +138,7 @@ class ButtonStyles {
       text: 'GET APP',
       onPressed: onPressed,
       enabled: enabled,
+      height: 20.h,
       normalBackgroundColor: const Color(0xFFF4ED47),
       normalTextColor: Colors.black,
       hoverBackgroundColor: const Color(0xFFC63424),
@@ -206,8 +212,9 @@ class ButtonStyles {
       text: 'LEARN MORE',
       onPressed: onPressed,
       borderRadius: 8.r,
-      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
       width: 100.w,
+      height: 24.h,
       enabled: enabled,
       normalBackgroundColor: const Color(0xFFC63424),
       normalTextColor: const Color(0xFFF4ED47),
@@ -247,6 +254,7 @@ class ButtonStyles {
       onPressed: onPressed,
       enabled: enabled,
       borderRadius: 2.r,
+      height: 31.h,
       width: width ?? double.infinity,
       normalBackgroundColor: const Color(0xFFC63424),
       normalTextColor:  const Color(0xFFF4ED47),
