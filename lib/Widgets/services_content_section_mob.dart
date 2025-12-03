@@ -2,9 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'dart:async';
+import 'package:go_router/go_router.dart';
 
 import '../generated/assets.dart';
 import 'custom_button.dart';
+import '../Modules/Services/Consultation/consultation_screen.dart';
+import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
+import '../Modules/Services/MedicalLeasing/medical_leasing_screen.dart';
+import '../Modules/Services/CorporateLeasing/corporate_leasing_screen.dart';
+import '../Modules/Services/FacilityManagement/facility_management_screen.dart';
+import '../Modules/Services/FranchiseInvestment/franchise_investment_screen.dart';
+import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
+import '../Modules/Services/Marketing/marketing_screen.dart';
 
 class ServicesContentSectionMob extends StatefulWidget {
   const ServicesContentSectionMob({super.key});
@@ -28,38 +37,47 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
   // Service content data
   final List<Map<String, String>> serviceData = [
     {
-      'title': 'Consultation',
+      'title': 'CONSULTATION',
       'description': 'Our real estate consulting services are designed to provide clients with strategic insights and expert guidance across all stages of projects development, acquisition, and investment.',
+      'route': ConsultationScreen.routeName,
     },
     {
-      'title': 'Retail leasing',
-      'description': 'We provide comprehensive support across all stages of the retail leasing process, offering a wide selection of units in prime locations with flexible space configurations. By curating the right tenant mix — including brands, services, and experiences — we foster strong customer engagement and maintain a balanced, high- performing commercial environment',
+      'title': 'RETAIL LEASING',
+      'description': 'We provide comprehensive support across all stages of the retail leasing process, offering a wide selection of units in prime locations with flexible space configurations. By curating the right tenant mix — including brands, services, and experiences — we foster strong customer engagement and maintain a balanced, high- performing commercial environment.',
+      'route': RetailLeasingScreen.routeName,
     },
     {
-      'title': 'Medical Leasing',
-      'description': 'We offer dedicated medical leasing services tailored to meet the unique requirements of healthcare providers, medical practitioners, and institutional tenants. With a deep understanding of the complexities of medical real estate, we help clients secure optimal spaces that align with both clinical needs and long-term business objectives',
+      'title': 'MEDICAL LEASING',
+      'description': 'We offer dedicated medical leasing services tailored to meet the unique requirements of healthcare providers, medical practitioners, and institutional tenants. With a deep understanding of the complexities of medical real estate, we help clients secure optimal spaces that align with both clinical needs and long-term business objectives.',
+      'route': MedicalLeasingScreen.routeName,
     },
     {
-      'title': 'Corporate Leasing',
-      'description': 'We have extensive experience in commercial real estate leasing transactions. Whether you are looking for an office space, an entire building, or even an industrial facility, we provide all that and more — with a variety of spaces tailored to different needs and in strategic locations close to business hubs',
+      'title': 'CORPORATE LEASING',
+      'description': 'We have extensive experience in commercial real estate leasing transactions. Whether you are looking for an office space, an entire building, or even an industrial facility, we provide all that and more — with a variety of spaces tailored to different needs and in strategic locations close to business hubs.',
+      'route': CorporateLeasingScreen.routeName,
     },
     {
-      'title': 'Facility Management',
+      'title': 'FACILITY MANAGEMENT',
       'description': 'To ensure the seamless operation, safety, and sustainability of commercial properties, we provide comprehensive property and facility management solutions. Our services cover day- to-day operations, preventive maintenance, and the optimization of building systems and infrastructure.',
+      'route': FacilityManagementScreen.routeName,
     },
     {
-      'title': 'Franchise Investment',
+      'title': 'FRANCHISE INVESTMENT',
       'description': 'For investors seeking stable, and scalable opportunities in the franchise sector, we provide expert guidance in identifying, evaluating, and securing high-performing franchise brands. From market research and brand vetting to location sourcing and lease negotiation.',
+      'route': FranchiseInvestmentScreen.routeName,
     },
     {
-      'title': 'Primary Investment',
+      'title': 'PRIMARY INVESTMENT',
       'description': 'We specialize in sourcing and securing high- potential real estate assets at early development stages or during market entry. By collaborating closely with investors, we identify opportunities in emerging markets, growth corridors, and strategically located assets with strong long-term return potential.',
+      'route': PrimaryInvestmentScreen.routeName,
     },
     {
-      'title': 'Marketing',
+      'title': 'MARKETING',
       'description': 'We provide comprehensive marketing solutions tailored for developers, agents, and real estate projects seeking to promote their listings effectively and achieve measurable results. Our strategy is built on a deep understanding of each unit’s unique features, enabling us to craft targeted, results-driven campaigns that reach the right audience.',
+      'route': MarketingScreen.routeName,
     },
   ];
+
 
   @override
   void initState() {
@@ -316,7 +334,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
 
 
                       Text(
-                        " SERVICES",
+                        " SERVICE",
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: Colors.white,
@@ -341,7 +359,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                           color: Colors.white,
                           fontSize: 14.sp,
                           height: 1.6,
-                          letterSpacing: 2,
+                          letterSpacing: 1.5,
                         ),
                       ),
                     ),
@@ -395,7 +413,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                             right: 10.w,
                             child: ButtonStyles.learnMoreButtonMob(
                               onPressed: () {
-                                // Add learn more action
+                                context.go(serviceData[currentIndex]['route']!);
                               },
                             ),
                           ),

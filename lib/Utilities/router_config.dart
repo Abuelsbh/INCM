@@ -8,6 +8,14 @@ import '../Modules/About/about_screen.dart';
 import '../Modules/Home/home_screen.dart';
 import '../Modules/Contacts/contacts_screen.dart';
 import '../Modules/Splash/splash_screen.dart';
+import '../Modules/Services/Consultation/consultation_screen.dart';
+import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
+import '../Modules/Services/MedicalLeasing/medical_leasing_screen.dart';
+import '../Modules/Services/CorporateLeasing/corporate_leasing_screen.dart';
+import '../Modules/Services/FacilityManagement/facility_management_screen.dart';
+import '../Modules/Services/FranchiseInvestment/franchise_investment_screen.dart';
+import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
+import '../Modules/Services/Marketing/marketing_screen.dart';
 
 BuildContext? get currentContext_ =>
     GoRouterConfig.router.routerDelegate.navigatorKey.currentContext;
@@ -86,6 +94,78 @@ class GoRouterConfig{
           return getCustomTransitionPage(
             state: state,
             child: LeaseScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: ConsultationScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const ConsultationScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: RetailLeasingScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const RetailLeasingScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: MedicalLeasingScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const MedicalLeasingScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: CorporateLeasingScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const CorporateLeasingScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: FacilityManagementScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const FacilityManagementScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: FranchiseInvestmentScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const FranchiseInvestmentScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: PrimaryInvestmentScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const PrimaryInvestmentScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: MarketingScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const MarketingScreen(),
           );
         },
       ),

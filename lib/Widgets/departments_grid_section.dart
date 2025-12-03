@@ -20,12 +20,12 @@ class DepartmentsGridSection extends StatelessWidget {
 
     return
       Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(Assets.imagesCareerBackground),
-            fit: BoxFit.fill,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(Assets.imagesCareerBackground),
+        //     fit: BoxFit.fill,
+        //   ),
+        // ),
         width: double.infinity,
         height:  MediaQuery.of(context).size.width <= 600 ? 786: 1200.h,
         child: Center(

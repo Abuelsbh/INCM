@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../generated/assets.dart';
 import '../Utilities/contact_info.dart';
@@ -127,11 +128,10 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                       child: Opacity(
                         opacity: _fadeAnimation.value,
                         child: _ContactButton(
-                          icon: Assets.iconsCall,
+                          icon: Assets.imagesWhatsapp,
                           onTap: () => _openWhatsApp(ContactInfo.whatsappNumber),
                           backgroundColor: const Color(0xFF4CAF50),
                           useAsset: true,
-                          iconData: Icons.chat_bubble_outline,
                         ),
                       ),
                     ),
@@ -178,6 +178,7 @@ class _ContactButton extends StatefulWidget {
   final Color backgroundColor;
   final Color? iconColor;
   final bool useAsset;
+  final String? iconn;
   final IconData? iconData;
 
 
@@ -188,6 +189,7 @@ class _ContactButton extends StatefulWidget {
     required this.backgroundColor,
     this.useAsset = true,
     this.iconData, this.iconColor,
+    this.iconn,
   }) : super(key: key);
 
   @override
@@ -251,7 +253,13 @@ class _ContactButtonState extends State<_ContactButton>
                       color: widget.iconColor ?? Colors.white,
                       size: MediaQuery.of(context).size.width < 600 ? 18.sp : 28.sp,
                     )
-                  : widget.useAsset
+                  : widget.icon == Assets.imagesWhatsapp ? SvgPicture.asset(
+                widget.icon,
+                width: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,
+                height: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,
+                color: widget.iconColor ?? Colors.white,
+
+              ) : widget.useAsset
                       ? Image.asset(
                           widget.icon,
                           width: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,

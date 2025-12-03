@@ -29,6 +29,7 @@ class _AnimatedContactInfoState extends State<AnimatedContactInfo>
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   late Animation<Color?> _colorAnimation;
+  late Animation<Color?> _iconColorAnimation;
 
   @override
   void initState() {
@@ -49,6 +50,14 @@ class _AnimatedContactInfoState extends State<AnimatedContactInfo>
     _colorAnimation = ColorTween(
       begin: widget.textColor ?? const Color(0xFF000000),
       end: const Color(0xFFC63424), // يتغير للون الأحمر
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+
+    _iconColorAnimation = ColorTween(
+      begin: widget.iconColor ?? const Color(0xFF000000),
+      end: const Color(0xFFC63424), // يتغير للون الأحمر عند hover
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
@@ -74,14 +83,10 @@ class _AnimatedContactInfoState extends State<AnimatedContactInfo>
       child: MouseRegion(
         cursor: widget.isClickable ? SystemMouseCursors.click : SystemMouseCursors.basic,
         onEnter: (_) {
-          if (widget.isClickable) {
-            _controller.forward();
-          }
+          _controller.forward(); // تفعيل التأثير عند hover دائماً
         },
         onExit: (_) {
-          if (widget.isClickable) {
-            _controller.reverse();
-          }
+          _controller.reverse(); // إرجاع التأثير عند الخروج
         },
         child: GestureDetector(
           onTap: _handleTap,
@@ -97,11 +102,11 @@ class _AnimatedContactInfoState extends State<AnimatedContactInfo>
                       widget.icon,
                       height: widget.iconSize ?? 22.r,
                       width: widget.iconSize ?? 22.r,
-                      color: widget.iconColor ?? Colors.black, // لون ثابت للأيقونة
+                      color: _iconColorAnimation.value ?? (widget.iconColor ?? Colors.black), // لون متحرك للأيقونة
                       errorBuilder: (context, error, stackTrace) {
                         return Icon(
                           Icons.email, // أيقونة بديلة
-                          color: widget.iconColor ?? Colors.black,
+                          color: _iconColorAnimation.value ?? (widget.iconColor ?? Colors.black),
                           size: widget.iconSize ?? 22.r,
                         );
                       },

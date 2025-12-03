@@ -82,7 +82,7 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                             onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 24.r,),
                           SizedBox(width: 8.w),
                           AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,
-                            onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
+                            onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 24.r,),
                           SizedBox(width: 8.w),
                           AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,
                             onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 24.r,),

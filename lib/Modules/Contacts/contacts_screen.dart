@@ -42,6 +42,49 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
   // Country code
   String _selectedCountryCode = '+20'; // Egypt as default
 
+  List<String> locations = [
+    "Alexandria",
+    "6th Settlement",
+    "Northern Expansion",
+    "El Gouna",
+    "North Coast-Sahel",
+    "El Shorouk",
+    "El Choueifat",
+    "New Zayed",
+    "El Sheikh Zayed",
+    "Al Dabaa",
+    "New Capital City",
+    "Al Alamein",
+    "Ain Sokhna",
+    "Hurghada",
+    "New Cairo",
+    "Old Cairo",
+    "Central Cairo",
+    "El Lotus",
+    "South Investors",
+    "North Investors",
+    "Maadi",
+    "South New Cairo",
+    "Golden Square",
+    "October Gardens",
+    "New Capital Gardens",
+    "Ras El Hekma",
+    "Ras Sudr",
+    "New Sphinx",
+    "Sahl Hasheesh",
+    "Somabay",
+    "Sidi Heneish",
+    "Sidi Abdel Rahman",
+    "Ghazala Bay",
+    "6th of October City",
+    "Mostakbal City",
+    "Madinaty",
+    "Mokattam",
+    "New Heliopolis",
+    "Heliopolis",
+  ];
+  String? selectedLocation;
+
   final List<Map<String, String>> _countryCodes = [
     {'code': '+20', 'country': 'EG', 'flag': '🇪🇬'},
     {'code': '+966', 'country': 'SA', 'flag': '🇸🇦'},
@@ -168,8 +211,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
       return;
     }
 
-    if (_locationController.text.trim().isEmpty) {
-      _showToast('Please enter the location');
+    if (selectedLocation == null || selectedLocation!.isEmpty) {
+      _showToast('Please select a location');
       return;
     }
 
@@ -188,7 +231,9 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     _fullNameController.clear();
     _phoneController.clear();
     _areaController.clear();
-    _locationController.clear();
+    setState(() {
+      selectedLocation = null;
+    });
     _emailController.clear();
   }
 
@@ -312,7 +357,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                       ),
                     ),
                   ),
-                  Gap(4.h),
+                  Gap(isMobile ? 12.h : 24.h),
                   MouseRegion(
                     cursor: SystemMouseCursors.click,
                     onEnter: (_) => setState(() => _isAddressHovered = true),
@@ -389,11 +434,16 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             isTablet: isTablet,
           ),
           SizedBox(height: 15.h),
-          _buildFormField(
-            'LOCATION',
-            controller: _locationController,
+          _buildDropdownField("LOCATION","SELECT LOCATION",
+            value: selectedLocation,
+            items: locations,
             isMobile: isMobile,
             isTablet: isTablet,
+            onChanged: (val) {
+              setState(() {
+                selectedLocation = val;
+              });
+            },
           ),
         ] else ...[
           Row(
@@ -427,11 +477,16 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               ),
               SizedBox(width: isTablet ? 75.w : 150.w),
               Expanded(
-                child: _buildFormField(
-                  'LOCATION',
-                  controller: _locationController,
+                child: _buildDropdownField("LOCATION","CHOOSE",
+                  value: selectedLocation,
+                  items: locations,
                   isMobile: isMobile,
                   isTablet: isTablet,
+                  onChanged: (val) {
+                    setState(() {
+                      selectedLocation = val;
+                    });
+                  },
                 ),
               ),
             ],
@@ -445,7 +500,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           isMobile: isMobile,
           isTablet: isTablet,
         ),
-        SizedBox(height: isMobile ? 70.h : (isTablet ? 70.h : 80.h)),
+        SizedBox(height: isMobile ? 50.h : (isTablet ? 70.h : 80.h)),
         if(isMobile)
           ButtonStyles.submitButtonMob(
             width: isMobile ? 90.w : (isTablet ? 120.w : 180.w),
@@ -823,6 +878,135 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                   ),
                 ),
               ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdownField(
+      String label,
+      String hint, {
+        required String? value,
+        required List<String> items,
+        required Function(String?) onChanged,
+        required bool isMobile,
+        required bool isTablet,
+      }) {
+
+    double fontSize() {
+      if (isMobile) return 14.sp;
+      if (isTablet) return 18.sp;
+      return 20.sp; // Web
+    }
+
+    double dropdownHeight() {
+      if (isMobile) return 34.h;
+      if (isTablet) return 48.h;
+      return 60.h; // Web
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'AloeveraDisplayBold',
+            color: Colors.white,
+            fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1,
+          ),
+        ),
+        SizedBox(height: isMobile ? 4.h : 10.h),
+
+        Container(
+          height: dropdownHeight(),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15.r),
+            border: Border.all(
+              color: value != null
+                  ? const Color(0xFFF4ED47).withOpacity(0.5)
+                  : Colors.grey[300]!,
+              width: value != null ? 2 : 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: value != null
+                    ? const Color(0xFFF4ED47).withOpacity(0.2)
+                    : Colors.black.withOpacity(0.05),
+                blurRadius: value != null ? 8 : 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: value,
+              isExpanded: true,
+              borderRadius: BorderRadius.circular(15.r),
+              icon: Padding(
+                padding: EdgeInsets.only(right: 8.w),
+                child: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: value != null
+                      ? const Color(0xFFF4ED47)
+                      : Colors.grey[600],
+                  size: fontSize() + 6,
+                ),
+              ),
+
+              hint: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                child: Text(
+                  hint,
+                  style: TextStyle(
+                    fontSize: fontSize(),
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ),
+
+              dropdownColor: Colors.white,
+              style: TextStyle(
+                fontSize: fontSize(),
+                color: Colors.black87,
+                fontWeight: FontWeight.w600,
+              ),
+
+              items: items.map((item) {
+                return DropdownMenuItem<String>(
+                  value: item,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 6.w,
+                        height: 6.w,
+                        margin: EdgeInsets.only(right: 10.w),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF4ED47),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          item,
+                          style: TextStyle(
+                            fontSize: fontSize(),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              }).toList(),
+
+              onChanged: onChanged,
+              menuMaxHeight: 300.h,
             ),
           ),
         ),

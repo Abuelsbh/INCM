@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rush/rush.dart';
 import '../../Widgets/about_content_section_mob.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
+import '../../Widgets/clients_logos_section.dart';
 import '../../Widgets/contacts_content_section_mob.dart';
 import '../../Widgets/custom_app_bar.dart';
 import '../../Widgets/custom_app_bar_mob.dart';
@@ -24,6 +25,7 @@ import '../../Widgets/animated_logos_footer.dart';
 import '../../Widgets/services_content_section_mob.dart';
 import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
+import '../../generated/assets.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -75,7 +77,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     // Performance Highlights Section
                     const PerformanceHighlightsSection(),
                     //SizedBox(height: 100.h),
-                    const AnimatedLogosFooterV2(),
+                    Container(
+                      height: 280.h,
+                      margin: EdgeInsets.all(24.w),
+                      child: ClientsLogosSection(
+                        backgroundColor: Colors.grey[900]!,
+                        logos: [
+                          Assets.logosLogo2,
+                          Assets.logosLogo3,
+                          Assets.logosLogo4,
+                          Assets.logosLogo6,
+                          Assets.logosLogo2,
+                          Assets.logosLogo2,
+                          Assets.logosLogo3,
+                          Assets.logosLogo4,
+                          Assets.logosLogo6,
+                          Assets.logosLogo2,
+                        ],
+                        visibleLogosCount: 5,
+                      ),
+                    ),
 
                     //SizedBox(height: 100.h),
       
@@ -129,8 +150,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     const AboutContentSectionMob(),
                     const ServicesContentSectionMob(),
                     const PerformanceHighlightsSectionMob(),
-                    const AnimatedLogosFooterV2(),
-
+                    //const AnimatedLogosFooterV2(),
+                    Container(
+                      height: 140.h,
+                      margin: EdgeInsets.all(24.w),
+                      child: ClientsLogosSection(
+                        backgroundColor: Colors.grey[900]!,
+                        logos: [
+                          Assets.logosLogo2,
+                          Assets.logosLogo3,
+                          Assets.logosLogo4,
+                          Assets.logosLogo6,
+                          Assets.logosLogo2,
+                          Assets.logosLogo2,
+                          Assets.logosLogo3,
+                          Assets.logosLogo4,
+                          Assets.logosLogo6,
+                          Assets.logosLogo2,
+                        ],
+                        visibleLogosCount: 5,
+                      ),
+                    ),
                     const ContactsContentSectionMob(),
                     if(kIsWeb)
                       const FooterSectionMob()

@@ -18,7 +18,7 @@ class BottomNavBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 85.h,
+      height: 65.h,
       decoration: BoxDecoration(
         color: const Color(0xFFF4ED47),
         boxShadow: [

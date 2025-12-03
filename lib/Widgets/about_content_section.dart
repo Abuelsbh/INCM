@@ -104,50 +104,46 @@ class _AboutContentSectionState extends State<AboutContentSection> {
                       duration: const Duration(milliseconds: 2000),
                       curve: Curves.easeInOut,
                       child: Container(
-                        width: MediaQuery.of(context).size.width * 0.35,
+                        width: MediaQuery.of(context).size.width * 0.4,
                         padding: EdgeInsets.all(30.w),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF4ED47).withOpacity(0.3),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
-                          'We were established in 2019 as a comprehensive real estate company, entering a competitive market with a clear vision and ambitious goals. Our unique synergy and team of experts have enabled us to stand out In the industry by offering a full spectrum of services tailored to diverse client needs',
+                          'We were established in 2019 as a comprehensive real estate company, entering a competitive market with a clear vision and ambitious goals. Our unique synergy and team of experts have enabled us to stand out In the industry by offering a full spectrum of services tailored to diverse client needs.',
                           textAlign: TextAlign.justify,  // ✅ يجعل النص في المنتصف
                           style: TextStyle(
                             fontFamily: 'AloeveraDisplaySemiBold',
                             color: Colors.white,
-                            fontSize: 34.sp,
+                            fontSize: 35.sp,
                             height: 1.8,
-                            letterSpacing: 1,
+                            letterSpacing: 1.6,
                           ),
                         ),
                       ),
                     ),
                   ),
+
+                    Gap(80.h),
+                    AnimatedSlide(
+                      offset: _isVisible ? Offset.zero : const Offset(0.5, 0),
+                      duration: const Duration(milliseconds: 2000),
+                      curve: Curves.easeOutCubic,
+                      child: AnimatedOpacity(
+                        opacity: _isVisible ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 2000),
+                        curve: Curves.easeInOut,
+                        child: ButtonStyles.learnMoreButton(
+                          onPressed: () {
+                            context.go(AboutScreen.routeName);
+                          },
+                        ),
+                      ),
+                    ),
                 ],
                             ),
               ),
-          ),
-
-          // LEARN MORE button positioned at bottom right
-          Positioned(
-            bottom: 80.h,
-            right: 80.w,
-            child: AnimatedSlide(
-              offset: _isVisible ? Offset.zero : const Offset(0.5, 0),
-              duration: const Duration(milliseconds: 2000),
-              curve: Curves.easeOutCubic,
-              child: AnimatedOpacity(
-                opacity: _isVisible ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 2000),
-                curve: Curves.easeInOut,
-                child: ButtonStyles.learnMoreButton(
-                  onPressed: () {
-                    context.go(AboutScreen.routeName);
-                  },
-                ),
-              ),
-            ),
           ),
         ],
       ),

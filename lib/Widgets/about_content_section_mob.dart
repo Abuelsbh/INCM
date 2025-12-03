@@ -47,7 +47,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Gap(80.h),
+            Gap(20.h),
             // ABOUT US title (all yellow like in image)
             AnimatedSlide(
               offset: _isVisible ? Offset.zero : const Offset(0, -0.3),
@@ -65,7 +65,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: const Color(0xFFF4ED47), // أصفر
-                          fontSize: 28.sp,
+                          fontSize: 32.sp,
                           letterSpacing: 3,
                         ),
                       ),
@@ -74,7 +74,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: Colors.white, // أبيض
-                          fontSize: 28.sp,
+                          fontSize: 32.sp,
                           letterSpacing: 3,
                         ),
                       ),
@@ -84,7 +84,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
               ),
             ),
 
-            Gap(20.h),
+            Gap(10.h),
 
             // Text content with semi-transparent dark background
             AnimatedScale(
@@ -96,6 +96,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                 duration: const Duration(milliseconds: 2000),
                 curve: Curves.easeInOut,
                 child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 40.w),
                   width: MediaQuery.of(context).size.width * 0.95,
                   padding: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(
@@ -108,9 +109,9 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                     style: TextStyle(
                       fontFamily: 'AloeveraDisplaySemiBold',
                       color: Colors.white,
-                      fontSize: 16.sp,
+                      fontSize: 12.sp,
                       height: 1.8,
-                      letterSpacing: 1,
+                      letterSpacing: 2,
                     ),
                   ),
                 ),

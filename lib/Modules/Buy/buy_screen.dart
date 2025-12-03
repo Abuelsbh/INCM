@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:incm/core/Font/font_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
@@ -317,28 +318,12 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
   Widget _buildContactFormSection(BuildContext context, bool isMobile, bool isTablet) {
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(isMobile ? Assets.imagesBuyBackgroundMob : Assets.imagesBuyBackground),
-          fit: BoxFit.fill,
-        ),
+
       ),
       width: double.infinity,
       height: isMobile ? 786.h : (isTablet ? 1200.h : 1200.h),
       child: Stack(
         children: [
-          Positioned.fill(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Opacity(
-                opacity: 0.3,
-                child: Image.asset(
-                  Assets.imagesINCM,
-                  fit: BoxFit.contain,
-                  height: isMobile? 200 : 400,
-                ),
-              ),
-            ),
-          ),
 
           Center(
             child: SingleChildScrollView(
@@ -625,8 +610,6 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
       String label, {
         required TextEditingController controller,
         TextInputType? keyboardType,
-        String? hint,
-        double? height,
         required bool isMobile,
         required bool isTablet
       }) {
@@ -642,8 +625,9 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
           label??'',
           style: TextStyle(
             color: const Color(0xFFF4ED47),
-            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
             letterSpacing: 1,
+            fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
         SizedBox(height: 1.h),
@@ -701,8 +685,9 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
           'PHONE NUMBER',
           style: TextStyle(
             color: const Color(0xFFF4ED47),
-            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
             letterSpacing: 1,
+            fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
         SizedBox(height: 2.h),
@@ -833,8 +818,9 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
           label,
           style: TextStyle(
             color: const Color(0xFFF4ED47),
-            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
             letterSpacing: 1,
+            fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
         SizedBox(height: isMobile ? 4.h : 10.h),

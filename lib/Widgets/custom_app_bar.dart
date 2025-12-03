@@ -8,6 +8,14 @@ import '../Modules/About/about_screen.dart';
 import '../Modules/Buy/buy_screen.dart';
 import '../Modules/Home/home_screen.dart';
 import '../Modules/Contacts/contacts_screen.dart';
+import '../Modules/Services/Consultation/consultation_screen.dart';
+import '../Modules/Services/CorporateLeasing/corporate_leasing_screen.dart';
+import '../Modules/Services/FacilityManagement/facility_management_screen.dart';
+import '../Modules/Services/FranchiseInvestment/franchise_investment_screen.dart';
+import '../Modules/Services/Marketing/marketing_screen.dart';
+import '../Modules/Services/MedicalLeasing/medical_leasing_screen.dart';
+import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
+import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -20,6 +28,20 @@ class CustomAppBar extends StatefulWidget {
 
 class _CustomAppBarState extends State<CustomAppBar> {
   bool isMenuOpen = false;
+  bool isServicesHovered = false;
+  bool isDropdownHovered = false;
+  final GlobalKey _servicesKey = GlobalKey();
+
+  final List<Map<String, String>> services = [
+    {'name': 'Corporate Leasing', 'route': CorporateLeasingScreen.routeName},
+    {'name': 'Consultation', 'route': ConsultationScreen.routeName},
+    {'name': 'Marketing', 'route': MarketingScreen.routeName},
+    {'name': 'Medical Leasing', 'route': MedicalLeasingScreen.routeName},
+    {'name': 'Facility Management', 'route': FacilityManagementScreen.routeName},
+    {'name': 'Primary Investment', 'route': PrimaryInvestmentScreen.routeName},
+    {'name': 'Retail leasing', 'route': RetailLeasingScreen.routeName},
+    {'name': 'Franchise Investment', 'route': FranchiseInvestmentScreen.routeName},
+  ];
 
   void _scrollToSection(String sectionId) {
     if (sectionId == 'home') {
@@ -33,6 +55,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         // Overlay to close menu when clicking outside
         if (isMenuOpen && MediaQuery.of(context).size.width <= 768)
@@ -53,7 +76,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
               ),
             ),
           ),
-        
+
         // App Bar
         Container(
           height: 80.h,
@@ -74,62 +97,62 @@ class _CustomAppBarState extends State<CustomAppBar> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
-            // Logo Section (Left) - INCOMERCIAL with tagline
-            Expanded(
-              flex: 1,
-              child: GestureDetector(
-                onTap: () => _scrollToSection('home'),
-                child: Image.asset(Assets.imagesIncomercialLogo, width: 340.w,height: 100.h,fit: BoxFit.cover,)
-              ),
-            ),
-
-
-            // Desktop Menu Items (Center) with separators
-            if (MediaQuery.of(context).size.width > 768)
-              Expanded(
-                flex: 7,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildMenuItemWithSeparator('HOME', true, () {context.go(HomeScreen.routeName);}),
-                    _buildMenuItemWithSeparator('ABOUT US', true, () {context.go(AboutScreen.routeName);}),
-                    _buildMenuItemWithSeparator('SERVICES', true, () {}),
-                    _buildMenuItemWithSeparator('BUY', true, () {context.go(BuyScreen.routeName);}),
-                    _buildMenuItemWithSeparator('SELL', true, () {context.go(SellScreen.routeName);}),
-                    _buildMenuItemWithSeparator('CAREERS', true, () {context.go(CareerScreen.routeName);}),
-                    _buildMenuItemWithSeparator('LEASE', false, () {context.go(LeaseScreen.routeName);}),
-                  ],
-                ),
-              ),
-
-            // Explore Us Button (Right side)
-            if (MediaQuery.of(context).size.width > 768)
-              Expanded(
-              flex: 1,
-                child: Container(
-                  child: ButtonStyles.exploreUsButton(
-                    onPressed: () => _scrollToSection('contacts'),
+                // Logo Section (Left) - INCOMERCIAL with tagline
+                Expanded(
+                  flex: 3,
+                  child: GestureDetector(
+                      onTap: () => _scrollToSection('home'),
+                      child: Image.asset(Assets.imagesIncomercialLogo, width: 400.w,height: 100.h,fit: BoxFit.cover,)
                   ),
                 ),
-              ),
 
-            SizedBox(width: MediaQuery.of(context).size.width > 768 ? 32.w : 16.w),
 
-            // Mobile Menu Button (Right)
-            if (MediaQuery.of(context).size.width <= 768)
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    isMenuOpen = !isMenuOpen;
-                  });
-                },
-                icon: Icon(
-                  isMenuOpen ? Icons.close : Icons.menu,
-                  color: Colors.white,
-                  size: 24.sp,
-                ),
-              ),
+                // Desktop Menu Items (Center) with separators
+                if (MediaQuery.of(context).size.width > 768)
+                  Expanded(
+                    flex: 14,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildMenuItemWithSeparator('HOME', true, () {context.go(HomeScreen.routeName);}),
+                        _buildMenuItemWithSeparator('ABOUT US', true, () {context.go(AboutScreen.routeName);}),
+                        _buildServicesMenuItem(),
+                        _buildMenuItemWithSeparator('BUY', true, () {context.go(BuyScreen.routeName);}),
+                        _buildMenuItemWithSeparator('SELL', true, () {context.go(SellScreen.routeName);}),
+                        _buildMenuItemWithSeparator('LEASE', true, () {context.go(LeaseScreen.routeName);}),
+                        _buildMenuItemWithSeparator('CAREERS', false, () {context.go(CareerScreen.routeName);}),
+                      ],
+                    ),
+                  ),
+
+                // Explore Us Button (Right side)
+                if (MediaQuery.of(context).size.width > 768)
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      child: ButtonStyles.exploreUsButton(
+                        onPressed: () => _scrollToSection('contacts'),
+                      ),
+                    ),
+                  ),
+
+                SizedBox(width: MediaQuery.of(context).size.width > 768 ? 32.w : 16.w),
+
+                // Mobile Menu Button (Right)
+                if (MediaQuery.of(context).size.width <= 768)
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isMenuOpen = !isMenuOpen;
+                      });
+                    },
+                    icon: Icon(
+                      isMenuOpen ? Icons.close : Icons.menu,
+                      color: Colors.white,
+                      size: 24.sp,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -138,6 +161,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
         // Side Menu (Mobile)
         if (MediaQuery.of(context).size.width <= 768)
           _buildSideMenu(context),
+
+        // Services Dropdown Menu (Desktop)
+        if ((isServicesHovered || isDropdownHovered) && MediaQuery.of(context).size.width > 768)
+          _buildServicesDropdown(),
       ],
     );
   }
@@ -210,7 +237,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   ],
                 ),
               ),
-              
+
               // Menu Items
               Expanded(
                 child: ListView(
@@ -223,7 +250,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   ],
                 ),
               ),
-              
+
               // Footer
               Container(
                 padding: EdgeInsets.all(20.w),
@@ -392,6 +419,116 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
+  Widget _buildServicesMenuItem() {
+    return MouseRegion(
+      key: _servicesKey,
+      onEnter: (_) => setState(() => isServicesHovered = true),
+      onExit: (_) {
+        // Delay to allow moving to dropdown
+        Future.delayed(const Duration(milliseconds: 150), () {
+          if (mounted && !isDropdownHovered) {
+            setState(() => isServicesHovered = false);
+          }
+        });
+      },
+      child: InkWell(
+        onTap: () {},
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _HoverMenuItem(
+              text: 'SERVICES',
+              onTap: () {},
+            ),
+            SizedBox(width: 20.w),
+            Container(
+              height: 12.h,
+              width: 2.w,
+              color: const Color(0xFFF4ED47),
+            ),
+            SizedBox(width: 20.w),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildServicesDropdown() {
+    final RenderBox? renderBox = _servicesKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return const SizedBox.shrink();
+
+    final position = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
+    return Positioned(
+      top: position.dy + size.height + 2.h, // Very close to menu item
+      left: position.dx + (size.width / 2) - 125.w, // Center the dropdown under the menu item
+      child: Material(
+        elevation: 10,
+        color: Colors.transparent,
+        child: Container(
+          width: 250.w,
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height - position.dy - size.height - 20.h,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.95),
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              color: const Color(0xFFF4ED47).withOpacity(0.3),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...services.asMap().entries.map((entry) {
+                final index = entry.key;
+                final service = entry.value;
+                final isLast = index == services.length - 1;
+                return MouseRegion(
+                  onEnter: (_) => setState(() {
+                    isDropdownHovered = true;
+                    isServicesHovered = true;
+                  }),
+                  onExit: (_) {
+                    setState(() {
+                      isDropdownHovered = false;
+                    });
+                    Future.delayed(const Duration(milliseconds: 150), () {
+                      if (mounted && !isDropdownHovered && !isServicesHovered) {
+                        setState(() => isServicesHovered = false);
+                      }
+                    });
+                  },
+                  child: _ServicesDropdownItem(
+                    serviceName: service['name']!,
+                    onTap: () {
+                      setState(() {
+                        isServicesHovered = false;
+                        isDropdownHovered = false;
+                      });
+                      context.go(service['route']!);
+                    },
+                    showBorder: !isLast,
+                  ),
+                );
+              }).toList(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 }
 
 // Hover Menu Item Widget
@@ -451,16 +588,74 @@ class _HoverMenuItemState extends State<_HoverMenuItem> {
                   borderRadius: BorderRadius.circular(1.r),
                   boxShadow: _isHovered
                       ? [
-                          BoxShadow(
-                            color: Colors.red.withOpacity(0.5),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
+                    BoxShadow(
+                      color: Colors.red.withOpacity(0.5),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
                       : null,
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Services Dropdown Item Widget
+class _ServicesDropdownItem extends StatefulWidget {
+  final String serviceName;
+  final VoidCallback onTap;
+  final bool showBorder;
+
+  const _ServicesDropdownItem({
+    required this.serviceName,
+    required this.onTap,
+    required this.showBorder,
+  });
+
+  @override
+  State<_ServicesDropdownItem> createState() => _ServicesDropdownItemState();
+}
+
+class _ServicesDropdownItemState extends State<_ServicesDropdownItem> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            color: _isHovered ? const Color(0xFFF4ED47).withOpacity(0.1) : Colors.transparent,
+            border: widget.showBorder
+                ? Border(
+                    bottom: BorderSide(
+                      color: const Color(0xFFF4ED47).withOpacity(0.1),
+                      width: 0.5,
+                    ),
+                  )
+                : null,
+          ),
+          child: Text(
+            widget.serviceName,
+            style: TextStyle(
+              fontFamily: 'AloeveraDisplay',
+              color: _isHovered ? const Color(0xFFF4ED47) : Colors.white,
+              fontSize: 16.sp,
+              fontWeight: _isHovered ? FontWeight.w600 : FontWeight.w500,
+              letterSpacing: 0.5,
+            ),
           ),
         ),
       ),

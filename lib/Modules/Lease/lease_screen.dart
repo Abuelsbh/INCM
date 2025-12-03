@@ -248,8 +248,8 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
       return;
     }
 
-    if (_locationController.text.trim().isEmpty) {
-      _showToast('Please enter the location');
+    if (selectedLocation == null || selectedLocation!.isEmpty) {
+      _showToast('Please select a location');
       return;
     }
 
@@ -268,13 +268,13 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
     _fullNameController.clear();
     _phoneController.clear();
     _areaController.clear();
-    _locationController.clear();
     _sizeController.clear();
     _budgetController.clear();
     _purposeController.clear();
     _otherRoleController.clear();
     setState(() {
       selectedRole = null;
+      selectedLocation = null;
     });
   }
 
@@ -335,12 +335,6 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
 
   Widget _buildContactFormSection(BuildContext context, bool isMobile, bool isTablet) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(isMobile ? Assets.imagesLeastBackgroundMob : Assets.imagesLeastBackground),
-          fit: BoxFit.fill,
-        ),
-      ),
       width: double.infinity,
       height: isMobile ? 786.h : (isTablet ? 1200.h : 1200.h),
       child:  Center(
@@ -579,12 +573,16 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
               },
             ),
             SizedBox(height: 15.h),
-            _buildFormField(
-              'LOCATION',
-              controller: _locationController,
-              keyboardType: TextInputType.emailAddress,
+            _buildDropdownField("LOCATION","SELECT LOCATION",
+              value: selectedLocation,
+              items: locations,
               isMobile: isMobile,
               isTablet: isTablet,
+              onChanged: (val) {
+                setState(() {
+                  selectedLocation = val;
+                });
+              },
             ),
             SizedBox(height: 15.h),
             _buildFormField(
@@ -770,13 +768,17 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                 ),
                 SizedBox(width: isTablet ? 50.w : 100.w),
                 Expanded(
-                  child: _buildFormField(
-                    'LOCATION',
-                    controller: _locationController,
-                    keyboardType: TextInputType.emailAddress,
-                    isMobile: isMobile,
-                    isTablet: isTablet,
-                  ),
+                    child: _buildDropdownField("LOCATION","CHOOSE",
+                      value: selectedLocation,
+                      items: locations,
+                      isMobile: isMobile,
+                      isTablet: isTablet,
+                      onChanged: (val) {
+                        setState(() {
+                          selectedLocation = val;
+                        });
+                      },
+                    )
                 ),
 
               ],
@@ -844,8 +846,9 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
           label??'',
           style: TextStyle(
             color: const Color(0xFFF4ED47),
-            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
             letterSpacing: 1,
+            fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
         SizedBox(height: 1.h),
@@ -948,8 +951,9 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
           'PHONE NUMBER',
           style: TextStyle(
             color: const Color(0xFFF4ED47),
-            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
             letterSpacing: 1,
+            fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
         SizedBox(height: 2.h),
@@ -1080,8 +1084,9 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
           label,
           style: TextStyle(
             color: const Color(0xFFF4ED47),
-            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
             letterSpacing: 1,
+            fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
         SizedBox(height: isMobile ? 4.h : 10.h),

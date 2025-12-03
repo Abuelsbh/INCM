@@ -28,6 +28,49 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
   // Country code
   String _selectedCountryCode = '+20'; // Egypt as default
 
+  List<String> locations = [
+    "Alexandria",
+    "6th Settlement",
+    "Northern Expansion",
+    "El Gouna",
+    "North Coast-Sahel",
+    "El Shorouk",
+    "El Choueifat",
+    "New Zayed",
+    "El Sheikh Zayed",
+    "Al Dabaa",
+    "New Capital City",
+    "Al Alamein",
+    "Ain Sokhna",
+    "Hurghada",
+    "New Cairo",
+    "Old Cairo",
+    "Central Cairo",
+    "El Lotus",
+    "South Investors",
+    "North Investors",
+    "Maadi",
+    "South New Cairo",
+    "Golden Square",
+    "October Gardens",
+    "New Capital Gardens",
+    "Ras El Hekma",
+    "Ras Sudr",
+    "New Sphinx",
+    "Sahl Hasheesh",
+    "Somabay",
+    "Sidi Heneish",
+    "Sidi Abdel Rahman",
+    "Ghazala Bay",
+    "6th of October City",
+    "Mostakbal City",
+    "Madinaty",
+    "Mokattam",
+    "New Heliopolis",
+    "Heliopolis",
+  ];
+  String? selectedLocation;
+
   final List<Map<String, String>> _countryCodes = [
     {'code': '+20', 'country': 'EG', 'flag': '🇪🇬'},
     {'code': '+966', 'country': 'SA', 'flag': '🇸🇦'},
@@ -132,8 +175,8 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
     }
 
     // Validate location
-    if (_locationController.text.trim().isEmpty) {
-      _showToast('Please enter the location');
+    if (selectedLocation == null || selectedLocation!.isEmpty) {
+      _showToast('Please select a location');
       return;
     }
 
@@ -155,7 +198,9 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
     _fullNameController.clear();
     _phoneController.clear();
     _messageController.clear();
-    _locationController.clear();
+    setState(() {
+      selectedLocation = null;
+    });
     _emailController.clear();
   }
 
@@ -168,7 +213,10 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(Assets.imagesContactUsBackground), // your background image asset
-          fit: BoxFit.cover,
+          fit: BoxFit.cover,colorFilter: ColorFilter.mode(
+          Colors.black.withOpacity(0.4), // درجة التغميق – زوّدها أو قلّلها
+          BlendMode.darken,
+        ),
         ),
       ),
       width: double.infinity,
@@ -222,29 +270,6 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                     ),
                   ),
 
-                  // SizedBox(height: 16.h),
-                  //
-                  // // Subtitle
-                  //     RichText(
-                  //       textAlign: TextAlign.center,
-                  //       text: TextSpan(
-                  //   style: TextStyle(
-                  //           fontFamily: 'OptimalBold',
-                  //     color: Colors.white,
-                  //           fontSize: 32.sp,
-                  //           fontWeight: FontWeight.bold,
-                  //     letterSpacing: 1,
-                  //         ),
-                  //         children: const [
-                  //           TextSpan(text: 'READY TO BUILD SOMETHING '),
-                  //           TextSpan(
-                  //             text: 'GREAT',
-                  //             style: TextStyle(color: Color(0xFFF4ED47)), // 🔸 أصفر
-                  //           ),
-                  //           TextSpan(text: '?'),
-                  //         ],
-                  //       ),
-                  //     ),
 
                   
                   SizedBox(height: 65.h),
@@ -282,10 +307,17 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                       
                       SizedBox(height: 20.h),
 
-                      // Location field
-                      _buildFormField(
+                      // Location dropdown
+                      _buildDropdownField(
                         'LOCATION',
-                        controller: _locationController,
+                        'SELECT LOCATION',
+                        value: selectedLocation,
+                        items: locations,
+                        onChanged: (val) {
+                          setState(() {
+                            selectedLocation = val;
+                          });
+                        },
                       ),
 
                       SizedBox(height: 20.h),
@@ -380,7 +412,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
         Text(
           'PHONE',
           style: TextStyle(
-            fontFamily: 'OptimalBold',
+            fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
             fontSize: 26.sp,
             fontWeight: FontWeight.bold,
@@ -471,6 +503,116 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                   ),
                 ),
               ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdownField(
+      String label,
+      String hint, {
+        required String? value,
+        required List<String> items,
+        required Function(String?) onChanged,
+      }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'AloeveraDisplayBold',
+            color: Colors.white,
+            fontSize: 26.sp,
+            letterSpacing: 1,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        SizedBox(
+          height: 48.h,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(
+                color: value != null
+                    ? const Color(0xFFF4ED47).withOpacity(0.5)
+                    : Colors.grey[300]!,
+                width: value != null ? 2 : 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: value != null
+                      ? const Color(0xFFF4ED47).withOpacity(0.2)
+                      : Colors.black.withOpacity(0.05),
+                  blurRadius: value != null ? 8 : 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: value,
+                isExpanded: true,
+                borderRadius: BorderRadius.circular(8.r),
+                icon: Padding(
+                  padding: EdgeInsets.only(right: 8.w),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: value != null
+                        ? const Color(0xFFF4ED47)
+                        : Colors.grey[600],
+                    size: 26.sp,
+                  ),
+                ),
+                hint: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  child: Text(
+                    hint,
+                    style: TextStyle(
+                      fontSize: 26.sp,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ),
+                dropdownColor: Colors.white,
+                style: TextStyle(
+                  fontSize: 26.sp,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                ),
+                items: items.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 6.w,
+                          height: 6.w,
+                          margin: EdgeInsets.only(right: 10.w),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF4ED47),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            item,
+                            style: TextStyle(
+                              fontSize: 26.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: onChanged,
+                menuMaxHeight: 300.h,
+              ),
             ),
           ),
         ),

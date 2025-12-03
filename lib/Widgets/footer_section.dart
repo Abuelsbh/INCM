@@ -14,7 +14,36 @@ class FooterSection extends StatefulWidget {
   State<FooterSection> createState() => _FooterSectionState();
 }
 
-class _FooterSectionState extends State<FooterSection> {
+class _FooterSectionState extends State<FooterSection> with SingleTickerProviderStateMixin {
+  late AnimationController _colorController;
+  late Animation<Color?> _colorAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _colorController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+
+    _colorAnimation = ColorTween(
+      begin: const Color(0xFF000000), // أسود
+      end: const Color(0xFFC63424), // أحمر
+    ).animate(CurvedAnimation(
+      parent: _colorController,
+      curve: Curves.easeInOut,
+    ));
+
+    // تشغيل animation بشكل متكرر
+    _colorController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _colorController.dispose();
+    super.dispose();
+  }
+
   Future<void> _openLink(String link) async {
     final Uri googleMapsUri = Uri.parse(link);
 
@@ -56,7 +85,7 @@ class _FooterSectionState extends State<FooterSection> {
                             style: TextStyle(
                               fontFamily: 'AloeveraDisplayBold',
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xFFC63424),
+                              color: Colors.black,
                               fontSize: 28.sp,
                               letterSpacing: 1,
                             ),
@@ -69,7 +98,7 @@ class _FooterSectionState extends State<FooterSection> {
                             onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 40.r,),
                           SizedBox(width: 8.w),
                           AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,
-                            onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 40.r,),
+                            onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 40.r,),
                           SizedBox(width: 8.w),
                           AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,
                             onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 40.r,),
@@ -114,17 +143,22 @@ class _FooterSectionState extends State<FooterSection> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        'DOWNLOAD OUR \nAPP NOW!',
-                        style: TextStyle(
-                          fontFamily: 'AloeveraDisplayBold',
-                          color: const Color(0xFF000000),
-                          fontSize: 32.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      AnimatedBuilder(
+                        animation: _colorController,
+                        builder: (context, child) {
+                          return Text(
+                            'DOWNLOAD OUR \nAPP NOW!',
+                            style: TextStyle(
+                              fontFamily: 'AloeveraDisplayBold',
+                              color: _colorAnimation.value ?? const Color(0xFF000000),
+                              fontSize: 36.sp,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          );
+                        },
                       ),
 
-                      SizedBox(height: 30.h),
+                      SizedBox(height: 10.h),
 
                       // QR Code placeholder
                       // Row(

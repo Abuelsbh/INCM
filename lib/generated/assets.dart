@@ -30,6 +30,7 @@ class Assets {
   static const String iconsTik = 'assets/icons/tik.png';
   static const String imagesAboutUsBacground1 = 'assets/images/aboutUsBacground1.png';
   static const String imagesAboutUsBackground = 'assets/images/aboutUsBackground.png';
+  static const String imagesAboutUsBackground1 = 'assets/images/aboutUsBackground1.png';
   static const String imagesAboutUsBackground2 = 'assets/images/aboutUsBackground2.png';
   static const String imagesAboutUsBackgroundMob = 'assets/images/aboutUsBackgroundMob.png';
   static const String imagesAboutUsBackgroundMob1 = 'assets/images/aboutUsBackgroundMob1.png';
@@ -38,6 +39,8 @@ class Assets {
   static const String imagesBuyBackgroundMob = 'assets/images/buyBackgroundMob.png';
   static const String imagesCareerBackground = 'assets/images/careerBackground.png';
   static const String imagesCareerBackgroundMob = 'assets/images/careerBackgroundMob.png';
+  static const String imagesCareerViewMob = 'assets/images/careerViewMob.png';
+  static const String imagesCareerViewWeb = 'assets/images/careerViewWeb.png';
   static const String imagesContactPage = 'assets/images/contactPage.png';
   static const String imagesContactPageMob = 'assets/images/contactPageMob.png';
   static const String imagesContactUsBackground = 'assets/images/contactUsBackground.png';
@@ -46,6 +49,8 @@ class Assets {
   static const String imagesDownloadGooglePlay = 'assets/images/downloadGooglePlay.png';
   static const String imagesFollowUsBackground = 'assets/images/followUsBackground.png';
   static const String imagesFollowUsBackgroundMob = 'assets/images/followUsBackgroundMob.png';
+  static const String imagesFormMobile = 'assets/images/formMobile.png';
+  static const String imagesFormWeb = 'assets/images/formWeb.png';
   static const String imagesINCM = 'assets/images/INCM.png';
   static const String imagesINCMLogo = 'assets/images/INCMLogo.png';
   static const String imagesINCMLogoMob = 'assets/images/INCMLogoMob.png';
@@ -69,12 +74,28 @@ class Assets {
   static const String imagesPic4 = 'assets/images/pic4.jpeg';
   static const String imagesSearchBackground = 'assets/images/searchBackground.png';
   static const String imagesSearchBackgroundMob = 'assets/images/searchBackgroundMob.png';
+  static const String imagesService1 = 'assets/images/service1.png';
+  static const String imagesService1Mob = 'assets/images/service1Mob.png';
+  static const String imagesService2Mob = 'assets/images/service2Mob.png';
+  static const String imagesService2Web = 'assets/images/service2Web.png';
+  static const String imagesService3Mob = 'assets/images/service3Mob.png';
+  static const String imagesService3Web = 'assets/images/service3Web.png';
+  static const String imagesService4Mob = 'assets/images/service4Mob.png';
+  static const String imagesService4Web = 'assets/images/service4Web.png';
+  static const String imagesService5Mob = 'assets/images/service5Mob.png';
+  static const String imagesService5Web = 'assets/images/service5Web.png';
+  static const String imagesService6Mob = 'assets/images/service6Mob.png';
+  static const String imagesService6Web = 'assets/images/service6Web.png';
+  static const String imagesService7 = 'assets/images/service7.png';
+  static const String imagesService7Mob = 'assets/images/service7Mob.png';
+  static const String imagesService8 = 'assets/images/service8.png';
+  static const String imagesServices2Mob = 'assets/images/services2Mob.png';
   static const String imagesSlogany = 'assets/images/slogany.png';
+  static const String imagesWhatsapp = 'assets/images/whatsapp.svg';
   static const String logosLogo2 = 'assets/logos/logo2.svg';
   static const String logosLogo3 = 'assets/logos/logo3.svg';
   static const String logosLogo4 = 'assets/logos/logo4.svg';
   static const String logosLogo6 = 'assets/logos/logo6.svg';
-  static const String videosMobile = 'assets/videos/mobile.mp4';
   static const String videosWebsite = 'assets/videos/website.mp4';
 
 }

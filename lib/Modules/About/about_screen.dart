@@ -35,8 +35,9 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
   late Animation<double> _fadeAnimation;
   bool _hasAnimated = false;
   bool _isAddressHovered = false;
-  final PageController _pageController = PageController(viewportFraction: MediaQuery.of(currentContext_!).size.width > 600 ? 0.33 : 1);
+  PageController? _pageController;
   int _currentPage = 0;
+  bool _pageControllerInitialized = false;
 
   final List<Map<String, String>> items = [
     {
@@ -62,8 +63,8 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
   ];
 
   void _nextPage() {
-    if (_currentPage < items.length - 1) {
-      _pageController.nextPage(
+    if (_currentPage < items.length - 1 && _pageController != null) {
+      _pageController!.nextPage(
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
@@ -71,8 +72,8 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
   }
 
   void _previousPage() {
-    if (_currentPage > 0) {
-      _pageController.previousPage(
+    if (_currentPage > 0 && _pageController != null) {
+      _pageController!.previousPage(
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
@@ -158,6 +159,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
       vsync: this,
     );
     _animationController.reset();
+    // PageController will be initialized in didChangeDependencies
     // تبديل اللون كل 5 ثواني
     _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
       setState(() {
@@ -173,11 +175,31 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
         curve: Curves.easeInOut,
       ),
     );
+    // Start animation after first frame to ensure it works on mobile
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && !_hasAnimated) {
+        _hasAnimated = true;
+        _animationController.forward();
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialize PageController based on screen width
+    if (!_pageControllerInitialized) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      final viewportFraction = screenWidth > 600 ? 0.33 : 1.0;
+      _pageController = PageController(viewportFraction: viewportFraction);
+      _pageControllerInitialized = true;
+    }
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _pageController?.dispose();
     _timer.cancel();
     super.dispose();
   }
@@ -207,15 +229,21 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                 child: Column(
                   children: [
                     if(MediaQuery.of(context).size.width > 600)
-                    _buildOurMissionSection(context),
+                      _buildContactFormSection(context),
                     if(MediaQuery.of(context).size.width > 600)
-                    _buildContactFormSection(context),
+                      _buildOurMissionSection(context),
                     if(MediaQuery.of(context).size.width > 600)
                     _buildLatestNewsSection(context),
+
+
+
+
+
+
                     if(MediaQuery.of(context).size.width < 600)
-                      _buildOurMissionSectionMob(context),
+                      _buildContactFormSectionMob(context),
                     if(MediaQuery.of(context).size.width < 600)
-                    _buildContactFormSectionMob(context),
+                    _buildOurMissionSectionMob(context),
                     if(MediaQuery.of(context).size.width < 600)
                     _buildLatestNewsSectionMob(context),
                     // Add padding at bottom for mobile when bottomNavigationBar is present
@@ -274,13 +302,13 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                 _buildSectionTitle('OUR MISSION'),
                 Gap(20.h),
                 _buildSectionText(
-                  'We develop innovative real estate solutions that create new investment opportunities and deliver comprehensive services. We guide investors throughout their entire journey — from strategic consulting and project development to asset and facilities management — ensuring optimal returns on investment (ROI) in a market where we lead with expertise',
+                  'To be the leading real estate company and the trusted partner for clients and developers seeking reliable real estate services and high- value investment opportunities in a secure, transparent, and competitive market',
                 ),
                 Gap(60.h),
                 _buildSectionTitle('OUR VISION'),
                 Gap(20.h),
                 _buildSectionText(
-                  'To be the leading real estate company and the trusted partner for clients and developers seeking reliable real estate services and high- value investment opportunities in a secure, transparent, and competitive market',
+                  'We develop innovative real estate solutions that create new investment opportunities and deliver comprehensive services. We guide investors throughout their entire journey — from strategic consulting and project development to asset and facilities management — ensuring optimal returns on investment (ROI) in a market where we lead with expertise',
                 ),
               ],
             ),
@@ -329,7 +357,6 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
     return Stack(
       children:[
 
-
         Positioned.fill(child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -337,7 +364,6 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               fit: BoxFit.fill,
             ),
           ),),),
-
 
         Positioned.fill(
           left: -560,
@@ -375,7 +401,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    width: 500,
+                    width: 600,
                     padding: EdgeInsets.all(40.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -490,8 +516,8 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           children: [
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 40.w),
-                              child: PageView.builder(
-                                controller: _pageController,
+                              child: _pageController != null ? PageView.builder(
+                                controller: _pageController!,
                                 itemCount: items.length,
                                 onPageChanged: (index) {
                                   setState(() => _currentPage = index);
@@ -550,7 +576,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                                     ),
                                   );
                                 },
-                              ),
+                              ) : const SizedBox.shrink(),
                             ),
 
                             // Left arrow
@@ -777,6 +803,26 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                       ),
                     ),
                   ),
+                  Gap(20.h),
+                  InkWell(
+                    onTap: isDownloading ? null : downloadFile,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: _isPrimaryColor ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        "CLICK TO DOWNLOAD OUR COMPANY PROFILE",
+                        style: TextStyle(
+                          fontFamily: 'OptimalBold',
+                          color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -822,8 +868,8 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            PageView.builder(
-                              controller: _pageController,
+                            _pageController != null ? PageView.builder(
+                              controller: _pageController!,
                               itemCount: items.length,
                               onPageChanged: (index) {
                                 setState(() => _currentPage = index);
@@ -881,7 +927,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                                   ),
                                 );
                               },
-                            ),
+                            ) : const SizedBox.shrink(),
 
                             // Left arrow
                             Positioned(

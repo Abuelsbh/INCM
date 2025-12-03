@@ -3,27 +3,46 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../generated/assets.dart';
+import 'clients_logos_section.dart';
 import 'custom_button.dart';
 
-class ContactsContentSection extends StatefulWidget {
-  const ContactsContentSection({super.key});
+class ContentServiceSection extends StatefulWidget {
+  final TextEditingController? fullNameController;
+  final TextEditingController? phoneController;
+  final TextEditingController? messageController;
+  final TextEditingController? locationController;
+  final TextEditingController? emailController;
+  final VoidCallback? onSubmit;
+
+  const ContentServiceSection({
+    super.key,
+    this.fullNameController,
+    this.phoneController,
+    this.messageController,
+    this.locationController,
+    this.emailController,
+    this.onSubmit,
+  });
 
   @override
-  State<ContactsContentSection> createState() => _ContactsContentSectionState();
+  State<ContentServiceSection> createState() => _ContentServiceSectionState();
 }
 
-class _ContactsContentSectionState extends State<ContactsContentSection>
+class _ContentServiceSectionState extends State<ContentServiceSection>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool _hasAnimated = false;
 
-  // Form controllers
-  final _fullNameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _messageController = TextEditingController();
-  final _locationController = TextEditingController();
-  final _emailController = TextEditingController();
+  // Form controllers - use provided or create new ones
+  late final TextEditingController _fullNameController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _messageController;
+  late final TextEditingController _locationController;
+  late final TextEditingController _emailController;
+  
+  // Track if we created the controllers (to dispose them)
+  bool _shouldDisposeControllers = false;
 
   // Country code
   String _selectedCountryCode = '+20'; // Egypt as default
@@ -45,6 +64,21 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
   @override
   void initState() {
     super.initState();
+    
+    // Initialize controllers - use provided ones or create new
+    _fullNameController = widget.fullNameController ?? TextEditingController();
+    _phoneController = widget.phoneController ?? TextEditingController();
+    _messageController = widget.messageController ?? TextEditingController();
+    _locationController = widget.locationController ?? TextEditingController();
+    _emailController = widget.emailController ?? TextEditingController();
+    
+    // Track if we need to dispose controllers (only if we created them)
+    _shouldDisposeControllers = widget.fullNameController == null &&
+        widget.phoneController == null &&
+        widget.messageController == null &&
+        widget.locationController == null &&
+        widget.emailController == null;
+    
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -73,11 +107,14 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
   @override
   void dispose() {
     _animationController.dispose();
-    _fullNameController.dispose();
-    _phoneController.dispose();
-    _messageController.dispose();
-    _locationController.dispose();
-    _emailController.dispose();
+    // Only dispose controllers if we created them
+    if (_shouldDisposeControllers) {
+      _fullNameController.dispose();
+      _phoneController.dispose();
+      _messageController.dispose();
+      _locationController.dispose();
+      _emailController.dispose();
+    }
     super.dispose();
   }
 
@@ -103,6 +140,13 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
   }
 
   void _handleSubmit() {
+    // If custom submit handler is provided, use it
+    if (widget.onSubmit != null) {
+      widget.onSubmit!();
+      return;
+    }
+
+    // Default validation and submission logic
     // Validate full name
     if (_fullNameController.text.trim().isEmpty) {
       _showToast('Please enter your full name');
@@ -161,18 +205,15 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return VisibilityDetector(
       key: const Key('contacts-content-section'),
       onVisibilityChanged: _onVisibilityChanged,
       child: Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesContactUsBackground), // your background image asset
-          fit: BoxFit.cover,
-        ),
-      ),
+
       width: double.infinity,
-        height: 1200.h,
+        height: 800.h,
       child: Stack(
         children: [
           Center(
@@ -188,101 +229,113 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 constraints: BoxConstraints(
-                    maxWidth: 950.w,
+
                   maxHeight: MediaQuery.of(context).size.height * 0.9,
                 ),
-                padding: EdgeInsets.all(40.w),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                 children: [
                   // Title
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'NEED EXPERTS ADVICE',
-                          style: TextStyle(
-                            fontFamily: 'OptimalBold',
-                            color: const Color(0xFFF4ED47),
-                            fontSize: 60.sp,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '?',
-                          style: TextStyle(
-                            color: const Color(0xFFF4ED47),
-                            fontSize: 55.sp,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                 Text( 'CONTACT US',
+                   style: TextStyle(
+                     fontFamily: 'OptimalBold',
+                     color: const Color(0xFFF4ED47),
+                     fontSize: isMobile? 32.sp : 72.sp,
+                     fontWeight: FontWeight.bold,
+                     letterSpacing: 2,
+                   ),),
 
 
-                  
+
                   SizedBox(height: 65.h),
-                  
+
                   // Contact form
                   Column(
                     children: [
                       // Full Name and Phone Number row
-                      Row(
+
+                      isMobile
+                          ? Column(
                         children: [
-                          Expanded(
+                          _buildFormField(
+                            'FULL NAME',
+                            controller: _fullNameController,
+                            keyboardType: TextInputType.name,
+                          ),
+                          SizedBox(height: 20.w),
+                          _buildPhoneField(),
+                          SizedBox(height: 20.h),
+                          _buildFormField(
+                            'E-MAIL',
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          SizedBox(height: 20.h),
+                          _buildFormField(
+                            'LOCATION',
+                            controller: _locationController,
+                          ),
+                        ],
+                      )
+                          : Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
                                 child: _buildFormField(
                                   'FULL NAME',
                                   controller: _fullNameController,
                                   keyboardType: TextInputType.name,
                                 ),
-                          ),
-                          SizedBox(width: 60.w),
-                          Expanded(
+                              ),
+                              SizedBox(width: 60.w),
+                              Expanded(
                                 child: _buildPhoneField(),
+                              ),
+                            ],
                           ),
+
+                          SizedBox(height: 20.h),
+                          Row(
+                            children: [
+                              Expanded(
+                                child:_buildFormField(
+                                  'E-MAIL',
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                ),
+                              ),
+                              SizedBox(width: 60.w),
+                              Expanded(
+                                child: _buildFormField(
+                                  'LOCATION',
+                                  controller: _locationController,
+                                ),
+                              ),
+                            ],
+                          ),
+
                         ],
                       ),
-                      
-                      SizedBox(height: 20.h),
 
-                      
-
-                      // Email field
-                      _buildFormField(
-                        'E-MAIL',
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      
-                      SizedBox(height: 20.h),
-
-                      // Location field
-                      _buildFormField(
-                        'LOCATION',
-                        controller: _locationController,
-                      ),
 
                       SizedBox(height: 20.h),
-
                       // Location field
                       _buildFormField(
                         'MESSAGE',
                         hint: 'type your message',
-                        height: 100.h,
+                        height: 82.h,
                         controller: _messageController,
                       ),
 
-                      
                       SizedBox(height: 40.h),
-                      
                       // Submit button
                       ButtonStyles.submitButton(
-                            width: 120.w,
+                        fontSize: isMobile? 18.sp: 32.sp,
+                            width: isMobile? 85.w : 185.w,
                             onPressed: _handleSubmit,
                           ),
+
                         ],
                       ),
                     ],
@@ -304,6 +357,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
         String? hint,
         double? height,
       }) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -312,13 +366,13 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
-            fontSize: 26.sp,
+            fontSize: isMobile? 14.sp :26.sp,
             letterSpacing: 1,
           ),
         ),
         SizedBox(height: 8.h),
         SizedBox(
-          height: height ?? 48.h, // 🔹 الارتفاع الثابت لكل الحقول
+          height: height != null ? height : isMobile ? 42.h : 60.h, // 🔹 الارتفاع الثابت لكل الحقول
           child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -351,6 +405,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
 
 
   Widget _buildPhoneField() {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -359,14 +414,14 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
           style: TextStyle(
             fontFamily: 'OptimalBold',
             color: Colors.white,
-            fontSize: 26.sp,
+            fontSize: isMobile? 14.sp : 26.sp,
             fontWeight: FontWeight.bold,
             letterSpacing: 1,
           ),
         ),
         SizedBox(height: 8.h),
         SizedBox(
-          height: 48.h, // 🔹 نفس الارتفاع
+          height: isMobile? 42.h :60.h, // 🔹 نفس الارتفاع
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -410,7 +465,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                               country['code']!,
                               style: TextStyle(
                                 fontFamily: 'OptimalBold',
-                                fontSize: 20.sp,
+                                fontSize: isMobile? 12.sp :20.sp,
                                 color: Colors.black,
                               ),
                             ),
@@ -438,11 +493,11 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                       hintText: '01XXXXXXXXX',
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
-                        fontSize: 26.sp,
+                        fontSize: isMobile? 14.sp :26.sp,
               ),
             ),
             style: TextStyle(
-                      fontSize: 26.sp,
+                      fontSize: isMobile? 14.sp : 26.sp,
               color: Colors.black,
                     ),
                   ),

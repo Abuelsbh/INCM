@@ -267,7 +267,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
 
-
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
@@ -279,33 +279,41 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               child: VisibilityDetector(
                 key: const Key('contacts-content-section'),
                 onVisibilityChanged: _onVisibilityChanged,
-                child: Column(
-                  children: [
-                    if(MediaQuery.of(context).size.width > 600)
-                      _buildINCMFamilySection(context),
-                    if(MediaQuery.of(context).size.width > 600)
-                      _buildJoinFamilySection(context),
-                    if(MediaQuery.of(context).size.width > 600)
-                      DepartmentsGridSection(departments: departments,),
-                    if(MediaQuery.of(context).size.width > 600)
-                      _buildCareerBenefitsSection(context),
-                    if(MediaQuery.of(context).size.width > 600)
-                      _buildLatestNewsSection(context),
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(isMobile ? Assets.imagesCareerViewMob : Assets.imagesCareerViewWeb),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      if(MediaQuery.of(context).size.width > 600)
+                        _buildINCMFamilySection(context),
+                      if(MediaQuery.of(context).size.width > 600)
+                        _buildJoinFamilySection(context),
+                      if(MediaQuery.of(context).size.width > 600)
+                        DepartmentsGridSection(departments: departments,),
+                      if(MediaQuery.of(context).size.width > 600)
+                        _buildCareerBenefitsSection(context),
+                      if(MediaQuery.of(context).size.width > 600)
+                        _buildLatestNewsSection(context),
 
 
 
 
-                    if(MediaQuery.of(context).size.width < 600)
-                      _buildINCMFamilySectionMob(context),
-                    if(MediaQuery.of(context).size.width < 600)
-                      _buildJoinFamilySectionMob(context),
-                    if(MediaQuery.of(context).size.width < 600)
-                      DepartmentsGridSection(departments: departments,),
-                    if(MediaQuery.of(context).size.width < 600)
-                      _buildCareerBenefitsSectionMob(context),
-                    if(MediaQuery.of(context).size.width < 600)
-                      _buildLatestNewsSectionMob(context),
-                  ],
+                      if(MediaQuery.of(context).size.width < 600)
+                        _buildINCMFamilySectionMob(context),
+                      if(MediaQuery.of(context).size.width < 600)
+                        _buildJoinFamilySectionMob(context),
+                      if(MediaQuery.of(context).size.width < 600)
+                        DepartmentsGridSection(departments: departments,),
+                      if(MediaQuery.of(context).size.width < 600)
+                        _buildCareerBenefitsSectionMob(context),
+                      if(MediaQuery.of(context).size.width < 600)
+                        _buildLatestNewsSectionMob(context),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -331,12 +339,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
 
   Widget _buildINCMFamilySection(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesCareerBackground),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesCareerBackground),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 1200.h,
       child: AnimatedBuilder(
@@ -378,12 +386,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     final isMobile = _isMobile(context);
     final isTablet = _isTablet(context);
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesCareerBackground),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesCareerBackground),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 1200.h,
       child: AnimatedBuilder(
@@ -546,12 +554,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     final isMobile = _isMobile(context);
     final isTablet = _isTablet(context);
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesCareerBackground),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesCareerBackground),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: isMobile ? 1600.h : 1200.h,
       child: AnimatedBuilder(
@@ -709,12 +717,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
 
   Widget _buildLatestNewsSection(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesAboutUsBackground2),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesAboutUsBackground2),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 1200.h,
       child: AnimatedBuilder(
@@ -857,12 +865,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
 
   Widget _buildINCMFamilySectionMob(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesCareerBackgroundMob),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesCareerBackgroundMob),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 786.h,
       child: AnimatedBuilder(
@@ -903,12 +911,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     final isMobile = _isMobile(context);
     final isTablet = _isTablet(context);
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesCareerBackground),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesCareerBackground),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 786.h,
       child: AnimatedBuilder(
@@ -1029,12 +1037,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
 
   Widget _buildCareerBenefitsSectionMob(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesCareerBackgroundMob),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesCareerBackgroundMob),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 786.h,
       child: AnimatedBuilder(
@@ -1117,12 +1125,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
 
   Widget _buildLatestNewsSectionMob(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesAboutUsBackgroundMob2),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesAboutUsBackgroundMob2),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 786.h,
       child: AnimatedBuilder(
