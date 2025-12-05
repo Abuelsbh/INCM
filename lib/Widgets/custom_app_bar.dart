@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../core/Language/locales.dart';
+import '../core/Language/app_languages.dart';
 import 'package:incm/Modules/Career/career_screen.dart';
 import 'package:incm/Modules/Lease/lease_screen.dart';
 import 'package:incm/Modules/Sell/sell_screen.dart';
@@ -32,16 +35,18 @@ class _CustomAppBarState extends State<CustomAppBar> {
   bool isDropdownHovered = false;
   final GlobalKey _servicesKey = GlobalKey();
 
-  final List<Map<String, String>> services = [
-    {'name': 'Corporate Leasing', 'route': CorporateLeasingScreen.routeName},
-    {'name': 'Consultation', 'route': ConsultationScreen.routeName},
-    {'name': 'Marketing', 'route': MarketingScreen.routeName},
-    {'name': 'Medical Leasing', 'route': MedicalLeasingScreen.routeName},
-    {'name': 'Facility Management', 'route': FacilityManagementScreen.routeName},
-    {'name': 'Primary Investment', 'route': PrimaryInvestmentScreen.routeName},
-    {'name': 'Retail leasing', 'route': RetailLeasingScreen.routeName},
-    {'name': 'Franchise Investment', 'route': FranchiseInvestmentScreen.routeName},
-  ];
+  List<Map<String, String>> get services {
+    return [
+      {'name': 'CORPORATE_LEASING'.tr, 'route': CorporateLeasingScreen.routeName},
+      {'name': 'CONSULTATION'.tr, 'route': ConsultationScreen.routeName},
+      {'name': 'MARKETING'.tr, 'route': MarketingScreen.routeName},
+      {'name': 'MEDICAL_LEASING'.tr, 'route': MedicalLeasingScreen.routeName},
+      {'name': 'FACILITY_MANAGEMENT'.tr, 'route': FacilityManagementScreen.routeName},
+      {'name': 'PRIMARY_INVESTMENT'.tr, 'route': PrimaryInvestmentScreen.routeName},
+      {'name': 'RETAIL_LEASING'.tr, 'route': RetailLeasingScreen.routeName},
+      {'name': 'FRANCHISE_INVESTMENT'.tr, 'route': FranchiseInvestmentScreen.routeName},
+    ];
+  }
 
   void _scrollToSection(String sectionId) {
     if (sectionId == 'home') {
@@ -115,25 +120,61 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildMenuItemWithSeparator('HOME', true, () {context.go(HomeScreen.routeName);}),
-                        _buildMenuItemWithSeparator('ABOUT US', true, () {context.go(AboutScreen.routeName);}),
+                        _buildMenuItemWithSeparator('HOME'.tr, true, () {context.go(HomeScreen.routeName);}),
+                        _buildMenuItemWithSeparator('ABOUT_US'.tr, true, () {context.go(AboutScreen.routeName);}),
                         _buildServicesMenuItem(),
-                        _buildMenuItemWithSeparator('BUY', true, () {context.go(BuyScreen.routeName);}),
-                        _buildMenuItemWithSeparator('SELL', true, () {context.go(SellScreen.routeName);}),
-                        _buildMenuItemWithSeparator('LEASE', true, () {context.go(LeaseScreen.routeName);}),
-                        _buildMenuItemWithSeparator('CAREERS', false, () {context.go(CareerScreen.routeName);}),
+                        _buildMenuItemWithSeparator('BUY'.tr, true, () {context.go(BuyScreen.routeName);}),
+                        _buildMenuItemWithSeparator('SELL'.tr, true, () {context.go(SellScreen.routeName);}),
+                        _buildMenuItemWithSeparator('LEASE'.tr, true, () {context.go(LeaseScreen.routeName);}),
+                        _buildMenuItemWithSeparator('CAREERS'.tr, false, () {context.go(CareerScreen.routeName);}),
                       ],
                     ),
                   ),
 
-                // Explore Us Button (Right side)
+                // Language Toggle & Contact Button (Right side)
                 if (MediaQuery.of(context).size.width > 768)
                   Expanded(
                     flex: 2,
-                    child: Container(
-                      child: ButtonStyles.exploreUsButton(
-                        onPressed: () => _scrollToSection('contacts'),
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Language Toggle Button
+                        // Consumer<AppLanguage>(
+                        //   builder: (context, appLanguage, _) {
+                        //     return InkWell(
+                        //       onTap: () {
+                        //         appLanguage.changeLanguage();
+                        //       },
+                        //       child: Container(
+                        //         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                        //         decoration: BoxDecoration(
+                        //           color: const Color(0xFFF4ED47).withOpacity(0.2),
+                        //           borderRadius: BorderRadius.circular(6.r),
+                        //           border: Border.all(
+                        //             color: const Color(0xFFF4ED47),
+                        //             width: 1,
+                        //           ),
+                        //         ),
+                        //         child: Text(
+                        //           appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
+                        //           style: TextStyle(
+                        //             color: const Color(0xFFF4ED47),
+                        //             fontSize: 14.sp,
+                        //             fontWeight: FontWeight.bold,
+                        //             letterSpacing: 1,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        SizedBox(width: 16.w),
+                        // Contact Us Button
+                        ButtonStyles.exploreUsButton(
+                          onPressed: () => _scrollToSection('contacts'),
+                        ),
+                      ],
                     ),
                   ),
 
@@ -225,7 +266,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                     SizedBox(width: 12.w),
                     Text(
-                      'MENU',
+                      'MENU'.tr,
                       style: TextStyle(
                         fontFamily: 'OptimalBold',
                         color: const Color(0xFFF4ED47),
@@ -243,10 +284,26 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 child: ListView(
                   padding: EdgeInsets.symmetric(vertical: 20.h),
                   children: [
-                    _buildSideMenuItem('HOME', Icons.home, 'home', (){ context.go(HomeScreen.routeName);}),
-                    _buildSideMenuItem('ABOUT US', Icons.info, 'about', () { context.go(AboutScreen.routeName);}),
-                    _buildSideMenuItem('SERVICES', Icons.work, 'services', () {}),
-                    _buildSideMenuItem('CONTACTS', Icons.contact_phone, 'contacts',() {}),
+                    _buildSideMenuItem('HOME'.tr, Icons.home, 'home', (){ context.go(HomeScreen.routeName);}),
+                    _buildSideMenuItem('ABOUT_US'.tr, Icons.info, 'about', () { context.go(AboutScreen.routeName);}),
+                    _buildSideMenuItem('SERVICES'.tr, Icons.work, 'services', () {}),
+                    _buildSideMenuItem('CONTACTS'.tr, Icons.contact_phone, 'contacts',() {}),
+                    // Language Toggle
+                    Consumer<AppLanguage>(
+                      builder: (context, appLanguage, _) {
+                        return _buildSideMenuItem(
+                          appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
+                          Icons.language,
+                          'language',
+                          () {
+                            appLanguage.changeLanguage();
+                            setState(() {
+                              isMenuOpen = false;
+                            });
+                          },
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -270,7 +327,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      'INCM Real Estate',
+                      'INCM_REAL_ESTATE'.tr,
                       style: TextStyle(
                         fontFamily: 'Optimal',
                         color: Colors.white.withOpacity(0.5),
@@ -438,7 +495,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _HoverMenuItem(
-              text: 'SERVICES',
+              text: 'SERVICES'.tr,
               onTap: () {},
             ),
             SizedBox(width: 20.w),

@@ -9,6 +9,7 @@ import 'package:incm/Utilities/router_config.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import '../../core/Language/locales.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
 import '../../Widgets/custom_app_bar.dart';
 import '../../Widgets/about_content_section.dart';
@@ -104,7 +105,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
     if (Platform.isAndroid || Platform.isIOS) {
       if (await Permission.storage.request().isDenied) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Storage permission denied')),
+          SnackBar(content: Text('STORAGE_PERMISSION_DENIED'.tr)),
         );
         return;
       }
@@ -137,14 +138,14 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Downloaded to $savePath')),
+        SnackBar(content: Text('${'DOWNLOADED_TO'.tr} $savePath')),
       );
     } catch (e) {
       setState(() {
         isDownloading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Download failed: $e')),
+        SnackBar(content: Text('${'DOWNLOAD_FAILED'.tr} $e')),
       );
     }
   }
@@ -299,17 +300,19 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('OUR MISSION'),
+                _buildSectionTitle('OUR_VISION'.tr),
                 Gap(20.h),
                 _buildSectionText(
-                  'To be the leading real estate company and the trusted partner for clients and developers seeking reliable real estate services and high- value investment opportunities in a secure, transparent, and competitive market',
+                  'OUR_VISION_TEXT'.tr,
                 ),
                 Gap(60.h),
-                _buildSectionTitle('OUR VISION'),
+
+                _buildSectionTitle('OUR_MISSION'.tr),
                 Gap(20.h),
                 _buildSectionText(
-                  'We develop innovative real estate solutions that create new investment opportunities and deliver comprehensive services. We guide investors throughout their entire journey — from strategic consulting and project development to asset and facilities management — ensuring optimal returns on investment (ROI) in a market where we lead with expertise',
+                  'OUR_MISSION_TEXT'.tr,
                 ),
+
               ],
             ),
           ),
@@ -412,7 +415,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: 'WHO ARE WE',
+                                text: 'WHO_ARE_WE'.tr,
                                 style: TextStyle(
                                   fontFamily: 'OptimalBold',
                                   color: const Color(0xFFF4ED47),
@@ -422,7 +425,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                                 ),
                               ),
                               TextSpan(
-                                text: '?',
+                                text: 'WHO_ARE_WE_QUESTION'.tr,
                                 style: TextStyle(
                                   color: const Color(0xFFF4ED47),
                                   fontSize: 80.sp,
@@ -433,7 +436,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           ),
                         ),
                         Text(
-                          'We were established in 2019 as a comprehensive real estate company, entering a competitive market with a clear vision and ambitious goals. Our unique synergy and team of experts have enabled us to stand out In the industry by offering a full spectrum of services tailored to diverse client needs \n\nThis strategic approach has allowed us to secure exclusive projects that showcase our capabilities and reinforce our credibility. Over the years, we have achieved significant milestones, built a trusted reputation, and earned a prestigious position within the real estate sector',
+                          'WE_WERE_ESTABLISHED'.tr,
                           textAlign: TextAlign.justify,
                           style: TextStyle(
                             color: Colors.white,
@@ -454,7 +457,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              "CLICK TO DOWNLOAD OUR COMPANY PROFILE",
+                              "CLICK_TO_DOWNLOAD_PROFILE".tr,
                               style: TextStyle(
                                 fontFamily: 'OptimalBold',
                                 color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
@@ -503,7 +506,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('LATEST NEWS & EVENTS'),
+                _buildSectionTitle('LATEST_NEWS_EVENTS'.tr),
                 Gap(40.h),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 60.h),
@@ -667,17 +670,18 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitleMob('OUR MISSION'),
+                _buildSectionTitleMob('OUR_VISION'.tr),
                 Gap(5.h),
                 _buildSectionTextMob(
-                  'We develop innovative real estate solutions that create new investment opportunities and deliver comprehensive services. We guide investors throughout their entire journey — from strategic consulting and project development to asset and facilities management — ensuring optimal returns on investment (ROI) in a market where we lead with expertise',
+                  'OUR_MISSION_TEXT'.tr,
                 ),
                 Gap(20.h),
-                _buildSectionTitleMob('OUR VISION'),
+                _buildSectionTitleMob('OUR_MISSION'.tr),
                 Gap(5.h),
                 _buildSectionTextMob(
-                  'To be the leading real estate company and the trusted partner for clients and developers seeking reliable real estate services and high- value investment opportunities in a secure, transparent, and competitive market',
+                  'OUR_VISION_TEXT'.tr,
                 ),
+
               ],
             ),
           ),
@@ -767,7 +771,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'WHO ARE WE',
+                          text: 'WHO_ARE_WE'.tr,
                           style: TextStyle(
                             fontFamily: 'OptimalBold',
                             color: const Color(0xFFF4ED47),
@@ -777,7 +781,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           ),
                         ),
                         TextSpan(
-                          text: '?',
+                          text: 'WHO_ARE_WE_QUESTION'.tr,
                           style: TextStyle(
                             color: const Color(0xFFF4ED47),
                             fontSize: 40.sp,
@@ -794,7 +798,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      'We were established in 2019 as a comprehensive real estate company, entering a competitive market with a clear vision and ambitious goals. Our unique synergy and team of experts have enabled us to stand out In the industry by offering a full spectrum of services tailored to diverse client needs \n\nThis strategic approach has allowed us to secure exclusive projects that showcase our capabilities and reinforce our credibility. Over the years, we have achieved significant milestones, built a trusted reputation, and earned a prestigious position within the real estate sector',
+                      'WE_WERE_ESTABLISHED'.tr,
                       textAlign: TextAlign.justify,
                       style: TextStyle(
                         color: Colors.white,
@@ -813,7 +817,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        "CLICK TO DOWNLOAD OUR COMPANY PROFILE",
+                        "CLICK_TO_DOWNLOAD_PROFILE".tr,
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
@@ -858,7 +862,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitleMob('LATEST NEWS & EVENTS'),
+                _buildSectionTitleMob('LATEST_NEWS_EVENTS'.tr),
                 Gap(20.h),
                 Container(
                   child: Column(
@@ -943,7 +947,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             // Right arrow
                             Positioned(
                               top: 135,
-                              right: 0,
+                              right: -10,
                               child: IconButton(
                                 icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
                                 iconSize: 40,

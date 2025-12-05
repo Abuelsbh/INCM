@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../core/Language/locales.dart';
+import '../core/Language/app_languages.dart';
 import '../Modules/About/about_screen.dart';
 import '../Modules/Buy/buy_screen.dart';
 import '../Modules/Career/career_screen.dart';
@@ -33,16 +36,18 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
 
-  final List<Map<String, String>> services = [
-    {'name': 'Corporate Leasing', 'route': CorporateLeasingScreen.routeName},
-    {'name': 'Consultation', 'route': ConsultationScreen.routeName},
-    {'name': 'Marketing', 'route': MarketingScreen.routeName},
-    {'name': 'Medical Leasing', 'route': MedicalLeasingScreen.routeName},
-    {'name': 'Facility Management', 'route': FacilityManagementScreen.routeName},
-    {'name': 'Primary Investment', 'route': PrimaryInvestmentScreen.routeName},
-    {'name': 'Retail leasing', 'route': RetailLeasingScreen.routeName},
-    {'name': 'Franchise Investment', 'route': FranchiseInvestmentScreen.routeName},
-  ];
+  List<Map<String, String>> get services {
+    return [
+      {'name': 'CORPORATE_LEASING'.tr, 'route': CorporateLeasingScreen.routeName},
+      {'name': 'CONSULTATION'.tr, 'route': ConsultationScreen.routeName},
+      {'name': 'MARKETING'.tr, 'route': MarketingScreen.routeName},
+      {'name': 'MEDICAL_LEASING'.tr, 'route': MedicalLeasingScreen.routeName},
+      {'name': 'FACILITY_MANAGEMENT'.tr, 'route': FacilityManagementScreen.routeName},
+      {'name': 'PRIMARY_INVESTMENT'.tr, 'route': PrimaryInvestmentScreen.routeName},
+      {'name': 'RETAIL_LEASING'.tr, 'route': RetailLeasingScreen.routeName},
+      {'name': 'FRANCHISE_INVESTMENT'.tr, 'route': FranchiseInvestmentScreen.routeName},
+    ];
+  }
 
   @override
   void initState() {
@@ -184,7 +189,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header with logo
+                      // Header with logo and language toggle
                       Container(
                         padding: EdgeInsets.all(20.w),
                         decoration: BoxDecoration(
@@ -196,22 +201,53 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                           ),
                         ),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'AR | EN',
+                              'AR_EN'.tr,
                               style: TextStyle(
-                                color: const Color(0xFFFFC700),
+                                color: const Color(0xFFF4ED47),
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
+                            // Language Toggle Button
+                            // Consumer<AppLanguage>(
+                            //   builder: (context, appLanguage, _) {
+                            //     return InkWell(
+                            //       onTap: () {
+                            //         appLanguage.changeLanguage();
+                            //       },
+                            //       child: Container(
+                            //         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                            //         decoration: BoxDecoration(
+                            //           color: const Color(0xFFF4ED47).withOpacity(0.2),
+                            //           borderRadius: BorderRadius.circular(6.r),
+                            //           border: Border.all(
+                            //             color: const Color(0xFFF4ED47),
+                            //             width: 1,
+                            //           ),
+                            //         ),
+                            //         child: Text(
+                            //           appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
+                            //           style: TextStyle(
+                            //             color: const Color(0xFFF4ED47),
+                            //             fontSize: 14.sp,
+                            //             fontWeight: FontWeight.bold,
+                            //             letterSpacing: 1,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     );
+                            //   },
+                            // ),
                           ],
                         ),
                       ),
                       // Menu Items
-                      _buildMenuItem('HOME', () => context.go(HomeScreen.routeName)),
-                      _buildMenuItem('ABOUT US', () => context.go(AboutScreen.routeName)),
-                      _buildMenuItem('SERVICES', _toggleServices, hasDropdown: true),
+                      _buildMenuItem('HOME'.tr, () => context.go(HomeScreen.routeName)),
+                      _buildMenuItem('ABOUT_US'.tr, () => context.go(AboutScreen.routeName)),
+                      _buildMenuItem('SERVICES'.tr, _toggleServices, hasDropdown: true),
 
                       // Services Submenu
                       AnimatedContainer(
@@ -232,11 +268,11 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                         ),
                       ),
 
-                      _buildMenuItem('BUY', () => context.go(BuyScreen.routeName)),
-                      _buildMenuItem('SELL', () => context.go(SellScreen.routeName)),
-                      _buildMenuItem('CAREERS', () => context.go(CareerScreen.routeName)),
-                      _buildMenuItem('CONTACT US', () => _navigateTo(ContactsScreen.routeName)),
-                      _buildMenuItem('LEASE', () => context.go(LeaseScreen.routeName)),
+                      _buildMenuItem('BUY'.tr, () => context.go(BuyScreen.routeName)),
+                      _buildMenuItem('SELL'.tr, () => context.go(SellScreen.routeName)),
+                      _buildMenuItem('CAREERS'.tr, () => context.go(CareerScreen.routeName)),
+                      _buildMenuItem('CONTACT_US'.tr, () => _navigateTo(ContactsScreen.routeName)),
+                      _buildMenuItem('LEASE'.tr, () => context.go(LeaseScreen.routeName)),
                       SizedBox(height: 20.h),
                     ],
                   ),

@@ -401,6 +401,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
       ),
       child: Column(
         children: [
+          // Title
           Text(
             'ARE YOU',
             textAlign: TextAlign.center,
@@ -412,145 +413,110 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
               letterSpacing: 2,
             ),
           ),
+          SizedBox(height: isMobile ? 15.h : 20.h),
+
+          // Role Selection
+          isMobile || isTablet
+              ? Container(
+                  // Mobile/Tablet: Split Background (2 columns)
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      // Left Column - Dark Background
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(isMobile ? 12.w : 20.w),
+                          child: Column(
+                            children: [
+                              _buildCheckboxOption(
+                                'buyer',
+                                'BUYER',
+                                isMobile,
+                                isTablet,
+                              ),
+                              SizedBox(height: isMobile ? 12.h : 16.h),
+                              _buildCheckboxOption(
+                                'broker',
+                                'BROKER',
+                                isMobile,
+                                isTablet,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // Right Column - Brown Background
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(isMobile ? 12.w : 20.w),
+                          child: Column(
+                            children: [
+                              _buildCheckboxOption(
+                                'seller',
+                                'SELLER',
+                                isMobile,
+                                isTablet,
+                              ),
+                              SizedBox(height: isMobile ? 12.h : 16.h),
+                              _buildOtherCheckboxOption(
+                                isMobile,
+                                isTablet,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(
+                  // Desktop: All 4 options in one row
+                  width: double.infinity,
+                  padding: EdgeInsets.all(20.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: _buildCheckboxOption(
+                          'buyer',
+                          'BUYER',
+                          isMobile,
+                          isTablet,
+                        ),
+                      ),
+                      SizedBox(width: 30.w),
+                      Flexible(
+                        child: _buildCheckboxOption(
+                          'seller',
+                          'SELLER',
+                          isMobile,
+                          isTablet,
+                        ),
+                      ),
+                      SizedBox(width: 30.w),
+                      Flexible(
+                        child: _buildCheckboxOption(
+                          'broker',
+                          'BROKER',
+                          isMobile,
+                          isTablet,
+                        ),
+                      ),
+                      SizedBox(width: 30.w),
+                      Flexible(
+                        flex: 1,
+                        child: _buildOtherCheckboxOptionDesktop(
+                          isMobile,
+                          isTablet,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+          SizedBox(height: 15.h),
 
           if (isMobile) ...[
-            // Radio buttons for BUYER, SELLER, BROKER, OTHER (Mobile)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // BUYER
-                Flexible(
-                  child: RadioTheme(
-                    data: RadioThemeData(
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                            (states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return const Color(0xFFF4ED47); // عند الاختيار
-                          }
-                          return Colors.white; // عند عدم الاختيار
-                        },
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Radio<String>(
-                          value: 'buyer',
-                          groupValue: selectedRole,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedRole = value;
-                              _otherRoleController.clear();
-                            });
-                          },
-                          activeColor: const Color(0xFFF4ED47),
-                        ),
-                        const Text(
-                          "BUYER",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-
-                // SELLER
-                Flexible(
-                  child: RadioTheme(
-                    data: RadioThemeData(
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                            (states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return const Color(0xFFF4ED47); // عند الاختيار
-                          }
-                          return Colors.white; // عند عدم الاختيار
-                        },
-                      ),
-                    ),
-                    child:Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Radio<String>(
-                          value: 'seller',
-                          groupValue: selectedRole,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedRole = value;
-                              _otherRoleController.clear();
-                            });
-                          },
-                          activeColor: const Color(0xFFF4ED47),
-                        ),
-                        const Text(
-                          "SELLER",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.h),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: RadioTheme(
-                    data: RadioThemeData(
-                      fillColor: MaterialStateProperty.resolveWith<Color>(
-                            (states) {
-                          if (states.contains(MaterialState.selected)) {
-                            return const Color(0xFFF4ED47); // عند الاختيار
-                          }
-                          return Colors.white; // عند عدم الاختيار
-                        },
-                      ),
-                    ),
-                    child:Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Radio<String>(
-                          value: 'broker',
-                          groupValue: selectedRole,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedRole = value;
-                              _otherRoleController.clear();
-                            });
-                          },
-                          activeColor: const Color(0xFFF4ED47),
-                        ),
-                        const Text(
-                          "BROKER",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 24.h),
-                // OTHER text field (Mobile)
-                Expanded(
-                  child: _buildOtherField(isMobile: isMobile, isTablet: isTablet),
-                ),
-              ],
-            ),
-            SizedBox(height: 15.h),
-
             _buildFormField(
               'FULL NAME',
               controller: _fullNameController,
@@ -593,8 +559,6 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
               isTablet: isTablet,
             ),
             SizedBox(height: 15.h),
-
-
             _buildFormField(
               'BUDGET / RENTAL PRICE (EGP)',
               controller: _sizeController,
@@ -609,127 +573,6 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
 
 
 
-            // Radio buttons for BUYER, SELLER, BROKER, OTHER
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // BUYER
-
-
-                RadioTheme(
-                  data: RadioThemeData(
-                    fillColor: MaterialStateProperty.resolveWith<Color>(
-                          (states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return const Color(0xFFF4ED47); // عند الاختيار
-                        }
-                        return Colors.white; // عند عدم الاختيار
-                      },
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Radio<String>(
-                        value: 'buyer',
-                        groupValue: selectedRole,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedRole = value;
-                            _otherRoleController.clear();
-                          });
-                        },
-                        activeColor: const Color(0xFFF4ED47),
-                      ),
-                      const Text(
-                        "BUYER",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-
-                // SELLER
-                RadioTheme(
-                  data: RadioThemeData(
-                    fillColor: MaterialStateProperty.resolveWith<Color>(
-                          (states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return const Color(0xFFF4ED47); // عند الاختيار
-                        }
-                        return Colors.white; // عند عدم الاختيار
-                      },
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Radio<String>(
-                        value: 'seller',
-                        groupValue: selectedRole,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedRole = value;
-                            _otherRoleController.clear();
-                          });
-                        },
-                      ),
-                      const Text(
-                        "SELLER",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-
-                RadioTheme(
-                  data: RadioThemeData(
-                    fillColor: MaterialStateProperty.resolveWith<Color>(
-                          (states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return const Color(0xFFF4ED47); // عند الاختيار
-                        }
-                        return Colors.white; // عند عدم الاختيار
-                      },
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Radio<String>(
-                        value: 'broker',
-                        groupValue: selectedRole,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedRole = value;
-                            _otherRoleController.clear();
-                          });
-                        },
-                        activeColor: const Color(0xFFF4ED47),
-                      ),
-                      const Text(
-                        "BROKER",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // BROKER
-
-
-                // OTHER text field
-                _buildOtherField(isMobile: isMobile, isTablet: isTablet),
-              ],
-            ),
 
             SizedBox(height: isTablet ? 20.h : 30.h),
 
@@ -893,48 +736,227 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildOtherField({required bool isMobile, required bool isTablet}) {
-    double dropdownHeight() {
-      if (isMobile) return 40.h;
-      if (isTablet) return 48.h;
-      return 55.h; // Web
-    }
-    return Container(
-      width: 200,
-      height: dropdownHeight(),
-      margin: EdgeInsets.only(left: 10.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(
-          color: Colors.grey[300]!,
-          width: 1,
-        ),
-      ),
-      child: Center(
-        child: TextField(
-          controller: _otherRoleController,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(
-            hintText: 'OTHER',
-            isDense: true,
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 12.w,
-              vertical: 12.h,
+  Widget _buildCheckboxOption(String value, String label, bool isMobile, bool isTablet) {
+    final isSelected = selectedRole == value;
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedRole = value;
+          _otherRoleController.clear();
+        });
+      },
+      child: Row(
+        children: [
+          // Square Checkbox
+          Container(
+            width: isMobile ? 20.w : 24.w,
+            height: isMobile ? 20.w : 24.w,
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFFF4ED47) : Colors.transparent,
+              border: Border.all(
+                color: Colors.white,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(4.r),
             ),
-            hintStyle: TextStyle(
-              fontFamily: 'AloeveraDisplayBold',
-              color: Colors.grey[500],
-              fontSize: isMobile ? 14.sp : (isTablet ? 16.sp : 20.sp),
+            child: isSelected
+                ? Icon(
+                    Icons.check,
+                    color: Colors.black,
+                    size: isMobile ? 14.sp : 16.sp,
+                  )
+                : null,
+          ),
+          SizedBox(width: 12.w),
+          // Label
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: isMobile ? 14.sp : (isTablet ? 16.sp : 18.sp),
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1,
             ),
           ),
-          style: TextStyle(
-            fontSize: isMobile ? 14.sp : (isTablet ? 16.sp : 20.sp),
-            color: Colors.black,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOtherCheckboxOption(bool isMobile, bool isTablet) {
+    final isOtherSelected = _otherRoleController.text.trim().isNotEmpty;
+    final isSelected = selectedRole == 'other' || isOtherSelected;
+    
+    return Row(
+      children: [
+        // Square Checkbox
+        InkWell(
+          onTap: () {
+            setState(() {
+              if (isSelected) {
+                selectedRole = null;
+                _otherRoleController.clear();
+              } else {
+                selectedRole = 'other';
+              }
+            });
+          },
+          child: Container(
+            width: isMobile ? 20.w : 24.w,
+            height: isMobile ? 20.w : 24.w,
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFFF4ED47) : Colors.transparent,
+              border: Border.all(
+                color: Colors.white,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(4.r),
+            ),
+            child: isSelected
+                ? Icon(
+                    Icons.check,
+                    color: Colors.black,
+                    size: isMobile ? 14.sp : 16.sp,
+                  )
+                : null,
           ),
         ),
-      ),
+        SizedBox(width: 12.w),
+        // Text Field
+        Expanded(
+          child: Container(
+            height: isMobile ? 35.h : (isTablet ? 40.h : 45.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6.r),
+              border: Border.all(
+                color: Colors.grey[300]!,
+                width: 1,
+              ),
+            ),
+            child: TextField(
+              controller: _otherRoleController,
+              keyboardType: TextInputType.text,
+              onChanged: (value) {
+                setState(() {
+                  if (value.trim().isNotEmpty) {
+                    selectedRole = 'other';
+                  } else if (selectedRole == 'other') {
+                    selectedRole = null;
+                  }
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'OTHER',
+                isDense: true,
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 8.h,
+                ),
+                hintStyle: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: isMobile ? 12.sp : (isTablet ? 14.sp : 16.sp),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              style: TextStyle(
+                fontSize: isMobile ? 12.sp : (isTablet ? 14.sp : 16.sp),
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOtherCheckboxOptionDesktop(bool isMobile, bool isTablet) {
+    final isOtherSelected = _otherRoleController.text.trim().isNotEmpty;
+    final isSelected = selectedRole == 'other' || isOtherSelected;
+    
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Square Checkbox
+        InkWell(
+          onTap: () {
+            setState(() {
+              if (isSelected) {
+                selectedRole = null;
+                _otherRoleController.clear();
+              } else {
+                selectedRole = 'other';
+              }
+            });
+          },
+          child: Container(
+            width: 24.w,
+            height: 24.w,
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFFF4ED47) : Colors.transparent,
+              border: Border.all(
+                color: Colors.white,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(4.r),
+            ),
+            child: isSelected
+                ? Icon(
+                    Icons.check,
+                    color: Colors.black,
+                    size: 16.sp,
+                  )
+                : null,
+          ),
+        ),
+        SizedBox(width: 12.w),
+        // Text Field
+        Expanded(
+          child: Container(
+            height: 45.h,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6.r),
+              border: Border.all(
+                color: Colors.grey[300]!,
+                width: 1,
+              ),
+            ),
+            child: TextField(
+              textAlign: TextAlign.center,
+              controller: _otherRoleController,
+              keyboardType: TextInputType.text,
+              onChanged: (value) {
+                setState(() {
+                  if (value.trim().isNotEmpty) {
+                    selectedRole = 'other';
+                  } else if (selectedRole == 'other') {
+                    selectedRole = null;
+                  }
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'OTHER',
+                isDense: true,
+                border: InputBorder.none,
+
+                hintStyle: TextStyle(
+                  color: Colors.grey[500],
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              style: TextStyle(
+                fontSize: 18.sp,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

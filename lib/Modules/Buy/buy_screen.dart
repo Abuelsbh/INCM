@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:incm/core/Font/font_provider.dart';
+import 'package:incm/core/Language/locales.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
@@ -211,46 +212,46 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
 
   void _handleSubmit() {
     if (_fullNameController.text.trim().isEmpty) {
-      _showToast('Please enter your full name');
+      _showToast('PLEASE_ENTER_FULL_NAME'.tr);
       return;
     }
 
     if (_fullNameController.text.trim().length < 3) {
-      _showToast('Full name must be at least 3 characters');
+      _showToast('FULL_NAME_MIN_CHARS'.tr);
       return;
     }
 
     if (_phoneController.text.trim().isEmpty) {
-      _showToast('Please enter your phone number');
+      _showToast('PLEASE_ENTER_PHONE'.tr);
       return;
     }
 
     if (!_validatePhone(_phoneController.text.trim())) {
-      _showToast('Please enter a valid phone number (9-15 digits)');
+      _showToast('PLEASE_ENTER_VALID_PHONE'.tr);
       return;
     }
 
     if (_areaController.text.trim().isEmpty) {
-      _showToast('Please enter the area');
+      _showToast('PLEASE_ENTER_AREA'.tr);
       return;
     }
 
     if (_locationController.text.trim().isEmpty) {
-      _showToast('Please enter the location');
+      _showToast('PLEASE_ENTER_LOCATION'.tr);
       return;
     }
 
     if (_sizeController.text.trim().isEmpty) {
-      _showToast('Please enter your email');
+      _showToast('PLEASE_ENTER_EMAIL'.tr);
       return;
     }
 
     if (!_validateEmail(_sizeController.text.trim())) {
-      _showToast('Please enter a valid email address');
+      _showToast('PLEASE_ENTER_VALID_EMAIL'.tr);
       return;
     }
 
-    _showToast('Form submitted successfully!', isError: false);
+    _showToast('FORM_SUBMITTED_SUCCESS'.tr, isError: false);
 
     _fullNameController.clear();
     _phoneController.clear();
@@ -347,7 +348,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                     children: [
                       Gap(isMobile? 60.h : isTablet ? 70.h : 80.h),
                       Text(
-                        'BUY YOUR UNIT',
+                        'BUY_YOUR_UNIT'.tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
@@ -393,7 +394,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
         children: [
           if (isMobile) ...[
             _buildFormField(
-              'FULL NAME',
+              'FULL_NAME'.tr,
               controller: _fullNameController,
               keyboardType: TextInputType.name,
               isMobile: isMobile,
@@ -402,7 +403,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             SizedBox(height: 15.h),
             _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
             SizedBox(height: 15.h),
-            _buildDropdownField("PREFERRED PROPERTY TYPE","CHOOSE",
+            _buildDropdownField("PREFERRED_PROPERTY_TYPE".tr,"CHOOSE".tr,
               value: selectedPreferredPropertyType,
               items: preferredPropertyType,
               isMobile: isMobile,
@@ -416,7 +417,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             SizedBox(height: 15.h),
 
             _buildFormField(
-              'BUDGET (EGP)',
+              'BUDGET_EGP'.tr,
               controller: _budgetController,
               keyboardType: TextInputType.emailAddress,
               isMobile: isMobile,
@@ -425,7 +426,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             SizedBox(height: 15.h),
 
 
-            _buildDropdownField("LOCATION","SELECT LOCATION",
+            _buildDropdownField("LOCATION".tr,"SELECT_LOCATION".tr,
               value: selectedLocation,
               items: locations,
               isMobile: isMobile,
@@ -438,7 +439,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             ),
             SizedBox(height: 15.h),
             _buildFormField(
-              'UNIT SIZE (SQM)',
+              'UNIT_SIZE_SQM'.tr,
               controller: _sizeController,
               keyboardType: TextInputType.emailAddress,
               isMobile: isMobile,
@@ -446,8 +447,8 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             ),
             SizedBox(height: 15.h),
             _buildDropdownField(
-              "PURPOSE OF PURCHASE",
-              "CHOOSE",
+              "PURPOSE_OF_PURCHASE".tr,
+              "CHOOSE".tr,
               value: selectedPurposeOfPurchase,
               items: purposeOfPurchase,
               isMobile: isMobile,
@@ -463,7 +464,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
 
             if (selectedPurposeOfPurchase == 'Other')
               _buildFormField(
-                'SPECIFY PURPOSE',
+                'SPECIFY_PURPOSE'.tr,
                 controller: _purposeController,
                 keyboardType: TextInputType.text,
                 isMobile: isMobile,
@@ -594,7 +595,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
           ],
           SizedBox(height: isMobile ? 10.h : isTablet ? 20.h : 30.h),
           _buildFormField(
-            'DESCRIPTION / ADDITIONAL DETAILS',
+            'DESCRIPTION_ADDITIONAL_DETAILS'.tr,
             controller: _areaController,
             isMobile: isMobile,
             isTablet: isTablet,
@@ -682,7 +683,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'PHONE NUMBER',
+          'PHONE_NUMBER'.tr,
           style: TextStyle(
             color: const Color(0xFFF4ED47),
             fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),

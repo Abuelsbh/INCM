@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../generated/assets.dart';
+import '../core/Language/locales.dart';
 import 'animated_contact_info.dart';
 
 class FooterSection extends StatefulWidget {
@@ -81,7 +82,7 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                       Row(
                         children: [
                           Text(
-                            'FOLLOW US',
+                            'FOLLOW_US'.tr,
                             style: TextStyle(
                               fontFamily: 'AloeveraDisplayBold',
                               fontWeight: FontWeight.bold,
@@ -147,7 +148,7 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                         animation: _colorController,
                         builder: (context, child) {
                           return Text(
-                            'DOWNLOAD OUR \nAPP NOW!',
+                            'DOWNLOAD_OUR_APP'.tr,
                             style: TextStyle(
                               fontFamily: 'AloeveraDisplayBold',
                               color: _colorAnimation.value ?? const Color(0xFF000000),
@@ -205,7 +206,7 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
               children: [
                 Center(
                   child: Text(
-                    'INCOMERCIAL REAL ESTATE 2025',
+                    'INCOMERCIAL_REAL_ESTATE_2025'.tr,
                     style: TextStyle(
                       color: const Color(0xFF000000),
                       fontSize: 16.sp,
@@ -217,7 +218,7 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                 Gap(10.h),
                 Center(
                   child: Text(
-                    'Powered by E-code Wave',
+                    'POWERED_BY'.tr,
                     style: TextStyle(
                       color: const Color(0xFF000000),
                       fontSize: 14.sp,

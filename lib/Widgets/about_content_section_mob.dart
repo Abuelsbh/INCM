@@ -122,7 +122,6 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: Align(
-                alignment: Alignment.bottomRight,
                 child: AnimatedSlide(
                   offset: _isVisible ? Offset.zero : const Offset(0.5, 0),
                   duration: const Duration(milliseconds: 2000),

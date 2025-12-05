@@ -98,7 +98,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
 
   void _initializeVideo() async {
     try {
-      _videoController = VideoPlayerController.asset(Assets.videosWebsite);
+      _videoController = VideoPlayerController.asset(Assets.videosMobile);
       await _videoController.initialize();
       _videoController.setLooping(true);
       _videoController.setVolume(0.0); // Mute the video for background

@@ -68,6 +68,12 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/logos/
+    - assets/logos/consultation/
+    - assets/logos/facility/
+    - assets/logos/franchise/
+    - assets/logos/marketing/
+    - assets/logos/primary/
+    - assets/logos/retail/
     - assets/fonts/
     - assets/videos/
 
@@ -107,7 +113,7 @@ flutter_launcher_icons:
   ios: true
   web:
     generate: true
-  image_path: "assets/images/INCMLogoMob.png"
-  adaptive_icon_background: "#000000"
-  adaptive_icon_foreground: "assets/images/INCMLogoMob.png"
+  image_path: "assets/logos/INCM.png"
+  adaptive_icon_background: "#F4ED47"
+  adaptive_icon_foreground: "assets/logos/INCM.png"
   remove_alpha_ios: true

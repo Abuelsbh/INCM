@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../core/Language/locales.dart';
 import 'package:incm/Modules/About/about_screen.dart';
 import 'package:incm/Modules/Career/career_screen.dart';
 import 'package:incm/Modules/Contacts/contacts_screen.dart';
@@ -20,7 +21,7 @@ class BottomNavBarWidget extends StatelessWidget {
       width: double.infinity,
       height: 65.h,
       decoration: BoxDecoration(
-        color: const Color(0xFFF4ED47),
+        color: const Color(0xF2596be),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
@@ -44,23 +45,23 @@ class BottomNavBarWidget extends StatelessWidget {
             children: [
 
               _BottomNavBarItemWidget(
-                model: _BottomNavBarItemModel.sellYourUnit,
+                model: _BottomNavBarItemModel.sellYourUnit(context),
                 currentItem: selected,
               ),
               _BottomNavBarItemWidget(
-                model: _BottomNavBarItemModel.services,
+                model: _BottomNavBarItemModel.services(context),
                 currentItem: selected,
               ),
               _BottomNavBarItemWidget(
-                model: _BottomNavBarItemModel.home,
+                model: _BottomNavBarItemModel.home(context),
                 currentItem: selected,
               ),
               _BottomNavBarItemWidget(
-                model: _BottomNavBarItemModel.aboutUs,
+                model: _BottomNavBarItemModel.aboutUs(context),
                 currentItem: selected,
               ),
               _BottomNavBarItemWidget(
-                model: _BottomNavBarItemModel.contacts,
+                model: _BottomNavBarItemModel.contacts(context),
                 currentItem: selected,
               ),
             ],
@@ -107,6 +108,7 @@ class _BottomNavBarItemWidgetState extends State<_BottomNavBarItemWidget> {
             widget.model.iconPath,
             width: 20.r,
             height: 20.r,
+            color: const Color(0xFFF4ED47),
           ),
 
           SizedBox(height: 4.h),
@@ -117,7 +119,7 @@ class _BottomNavBarItemWidgetState extends State<_BottomNavBarItemWidget> {
             style: TextStyle(
               fontSize: 10.sp,
               fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.w500,
-              color: const Color(0xFFC63424),
+              color: const Color(0xFFF4ED47),
             ),
             textAlign: TextAlign.center,
             maxLines: 1,
@@ -146,38 +148,38 @@ class _BottomNavBarItemModel {
     this.routeName = '',
   });
 
-  static _BottomNavBarItemModel sellYourUnit = _BottomNavBarItemModel(
-    title: 'SELL YOUR UNIT',
+  static _BottomNavBarItemModel sellYourUnit(BuildContext context) => _BottomNavBarItemModel(
+    title: 'SELL_YOUR_UNIT'.tr,
     iconPath: Assets.iconsSellYourUnit,
     type: SelectedBottomNavBar.sellYourUnit,
     routeName: SellScreen.routeName,
   );
 
-  static _BottomNavBarItemModel services = _BottomNavBarItemModel(
-    title: 'SERVICES',
+  static _BottomNavBarItemModel services(BuildContext context) => _BottomNavBarItemModel(
+    title: 'BUY'.tr,
     iconPath: Assets.iconsServices,
     type: SelectedBottomNavBar.services,
     routeName: CareerScreen.routeName,
     //routeName: AiScreen.routeName,
   );
 
-  static _BottomNavBarItemModel home = _BottomNavBarItemModel(
-    title: 'HOME',
+  static _BottomNavBarItemModel home(BuildContext context) => _BottomNavBarItemModel(
+    title: 'HOME_TITLE'.tr,
     iconPath: Assets.iconsHome,
     type: SelectedBottomNavBar.home,
     routeName: HomeScreen.routeName,
   );
 
-  static _BottomNavBarItemModel aboutUs = _BottomNavBarItemModel(
-    title: 'ABOUT US',
-    iconPath: Assets.iconsAboutUs,
+  static _BottomNavBarItemModel aboutUs(BuildContext context) => _BottomNavBarItemModel(
+    title: 'LEASE'.tr,
+    iconPath: Assets.iconsLease,
     type: SelectedBottomNavBar.aboutUs,
     routeName: AboutScreen.routeName,
     //routeName: OutboxScreen.routeName,
   );
 
-  static _BottomNavBarItemModel contacts = _BottomNavBarItemModel(
-      title: 'CONTACTS',
+  static _BottomNavBarItemModel contacts(BuildContext context) => _BottomNavBarItemModel(
+      title: 'CONTACTS_TITLE'.tr,
       iconPath: Assets.iconsContacts,
       type: SelectedBottomNavBar.contacts,
       routeName: ContactsScreen.routeName

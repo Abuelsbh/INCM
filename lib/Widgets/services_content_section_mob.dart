@@ -26,7 +26,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
     with TickerProviderStateMixin {
   int currentIndex = 0;
   Timer? _timer;
-  int timeRemaining = 10;
+  int timeRemaining = 5;
   bool isTimerRunning = true;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -133,7 +133,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
     if (!mounted) return;
     
     isTimerRunning = true;
-    timeRemaining = 10; // Reset time
+    timeRemaining = 5; // Reset time
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted || !isTimerRunning) {
         timer.cancel();
@@ -144,7 +144,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
         timeRemaining--;
         if (timeRemaining <= 0) {
           currentIndex = (currentIndex + 1) % serviceData.length; // Cycle through 0-8
-          timeRemaining = 10; // Reset for next cycle
+          timeRemaining = 5; // Reset for next cycle
           _animationController.reset();
           _animationController.forward();
           _slideController.reset();
@@ -311,11 +311,11 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "IT' A ",
+                        "IT'S A ",
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: Colors.white,
-                          fontSize: 20.sp,
+                          fontSize: 17.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -326,7 +326,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                           style: TextStyle(
                             fontFamily: 'OptimalBold',
                             color: currentIndex % 2 == 0 ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
-                            fontSize: 20.sp,
+                            fontSize: 17.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -338,7 +338,7 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: Colors.white,
-                          fontSize: 20.sp,
+                          fontSize: 17.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,14 +29,42 @@ class ClientsLogosSection extends StatefulWidget {
 class _ClientsLogosSectionState extends State<ClientsLogosSection> {
   final ScrollController _scrollController = ScrollController();
   bool _showArrows = false;
+  Timer? _autoScrollTimer;
+  bool _isAutoScrolling = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkIfArrowsNeeded();
+      _startAutoScroll();
     });
     _scrollController.addListener(_onScroll);
+  }
+
+  void _startAutoScroll() {
+    // Start auto-scrolling every 5 seconds
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (mounted && _scrollController.hasClients && _canScrollRight) {
+        _isAutoScrolling = true;
+        _scrollRight();
+        // Reset flag after animation completes
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _isAutoScrolling = false;
+        });
+      } else if (mounted && _scrollController.hasClients && !_canScrollRight) {
+        // If reached the end, scroll back to the beginning
+        _isAutoScrolling = true;
+        _scrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _isAutoScrolling = false;
+        });
+      }
+    });
   }
 
   void _checkIfArrowsNeeded() {
@@ -70,15 +99,26 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
     if (_scrollController.hasClients) {
       final currentPosition = _scrollController.position.pixels;
       final scrollAmount = MediaQuery.of(context).size.width * 0.3;
+      final maxScroll = _scrollController.position.maxScrollExtent;
       final newPosition = (currentPosition + scrollAmount).clamp(
         0.0,
-        _scrollController.position.maxScrollExtent,
+        maxScroll,
       );
-      _scrollController.animateTo(
-        newPosition,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+      
+      // If we're at or near the end, scroll back to start for infinite loop
+      if (newPosition >= maxScroll - 10) {
+        _scrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        _scrollController.animateTo(
+          newPosition,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
     }
   }
 
@@ -95,6 +135,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
 
   @override
   void dispose() {
+    _autoScrollTimer?.cancel();
     _scrollController.dispose();
     super.dispose();
   }
@@ -104,8 +145,8 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
     final isMobile = MediaQuery.of(context).size.width < 600;
     final titleColor = widget.titleColor ?? const Color(0xFFF4ED47);
     final backgroundColor = widget.backgroundColor ?? Colors.grey[900]!.withOpacity(0.4);
-    final logoWidth = widget.logoWidth ?? (isMobile ? 40.w : 180.w);
-    final logoHeight = widget.logoHeight ?? (isMobile ? 30.h : 80.h);
+    final logoWidth = widget.logoWidth ?? (isMobile ? 65.w : 180.w);
+    final logoHeight = widget.logoHeight ?? (isMobile ? 85.h : 80.h);
 
     return Column(
       children: [
@@ -116,7 +157,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
             style: TextStyle(
               fontFamily: 'OptimalBold',
               color: titleColor,
-              fontSize: isMobile ? 24.sp : 60.sp,
+              fontSize: isMobile ? 22.sp : 60.sp,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
             ),
@@ -129,7 +170,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
           padding: EdgeInsets.symmetric(vertical: isMobile ? 8.h : 20.h,horizontal: isMobile ? 8.h : 20.w),
           decoration: BoxDecoration(
             color: backgroundColor,
-            borderRadius: BorderRadius.circular(50.r),
+            borderRadius: BorderRadius.circular(isMobile ? 24.r : 50.r),
           ),
           child: Column(
             children: [
@@ -140,7 +181,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
                   // Logos List
                   Container(
                     height: logoHeight + (isMobile ? 14.h : 40.h),
-                    margin: EdgeInsets.symmetric(horizontal: _showArrows ? isMobile ? 32.w : 60.w : 0),
+                    margin: EdgeInsets.symmetric(horizontal: _showArrows ? isMobile ? 24.w : 60.w : 0),
                     child: ListView.builder(
                       controller: _scrollController,
                       scrollDirection: Axis.horizontal,

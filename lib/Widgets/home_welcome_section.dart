@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../generated/assets.dart';
+import '../core/Language/locales.dart';
 
 class HomeWelcomeSection extends StatelessWidget {
   const HomeWelcomeSection({super.key});
@@ -73,7 +74,7 @@ class HomeWelcomeSection extends StatelessWidget {
               children: [
                 // Welcome text
                 Text(
-                  'WELCOME TO',
+                  'WELCOME_TO'.tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32.sp,
@@ -86,7 +87,7 @@ class HomeWelcomeSection extends StatelessWidget {
                 
                 // Company name
                 Text(
-                  'INCOMERCIAL™️',
+                  'INCOMERCIAL'.tr,
                   style: TextStyle(
                     color: const Color(0xFFF4ED47),
                     fontSize: 48.sp,
@@ -99,7 +100,7 @@ class HomeWelcomeSection extends StatelessWidget {
                 
                 // Tagline
                 Text(
-                  'WHERE OPPORTUNITIES BEGIN',
+                  'WHERE_OPPORTUNITIES_BEGIN'.tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24.sp,

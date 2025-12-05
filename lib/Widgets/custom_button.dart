@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../core/Language/locales.dart';
 
 class CustomButton extends StatefulWidget {
   final String text;
@@ -117,7 +118,7 @@ class ButtonStyles {
     bool enabled = true,
   }) {
     return CustomButton(
-      text: 'CONTACT US',
+      text: 'CONTACT_US'.tr,
       onPressed: onPressed,
       enabled: enabled,
       normalBackgroundColor: const Color(0xFFF4ED47),
@@ -135,7 +136,7 @@ class ButtonStyles {
     double? width,
   }) {
     return CustomButton(
-      text: 'GET APP',
+      text: 'GET_APP'.tr,
       onPressed: onPressed,
       enabled: enabled,
       height: 20.h,
@@ -192,7 +193,7 @@ class ButtonStyles {
     bool enabled = true,
   }) {
     return CustomButton(
-      text: 'LEARN MORE',
+      text: 'LEARN_MORE'.tr,
       onPressed: onPressed,
       borderRadius: 12.r,
       enabled: enabled,
@@ -209,7 +210,7 @@ class ButtonStyles {
     bool enabled = true,
   }) {
     return CustomButton(
-      text: 'LEARN MORE',
+      text: 'LEARN_MORE'.tr,
       onPressed: onPressed,
       borderRadius: 8.r,
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
@@ -231,7 +232,7 @@ class ButtonStyles {
     double? fontSize,
   }) {
     return CustomButton(
-      text: 'SUBMIT',
+      text: 'SUBMIT'.tr,
       onPressed: onPressed,
       enabled: enabled,
       width: width ?? double.infinity,
@@ -250,7 +251,7 @@ class ButtonStyles {
     double? width,
   }) {
     return CustomButton(
-      text: 'SUBMIT',
+      text: 'SUBMIT'.tr,
       onPressed: onPressed,
       enabled: enabled,
       borderRadius: 2.r,

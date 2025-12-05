@@ -10,6 +10,7 @@ import '../../../Widgets/custom_app_bar_mob.dart';
 import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../generated/assets.dart';
+import '../../../core/Language/locales.dart';
 
 class CorporateLeasingScreen extends StatelessWidget {
   static const String routeName = '/services/corporate-leasing';
@@ -60,7 +61,7 @@ class CorporateLeasingScreen extends StatelessWidget {
                             children: [
 
                               Text(
-                                'CORPORATE',
+                                'CORPORATE'.tr,
                                 style: TextStyle(
                                   fontFamily: 'OptimalBold',
                                   color: Colors.white,
@@ -70,7 +71,7 @@ class CorporateLeasingScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'LEASING',
+                                'LEASING'.tr,
                                 style: TextStyle(
                                   fontFamily: 'OptimalBold',
                                   color: const Color(0xFFF4ED47),
@@ -83,7 +84,7 @@ class CorporateLeasingScreen extends StatelessWidget {
                               SizedBox(
                                 width: isMobile ? 170.w : 900.w,
                                 child: Text(
-                                  'Your workspace shapes your success. Select it carefully, and let us make it effortless.',
+                                  'YOUR_WORKSPACE_SHAPES'.tr,
                                   style: TextStyle(
                                     fontFamily: 'AloeveraDisplaySemiBold',
                                     color: Colors.white,
@@ -103,13 +104,13 @@ class CorporateLeasingScreen extends StatelessWidget {
                                     _buildBulletPoint(
                                       context,
                                       isMobile,
-                                      'We have extensive experience in commercial real estate leasing transactions. Whether you\'re looking for office space, an entire building, or an industrial facility, we provide all that and more – with a variety of spaces tailored to meet different needs',
+                                      'WE_HAVE_EXTENSIVE_EXPERIENCE'.tr,
                                     ),
                                     SizedBox(height: 10.h),
                                     _buildBulletPoint(
                                       context,
                                       isMobile,
-                                      'We offer strategic locations close to business hubs, with customized solutions designed to fit your budget, industry type, and number of employees. All units meet high standards for location, accessibility, and parking',
+                                      'STRATEGIC_LOCATIONS'.tr,
                                     ),
                                   ],
                                 ),
@@ -130,7 +131,7 @@ class CorporateLeasingScreen extends StatelessWidget {
                                       text: TextSpan(
                                         children: [
                                           TextSpan(
-                                            text: 'OUR SERVICES ',
+                                            text: 'OUR_SERVICES'.tr + ' ',
                                             style: TextStyle(
                                               fontFamily: 'OptimalBold',
                                               color: Colors.white,
@@ -140,7 +141,7 @@ class CorporateLeasingScreen extends StatelessWidget {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: 'INCLUDE',
+                                            text: 'INCLUDE'.tr,
                                             style: TextStyle(
                                               fontFamily: 'OptimalBold',
                                               color: const Color(0xFFF4ED47),
@@ -166,25 +167,25 @@ class CorporateLeasingScreen extends StatelessWidget {
                                           _buildServiceItem(
                                             context,
                                             isMobile,
-                                            'A large Inventory of office spaces in prime locations.',
+                                            'LARGE_INVENTORY'.tr,
                                           ),
                                           SizedBox(height: isMobile ? 8.h:20.h),
                                           _buildServiceItem(
                                             context,
                                             isMobile,
-                                            'Flexible payment plans to suit every client.',
+                                            'FLEXIBLE_PAYMENT'.tr,
                                           ),
                                           SizedBox(height: isMobile ? 8.h:20.h),
                                           _buildServiceItem(
                                             context,
                                             isMobile,
-                                            'Smart solutions tailored to your requirements, from industry type to number of employees.',
+                                            'SMART_SOLUTIONS'.tr,
                                           ),
                                           SizedBox(height: isMobile ? 8.h:20.h),
                                           _buildServiceItem(
                                             context,
                                             isMobile,
-                                            'Full support for your business expansion or relocation plans.',
+                                            'FULL_SUPPORT'.tr,
                                           ),
                                         ],
                                       ),
@@ -195,22 +196,6 @@ class CorporateLeasingScreen extends StatelessWidget {
 
 
                               Gap(isMobile? 10.h : 350.h),
-                              ClientsLogosSection(
-                                backgroundColor:  Colors.grey[900]!,
-                                logos: [
-                                  Assets.logosLogo2,
-                                  Assets.logosLogo3,
-                                  Assets.logosLogo4,
-                                  Assets.logosLogo6,
-                                  Assets.logosLogo2,
-                                  Assets.logosLogo2,
-                                  Assets.logosLogo3,
-                                  Assets.logosLogo4,
-                                  Assets.logosLogo6,
-                                  Assets.logosLogo2,
-                                ],
-                                visibleLogosCount: 5,
-                              ),
                             ],
                           ),
                         ),

@@ -16,6 +16,7 @@ import '../Modules/Services/FacilityManagement/facility_management_screen.dart';
 import '../Modules/Services/FranchiseInvestment/franchise_investment_screen.dart';
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/Marketing/marketing_screen.dart';
+import '../Modules/AllLogos/all_logos_screen.dart';
 
 BuildContext? get currentContext_ =>
     GoRouterConfig.router.routerDelegate.navigatorKey.currentContext;
@@ -166,6 +167,15 @@ class GoRouterConfig{
           return getCustomTransitionPage(
             state: state,
             child: const MarketingScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AllLogosScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const AllLogosScreen(),
           );
         },
       ),
