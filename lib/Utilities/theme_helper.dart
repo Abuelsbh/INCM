@@ -3,18 +3,20 @@ import 'package:provider/provider.dart';
 import '../core/Theme/theme_model.dart';
 import '../core/Theme/theme_provider.dart';
 
-class ThemeClass extends ThemeModel{
-
-  static ThemeModel of(BuildContext context) => Provider.of<ThemeProvider>(context,listen: false).appTheme;
-
-
-  ThemeClass.defaultTheme({
-    super.isDark= false,
-    super.primaryColor= Colors.blue,
-    super.accentColor= Colors.blueGrey,
-    super.backGroundColor= Colors.white,
-    super.darkGreyColor= const Color(0xff555555),
-    super.lightGreyColor= const Color(0xffaaaaaa),
-    super.warningColor= Colors.red,
-  });
+class ThemeClass {
+  static ThemeModel of(BuildContext context) {
+    try {
+      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+      return themeProvider.appTheme;
+    } catch (e) {
+      // Return default theme if ThemeProvider is not available
+      return const ThemeModel(
+        backGroundColor: Colors.white,
+        textColor: Colors.black,
+        primaryColor: Color(0xFFC63424),
+        secondaryColor: Color(0xFFF4ED47),
+      );
+    }
+  }
 }
+

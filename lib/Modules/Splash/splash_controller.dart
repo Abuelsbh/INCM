@@ -1,30 +1,23 @@
-import 'package:flutter/cupertino.dart';
-import '../Splash/splash_data_handler.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:incm/Modules/Home/home_screen.dart';
 import 'package:state_extended/state_extended.dart';
-import '../../Utilities/shared_preferences.dart';
+import '../../Utilities/router_config.dart';
 
 class SplashController extends StateXController {
-  // singleton
-  factory SplashController() {
-    _this ??= SplashController._();
-    return _this!;
+  @override
+  void initState() {
+    super.initState();
+    _navigateToHome();
   }
-  static SplashController? _this;
-  SplashController._();
 
+  void init(BuildContext context) {
+    _navigateToHome();
+  }
 
-
-  Future init(BuildContext context)async{
-    final result = await SplashDataHandler.getCurrentUser();
-
-    result.fold((l){}, (r){});
-    await Future.delayed(const Duration(seconds: 2));
-    if(context.mounted) {
-      if(SharedPref.isLogin()){
-        // GoRouter.of(context).goNamed(HomeScreen.routeName);
-      }else{
-        // GoRouter.of(context).go(LoginScreen.routeName);
-      }
-    }
+  Future<void> _navigateToHome() async {
+    await Future.delayed(const Duration(seconds: 3));
+    //GoRouterConfig.router.go(HomeScreen.routeName);
   }
 }
+

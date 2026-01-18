@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -240,15 +241,29 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Title
-                      Text(
-                        'Need experts advice?',
-                        style: TextStyle(
-                          fontFamily: 'OptimalBold',
-                          color: const Color(0xFFF4ED47),
-                          fontSize: 22.sp,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Need experts advice'.toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: 'OptimalBold',
+                                color: const Color(0xFFF4ED47),
+                                fontSize: 22.sp,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '?',
+                              style: TextStyle(
+                                color: const Color(0xFFF4ED47),
+                                fontSize: 22.sp,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
@@ -260,7 +275,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                         children: [
 
                           _buildFormField(
-                            'FULL NAME',
+                            'FULL_NAME'.tr(context),
                             controller: _fullNameController,
                             keyboardType: TextInputType.name,
                           ),
@@ -270,7 +285,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                           SizedBox(height: 20.h),
 
                           _buildFormField(
-                            'E-MAIL',
+                            'E_MAIL'.tr(context),
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                           ),
@@ -278,8 +293,8 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                           SizedBox(height: 20.h),
 
                           _buildDropdownField(
-                            'LOCATION',
-                            'SELECT LOCATION',
+                            'LOCATION'.tr(context),
+                            'SELECT_LOCATION'.tr(context),
                             value: selectedLocation,
                             items: locations,
                             onChanged: (val) {
@@ -292,8 +307,8 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                           SizedBox(height: 20.h),
 
                           _buildFormField(
-                            'MESSAGE',
-                            hint: 'type your message',
+                            'MESSAGE'.tr(context),
+                            hint: 'TYPE_YOUR_MESSAGE'.tr(context),
                             height: 80.h,
                             controller: _areaController,
                           ),
@@ -302,6 +317,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
 
                           // Submit button
                           ButtonStyles.submitButtonMob(
+                            context: context,
                             width: 90.w,
                             onPressed: _handleSubmit,
                           ),
@@ -332,7 +348,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
         Text(
           label,
           style: TextStyle(
-            fontFamily: 'OptimalBold',
+            fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
@@ -364,7 +380,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                 ),
                 hintText: hint ?? label.toLowerCase(),
                 hintStyle: TextStyle(
-                  fontFamily: 'OptimalBold',
+                  fontFamily: 'AloeveraDisplayBold',
                   color: Colors.grey[500],
                   fontSize: 16.sp,
                 ),
@@ -388,9 +404,9 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'YOUR NUMBER',
+          'YOUR_NUMBER'.tr(context),
           style: TextStyle(
-            fontFamily: 'OptimalBold',
+            fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
@@ -436,13 +452,13 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                           children: [
                             Text(
                               country['flag']!,
-                              style: TextStyle( fontFamily: 'OptimalBold',fontSize: 14.sp),
+                              style: TextStyle( fontFamily: 'AloeveraDisplayBold',fontSize: 14.sp),
                             ),
                             SizedBox(width: 2.w),
                             Text(
                               country['code']!,
                               style: TextStyle(
-                                fontFamily: 'OptimalBold',
+                                fontFamily: 'AloeveraDisplayBold',
                                 fontSize: 16.sp,
                                 color: Colors.black,
                               ),
@@ -475,10 +491,12 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
                         fontSize: 16.sp,
+                        fontFamily: 'AloeveraDisplayBold',
                       ),
                     ),
                     style: TextStyle(
                       fontSize: 16.sp,
+                      fontFamily: 'AloeveraDisplayBold',
                       color: Colors.black,
                     ),
                   ),
@@ -504,7 +522,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
         Text(
           label,
           style: TextStyle(
-            fontFamily: 'OptimalBold',
+            fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
@@ -555,6 +573,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                     hint,
                     style: TextStyle(
                       fontSize: 16.sp,
+                      fontFamily: 'AloeveraDisplayBold',
                       color: Colors.grey[500],
                     ),
                   ),
@@ -562,6 +581,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                 dropdownColor: Colors.white,
                 style: TextStyle(
                   fontSize: 16.sp,
+                  fontFamily: 'AloeveraDisplayBold',
                   color: Colors.black87,
                   fontWeight: FontWeight.w600,
                 ),
@@ -585,6 +605,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w500,
+                              fontFamily: 'AloeveraDisplayBold',
                             ),
                           ),
                         )

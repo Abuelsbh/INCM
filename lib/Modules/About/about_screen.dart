@@ -17,6 +17,8 @@ import '../../Widgets/custom_app_bar_mob.dart';
 import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/performance_highlights_section.dart';
 import '../../Widgets/scroll_to_top_button.dart';
+import '../../Widgets/footer_section.dart';
+import '../../Widgets/footer_section_mob.dart';
 import '../../generated/assets.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:url_launcher/url_launcher.dart';
@@ -104,8 +106,9 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
     // ✅ Mobile / Desktop version
     if (Platform.isAndroid || Platform.isIOS) {
       if (await Permission.storage.request().isDenied) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('STORAGE_PERMISSION_DENIED'.tr)),
+          SnackBar(content: Text('STORAGE_PERMISSION_DENIED'.tr(context))),
         );
         return;
       }
@@ -137,15 +140,17 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
         isDownloading = false;
       });
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${'DOWNLOADED_TO'.tr} $savePath')),
+        SnackBar(content: Text('${'DOWNLOADED_TO'.tr(context)} $savePath')),
       );
     } catch (e) {
       setState(() {
         isDownloading = false;
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${'DOWNLOAD_FAILED'.tr} $e')),
+        SnackBar(content: Text('${'DOWNLOAD_FAILED'.tr(context)} $e')),
       );
     }
   }
@@ -247,6 +252,11 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                     _buildOurMissionSectionMob(context),
                     if(MediaQuery.of(context).size.width < 600)
                     _buildLatestNewsSectionMob(context),
+                    // Footer
+                    if(MediaQuery.of(context).size.width >= 600)
+                      const FooterSection()
+                    else if(kIsWeb)
+                      const FooterSectionMob(),
                     // Add padding at bottom for mobile when bottomNavigationBar is present
                     if(MediaQuery.of(context).size.width < 600 && !kIsWeb)
                       SizedBox(height: 100.h),
@@ -300,17 +310,17 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('OUR_VISION'.tr),
+                _buildSectionTitle('OUR_VISION'.tr(context)),
                 Gap(20.h),
                 _buildSectionText(
-                  'OUR_VISION_TEXT'.tr,
+                  'OUR_VISION_TEXT'.tr(context),
                 ),
                 Gap(60.h),
 
-                _buildSectionTitle('OUR_MISSION'.tr),
+                _buildSectionTitle('OUR_MISSION'.tr(context)),
                 Gap(20.h),
                 _buildSectionText(
-                  'OUR_MISSION_TEXT'.tr,
+                  'OUR_MISSION_TEXT'.tr(context),
                 ),
 
               ],
@@ -342,7 +352,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
     ),
     child: Text(
       text,
-      textAlign: TextAlign.justify,
+      //textAlign: TextAlign.justify,
       style: TextStyle(
         color: Colors.white,
         fontSize: 26.sp,
@@ -415,7 +425,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: 'WHO_ARE_WE'.tr,
+                                text: 'WHO_ARE_WE'.tr(context),
                                 style: TextStyle(
                                   fontFamily: 'OptimalBold',
                                   color: const Color(0xFFF4ED47),
@@ -425,7 +435,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                                 ),
                               ),
                               TextSpan(
-                                text: 'WHO_ARE_WE_QUESTION'.tr,
+                                text: 'WHO_ARE_WE_QUESTION'.tr(context),
                                 style: TextStyle(
                                   color: const Color(0xFFF4ED47),
                                   fontSize: 80.sp,
@@ -436,8 +446,8 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           ),
                         ),
                         Text(
-                          'WE_WERE_ESTABLISHED'.tr,
-                          textAlign: TextAlign.justify,
+                          'WE_WERE_ESTABLISHED'.tr(context),
+                          //textAlign: TextAlign.justify,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 24.sp,
@@ -457,7 +467,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              "CLICK_TO_DOWNLOAD_PROFILE".tr,
+                              "CLICK_TO_DOWNLOAD_PROFILE".tr(context),
                               style: TextStyle(
                                 fontFamily: 'OptimalBold',
                                 color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
@@ -506,7 +516,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('LATEST_NEWS_EVENTS'.tr),
+                _buildSectionTitle('LATEST_NEWS_EVENTS'.tr(context)),
                 Gap(40.h),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 60.h),
@@ -670,16 +680,16 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitleMob('OUR_VISION'.tr),
+                _buildSectionTitleMob('OUR_VISION'.tr(context)),
                 Gap(5.h),
                 _buildSectionTextMob(
-                  'OUR_MISSION_TEXT'.tr,
+                  'OUR_MISSION_TEXT'.tr(context),
                 ),
                 Gap(20.h),
-                _buildSectionTitleMob('OUR_MISSION'.tr),
+                _buildSectionTitleMob('OUR_MISSION'.tr(context)),
                 Gap(5.h),
                 _buildSectionTextMob(
-                  'OUR_VISION_TEXT'.tr,
+                  'OUR_VISION_TEXT'.tr(context),
                 ),
 
               ],
@@ -711,7 +721,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
     ),
     child: Text(
       text,
-      textAlign: TextAlign.justify,
+     // textAlign: TextAlign.justify,
       style: TextStyle(
         color: Colors.white,
         fontSize: 12.sp,
@@ -771,7 +781,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'WHO_ARE_WE'.tr,
+                          text: 'WHO_ARE_WE'.tr(context),
                           style: TextStyle(
                             fontFamily: 'OptimalBold',
                             color: const Color(0xFFF4ED47),
@@ -781,7 +791,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           ),
                         ),
                         TextSpan(
-                          text: 'WHO_ARE_WE_QUESTION'.tr,
+                          text: 'WHO_ARE_WE_QUESTION'.tr(context),
                           style: TextStyle(
                             color: const Color(0xFFF4ED47),
                             fontSize: 40.sp,
@@ -798,8 +808,8 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      'WE_WERE_ESTABLISHED'.tr,
-                      textAlign: TextAlign.justify,
+                      'WE_WERE_ESTABLISHED'.tr(context),
+                     // textAlign: TextAlign.justify,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 11.sp,
@@ -817,7 +827,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
-                        "CLICK_TO_DOWNLOAD_PROFILE".tr,
+                        "CLICK_TO_DOWNLOAD_PROFILE".tr(context),
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
@@ -862,7 +872,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitleMob('LATEST_NEWS_EVENTS'.tr),
+                _buildSectionTitleMob('LATEST_NEWS_EVENTS'.tr(context)),
                 Gap(20.h),
                 Container(
                   child: Column(

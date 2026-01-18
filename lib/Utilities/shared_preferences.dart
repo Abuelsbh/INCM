@@ -1,57 +1,33 @@
-import 'dart:convert';
-import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../core/Font/font_provider.dart';
-import '../core/Theme/theme_model.dart';
-import '../Models/user_model.dart';
 
-class SharedPref{
+class SharedPref {
+  static SharedPreferences? _prefs;
 
-  static SharedPreferences get prefs => GetIt.instance.get<SharedPreferences>();
-  static const String _language = "language_code";
-  static const String _currentUserKey = "currentUser";
-  static const String _themeKey = "theme";
-  static const String _fontSizeKey = "font_size";
-  static const String _fontFamilyKey = "font_family";
-
-
-
-  static UserModel? getCurrentUser(){
-    if(prefs.getString(_currentUserKey) == null) return null;
-    return UserModel.fromJson(json.decode(prefs.getString(_currentUserKey)!));
+  static Future<void> init() async {
+    _prefs ??= await SharedPreferences.getInstance();
   }
 
-  static Future<bool> saveCurrentUser({required UserModel user})async{
-    return await prefs.setString(_currentUserKey, json.encode(user.toJson()));
+  // Language
+  static String? getLanguage() => _prefs?.getString('language');
+  static Future<bool> setLanguage({required String lang}) async {
+    return await _prefs?.setString('language', lang) ?? false;
   }
 
-  static bool isLogin()=> prefs.getString(_currentUserKey) != null;
-
-  static Future<void> logout() async=> await prefs.remove(_currentUserKey);
-
-  static ThemeModel? getTheme(){
-    if(prefs.getString(_themeKey) == null) return null;
-    return ThemeModel.fromJson(json.decode(prefs.getString(_themeKey)!));
-  }
-  static Future<void> setTheme({required ThemeModel theme})async{
-    await prefs.setString(_themeKey,json.encode(theme.toJson()));
+  // Font
+  static String? getFont() => _prefs?.getString('font');
+  static Future<bool> setFont({required String font}) async {
+    return await _prefs?.setString('font', font) ?? false;
   }
 
-  static double? getFontSizeScale(){
-    return prefs.getDouble(_fontSizeKey);
+  // Theme
+  static String? getTheme() => _prefs?.getString('theme');
+  static Future<bool> setTheme({required String theme}) async {
+    return await _prefs?.setString('theme', theme) ?? false;
   }
-  static Future<void> setFontSizeScale({required double fontSizeScale})async{
-    await prefs.setDouble(_fontSizeKey,fontSizeScale);
+
+  // Clear all
+  static Future<bool> clear() async {
+    return await _prefs?.clear() ?? false;
   }
-
-
-  static Future setFontFamily({required FontFamilyTypes fontFamily}) async=> await prefs.setInt(_fontFamilyKey, fontFamily.index);
-  static FontFamilyTypes?  getFontFamily()=> prefs.getInt(_fontFamilyKey) == null?null:FontFamilyTypes.values[prefs.getInt(_fontFamilyKey)!];
-
-
-  static String? getLanguage() => prefs.getString(_language);
-
-  static Future<void> setLanguage({required String lang})async => await prefs.setString(_language,lang);
-
-
 }
+

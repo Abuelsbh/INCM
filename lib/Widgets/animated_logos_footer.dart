@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -73,7 +74,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.h),
             child: Text(
-              'OUR SUCCESS PARTNERS',
+              'OUR_SUCCESS_PARTNERS'.tr(context),
               style: TextStyle(
                 fontFamily: 'OptimalBold',
                 color: const Color(0xFFC63424),
@@ -101,8 +102,10 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
           ),
           Gap(6.h),
           MediaQuery.of(context).size.width >= 600 ? ButtonStyles.learnMoreButton(
+            context: context,
             onPressed: () {},
           ) : ButtonStyles.learnMoreButtonMob(
+              context: context,
               onPressed: () {},
           ),
           Gap(12.h),

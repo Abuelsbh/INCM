@@ -74,7 +74,7 @@ class HomeWelcomeSection extends StatelessWidget {
               children: [
                 // Welcome text
                 Text(
-                  'WELCOME_TO'.tr,
+                  'WELCOME_TO'.tr(context),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32.sp,
@@ -87,7 +87,7 @@ class HomeWelcomeSection extends StatelessWidget {
                 
                 // Company name
                 Text(
-                  'INCOMERCIAL'.tr,
+                  'INCOMERCIAL'.tr(context),
                   style: TextStyle(
                     color: const Color(0xFFF4ED47),
                     fontSize: 48.sp,
@@ -100,7 +100,7 @@ class HomeWelcomeSection extends StatelessWidget {
                 
                 // Tagline
                 Text(
-                  'WHERE_OPPORTUNITIES_BEGIN'.tr,
+                  'WHERE_OPPORTUNITIES_BEGIN'.tr(context),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24.sp,

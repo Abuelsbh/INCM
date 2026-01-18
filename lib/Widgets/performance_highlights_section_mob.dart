@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'animated_logos_footer.dart';
 
@@ -75,14 +76,14 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                     letterSpacing: 2,
                     color: Colors.white, // اللون الافتراضي للنص
                   ),
-                  children: const [
+                  children: [
                     TextSpan(
-                      text: 'ACHIEVEMENTS ',
-                      style: TextStyle(color: Colors.white),
+                      text: 'ACHIEVEMENTS'.tr(context) + ' ',
+                      style: const TextStyle(color: Colors.white),
                     ),
                     TextSpan(
-                      text: 'HIGHLIGHTS',
-                      style: TextStyle(color: Color(0xFFF4ED47)), // أصفر
+                      text: 'HIGHLIGHTS'.tr(context),
+                      style: const TextStyle(color: Color(0xFFF4ED47)), // أصفر
                     ),
                   ],
                 ),

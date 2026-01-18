@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../generated/assets.dart';
+import '../core/Language/locales.dart';
 
 class DepartmentsGridSection extends StatelessWidget {
   final List<String> departments;
@@ -27,7 +27,7 @@ class DepartmentsGridSection extends StatelessWidget {
         //   ),
         // ),
         width: double.infinity,
-        height:  MediaQuery.of(context).size.width <= 600 ? 786: 1200.h,
+        height:  MediaQuery.of(context).size.width <= 600 ? 750: 1200.h,
         child: Center(
           child: Container(
             padding: EdgeInsets.all(40.w),
@@ -40,7 +40,7 @@ class DepartmentsGridSection extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 60.h),
                   child: Column(
                     children: [
-                      _buildTitle(isMobile, isTablet),
+                      _buildTitle(context, isMobile, isTablet),
                       SizedBox(height: isMobile ? 50.h : (isTablet ? 70.h : 90.h)),
 
 
@@ -86,14 +86,14 @@ class DepartmentsGridSection extends StatelessWidget {
 
   }
 
-  Widget _buildTitle(bool isMobile, bool isTablet) {
+  Widget _buildTitle(BuildContext context, bool isMobile, bool isTablet) {
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
         children: [
           // "EXPLORE"
           TextSpan(
-            text: 'EXPLORE OUR ',
+            text: 'EXPLORE_OUR'.tr(context),
             style: TextStyle(
               fontFamily: 'OptimalBold',
               fontSize: isMobile ? 30.sp : (isTablet ? 60.sp : 85.sp),
@@ -106,7 +106,7 @@ class DepartmentsGridSection extends StatelessWidget {
 
           // "DEPARTMENTS"
           TextSpan(
-            text: 'DEPARTMENTS',
+            text: 'DEPARTMENTS'.tr(context),
             style: TextStyle(
               fontFamily: 'OptimalBold',
               fontSize: isMobile ? 30.sp : (isTablet ? 60.sp :85.sp),

@@ -1,6 +1,9 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incm/Modules/AllLogos/all_logos_screen.dart';
 import 'package:provider/provider.dart';
 import '../core/Language/locales.dart';
 import '../core/Language/app_languages.dart';
@@ -19,6 +22,8 @@ import '../Modules/Services/Marketing/marketing_screen.dart';
 import '../Modules/Services/MedicalLeasing/medical_leasing_screen.dart';
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
+import '../Modules/Admin/admin_panel_screen.dart';
+import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -34,17 +39,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
   bool isServicesHovered = false;
   bool isDropdownHovered = false;
   final GlobalKey _servicesKey = GlobalKey();
+  OverlayEntry? _servicesOverlay;
+  Timer? _closeTimer;
 
   List<Map<String, String>> get services {
     return [
-      {'name': 'CORPORATE_LEASING'.tr, 'route': CorporateLeasingScreen.routeName},
-      {'name': 'CONSULTATION'.tr, 'route': ConsultationScreen.routeName},
-      {'name': 'MARKETING'.tr, 'route': MarketingScreen.routeName},
-      {'name': 'MEDICAL_LEASING'.tr, 'route': MedicalLeasingScreen.routeName},
-      {'name': 'FACILITY_MANAGEMENT'.tr, 'route': FacilityManagementScreen.routeName},
-      {'name': 'PRIMARY_INVESTMENT'.tr, 'route': PrimaryInvestmentScreen.routeName},
-      {'name': 'RETAIL_LEASING'.tr, 'route': RetailLeasingScreen.routeName},
-      {'name': 'FRANCHISE_INVESTMENT'.tr, 'route': FranchiseInvestmentScreen.routeName},
+      {'name': 'CORPORATE_LEASING'.tr(context), 'route': CorporateLeasingScreen.routeName},
+      {'name': 'CONSULTATION'.tr(context), 'route': ConsultationScreen.routeName},
+      {'name': 'MARKETING'.tr(context), 'route': MarketingScreen.routeName},
+      {'name': 'MEDICAL_LEASING'.tr(context), 'route': MedicalLeasingScreen.routeName},
+      {'name': 'FACILITY_MANAGEMENT'.tr(context), 'route': FacilityManagementScreen.routeName},
+      {'name': 'PRIMARY_INVESTMENT'.tr(context), 'route': PrimaryInvestmentScreen.routeName},
+      {'name': 'RETAIL_LEASING'.tr(context), 'route': RetailLeasingScreen.routeName},
+      {'name': 'FRANCHISE_INVESTMENT'.tr(context), 'route': FranchiseInvestmentScreen.routeName},
     ];
   }
 
@@ -55,6 +62,121 @@ class _CustomAppBarState extends State<CustomAppBar> {
     else if (sectionId == 'contacts') {
       context.go(ContactsScreen.routeName);
     }
+  }
+
+  void _showServicesDropdown() {
+    if (_servicesOverlay != null) return; // Already shown
+    
+    // Cancel any existing close timer
+    _closeTimer?.cancel();
+    _closeTimer = null;
+    
+    final RenderBox? renderBox = _servicesKey.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null) return;
+
+    final position = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
+    _servicesOverlay = OverlayEntry(
+      builder: (context) {
+        return Positioned(
+          top: position.dy + size.height + 2.h,
+          left: position.dx + (size.width / 2) - 125.w,
+          child: Material(
+            elevation: 10,
+            color: Colors.transparent,
+            child: MouseRegion(
+              onEnter: (_) {
+                // Cancel close timer when mouse enters dropdown
+                _closeTimer?.cancel();
+                _closeTimer = null;
+                setState(() {
+                  isDropdownHovered = true;
+                  isServicesHovered = true;
+                });
+              },
+              onExit: (_) {
+                setState(() {
+                  isDropdownHovered = false;
+                });
+                // Close dropdown after a short delay if mouse is not on services menu
+                _scheduleClose();
+              },
+              child: Container(
+                width: 250.w,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height - position.dy - size.height - 20.h,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.95),
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(
+                    color: const Color(0xFFF4ED47).withOpacity(0.3),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...services.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final service = entry.value;
+                      final isLast = index == services.length - 1;
+                      return _ServicesDropdownItem(
+                        serviceName: service['name']!,
+                        onTap: () {
+                          _hideServicesDropdown();
+                          context.go(service['route']!);
+                        },
+                        showBorder: !isLast,
+                      );
+                    }).toList(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    Overlay.of(context).insert(_servicesOverlay!);
+  }
+
+  void _scheduleClose() {
+    _closeTimer?.cancel();
+    _closeTimer = Timer(const Duration(milliseconds: 150), () {
+      if (mounted && !isDropdownHovered && !isServicesHovered) {
+        _hideServicesDropdown();
+      }
+    });
+  }
+
+  void _hideServicesDropdown() {
+    _closeTimer?.cancel();
+    _closeTimer = null;
+    _servicesOverlay?.remove();
+    _servicesOverlay = null;
+    if (mounted) {
+      setState(() {
+        isServicesHovered = false;
+        isDropdownHovered = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _closeTimer?.cancel();
+    _hideServicesDropdown();
+    super.dispose();
   }
 
   @override
@@ -120,13 +242,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildMenuItemWithSeparator('HOME'.tr, true, () {context.go(HomeScreen.routeName);}),
-                        _buildMenuItemWithSeparator('ABOUT_US'.tr, true, () {context.go(AboutScreen.routeName);}),
+                        _buildMenuItemWithSeparator('HOME'.tr(context), true, () {context.go(HomeScreen.routeName);}),
+                        _buildMenuItemWithSeparator('ABOUT_US'.tr(context), true, () {context.go(AboutScreen.routeName);}),
                         _buildServicesMenuItem(),
-                        _buildMenuItemWithSeparator('BUY'.tr, true, () {context.go(BuyScreen.routeName);}),
-                        _buildMenuItemWithSeparator('SELL'.tr, true, () {context.go(SellScreen.routeName);}),
-                        _buildMenuItemWithSeparator('LEASE'.tr, true, () {context.go(LeaseScreen.routeName);}),
-                        _buildMenuItemWithSeparator('CAREERS'.tr, false, () {context.go(CareerScreen.routeName);}),
+                        _buildMenuItemWithSeparator('BUY'.tr(context), true, () {context.go(BuyScreen.routeName);}),
+                        _buildMenuItemWithSeparator('SELL'.tr(context), true, () {context.go(SellScreen.routeName);}),
+                        _buildMenuItemWithSeparator('LEASE'.tr(context), true, () {context.go(LeaseScreen.routeName);}),
+                        _buildMenuItemWithSeparator('OUR_CLIENTS'.tr(context), true, () {context.go(AllLogosScreen.routeName);}),
+                        _buildMenuItemWithSeparator('CAREERS'.tr(context), false, () {context.go(CareerScreen.routeName);}),
                       ],
                     ),
                   ),
@@ -172,6 +295,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         SizedBox(width: 16.w),
                         // Contact Us Button
                         ButtonStyles.exploreUsButton(
+                          context: context,
                           onPressed: () => _scrollToSection('contacts'),
                         ),
                       ],
@@ -202,10 +326,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
         // Side Menu (Mobile)
         if (MediaQuery.of(context).size.width <= 768)
           _buildSideMenu(context),
-
-        // Services Dropdown Menu (Desktop)
-        if ((isServicesHovered || isDropdownHovered) && MediaQuery.of(context).size.width > 768)
-          _buildServicesDropdown(),
       ],
     );
   }
@@ -266,7 +386,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                     SizedBox(width: 12.w),
                     Text(
-                      'MENU'.tr,
+                      'MENU'.tr(context),
                       style: TextStyle(
                         fontFamily: 'OptimalBold',
                         color: const Color(0xFFF4ED47),
@@ -284,10 +404,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 child: ListView(
                   padding: EdgeInsets.symmetric(vertical: 20.h),
                   children: [
-                    _buildSideMenuItem('HOME'.tr, Icons.home, 'home', (){ context.go(HomeScreen.routeName);}),
-                    _buildSideMenuItem('ABOUT_US'.tr, Icons.info, 'about', () { context.go(AboutScreen.routeName);}),
-                    _buildSideMenuItem('SERVICES'.tr, Icons.work, 'services', () {}),
-                    _buildSideMenuItem('CONTACTS'.tr, Icons.contact_phone, 'contacts',() {}),
+                    _buildSideMenuItem('HOME'.tr(context), Icons.home, 'home', (){ 
+                      setState(() => isMenuOpen = false);
+                      context.go(HomeScreen.routeName);
+                    }),
+                    _buildSideMenuItem('ABOUT_US'.tr(context), Icons.info, 'about', () { 
+                      setState(() => isMenuOpen = false);
+                      context.go(AboutScreen.routeName);
+                    }),
+                    _buildSideMenuItem('SERVICES'.tr(context), Icons.work, 'services', () {}),
+                    _buildSideMenuItem('CONTACTS'.tr(context), Icons.contact_phone, 'contacts',() {}),
+                    // Admin Panel (only in debug mode or for development)
+                    if (kDebugMode)
+                      _buildSideMenuItem('لوحة التحكم', Icons.admin_panel_settings, 'admin', () {
+                        setState(() => isMenuOpen = false);
+                        context.go(AdminPanelScreen.routeName);
+                      }),
                     // Language Toggle
                     Consumer<AppLanguage>(
                       builder: (context, appLanguage, _) {
@@ -327,7 +459,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      'INCM_REAL_ESTATE'.tr,
+                      'INCM_REAL_ESTATE'.tr(context),
                       style: TextStyle(
                         fontFamily: 'Optimal',
                         color: Colors.white.withOpacity(0.5),
@@ -401,23 +533,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
-  Widget _buildMenuItem(String text, String sectionId) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: GestureDetector(
-        onTap: () => _scrollToSection(sectionId),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildMenuItemWithSeparator(String text, bool showSeparator,  VoidCallback onTap) {
     return InkWell(
@@ -444,49 +559,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
     );
   }
 
-  Widget _buildMobileMenuItem(String text, String sectionId) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          isMenuOpen = false;
-        });
-        _scrollToSection(sectionId);
-      },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: const Color(0xFFF4ED47).withOpacity(0.1),
-              width: 0.5,
-            ),
-          ),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.8,
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildServicesMenuItem() {
     return MouseRegion(
       key: _servicesKey,
-      onEnter: (_) => setState(() => isServicesHovered = true),
+      onEnter: (_) {
+        // Cancel any existing close timer
+        _closeTimer?.cancel();
+        _closeTimer = null;
+        setState(() => isServicesHovered = true);
+        if (MediaQuery.of(context).size.width > 768) {
+          _showServicesDropdown();
+        }
+      },
       onExit: (_) {
-        // Delay to allow moving to dropdown
-        Future.delayed(const Duration(milliseconds: 150), () {
-          if (mounted && !isDropdownHovered) {
-            setState(() => isServicesHovered = false);
-          }
-        });
+        setState(() => isServicesHovered = false);
+        // Schedule close if mouse is not on dropdown
+        _scheduleClose();
       },
       child: InkWell(
         onTap: () {},
@@ -495,7 +583,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _HoverMenuItem(
-              text: 'SERVICES'.tr,
+              text: 'SERVICES'.tr(context),
               onTap: () {},
             ),
             SizedBox(width: 20.w),
@@ -506,81 +594,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ),
             SizedBox(width: 20.w),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildServicesDropdown() {
-    final RenderBox? renderBox = _servicesKey.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null) return const SizedBox.shrink();
-
-    final position = renderBox.localToGlobal(Offset.zero);
-    final size = renderBox.size;
-
-    return Positioned(
-      top: position.dy + size.height + 2.h, // Very close to menu item
-      left: position.dx + (size.width / 2) - 125.w, // Center the dropdown under the menu item
-      child: Material(
-        elevation: 10,
-        color: Colors.transparent,
-        child: Container(
-          width: 250.w,
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height - position.dy - size.height - 20.h,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.95),
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(
-              color: const Color(0xFFF4ED47).withOpacity(0.3),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.5),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ...services.asMap().entries.map((entry) {
-                final index = entry.key;
-                final service = entry.value;
-                final isLast = index == services.length - 1;
-                return MouseRegion(
-                  onEnter: (_) => setState(() {
-                    isDropdownHovered = true;
-                    isServicesHovered = true;
-                  }),
-                  onExit: (_) {
-                    setState(() {
-                      isDropdownHovered = false;
-                    });
-                    Future.delayed(const Duration(milliseconds: 150), () {
-                      if (mounted && !isDropdownHovered && !isServicesHovered) {
-                        setState(() => isServicesHovered = false);
-                      }
-                    });
-                  },
-                  child: _ServicesDropdownItem(
-                    serviceName: service['name']!,
-                    onTap: () {
-                      setState(() {
-                        isServicesHovered = false;
-                        isDropdownHovered = false;
-                      });
-                      context.go(service['route']!);
-                    },
-                    showBorder: !isLast,
-                  ),
-                );
-              }).toList(),
-            ],
-          ),
         ),
       ),
     );

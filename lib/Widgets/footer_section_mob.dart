@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'animated_contact_info.dart';
 
@@ -29,11 +32,11 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
       print("Running as Mobile App");
     }
     return Container(
-      height: 200.h,
+      height: 220.h,
       width: double.infinity,
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(Assets.imagesFollowUsBackgroundMob),
+          image: AssetImage(Assets.imagesFooterMOBILE),
           fit: BoxFit.cover,
         ),
       ),
@@ -55,9 +58,9 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                       Row(
                         children: [
                           Text(
-                            'FOLLOW US',
+                            'FOLLOW_US'.tr(context),
                             style: TextStyle(
-                              color: const Color(0xFFC63424),
+                              color: const Color(0xFFFFFFFF),
                               fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1,
@@ -74,19 +77,31 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                           // SizedBox(width: 28.w),
 
 
+                          //
+                          // AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,
+                          //   onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
+                          // SizedBox(width: 8.w),
+                          // AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,
+                          //   onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 24.r,),
+                          // SizedBox(width: 8.w),
+                          // AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,
+                          //   onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 24.r,),
+                          // SizedBox(width: 8.w),
+                          // AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,
+                          //   onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 24.r,),
 
-                          AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,
+
+                          AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
                             onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
                           SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,
+                          AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
                             onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 24.r,),
                           SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,
+                          AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
                             onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 24.r,),
                           SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,
+                          AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
                             onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 24.r,),
-
                         ],
                       ),
 
@@ -128,34 +143,27 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
           ),
 
           // Copyright
-          // Copyright
           Positioned(
             bottom: 10.h,
             left: 0,
             right: 0,
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Center(
                   child: Text(
-                    'INCOMERCIAL REAL ESTATE 2025',
+                    'INCOMERCIAL_REAL_ESTATE_2025'.tr(context),
                     style: TextStyle(
-                      color: const Color(0xFF000000),
-                      fontSize: 8.sp,
-                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFFFFFFFF),
+                      fontSize: 9.sp,
+                      fontWeight: FontWeight.w600,
                       letterSpacing: 1,
                     ),
                   ),
                 ),
+                Gap(2.h),
                 Center(
-                  child: Text(
-                    'Powered by E-code Wave',
-                    style: TextStyle(
-                      color: const Color(0xFF000000),
-                      fontSize: 6.sp,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 1,
-                    ),
-                  ),
+                  child: _buildPoweredByTextWhite(),
                 ),
               ],
             ),
@@ -200,7 +208,99 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
     );
   }
 
+  // Widget لبناء نص "Powered by E-CODE WAVE" مع تأثير hover (النسخة السوداء)
+  Widget _buildPoweredByText() {
+    return _ClickableTextSpan(
+      onTap: () => _openLink('https://e-codewave.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio'),
+      baseStyle: TextStyle(
+        color: const Color(0xFF000000),
+        fontSize: 6.sp,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 1,
+      ),
+      clickableText: 'E_CODE_WAVE'.tr(context),
+      prefixText: 'POWERED_BY_PREFIX'.tr(context),
+    );
+  }
+
+  // Widget لبناء نص "Powered by E-CODE WAVE" مع تأثير hover (النسخة البيضاء)
+  Widget _buildPoweredByTextWhite() {
+    return _ClickableTextSpan(
+      onTap: () => _openLink('https://e-codewave.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio'),
+      baseStyle: TextStyle(
+        color: const Color(0xFFFFFFFF),
+        fontSize: 7.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 1,
+      ),
+      clickableText: 'E_CODE_WAVE'.tr(context),
+      prefixText: 'POWERED_BY_PREFIX'.tr(context),
+    );
+  }
 }
+
+// Widget مخصص لجعل جزء من النص فقط قابل للنقر مع hover effect
+class _ClickableTextSpan extends StatefulWidget {
+  final VoidCallback onTap;
+  final TextStyle baseStyle;
+  final String clickableText;
+  final String prefixText;
+
+  const _ClickableTextSpan({
+    required this.onTap,
+    required this.baseStyle,
+    required this.clickableText,
+    required this.prefixText,
+  });
+
+  @override
+  State<_ClickableTextSpan> createState() => _ClickableTextSpanState();
+}
+
+class _ClickableTextSpanState extends State<_ClickableTextSpan> {
+  bool _isHovered = false;
+  final TapGestureRecognizer _tapRecognizer = TapGestureRecognizer();
+
+  @override
+  void initState() {
+    super.initState();
+    _tapRecognizer.onTap = widget.onTap;
+  }
+
+  @override
+  void dispose() {
+    _tapRecognizer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      hitTestBehavior: HitTestBehavior.translucent,
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: widget.baseStyle,
+          children: [
+            TextSpan(text: widget.prefixText),
+            TextSpan(
+              text: widget.clickableText,
+              recognizer: _tapRecognizer,
+              style: widget.baseStyle.copyWith(
+                color: _isHovered ? const Color(0xFFC63424) : widget.baseStyle.color,
+                decoration: _isHovered ? TextDecoration.underline : TextDecoration.none,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 // Widget منفصل للتأثيرات الحركية - نسخة الموبايل
 class _AnimatedContactInfoMob extends StatefulWidget {
@@ -244,7 +344,7 @@ class _AnimatedContactInfoMobState extends State<_AnimatedContactInfoMob>
     ));
 
     _colorAnimation = ColorTween(
-      begin: const Color(0xFF000000),
+      begin: const Color(0xFFFFFFFF),
       end: const Color(0xFFC63424), // يتغير للون الأحمر
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -284,7 +384,7 @@ class _AnimatedContactInfoMobState extends State<_AnimatedContactInfoMob>
           children: [
             Image.asset(
               widget.icon,
-              color: const Color(0xFF000000),
+              color: const Color(0xFFF4ED47),
               height: 20.r,
               width: 20.r,
             ),
@@ -298,7 +398,7 @@ class _AnimatedContactInfoMobState extends State<_AnimatedContactInfoMob>
                     return Text(
                       widget.text,
                       style: TextStyle(
-                        color: _colorAnimation.value ?? const Color(0xFF000000),
+                        color: _colorAnimation.value ?? const Color(0xFFF4ED47),
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w700,
                       ),

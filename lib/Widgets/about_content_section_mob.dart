@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../Modules/About/about_screen.dart';
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -61,7 +62,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'ABOUT ',
+                        text: 'ABOUT'.tr(context),
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: const Color(0xFFF4ED47), // أصفر
@@ -105,7 +106,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                   ),
                   child: Text(
                     'We were established in 2019 as a comprehensive real estate company, entering a competitive market with a clear vision and ambitious goals. Our unique synergy and team of experts have enabled us to stand out In the industry by offering a full spectrum of services tailored to diverse client needs',
-                    textAlign: TextAlign.justify,// ✅ يجعل النص في المنتصف
+                    //textAlign: TextAlign.justify,// ✅ يجعل النص في المنتصف
                     style: TextStyle(
                       fontFamily: 'AloeveraDisplaySemiBold',
                       color: Colors.white,
@@ -118,7 +119,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
               ),
             ),
 
-           const Spacer(),
+            Gap(20.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: Align(
@@ -131,6 +132,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                     duration: const Duration(milliseconds: 2000),
                     curve: Curves.easeInOut,
                     child: ButtonStyles.learnMoreButtonMob(
+                      context: context,
                       onPressed: () {
                         context.push(AboutScreen.routeName);
                       },

@@ -14,6 +14,8 @@ import '../../Widgets/custom_button.dart';
 import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/animated_contact_info.dart';
+import '../../Widgets/footer_section.dart';
+import '../../Widgets/footer_section_mob.dart';
 import '../../generated/assets.dart';
 
 class SellScreen extends StatefulWidget {
@@ -299,6 +301,11 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                 child: Column(
                   children: [
                     _buildContactFormSection(context, isMobile, isTablet),
+                    // Footer
+                    if(MediaQuery.of(context).size.width >= 600)
+                      const FooterSection()
+                    else if(kIsWeb)
+                      const FooterSectionMob(),
                   ],
                 ),
               ),
@@ -362,11 +369,13 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                         SizedBox(height: isMobile ? 10.h : (isTablet ? 20.h : 20.h)),
                         if(isMobile)
                           ButtonStyles.submitButtonMob(
+                            context: context,
                             width: isMobile ? 90.w : (isTablet ? 120.w : 180.w),
                             onPressed: _handleSubmit,
                           ),
                         if(!isMobile)
                           ButtonStyles.submitButton(
+                            context: context,
                             fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 43.sp),
                             width: isMobile ? 100.w : (isTablet ? 120.w : 180.w),
                             onPressed: _handleSubmit,

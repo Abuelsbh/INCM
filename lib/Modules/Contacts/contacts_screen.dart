@@ -14,6 +14,7 @@ import '../../Widgets/custom_button.dart';
 import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/animated_contact_info.dart';
+import '../../core/Language/locales.dart';
 import '../../generated/assets.dart';
 
 class ContactsScreen extends StatefulWidget {
@@ -503,11 +504,13 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         SizedBox(height: isMobile ? 50.h : (isTablet ? 70.h : 80.h)),
         if(isMobile)
           ButtonStyles.submitButtonMob(
+            context: context,
             width: isMobile ? 90.w : (isTablet ? 120.w : 180.w),
             onPressed: _handleSubmit,
           ),
         if(!isMobile)
         ButtonStyles.submitButton(
+          context: context,
           fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 43.sp),
           width: isMobile ? 100.w : (isTablet ? 120.w : 180.w),
           onPressed: _handleSubmit,
@@ -605,7 +608,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'FOLLOW US',
+          'FOLLOW_US'.tr(context),
           style: TextStyle(
             color: const Color(0xFFFFFFFF),
             fontSize: isMobile ? 14.sp : (isTablet ? 32.sp : 50.sp),

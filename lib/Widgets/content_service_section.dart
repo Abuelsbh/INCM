@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'clients_logos_section.dart';
 import 'custom_button.dart';
@@ -13,6 +14,7 @@ class ContentServiceSection extends StatefulWidget {
   final TextEditingController? locationController;
   final TextEditingController? emailController;
   final VoidCallback? onSubmit;
+  final bool showCategoryField;
 
   const ContentServiceSection({
     super.key,
@@ -22,6 +24,7 @@ class ContentServiceSection extends StatefulWidget {
     this.locationController,
     this.emailController,
     this.onSubmit,
+    this.showCategoryField = false,
   });
 
   @override
@@ -46,6 +49,65 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
 
   // Country code
   String _selectedCountryCode = '+20'; // Egypt as default
+
+  List<String> locations = [
+    "Alexandria",
+    "6th Settlement",
+    "Northern Expansion",
+    "El Gouna",
+    "North Coast-Sahel",
+    "El Shorouk",
+    "El Choueifat",
+    "New Zayed",
+    "El Sheikh Zayed",
+    "Al Dabaa",
+    "New Capital City",
+    "Al Alamein",
+    "Ain Sokhna",
+    "Hurghada",
+    "New Cairo",
+    "Old Cairo",
+    "Central Cairo",
+    "El Lotus",
+    "South Investors",
+    "North Investors",
+    "Maadi",
+    "South New Cairo",
+    "Golden Square",
+    "October Gardens",
+    "New Capital Gardens",
+    "Ras El Hekma",
+    "Ras Sudr",
+    "New Sphinx",
+    "Sahl Hasheesh",
+    "Somabay",
+    "Sidi Heneish",
+    "Sidi Abdel Rahman",
+    "Ghazala Bay",
+    "6th of October City",
+    "Mostakbal City",
+    "Madinaty",
+    "Mokattam",
+    "New Heliopolis",
+    "Heliopolis",
+  ];
+  String? selectedLocation;
+
+  List<String> categories = [
+    "Coffee & Beverages",
+    "Fast food",
+    "Casual Dining / Restaurants",
+    "Desserts & Bakery",
+    "Cloud Kitchen",
+    "Fashion & Apparel",
+    "Beauty & Cosmetics",
+    "Accessories & Lifestyle",
+    "Health & Pharmacy",
+    "Mini Market",
+    "Grab & Go",
+    "Daily Essentials",
+  ];
+  String? selectedCategory;
 
   final List<Map<String, String>> _countryCodes = [
     {'code': '+20', 'country': 'EG', 'flag': '🇪🇬'},
@@ -175,9 +237,17 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
       return;
     }
 
+    // Validate category (if category field is shown)
+    if (widget.showCategoryField) {
+      if (selectedCategory == null || selectedCategory!.isEmpty) {
+        _showToast('Please select a category');
+        return;
+      }
+    }
+
     // Validate location
-    if (_locationController.text.trim().isEmpty) {
-      _showToast('Please enter the location');
+    if (selectedLocation == null || selectedLocation!.isEmpty) {
+      _showToast('Please select a location');
       return;
     }
 
@@ -199,7 +269,12 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
     _fullNameController.clear();
     _phoneController.clear();
     _messageController.clear();
-    _locationController.clear();
+    setState(() {
+      selectedLocation = null;
+      if (widget.showCategoryField) {
+        selectedCategory = null;
+      }
+    });
     _emailController.clear();
   }
 
@@ -236,7 +311,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                   mainAxisSize: MainAxisSize.min,
                 children: [
                   // Title
-                 Text( 'CONTACT US',
+                 Text( 'CONTACT_US'.tr(context),
                    style: TextStyle(
                      fontFamily: 'OptimalBold',
                      color: const Color(0xFFF4ED47),
@@ -247,7 +322,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
 
 
 
-                  SizedBox(height: 65.h),
+                  SizedBox(height: 35.h),
 
                   // Contact form
                   Column(
@@ -258,7 +333,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                           ? Column(
                         children: [
                           _buildFormField(
-                            'FULL NAME',
+                            'FULL_NAME'.tr(context),
                             controller: _fullNameController,
                             keyboardType: TextInputType.name,
                           ),
@@ -266,14 +341,35 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                           _buildPhoneField(),
                           SizedBox(height: 20.h),
                           _buildFormField(
-                            'E-MAIL',
+                            'E_MAIL'.tr(context),
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                           ),
                           SizedBox(height: 20.h),
-                          _buildFormField(
-                            'LOCATION',
-                            controller: _locationController,
+                          if (widget.showCategoryField) ...[
+                            _buildDropdownField(
+                              'CATEGORY'.tr(context),
+                              'SELECT_CATEGORY'.tr(context),
+                              value: selectedCategory,
+                              items: categories,
+                              onChanged: (val) {
+                                setState(() {
+                                  selectedCategory = val;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 20.h),
+                          ],
+                          _buildDropdownField(
+                            'LOCATION'.tr(context),
+                            'SELECT_LOCATION'.tr(context),
+                            value: selectedLocation,
+                            items: locations,
+                            onChanged: (val) {
+                              setState(() {
+                                selectedLocation = val;
+                              });
+                            },
                           ),
                         ],
                       )
@@ -307,13 +403,54 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                               ),
                               SizedBox(width: 60.w),
                               Expanded(
-                                child: _buildFormField(
-                                  'LOCATION',
-                                  controller: _locationController,
-                                ),
+                                child: widget.showCategoryField
+                                    ? _buildDropdownField(
+                                        'CATEGORY',
+                                        'SELECT CATEGORY',
+                                        value: selectedCategory,
+                                        items: categories,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            selectedCategory = val;
+                                          });
+                                        },
+                                      )
+                                    : _buildDropdownField(
+                                        'LOCATION',
+                                        'SELECT LOCATION',
+                                        value: selectedLocation,
+                                        items: locations,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            selectedLocation = val;
+                                          });
+                                        },
+                                      ),
                               ),
                             ],
                           ),
+                          if (widget.showCategoryField) ...[
+                            SizedBox(height: 20.h),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildDropdownField(
+                                    'LOCATION',
+                                    'SELECT LOCATION',
+                                    value: selectedLocation,
+                                    items: locations,
+                                    onChanged: (val) {
+                                      setState(() {
+                                        selectedLocation = val;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 60.w),
+                                Expanded(child: SizedBox()), // Empty space for alignment
+                              ],
+                            ),
+                          ],
 
                         ],
                       ),
@@ -322,8 +459,8 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                       SizedBox(height: 20.h),
                       // Location field
                       _buildFormField(
-                        'MESSAGE',
-                        hint: 'type your message',
+                        'MESSAGE'.tr(context),
+                        hint: 'TYPE_YOUR_MESSAGE'.tr(context),
                         height: 82.h,
                         controller: _messageController,
                       ),
@@ -331,6 +468,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                       SizedBox(height: 40.h),
                       // Submit button
                       ButtonStyles.submitButton(
+                        context: context,
                         fontSize: isMobile? 18.sp: 32.sp,
                             width: isMobile? 85.w : 185.w,
                             onPressed: _handleSubmit,
@@ -410,9 +548,9 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PHONE',
+          'PHONE'.tr(context),
           style: TextStyle(
-            fontFamily: 'OptimalBold',
+            fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
             fontSize: isMobile? 14.sp : 26.sp,
             fontWeight: FontWeight.bold,
@@ -464,7 +602,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                             Text(
                               country['code']!,
                               style: TextStyle(
-                                fontFamily: 'OptimalBold',
+                                fontFamily: 'AloeveraDisplayBold',
                                 fontSize: isMobile? 12.sp :20.sp,
                                 color: Colors.black,
                               ),
@@ -503,6 +641,120 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                   ),
                 ),
               ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdownField(
+      String label,
+      String hint, {
+        required String? value,
+        required List<String> items,
+        required Function(String?) onChanged,
+      }) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'AloeveraDisplayBold',
+            color: Colors.white,
+            fontSize: isMobile? 14.sp : 26.sp,
+            letterSpacing: 1,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        SizedBox(
+          height: isMobile? 42.h : 60.h,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(
+                color: value != null
+                    ? const Color(0xFFF4ED47).withOpacity(0.5)
+                    : Colors.grey[300]!,
+                width: value != null ? 2 : 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: value != null
+                      ? const Color(0xFFF4ED47).withOpacity(0.2)
+                      : Colors.black.withOpacity(0.05),
+                  blurRadius: value != null ? 8 : 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: value,
+                isExpanded: true,
+                borderRadius: BorderRadius.circular(8.r),
+                icon: Padding(
+                  padding: EdgeInsets.only(right: 8.w),
+                  child: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: value != null
+                        ? const Color(0xFFF4ED47)
+                        : Colors.grey[600],
+                    size: isMobile? 18.sp : 26.sp,
+                  ),
+                ),
+                hint: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  child: Text(
+                    hint,
+                    style: TextStyle(
+                      fontSize: isMobile? 14.sp : 26.sp,
+                      fontFamily: 'AloeveraDisplayBold',
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ),
+                dropdownColor: Colors.white,
+                style: TextStyle(
+                  fontSize: isMobile? 14.sp : 26.sp,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'AloeveraDisplayBold',
+                ),
+                items: items.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 6.w,
+                          height: 6.w,
+                          margin: EdgeInsets.only(right: 10.w),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFF4ED47),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            item,
+                            style: TextStyle(
+                              fontSize: isMobile? 14.sp : 26.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'AloeveraDisplayBold',
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: onChanged,
+                menuMaxHeight: 300.h,
+              ),
             ),
           ),
         ),

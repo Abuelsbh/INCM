@@ -14,6 +14,8 @@ import '../../Widgets/custom_button.dart';
 import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/animated_contact_info.dart';
+import '../../Widgets/footer_section.dart';
+import '../../Widgets/footer_section_mob.dart';
 import '../../generated/assets.dart';
 
 class LeaseScreen extends StatefulWidget {
@@ -315,6 +317,11 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                 child: Column(
                   children: [
                     _buildContactFormSection(context, isMobile, isTablet),
+                    // Footer
+                    if(MediaQuery.of(context).size.width >= 600)
+                      const FooterSection()
+                    else if(kIsWeb)
+                      const FooterSectionMob(),
                   ],
                 ),
               ),
@@ -374,11 +381,13 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                   SizedBox(height: isMobile ? 10.h : (isTablet ? 20.h : 20.h)),
                   if(isMobile)
                     ButtonStyles.submitButtonMob(
+                      context: context,
                       width: isMobile ? 80.w : (isTablet ? 120.w : 180.w),
                       onPressed: _handleSubmit,
                     ),
                   if(!isMobile)
                     ButtonStyles.submitButton(
+                      context: context,
                       fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 43.sp),
                       width: isMobile ? 100.w : (isTablet ? 120.w : 180.w),
                       onPressed: _handleSubmit,
@@ -418,53 +427,61 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
           // Role Selection
           isMobile || isTablet
               ? Container(
-                  // Mobile/Tablet: Split Background (2 columns)
+                  // Mobile/Tablet: 2 rows with 2 columns each
                   width: double.infinity,
-                  child: Row(
+                  child: Column(
                     children: [
-                      // Left Column - Dark Background
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(isMobile ? 12.w : 20.w),
-                          child: Column(
-                            children: [
-                              _buildCheckboxOption(
+                      // First Row: BUYER and SELLER
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(isMobile ? 12.w : 20.w),
+                              child: _buildCheckboxOption(
                                 'buyer',
                                 'BUYER',
                                 isMobile,
                                 isTablet,
                               ),
-                              SizedBox(height: isMobile ? 12.h : 16.h),
-                              _buildCheckboxOption(
-                                'broker',
-                                'BROKER',
-                                isMobile,
-                                isTablet,
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                      // Right Column - Brown Background
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(isMobile ? 12.w : 20.w),
-                          child: Column(
-                            children: [
-                              _buildCheckboxOption(
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(isMobile ? 12.w : 20.w),
+                              child: _buildCheckboxOption(
                                 'seller',
                                 'SELLER',
                                 isMobile,
                                 isTablet,
                               ),
-                              SizedBox(height: isMobile ? 12.h : 16.h),
-                              _buildOtherCheckboxOption(
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Second Row: BROKER and OTHER
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(isMobile ? 12.w : 20.w),
+                              child: _buildCheckboxOption(
+                                'broker',
+                                'BROKER',
                                 isMobile,
                                 isTablet,
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(isMobile ? 12.w : 20.w),
+                              child: _buildOtherCheckboxOption(
+                                isMobile,
+                                isTablet,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

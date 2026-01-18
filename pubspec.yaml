@@ -47,6 +47,11 @@ dependencies:
   permission_handler: ^11.0.1
   file_picker: ^8.0.0
   file_selector: ^1.0.0
+  image_picker: ^1.0.4
+  
+  # Firebase
+  firebase_core: ^2.24.2
+  cloud_firestore: ^4.13.6
 
 dev_dependencies:
   flutter_test:
@@ -68,12 +73,6 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/logos/
-    - assets/logos/consultation/
-    - assets/logos/facility/
-    - assets/logos/franchise/
-    - assets/logos/marketing/
-    - assets/logos/primary/
-    - assets/logos/retail/
     - assets/fonts/
     - assets/videos/
 
@@ -113,7 +112,7 @@ flutter_launcher_icons:
   ios: true
   web:
     generate: true
-  image_path: "assets/logos/INCM.png"
-  adaptive_icon_background: "#F4ED47"
-  adaptive_icon_foreground: "assets/logos/INCM.png"
+  image_path: "assets/images/INCMLogoMob.png"
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/images/INCMLogoMob.png"
   remove_alpha_ios: true

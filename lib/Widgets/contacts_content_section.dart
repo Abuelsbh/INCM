@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -248,7 +249,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'NEED EXPERTS ADVICE',
+                          text: 'Need experts advice'.toUpperCase(),
                           style: TextStyle(
                             fontFamily: 'OptimalBold',
                             color: const Color(0xFFF4ED47),
@@ -282,7 +283,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                         children: [
                           Expanded(
                                 child: _buildFormField(
-                                  'FULL NAME',
+                                  'FULL_NAME'.tr(context),
                                   controller: _fullNameController,
                                   keyboardType: TextInputType.name,
                                 ),
@@ -300,7 +301,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
 
                       // Email field
                       _buildFormField(
-                        'E-MAIL',
+                        'E_MAIL'.tr(context),
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                       ),
@@ -309,8 +310,8 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
 
                       // Location dropdown
                       _buildDropdownField(
-                        'LOCATION',
-                        'SELECT LOCATION',
+                        'LOCATION'.tr(context),
+                        'SELECT_LOCATION'.tr(context),
                         value: selectedLocation,
                         items: locations,
                         onChanged: (val) {
@@ -324,8 +325,8 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
 
                       // Location field
                       _buildFormField(
-                        'MESSAGE',
-                        hint: 'type your message',
+                        'MESSAGE'.tr(context),
+                        hint: 'TYPE_YOUR_MESSAGE'.tr(context),
                         height: 100.h,
                         controller: _messageController,
                       ),
@@ -335,6 +336,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                       
                       // Submit button
                       ButtonStyles.submitButton(
+                            context: context,
                             width: 120.w,
                             onPressed: _handleSubmit,
                           ),
@@ -410,7 +412,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PHONE',
+          'PHONE'.tr(context),
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
@@ -458,13 +460,13 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                           children: [
                             Text(
                               country['flag']!,
-                              style: TextStyle( fontFamily: 'OptimalBold',fontSize: 14.sp),
+                              style: TextStyle( fontFamily: 'AloeveraDisplayBold',fontSize: 14.sp),
                             ),
                             SizedBox(width: 2.w),
                             Text(
                               country['code']!,
                               style: TextStyle(
-                                fontFamily: 'OptimalBold',
+                                fontFamily: 'AloeveraDisplayBold',
                                 fontSize: 20.sp,
                                 color: Colors.black,
                               ),
@@ -494,9 +496,11 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
                         fontSize: 26.sp,
+                        fontFamily: 'AloeveraDisplayBold',
               ),
             ),
             style: TextStyle(
+              fontFamily: 'AloeveraDisplayBold',
                       fontSize: 26.sp,
               color: Colors.black,
                     ),
@@ -573,6 +577,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                     hint,
                     style: TextStyle(
                       fontSize: 26.sp,
+                      fontFamily: 'AloeveraDisplayBold',
                       color: Colors.grey[500],
                     ),
                   ),
@@ -582,6 +587,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                   fontSize: 26.sp,
                   color: Colors.black87,
                   fontWeight: FontWeight.w600,
+                  fontFamily: 'AloeveraDisplayBold',
                 ),
                 items: items.map((item) {
                   return DropdownMenuItem<String>(
@@ -603,6 +609,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                             style: TextStyle(
                               fontSize: 26.sp,
                               fontWeight: FontWeight.w500,
+                              fontFamily: 'AloeveraDisplayBold',
                             ),
                           ),
                         )

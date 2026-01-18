@@ -16,6 +16,8 @@ import '../../Widgets/custom_button.dart';
 import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/animated_contact_info.dart';
+import '../../Widgets/footer_section.dart';
+import '../../Widgets/footer_section_mob.dart';
 import '../../generated/assets.dart';
 
 class BuyScreen extends StatefulWidget {
@@ -211,47 +213,48 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
   }
 
   void _handleSubmit() {
+    final context = this.context;
     if (_fullNameController.text.trim().isEmpty) {
-      _showToast('PLEASE_ENTER_FULL_NAME'.tr);
+      _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
       return;
     }
 
     if (_fullNameController.text.trim().length < 3) {
-      _showToast('FULL_NAME_MIN_CHARS'.tr);
+      _showToast('FULL_NAME_MIN_CHARS'.tr(context));
       return;
     }
 
     if (_phoneController.text.trim().isEmpty) {
-      _showToast('PLEASE_ENTER_PHONE'.tr);
+      _showToast('PLEASE_ENTER_PHONE'.tr(context));
       return;
     }
 
     if (!_validatePhone(_phoneController.text.trim())) {
-      _showToast('PLEASE_ENTER_VALID_PHONE'.tr);
+      _showToast('PLEASE_ENTER_VALID_PHONE'.tr(context));
       return;
     }
 
     if (_areaController.text.trim().isEmpty) {
-      _showToast('PLEASE_ENTER_AREA'.tr);
+      _showToast('PLEASE_ENTER_AREA'.tr(context));
       return;
     }
 
     if (_locationController.text.trim().isEmpty) {
-      _showToast('PLEASE_ENTER_LOCATION'.tr);
+      _showToast('PLEASE_ENTER_LOCATION'.tr(context));
       return;
     }
 
     if (_sizeController.text.trim().isEmpty) {
-      _showToast('PLEASE_ENTER_EMAIL'.tr);
+      _showToast('PLEASE_ENTER_EMAIL'.tr(context));
       return;
     }
 
     if (!_validateEmail(_sizeController.text.trim())) {
-      _showToast('PLEASE_ENTER_VALID_EMAIL'.tr);
+      _showToast('PLEASE_ENTER_VALID_EMAIL'.tr(context));
       return;
     }
 
-    _showToast('FORM_SUBMITTED_SUCCESS'.tr, isError: false);
+    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
 
     _fullNameController.clear();
     _phoneController.clear();
@@ -298,6 +301,11 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                 child: Column(
                   children: [
                     _buildContactFormSection(context, isMobile, isTablet),
+                    // Footer
+                    if(MediaQuery.of(context).size.width >= 600)
+                      const FooterSection()
+                    else if(kIsWeb)
+                      const FooterSectionMob(),
                   ],
                 ),
               ),
@@ -348,7 +356,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                     children: [
                       Gap(isMobile? 60.h : isTablet ? 70.h : 80.h),
                       Text(
-                        'BUY_YOUR_UNIT'.tr,
+                        'BUY_YOUR_UNIT'.tr(context),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
@@ -363,11 +371,13 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                       SizedBox(height: isMobile ? 10.h : (isTablet ? 20.h : 20.h)),
                       if(isMobile)
                         ButtonStyles.submitButtonMob(
+                          context: context,
                           width: isMobile ? 80.w : (isTablet ? 120.w : 180.w),
                           onPressed: _handleSubmit,
                         ),
                       if(!isMobile)
                         ButtonStyles.submitButton(
+                          context: context,
                           fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 43.sp),
                           width: isMobile ? 100.w : (isTablet ? 120.w : 180.w),
                           onPressed: _handleSubmit,
@@ -394,7 +404,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
         children: [
           if (isMobile) ...[
             _buildFormField(
-              'FULL_NAME'.tr,
+              'FULL_NAME'.tr(context),
               controller: _fullNameController,
               keyboardType: TextInputType.name,
               isMobile: isMobile,
@@ -403,7 +413,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             SizedBox(height: 15.h),
             _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
             SizedBox(height: 15.h),
-            _buildDropdownField("PREFERRED_PROPERTY_TYPE".tr,"CHOOSE".tr,
+            _buildDropdownField("PREFERRED_PROPERTY_TYPE".tr(context),"CHOOSE".tr(context),
               value: selectedPreferredPropertyType,
               items: preferredPropertyType,
               isMobile: isMobile,
@@ -417,7 +427,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             SizedBox(height: 15.h),
 
             _buildFormField(
-              'BUDGET_EGP'.tr,
+              'BUDGET_EGP'.tr(context),
               controller: _budgetController,
               keyboardType: TextInputType.emailAddress,
               isMobile: isMobile,
@@ -426,7 +436,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             SizedBox(height: 15.h),
 
 
-            _buildDropdownField("LOCATION".tr,"SELECT_LOCATION".tr,
+            _buildDropdownField("LOCATION".tr(context),"SELECT_LOCATION".tr(context),
               value: selectedLocation,
               items: locations,
               isMobile: isMobile,
@@ -439,7 +449,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             ),
             SizedBox(height: 15.h),
             _buildFormField(
-              'UNIT_SIZE_SQM'.tr,
+              'UNIT_SIZE_SQM'.tr(context),
               controller: _sizeController,
               keyboardType: TextInputType.emailAddress,
               isMobile: isMobile,
@@ -447,8 +457,8 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             ),
             SizedBox(height: 15.h),
             _buildDropdownField(
-              "PURPOSE_OF_PURCHASE".tr,
-              "CHOOSE".tr,
+              "PURPOSE_OF_PURCHASE".tr(context),
+              "CHOOSE".tr(context),
               value: selectedPurposeOfPurchase,
               items: purposeOfPurchase,
               isMobile: isMobile,
@@ -464,7 +474,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
 
             if (selectedPurposeOfPurchase == 'Other')
               _buildFormField(
-                'SPECIFY_PURPOSE'.tr,
+                'SPECIFY_PURPOSE'.tr(context),
                 controller: _purposeController,
                 keyboardType: TextInputType.text,
                 isMobile: isMobile,
@@ -595,7 +605,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
           ],
           SizedBox(height: isMobile ? 10.h : isTablet ? 20.h : 30.h),
           _buildFormField(
-            'DESCRIPTION_ADDITIONAL_DETAILS'.tr,
+            'DESCRIPTION_ADDITIONAL_DETAILS'.tr(context),
             controller: _areaController,
             isMobile: isMobile,
             isTablet: isTablet,
@@ -683,7 +693,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'PHONE_NUMBER'.tr,
+          'PHONE_NUMBER'.tr(context),
           style: TextStyle(
             color: const Color(0xFFF4ED47),
             fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),

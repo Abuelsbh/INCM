@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import '../../Widgets/custom_app_bar.dart';
+import '../../Widgets/footer_section.dart';
+import '../../Widgets/footer_section_mob.dart';
 import '../../core/Language/app_languages.dart';
 import '../../generated/assets.dart';
 
@@ -210,6 +213,11 @@ class _SearchScreenState extends State<SearchScreen>
                   ),
                 ),
               ),
+              // Footer
+              if(MediaQuery.of(context).size.width >= 600)
+                const FooterSection()
+              else if(kIsWeb)
+                const FooterSectionMob(),
             ],
           ),
         ],

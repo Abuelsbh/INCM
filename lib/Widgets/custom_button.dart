@@ -114,11 +114,12 @@ class _CustomButtonState extends State<CustomButton> {
 // Predefined button styles for common use cases
 class ButtonStyles {
   static Widget exploreUsButton({
+    required BuildContext context,
     required VoidCallback onPressed,
     bool enabled = true,
   }) {
     return CustomButton(
-      text: 'CONTACT_US'.tr,
+      text: 'CONTACT_US'.tr(context),
       onPressed: onPressed,
       enabled: enabled,
       normalBackgroundColor: const Color(0xFFF4ED47),
@@ -131,12 +132,13 @@ class ButtonStyles {
   }
 
   static Widget getAppButton({
+    required BuildContext context,
     required VoidCallback onPressed,
     bool enabled = true,
     double? width,
   }) {
     return CustomButton(
-      text: 'GET_APP'.tr,
+      text: 'GET_APP'.tr(context),
       onPressed: onPressed,
       enabled: enabled,
       height: 20.h,
@@ -189,11 +191,12 @@ class ButtonStyles {
   }
 
   static Widget learnMoreButton({
+    required BuildContext context,
     required VoidCallback onPressed,
     bool enabled = true,
   }) {
     return CustomButton(
-      text: 'LEARN_MORE'.tr,
+      text: 'LEARN_MORE'.tr(context),
       onPressed: onPressed,
       borderRadius: 12.r,
       enabled: enabled,
@@ -206,11 +209,12 @@ class ButtonStyles {
   }
 
   static Widget learnMoreButtonMob({
+    required BuildContext context,
     required VoidCallback onPressed,
     bool enabled = true,
   }) {
     return CustomButton(
-      text: 'LEARN_MORE'.tr,
+      text: 'LEARN_MORE'.tr(context),
       onPressed: onPressed,
       borderRadius: 8.r,
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
@@ -226,13 +230,14 @@ class ButtonStyles {
   }
 
   static Widget submitButton({
+    required BuildContext context,
     required VoidCallback onPressed,
     bool enabled = true,
     double? width,
     double? fontSize,
   }) {
     return CustomButton(
-      text: 'SUBMIT'.tr,
+      text: 'SUBMIT'.tr(context),
       onPressed: onPressed,
       enabled: enabled,
       width: width ?? double.infinity,
@@ -246,12 +251,13 @@ class ButtonStyles {
   }
 
   static Widget submitButtonMob({
+    required BuildContext context,
     required VoidCallback onPressed,
     bool enabled = true,
     double? width,
   }) {
     return CustomButton(
-      text: 'SUBMIT'.tr,
+      text: 'SUBMIT'.tr(context),
       onPressed: onPressed,
       enabled: enabled,
       borderRadius: 2.r,

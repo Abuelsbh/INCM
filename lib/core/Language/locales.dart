@@ -1,74 +1,97 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-extension Translate on String {
-  String get tr => AppLocalizations.instance.translate(this)??"--$this--";
-}
+import 'package:provider/provider.dart';
+import 'app_languages.dart';
 
 class AppLocalizations {
   final Locale locale;
+  late Map<String, dynamic> _localizedStrings;
 
   AppLocalizations(this.locale);
 
-  // Helper method to keep the code in the widgets concise
-  // Localizations are accessed using an InheritedWidget "of" syntax
   static AppLocalizations? of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  // Static member to have a simple access to the delegate from the MaterialApp
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-  _AppLocalizationsDelegate();
-
-  Map<String, String> _localizedStrings = {};
-
-  static AppLocalizations get instance => _AppLocalizationsDelegate.instance; // add this
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   Future<bool> load() async {
-    // Load the language JSON file from the "lang" folder
-    String jsonString =
-    await rootBundle.loadString('i18n/${locale.languageCode}.json');
-    Map<String, dynamic> jsonMap = json.decode(jsonString);
-
-    _localizedStrings = jsonMap.map((key, value) {
-      return MapEntry(key, value.toString());
-    });
-
-    return true;
+    String jsonString;
+    try {
+      if (locale.languageCode == 'ar') {
+        jsonString = await rootBundle.loadString('i18n/ar.json');
+      } else {
+        jsonString = await rootBundle.loadString('i18n/en.json');
+      }
+      _localizedStrings = json.decode(jsonString) as Map<String, dynamic>;
+      return true;
+    } catch (e) {
+      // Fallback to English if loading fails
+      try {
+        jsonString = await rootBundle.loadString('i18n/en.json');
+        _localizedStrings = json.decode(jsonString) as Map<String, dynamic>;
+        return true;
+      } catch (e2) {
+        _localizedStrings = {};
+        return false;
+      }
+    }
   }
 
-  // This method will be called from every widget which needs a localized text
-  String? translate(String key) {
-    return _localizedStrings[key];
+  String translate(String key) {
+    return _localizedStrings[key]?.toString() ?? key;
   }
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
-  // This delegate instance will never change (it doesn't even have fields!)
-  // It can provide a constant constructor.
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) {
-    // Include all of your supported language codes here
-    return ['en', 'ar'].contains(locale.languageCode);
-  }
-
-  static late AppLocalizations instance;
+  bool isSupported(Locale locale) => ['en', 'ar'].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) async {
-    AppLocalizations localizations =AppLocalizations(locale);
+    AppLocalizations localizations = AppLocalizations(locale);
     await localizations.load();
-
-    instance = localizations; // set the static instance here
-
     return localizations;
   }
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
+
+extension StringExtension on String {
+  String tr([BuildContext? context]) {
+    if (context != null) {
+      final localizations = AppLocalizations.of(context);
+      if (localizations != null) {
+        return localizations.translate(this);
+      }
+      // Fallback: try to get from AppLanguage provider
+      try {
+        final appLang = Provider.of<AppLanguage>(context, listen: false);
+        final locale = Locale(appLang.appLang.name);
+        final loc = AppLocalizations(locale);
+        // This won't work synchronously, so return key as fallback
+        return this;
+      } catch (e) {
+        return this;
+      }
+    }
+    // If no context provided, try to get from global navigator context
+    try {
+      final navigatorContext = WidgetsBinding.instance.rootElement;
+      if (navigatorContext != null) {
+        final localizations = AppLocalizations.of(navigatorContext);
+        if (localizations != null) {
+          return localizations.translate(this);
+        }
+      }
+    } catch (e) {
+      // Fallback: return key
+    }
+    return this;
+  }
+}
+

@@ -9,6 +9,8 @@ import '../../../Widgets/custom_app_bar.dart';
 import '../../../Widgets/custom_app_bar_mob.dart';
 import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
+import '../../../Widgets/dynamic_content_widget.dart';
+import '../../../core/Content/content_helper.dart';
 import '../../../generated/assets.dart';
 
 class RetailLeasingScreen extends StatelessWidget {
@@ -35,65 +37,89 @@ class RetailLeasingScreen extends StatelessWidget {
                 children: [
                   Container(
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(isMobile ? Assets.imagesService7Mob : Assets.imagesService7),
+                    child: FutureBuilder<DecorationImage?>(
+                      future: ContentHelper.getDecorationImage(
+                        context,
+                        'retail-leasing',
+                        'background-image',
                         fit: BoxFit.contain,
                       ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Image.asset(
-                          isMobile ? Assets.imagesService7Mob : Assets.imagesService7,
+                      builder: (context, snapshot) {
+                        DecorationImage? decorationImage = snapshot.data;
+                        
+                        // Fallback to asset if Firebase image not available
+                        if (decorationImage == null) {
+                          decorationImage = DecorationImage(
+                            image: AssetImage(isMobile ? Assets.imagesService7Mob : Assets.imagesService7),
+                            fit: BoxFit.contain,
+                          );
+                        }
+
+                        return Container(
                           width: double.infinity,
-                          fit: BoxFit.none,
-                          color: Colors.transparent,
-                        ),
-                        // هنا المحتوى اللي انت عايزه فوق الصورة
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              isMobile ? 10.w : 150.w,
-                              isMobile ? 65.h : 180.h,
-                              isMobile ? 10.w : 150.w,
-                            isMobile ? 10.w : 50.w,),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          decoration: BoxDecoration(
+                            image: decorationImage,
+                          ),
+                          child: Stack(
                             children: [
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text('RETAIL',
-                                    style: TextStyle(
-                                      fontFamily: 'OptimalBold',
-                                      color: Colors.white,
-                                      fontSize: isMobile ? 18.sp : 70.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(' LEASING SERVICE',
-                                    style: TextStyle(
-                                      fontFamily: 'OptimalBold',
-                                      color: const Color(0xFFF4ED47),
-                                      fontSize: isMobile ? 18.sp : 75.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-
-
-                                ],
+                              // Fallback image for height calculation
+                              Image.asset(
+                                isMobile ? Assets.imagesService7Mob : Assets.imagesService7,
+                                width: double.infinity,
+                                fit: BoxFit.none,
+                                color: Colors.transparent,
                               ),
-                              Gap(0.w),
-                              Text(
-                                'Your Ideal unit, always ready - exactly where you want it',
-                                style: TextStyle(
-                                  fontFamily: 'AloeveraDisplaySemiBold',
-                                  color: Colors.white,
-                                  fontSize: isMobile ? 8.sp : 32.sp,
-                                ),
-                              ),
+                              // هنا المحتوى اللي انت عايزه فوق الصورة
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    isMobile ? 10.w : 150.w,
+                                    isMobile ? 65.h : 180.h,
+                                    isMobile ? 10.w : 150.w,
+                                  isMobile ? 10.w : 50.w,),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        DynamicText(
+                                          pageId: 'retail-leasing',
+                                          sectionId: 'hero-title-1',
+                                          defaultValue: 'RETAIL',
+                                          style: TextStyle(
+                                            fontFamily: 'OptimalBold',
+                                            color: Colors.white,
+                                            fontSize: isMobile ? 18.sp : 70.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        DynamicText(
+                                          pageId: 'retail-leasing',
+                                          sectionId: 'hero-title-2',
+                                          defaultValue: ' LEASING SERVICE',
+                                          style: TextStyle(
+                                            fontFamily: 'OptimalBold',
+                                            color: const Color(0xFFF4ED47),
+                                            fontSize: isMobile ? 18.sp : 75.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Gap(0.w),
+                                    DynamicText(
+                                      pageId: 'retail-leasing',
+                                      sectionId: 'hero-subtitle',
+                                      defaultValue: 'Your Ideal unit, always ready - exactly where you want it',
+                                      style: TextStyle(
+                                        fontFamily: 'AloeveraDisplaySemiBold',
+                                        color: Colors.white,
+                                        fontSize: isMobile ? 8.sp : 32.sp,
+                                      ),
+                                    ),
                               Gap(isMobile ? 30.h : 100.h),
                               // Description paragraphs section
                               Container(
@@ -101,25 +127,20 @@ class RetailLeasingScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _buildDescriptionBox2(
+                                    _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text1: 'We provide comprehensive support',
-                                      text2: ' across all stages of the retail leasing process, offering a wide selection of units in prime locations with flexible space configurations.',
+                                      pageId: 'retail-leasing',
+                                      sectionId: 'description-1',
+                                      defaultValue: 'We provide comprehensive support across all stages of the retail leasing process, offering a wide selection of units in prime locations with flexible space configurations.',
                                     ),
-                                    // SizedBox(height: isMobile ? 10.h : 30.h),
-                                    // _buildDescriptionBox2(
-                                    //   context: context,
-                                    //   isMobile: isMobile,
-                                    //   text1: 'By curating the right tenant mix -',
-                                    //   text2: ' including brands, services, and experiences - we foster strong customer engagement and maintain a balanced, high-performing commercial environment.',
-                                    // ),
-                                    SizedBox(height: isMobile ? 200.h : 1000.h),
-                                    _buildDescriptionBox2(
+                                    SizedBox(height: isMobile ? 225.h : 1000.h),
+                                    _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text1: 'Through our strategic',
-                                      text2: 'By curating the right tenant mix — including brands, services, and experiences — we foster strong customer engagement and maintain a balanced, high-performing commercial environment.',
+                                      pageId: 'retail-leasing',
+                                      sectionId: 'description-2',
+                                      defaultValue: 'By curating the right tenant mix — including brands, services, and experiences — we foster strong customer engagement and maintain a balanced, high-performing commercial environment.',
                                     ),
                                     // SizedBox(height: isMobile ? 10.h : 30.h),
                                     // _buildDescriptionBox2(
@@ -142,65 +163,95 @@ class RetailLeasingScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'OUR SERVICES ',
-                                            style: TextStyle(
-                                              fontFamily: 'OptimalBold',
-                                              color: Colors.white,
-                                              fontSize: isMobile ? 12.sp : 70.sp,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: 'INCLUDE',
-                                            style: TextStyle(
-                                              fontFamily: 'OptimalBold',
-                                              color: const Color(0xFFF4ED47),
-                                              fontSize: isMobile ? 12.sp : 70.sp,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
-                                            ),
-                                          ),
-                                        ],
+                                    FutureBuilder<String>(
+                                      future: ContentHelper.getText(
+                                        context,
+                                        'retail-leasing',
+                                        'services-title',
+                                        defaultValue: 'OUR SERVICES',
                                       ),
+                                      builder: (context, servicesSnapshot) {
+                                        return FutureBuilder<String>(
+                                          future: ContentHelper.getText(
+                                            context,
+                                            'retail-leasing',
+                                            'services-include',
+                                            defaultValue: 'INCLUDE',
+                                          ),
+                                          builder: (context, includeSnapshot) {
+                                            return RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: '${servicesSnapshot.data ?? 'OUR SERVICES'} ',
+                                                    style: TextStyle(
+                                                      fontFamily: 'OptimalBold',
+                                                      color: Colors.white,
+                                                      fontSize: isMobile ? 12.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: includeSnapshot.data ?? 'INCLUDE',
+                                                    style: TextStyle(
+                                                      fontFamily: 'OptimalBold',
+                                                      color: const Color(0xFFF4ED47),
+                                                      fontSize: isMobile ? 12.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
                                     ),
                                     SizedBox(height: isMobile? 10.h: 40.h),
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Diverse commercial units in prime locations',
+                                      pageId: 'retail-leasing',
+                                      sectionId: 'service-1',
+                                      defaultValue: 'Diverse commercial units in prime locations',
                                       width: 1200.w
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 30.h),
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Creating the perfect tenant mix to ensure higher traffic',
+                                      pageId: 'retail-leasing',
+                                      sectionId: 'service-2',
+                                      defaultValue: 'Creating the perfect tenant mix to ensure higher traffic',
                                       width: 1200.w
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 30.h),
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Customized solutions in pricing and space, tailored to suit every need',
+                                      pageId: 'retail-leasing',
+                                      sectionId: 'service-3',
+                                      defaultValue: 'Customized solutions in pricing and space, tailored to suit every need',
                                       width: 1200.w
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 30.h),
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Access to exclusive projects',
+                                      pageId: 'retail-leasing',
+                                      sectionId: 'service-4',
+                                      defaultValue: 'Access to exclusive projects',
                                       width: 1200.w
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 30.h),
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'After-leasing service and follow-up',
+                                      pageId: 'retail-leasing',
+                                      sectionId: 'service-5',
+                                      defaultValue: 'After-leasing service and follow-up',
                                       width: 1200.w
                                     ),
                                   ],
@@ -209,6 +260,7 @@ class RetailLeasingScreen extends StatelessWidget {
                               Gap(isMobile ? 20.h : 180.h),
                               ClientsLogosSection(
                                 backgroundColor: Colors.grey[900]!,
+                                pageId: 'retail-leasing', // Fetch logos from Firebase for this page
                                 logos: [
                                   Assets.logosRetail1,
                                   Assets.logosRetail2,
@@ -219,13 +271,15 @@ class RetailLeasingScreen extends StatelessWidget {
                                   Assets.logosRetail7,
                                   Assets.logosRetail8,
                                   Assets.logosRetail9,
-                                ],
+                                ], // Fallback logos if Firebase is not available
                                 visibleLogosCount: 5,
                               ),
                             ],
                           ),
                         ),
                       ],
+                    ));
+                      },
                     ),
                   ),
                   const ContentServiceSection(),
@@ -247,7 +301,17 @@ class RetailLeasingScreen extends StatelessWidget {
   }
 
   Widget _buildDescriptionBox({
-    required BuildContext context, required bool isMobile, required String text, double? width}) {
+    required BuildContext context, 
+    required bool isMobile, 
+    String? text,
+    String? pageId,
+    String? sectionId,
+    String? defaultValue,
+    double? width,
+  }) {
+    // Use Firebase if pageId and sectionId are provided, otherwise use static text
+    final String displayText = defaultValue ?? text ?? '';
+    
     return Container(
       width: width,
       padding: EdgeInsets.all(isMobile ? 8.w : 24.w),
@@ -256,15 +320,27 @@ class RetailLeasingScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(32.r),
       ),
       child: Center(
-        child: Text(
-          textAlign: TextAlign.center,
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: isMobile ? 10.sp : 42.sp,
-            height: isMobile ? 1.5 : 1.8,
-          ),
-        ),
+        child: (pageId != null && sectionId != null)
+            ? DynamicText(
+                pageId: pageId,
+                sectionId: sectionId,
+                defaultValue: displayText,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isMobile ? 10.sp : 42.sp,
+                  height: isMobile ? 1.5 : 1.8,
+                ),
+                textAlign: TextAlign.center,
+              )
+            : Text(
+                displayText,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isMobile ? 10.sp : 42.sp,
+                  height: isMobile ? 1.5 : 1.8,
+                ),
+              ),
       ),
     );
   }

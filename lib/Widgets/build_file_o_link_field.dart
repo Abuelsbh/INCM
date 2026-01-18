@@ -63,12 +63,12 @@ class _BuildFileOrLinkFieldState extends State<BuildFileOrLinkField> {
             letterSpacing: 1.5,
           ),
         ),
-        SizedBox(height: widget.isMobile ? 0 : 8.h),
+        SizedBox(height: 8.h),
 
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
-          height: widget.height ?? (widget.isMobile ? 36.h : (widget.isTablet ? 60.h : 65.h)),
+          height: widget.height ?? (widget.isMobile ? 50.h : (widget.isTablet ? 60.h : 65.h)),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12.r),
@@ -131,7 +131,7 @@ class _BuildFileOrLinkFieldState extends State<BuildFileOrLinkField> {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       curve: Curves.easeInOut,
-                      padding: EdgeInsets.all(widget.isMobile ? 0 : 8.w),
+                      padding: EdgeInsets.all(8.w),
                       decoration: BoxDecoration(
                         color: _hasValue
                           ? const Color(0xFFF4ED47).withOpacity(0.1)
@@ -146,7 +146,7 @@ class _BuildFileOrLinkFieldState extends State<BuildFileOrLinkField> {
                       ),
                       child: Icon(
                         Icons.attach_file_rounded,
-                        size: widget.isMobile ? 14.sp : (widget.isTablet ? 24.sp : 28.sp),
+                        size: widget.isMobile ? 20.sp : (widget.isTablet ? 24.sp : 28.sp),
                         color: _hasValue
                           ? const Color(0xFFF4ED47)
                           : Colors.grey[600],

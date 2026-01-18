@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../generated/assets.dart';
 import '../Utilities/contact_info.dart';
@@ -128,10 +127,11 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                       child: Opacity(
                         opacity: _fadeAnimation.value,
                         child: _ContactButton(
-                          icon: Assets.imagesWhatsapp,
+                          icon: Assets.iconsCall,
                           onTap: () => _openWhatsApp(ContactInfo.whatsappNumber),
-                          backgroundColor: const Color(0xFF4CAF50),
+                          backgroundColor: const Color(0xFF25D366),
                           useAsset: true,
+                          iconData: Icons.chat_bubble_outline,
                         ),
                       ),
                     ),
@@ -147,8 +147,7 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                         child: _ContactButton(
                           icon: Assets.iconsCall,
                           onTap: () => _makePhoneCall(ContactInfo.phoneNumber),
-                          backgroundColor: const Color(0xFFF4ED47),
-                          iconColor: const Color(0xFFC63424),
+                          backgroundColor: const Color(0xFF4CAF50),
                           useAsset: true,
                         ),
                       ),
@@ -176,11 +175,8 @@ class _ContactButton extends StatefulWidget {
   final String icon;
   final VoidCallback onTap;
   final Color backgroundColor;
-  final Color? iconColor;
   final bool useAsset;
-  final String? iconn;
   final IconData? iconData;
-
 
   const _ContactButton({
     Key? key,
@@ -188,8 +184,7 @@ class _ContactButton extends StatefulWidget {
     required this.onTap,
     required this.backgroundColor,
     this.useAsset = true,
-    this.iconData, this.iconColor,
-    this.iconn,
+    this.iconData,
   }) : super(key: key);
 
   @override
@@ -233,8 +228,8 @@ class _ContactButtonState extends State<_ContactButton>
         child: GestureDetector(
           onTap: widget.onTap,
           child: Container(
-            width: MediaQuery.of(context).size.width < 600 ? 48.r : 60.r,
-            height: MediaQuery.of(context).size.width < 600 ? 48.r : 60.r,
+            width: 50.w,
+            height: 50.w,
             decoration: BoxDecoration(
               color: widget.backgroundColor,
               borderRadius: BorderRadius.circular(10),
@@ -250,33 +245,27 @@ class _ContactButtonState extends State<_ContactButton>
               child: widget.iconData != null
                   ? Icon(
                       widget.iconData,
-                      color: widget.iconColor ?? Colors.white,
-                      size: MediaQuery.of(context).size.width < 600 ? 18.sp : 28.sp,
+                      color: Colors.white,
+                      size: 24.w,
                     )
-                  : widget.icon == Assets.imagesWhatsapp ? SvgPicture.asset(
-                widget.icon,
-                width: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,
-                height: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,
-                color: widget.iconColor ?? Colors.white,
-
-              ) : widget.useAsset
+                  : widget.useAsset
                       ? Image.asset(
                           widget.icon,
-                          width: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,
-                          height: MediaQuery.of(context).size.width < 600 ? 18.r : 28.r,
-                          color: widget.iconColor ?? Colors.white,
+                          width: 24.w,
+                          height: 24.w,
+                          color: Colors.white,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
                               Icons.error,
-                              color: widget.iconColor ?? Colors.white,
+                              color: Colors.white,
                               size: 24.w,
                             );
                           },
                         )
                       : Icon(
                           Icons.phone,
-                          color: widget.iconColor ?? Colors.white,
-                          size: MediaQuery.of(context).size.width < 600 ? 18.sp : 28.sp,
+                          color: Colors.white,
+                          size: 24.w,
                         ),
             ),
           ),

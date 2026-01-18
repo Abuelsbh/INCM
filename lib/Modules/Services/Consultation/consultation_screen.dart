@@ -9,6 +9,10 @@ import '../../../Widgets/custom_app_bar.dart';
 import '../../../Widgets/custom_app_bar_mob.dart';
 import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
+import '../../../Widgets/footer_section.dart';
+import '../../../Widgets/footer_section_mob.dart';
+import '../../../Widgets/dynamic_content_widget.dart';
+import '../../../core/Content/content_helper.dart';
 import '../../../generated/assets.dart';
 
 class ConsultationScreen extends StatelessWidget {
@@ -35,21 +39,38 @@ class ConsultationScreen extends StatelessWidget {
                 children: [
                   Container(
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(isMobile ? Assets.imagesServices2Mob : Assets.imagesService2Web),
+                    child: FutureBuilder<DecorationImage?>(
+                      future: ContentHelper.getDecorationImage(
+                        context,
+                        'consultation',
+                        'background-image',
                         fit: BoxFit.contain,
                       ),
-                    ),
-                    child: Stack(
-                      children: [
+                      builder: (context, snapshot) {
+                        DecorationImage? decorationImage = snapshot.data;
+                        
+                        // Fallback to asset if Firebase image not available
+                        if (decorationImage == null) {
+                          decorationImage = DecorationImage(
+                            image: AssetImage(isMobile ? Assets.imagesServices2Mob : Assets.imagesService2Web),
+                            fit: BoxFit.contain,
+                          );
+                        }
 
-                        Image.asset(
-                          isMobile ? Assets.imagesServices2Mob : Assets.imagesService2Web,
+                        return Container(
                           width: double.infinity,
-                          fit: BoxFit.none,
-                          color: Colors.transparent,
-                        ),
+                          decoration: BoxDecoration(
+                            image: decorationImage,
+                          ),
+                          child: Stack(
+                            children: [
+                              // Fallback image for height calculation
+                              Image.asset(
+                                isMobile ? Assets.imagesServices2Mob : Assets.imagesService2Web,
+                                width: double.infinity,
+                                fit: BoxFit.none,
+                                color: Colors.transparent,
+                              ),
                         // هنا المحتوى اللي انت عايزه فوق الصورة
                         Padding(
                           padding: EdgeInsets.fromLTRB(
@@ -61,36 +82,41 @@ class ConsultationScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: 'CONSULTATION',
-                                      style: TextStyle(
-                                        fontFamily: 'OptimalBold',
-                                        color: Colors.white,
-                                        fontSize: isMobile ? 18.sp : 70.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  DynamicText(
+                                    pageId: 'consultation',
+                                    sectionId: 'hero-title-1',
+                                    defaultValue: 'CONSULTATION',
+                                    style: TextStyle(
+                                      fontFamily: 'OptimalBold',
+                                      color: Colors.white,
+                                      fontSize: isMobile ? 18.sp : 70.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
-
-                                    TextSpan(
-                                      text:  ' SERVICE',
-                                      style: TextStyle(
-                                        fontFamily: 'OptimalBold',
-                                        color: const Color(0xFFF4ED47),
-                                        fontSize: isMobile ? 18.sp : 75.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  ),
+                                  DynamicText(
+                                    pageId: 'consultation',
+                                    sectionId: 'hero-title-2',
+                                    defaultValue: ' SERVICE',
+                                    style: TextStyle(
+                                      fontFamily: 'OptimalBold',
+                                      color: const Color(0xFFF4ED47),
+                                      fontSize: isMobile ? 18.sp : 75.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                               Gap(12.h),
                               SizedBox(
                                 width: isMobile ? 260.w : double.infinity,
-                                child: Text(
-                                  'EXPERT GUIDANCE LETS YOU SKIP THE HASSLE AND START ON A SOLID FOUNDATION',
+                                child: DynamicText(
+                                  pageId: 'consultation',
+                                  sectionId: 'hero-subtitle',
+                                  defaultValue: 'EXPERT GUIDANCE LETS YOU SKIP THE HASSLE AND START ON A SOLID FOUNDATION',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'AloeveraDisplaySemiBold',
@@ -113,7 +139,9 @@ class ConsultationScreen extends StatelessWidget {
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Our real estate consulting services are designed to provide clients with strategic insights and expert guidance across all stages of property development, acquisition, and investment.',
+                                      pageId: 'consultation',
+                                      sectionId: 'description-1',
+                                      defaultValue: 'Our real estate consulting services are designed to provide clients with strategic insights and expert guidance across all stages of property development, acquisition, and investment.',
                                     ),
                                     // SizedBox(height: isMobile ? 24.h : 30.h),
                                     // _buildDescriptionBox(
@@ -140,7 +168,9 @@ class ConsultationScreen extends StatelessWidget {
                                           _buildDescriptionBox(
                                             context: context,
                                             isMobile: isMobile,
-                                            text: "Whether you're a developer, investor, or property owner, we deliver data-driven analysis, market intelligence, and tailored advice to support informed decision-making and maximize asset value and return on investment (ROI) all backed by the expertise of our team.",
+                                            pageId: 'consultation',
+                                            sectionId: 'description-2',
+                                            defaultValue: "Whether you're a developer, investor, or property owner, we deliver data-driven analysis, market intelligence, and tailored advice to support informed decision-making and maximize asset value and return on investment (ROI) all backed by the expertise of our team.",
                                           ),
                                         ],
                                       ),
@@ -160,13 +190,17 @@ class ConsultationScreen extends StatelessWidget {
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Our real estate consulting services are designed to provide clients with strategic insights and expert guidance across all stages of property development, acquisition, and investment.',
+                                      pageId: 'consultation',
+                                      sectionId: 'description-1',
+                                      defaultValue: 'Our real estate consulting services are designed to provide clients with strategic insights and expert guidance across all stages of property development, acquisition, and investment.',
                                     ),
                                     SizedBox(height: isMobile ? 24.h : 30.h),
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Whether you\'re a developer, investor, or property owner, we deliver data-driven analysis, market intelligence, and tailored advice to support informed decision-making and maximize asset value and return on investment (ROI) - all backed by the expertise of our team.',
+                                      pageId: 'consultation',
+                                      sectionId: 'description-2',
+                                      defaultValue: 'Whether you\'re a developer, investor, or property owner, we deliver data-driven analysis, market intelligence, and tailored advice to support informed decision-making and maximize asset value and return on investment (ROI) - all backed by the expertise of our team.',
                                     ),
 
                                   ],
@@ -184,31 +218,51 @@ class ConsultationScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'OUR SERVICE ',
-                                            style: TextStyle(
-                                              fontFamily: 'OptimalBold',
-                                              color: Colors.white,
-                                              fontSize: isMobile ? 18.sp : 70.sp,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: 'INCLUDES',
-                                            style: TextStyle(
-                                              fontFamily: 'OptimalBold',
-                                              color: const Color(0xFFF4ED47),
-                                              fontSize: isMobile ? 18.sp : 70.sp,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
-                                            ),
-                                          ),
-                                        ],
+                                    FutureBuilder<String>(
+                                      future: ContentHelper.getText(
+                                        context,
+                                        'consultation',
+                                        'services-title',
+                                        defaultValue: 'OUR SERVICE',
                                       ),
+                                      builder: (context, servicesSnapshot) {
+                                        return FutureBuilder<String>(
+                                          future: ContentHelper.getText(
+                                            context,
+                                            'consultation',
+                                            'services-include',
+                                            defaultValue: 'INCLUDES',
+                                          ),
+                                          builder: (context, includeSnapshot) {
+                                            return RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: '${servicesSnapshot.data ?? 'OUR SERVICE'} ',
+                                                    style: TextStyle(
+                                                      fontFamily: 'OptimalBold',
+                                                      color: Colors.white,
+                                                      fontSize: isMobile ? 18.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: includeSnapshot.data ?? 'INCLUDES',
+                                                    style: TextStyle(
+                                                      fontFamily: 'OptimalBold',
+                                                      color: const Color(0xFFF4ED47),
+                                                      fontSize: isMobile ? 18.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 40.h),
 
@@ -217,7 +271,9 @@ class ConsultationScreen extends StatelessWidget {
                                       _buildDescriptionBox(
                                         context: context,
                                         isMobile: isMobile,
-                                        text: 'Market studies and analysis     Project design and space planning  ',
+                                        pageId: 'consultation',
+                                        sectionId: 'service-1',
+                                        defaultValue: 'Market studies and analysis     Project design and space planning  ',
                                         width: 1200.w,
                                         textAlign: TextAlign.center,
                                       ),
@@ -228,7 +284,9 @@ class ConsultationScreen extends StatelessWidget {
                                             _buildDescriptionBox(
                                               context: context,
                                               isMobile: isMobile,
-                                              text: 'Market studies and analysis',
+                                              pageId: 'consultation',
+                                              sectionId: 'service-1',
+                                              defaultValue: 'Market studies and analysis',
                                               width: 1200.w,
                                               textAlign: TextAlign.center,
                                             ),
@@ -236,7 +294,9 @@ class ConsultationScreen extends StatelessWidget {
                                             _buildDescriptionBox(
                                               context: context,
                                               isMobile: isMobile,
-                                              text: 'Project design and space planning  ',
+                                              pageId: 'consultation',
+                                              sectionId: 'service-2',
+                                              defaultValue: 'Project design and space planning  ',
                                               width: 1200.w,
                                               textAlign: TextAlign.center,
                                             ),
@@ -247,7 +307,9 @@ class ConsultationScreen extends StatelessWidget {
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Ensuring the highest return on investment (ROI)',
+                                      pageId: 'consultation',
+                                      sectionId: 'service-3',
+                                      defaultValue: 'Ensuring the highest return on investment (ROI)',
                                       width: 1200.w,
                                       textAlign: TextAlign.center,
                                     ),
@@ -255,7 +317,9 @@ class ConsultationScreen extends StatelessWidget {
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Expert consultations and professional opinions',
+                                      pageId: 'consultation',
+                                      sectionId: 'service-4',
+                                      defaultValue: 'Expert consultations and professional opinions',
                                       width: 1200.w,
                                       textAlign: TextAlign.center,
                                     ),
@@ -263,7 +327,9 @@ class ConsultationScreen extends StatelessWidget {
                                     _buildDescriptionBox(
                                       context: context,
                                       isMobile: isMobile,
-                                      text: 'Full execution and implementation support',
+                                      pageId: 'consultation',
+                                      sectionId: 'service-5',
+                                      defaultValue: 'Full execution and implementation support',
                                       width: 1200.w,
                                       textAlign: TextAlign.center,
                                     ),
@@ -274,6 +340,7 @@ class ConsultationScreen extends StatelessWidget {
                               Gap(isMobile ? 20.h : 120.h),
                               ClientsLogosSection(
                                 backgroundColor: Colors.grey[900]!,
+                                pageId: 'consultation',
                                 logos: [
                                   Assets.logosConsultation1,
                                   Assets.logosConsultation2,
@@ -282,7 +349,6 @@ class ConsultationScreen extends StatelessWidget {
                                   Assets.logosConsultation5,
                                   Assets.logosConsultation6,
                                   Assets.logosConsultation7,
-                                  Assets.logosConsultation8,
                                   Assets.logosConsultation9,
                                   Assets.logosConsultation10,
                                   Assets.logosConsultation11,
@@ -293,7 +359,6 @@ class ConsultationScreen extends StatelessWidget {
                                   Assets.logosConsultation16,
                                   Assets.logosConsultation17,
                                   Assets.logosConsultation18,
-                                  Assets.logosConsultation19,
                                   Assets.logosConsultation20,
                                   Assets.logosConsultation21,
                                   Assets.logosConsultation22,
@@ -322,9 +387,16 @@ class ConsultationScreen extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ));
+                      },
                     ),
                   ),
                   const ContentServiceSection(),
+                  // Footer
+                  if(MediaQuery.of(context).size.width >= 600)
+                    const FooterSection()
+                  else if(kIsWeb)
+                    const FooterSectionMob(),
                 ],
               ),
             ),
@@ -345,10 +417,16 @@ class ConsultationScreen extends StatelessWidget {
   Widget _buildDescriptionBox({
     required BuildContext context, 
     required bool isMobile, 
-    required String text, 
+    String? text,
+    String? pageId,
+    String? sectionId,
+    String? defaultValue,
     double? width,
     TextAlign? textAlign,
   }) {
+    // Use Firebase if pageId and sectionId are provided, otherwise use static text
+    final String displayText = defaultValue ?? text ?? '';
+    
     return Container(
       width: width,
       padding: EdgeInsets.symmetric(horizontal: isMobile ? 12.w : 28.w, vertical:  isMobile ? 8.w : 32.w),
@@ -357,16 +435,29 @@ class ConsultationScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(isMobile ? 20.r : 50.r),
       ),
       child: Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.justify,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: isMobile ? 11.sp : 42.sp,
-            fontWeight: FontWeight.normal,
-            height: 1.5
-          ),
-        ),
+        child: (pageId != null && sectionId != null)
+            ? DynamicText(
+                pageId: pageId,
+                sectionId: sectionId,
+                defaultValue: displayText,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isMobile ? 11.sp : 42.sp,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                ),
+                textAlign: textAlign ?? TextAlign.justify,
+              )
+            : Text(
+                displayText,
+                textAlign: textAlign ?? TextAlign.justify,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isMobile ? 11.sp : 42.sp,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                ),
+              ),
       ),
     );
   }

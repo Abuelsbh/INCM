@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rush/rush.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'Utilities/fast_http_config.dart';
 import 'Utilities/git_it.dart';
 import 'Utilities/router_config.dart';
@@ -12,10 +14,33 @@ import 'core/Font/font_provider.dart';
 import 'core/Language/app_languages.dart';
 import 'core/Language/locales.dart';
 import 'core/Theme/theme_provider.dart';
+import 'core/Content/content_provider.dart';
+import 'core/Firebase/firebase_options.dart';
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  try {
+    final options = DefaultFirebaseOptions.currentPlatform;
+    await Firebase.initializeApp(options: options);
+  } on UnsupportedError catch (e) {
+    // If Firebase initialization fails (e.g., missing Web App ID on web),
+    // the app will still run but admin panel features won't work
+    if (kDebugMode) {
+      print('Firebase initialization skipped: $e');
+      if (kIsWeb) {
+        print('Note: For web, you need to add a Web App in Firebase Console and update firebase_options.dart');
+        print('See FIREBASE_WEB_SETUP.md for instructions');
+      }
+    }
+  } catch (e) {
+    // Other Firebase errors
+    if (kDebugMode) {
+      print('Firebase initialization error: $e');
+    }
+  }
 
   RushSetup.init(
     largeScreens: RushScreenSize.large,
@@ -34,6 +59,7 @@ Future<void> main() async {
           ChangeNotifierProvider<AppLanguage>(create: (_) => AppLanguage()),
           ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
           ChangeNotifierProvider<FontProvider>(create: (_) => FontProvider()),
+          ChangeNotifierProvider<ContentProvider>(create: (_) => ContentProvider()),
         ],
         child: const EntryPoint(),
       )

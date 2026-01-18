@@ -18,7 +18,9 @@ import '../Modules/Services/Marketing/marketing_screen.dart';
 import '../Modules/Services/MedicalLeasing/medical_leasing_screen.dart';
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
+import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../generated/assets.dart';
+import '../core/Content/content_helper.dart';
 
 class HomeSearchSectionMob extends StatefulWidget {
   const HomeSearchSectionMob({super.key});
@@ -34,6 +36,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
   final FocusNode _searchFocusNode = FocusNode();
   List<Map<String, String>> _searchResults = [];
   bool _showResults = false;
+  String _searchPlaceholder = 'Search...';
 
   // List of all searchable pages
   final List<Map<String, String>> _searchableItems = [
@@ -52,14 +55,38 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
     {'name': 'Primary Investment', 'route': PrimaryInvestmentScreen.routeName, 'category': 'Services'},
     {'name': 'Retail Leasing', 'route': RetailLeasingScreen.routeName, 'category': 'Services'},
     {'name': 'Franchise Investment', 'route': FranchiseInvestmentScreen.routeName, 'category': 'Services'},
+    // Exclusive Leasing Projects
+    {'name': 'UMC', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'umc'},
+    {'name': 'PARK MALL', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'park-mall'},
+    {'name': 'TERRACE MALL', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'terrace'},
+    {'name': 'POINT 90', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'point90'},
+    {'name': 'KERNEL', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'kernel'},
+    {'name': 'CITY SQUARE', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'city-square'},
+    {'name': 'VITALI', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'vitali'},
+    {'name': 'SEASHELL', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'seashell'},
   ];
 
   @override
   void initState() {
     super.initState();
     _initializeVideo();
+    _loadSearchPlaceholder();
     _searchController.addListener(_onSearchChanged);
     _searchFocusNode.addListener(_onFocusChanged);
+  }
+
+  Future<void> _loadSearchPlaceholder() async {
+    final placeholder = await ContentHelper.getText(
+      context,
+      'home',
+      'search-placeholder',
+      defaultValue: 'Search by service or location...',
+    );
+    if (mounted) {
+      setState(() {
+        _searchPlaceholder = placeholder;
+      });
+    }
   }
 
   void _onSearchChanged() {
@@ -80,20 +107,37 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
   }
 
   void _onFocusChanged() {
-    setState(() {
-      _showResults = _searchController.text.isNotEmpty && 
-                     _searchResults.isNotEmpty && 
-                     _searchFocusNode.hasFocus;
-    });
+    if (!_searchFocusNode.hasFocus) {
+      // Always hide results when focus is lost
+      setState(() {
+        _showResults = false;
+      });
+    } else {
+      // Show results only if there's text and focus
+      setState(() {
+        _showResults = _searchController.text.isNotEmpty && 
+                       _searchResults.isNotEmpty && 
+                       _searchFocusNode.hasFocus;
+      });
+    }
   }
 
-  void _navigateToPage(String route) {
-    _searchController.clear();
-    _searchFocusNode.unfocus();
+  void _navigateToPage(String route, {String? projectId}) {
+    // Always hide results and unfocus first
     setState(() {
       _showResults = false;
     });
-    context.go(route);
+    _searchController.clear();
+    _searchFocusNode.unfocus();
+    
+    // Small delay to ensure UI updates before navigation
+    Future.microtask(() {
+      if (projectId != null) {
+        context.go('$route?projectId=$projectId');
+      } else {
+        context.go(route);
+      }
+    });
   }
 
   void _initializeVideo() async {
@@ -118,6 +162,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
     }
   }
 
+
   @override
   void dispose() {
     _videoController.dispose();
@@ -137,7 +182,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
           Positioned.fill(
             child: _isVideoInitialized
                 ? FittedBox(
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                     child: SizedBox(
                       width: _videoController.value.size.width,
                       height: _videoController.value.size.height,
@@ -163,34 +208,56 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'EXPLORE INCM WORLD',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'AloeveraDisplayBold',
-                      color: const Color(0xFFF4ED47),
-                      fontSize: 26.sp,
-                      height: 0.2,
+                  FutureBuilder<String>(
+                    future: ContentHelper.getText(
+                      context,
+                      'home',
+                      'search-title',
+                      defaultValue: 'EXPLORE INCM WORLD',
                     ),
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data ?? 'EXPLORE INCM WORLD',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'AloeveraDisplayBold',
+                          color: const Color(0xFFF4ED47),
+                          fontSize: 26.sp,
+                          height: 0.2,
+                        ),
+                      );
+                    },
                   ),
-                  Text(
-                    'STEP INTO A WORLD WHERE REAL ESTATE MEETS INNOVATION AND EXCELLENCE',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'AloeveraDisplayRegular',
-                      color: Colors.white,
-                      fontSize: 14.sp,
+                  FutureBuilder<String>(
+                    future: ContentHelper.getText(
+                      context,
+                      'home',
+                      'search-subtitle',
+                      defaultValue: 'STEP INTO A WORLD WHERE REAL ESTATE MEETS INNOVATION AND EXCELLENCE',
                     ),
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data ?? 'STEP INTO A WORLD WHERE REAL ESTATE MEETS INNOVATION AND EXCELLENCE',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'AloeveraDisplayRegular',
+                          color: Colors.white,
+                          fontSize: 14.sp,
+                        ),
+                      );
+                    },
                   ),
                   Gap(50.h),
                   // Search Bar
                   Container(
                     width: double.infinity,
-                    constraints: BoxConstraints(maxWidth: 900.w),
+                    constraints: BoxConstraints(maxWidth: 280.w),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          height: 60.h,
+                          height: 52.h,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16.r),
@@ -217,7 +284,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                                     controller: _searchController,
                                     focusNode: _searchFocusNode,
                                     decoration: InputDecoration(
-                                      hintText: 'Search...',
+                                      hintText: _searchPlaceholder,
                                       hintStyle: TextStyle(
                                         color: Colors.grey[500],
                                         fontSize: 16.sp,
@@ -259,9 +326,12 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                               shrinkWrap: true,
                               itemCount: _searchResults.length,
                               itemBuilder: (context, index) {
-                                final item = _searchResults[index];
-                                return InkWell(
-                                  onTap: () => _navigateToPage(item['route']!),
+                              final item = _searchResults[index];
+                              return InkWell(
+                                onTap: () => _navigateToPage(
+                                  item['route']!,
+                                  projectId: item['projectId'],
+                                ),
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 12.w,

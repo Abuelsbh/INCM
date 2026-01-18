@@ -9,6 +9,10 @@ import '../../../Widgets/custom_app_bar.dart';
 import '../../../Widgets/custom_app_bar_mob.dart';
 import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
+import '../../../Widgets/footer_section.dart';
+import '../../../Widgets/footer_section_mob.dart';
+import '../../../Widgets/dynamic_content_widget.dart';
+import '../../../core/Content/content_helper.dart';
 import '../../../generated/assets.dart';
 import '../../../core/Language/locales.dart';
 
@@ -36,32 +40,51 @@ class CorporateLeasingScreen extends StatelessWidget {
                 children: [
                   Container(
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(Assets.imagesService1),
-                        fit: BoxFit.contain, // الخلفية بحجمها الطبيعي
+                    child: FutureBuilder<DecorationImage?>(
+                      future: ContentHelper.getDecorationImage(
+                        context,
+                        'corporate-leasing',
+                        'background-image',
+                        fit: BoxFit.contain,
                       ),
-                    ),
-                    child: Stack(
-                      children: [
-                        // الصورة الشفافة لحساب الارتفاع
-                        Image.asset(
-                          Assets.imagesService1,
+                      builder: (context, snapshot) {
+                        DecorationImage? decorationImage = snapshot.data;
+                        
+                        // Fallback to asset if Firebase image not available
+                        if (decorationImage == null) {
+                          decorationImage = DecorationImage(
+                            image: AssetImage(Assets.imagesService1),
+                            fit: BoxFit.contain,
+                          );
+                        }
+
+                        return Container(
                           width: double.infinity,
-                          fit: BoxFit.none,
-                          color: Colors.transparent,
-                        ),
+                          decoration: BoxDecoration(
+                            image: decorationImage,
+                          ),
+                          child: Stack(
+                            children: [
+                              // الصورة الشفافة لحساب الارتفاع (fallback)
+                              Image.asset(
+                                Assets.imagesService1,
+                                width: double.infinity,
+                                fit: BoxFit.none,
+                                color: Colors.transparent,
+                              ),
 
                         // هنا المحتوى اللي انت عايزه فوق الصورة
                         Padding(
-                          padding: EdgeInsets.fromLTRB(isMobile ? 20.w : 60.w, isMobile ? 60.h : 300.h, 20.w, isMobile ? 0.h:120.h),
+                          padding: EdgeInsets.fromLTRB(isMobile ? 20.w : 60.w, isMobile ? 70.h : 300.h, 20.w, isMobile ? 0.h:120.h),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
-                              Text(
-                                'CORPORATE'.tr,
+                              // العنوان الأول - من Firebase
+                              DynamicText(
+                                pageId: 'corporate-leasing',
+                                sectionId: 'hero-title-1',
+                                defaultValue: 'CORPORATE'.tr(context),
                                 style: TextStyle(
                                   fontFamily: 'OptimalBold',
                                   color: Colors.white,
@@ -70,8 +93,11 @@ class CorporateLeasingScreen extends StatelessWidget {
                                   letterSpacing: 2,
                                 ),
                               ),
-                              Text(
-                                'LEASING'.tr,
+                              // العنوان الثاني - من Firebase
+                              DynamicText(
+                                pageId: 'corporate-leasing',
+                                sectionId: 'hero-title-2',
+                                defaultValue: 'LEASING'.tr(context),
                                 style: TextStyle(
                                   fontFamily: 'OptimalBold',
                                   color: const Color(0xFFF4ED47),
@@ -80,11 +106,13 @@ class CorporateLeasingScreen extends StatelessWidget {
                                   letterSpacing: 2,
                                 ),
                               ),
-                              SizedBox(height: isMobile? 8.h: 80.h),
+                              SizedBox(height: isMobile? 18.h: 80.h),
                               SizedBox(
                                 width: isMobile ? 170.w : 900.w,
-                                child: Text(
-                                  'YOUR_WORKSPACE_SHAPES'.tr,
+                                child: DynamicText(
+                                  pageId: 'corporate-leasing',
+                                  sectionId: 'hero-subtitle',
+                                  defaultValue: 'YOUR_WORKSPACE_SHAPES'.tr(context),
                                   style: TextStyle(
                                     fontFamily: 'AloeveraDisplaySemiBold',
                                     color: Colors.white,
@@ -94,7 +122,7 @@ class CorporateLeasingScreen extends StatelessWidget {
                                 ),
                               ),
                               
-                              Gap(isMobile? 120.h : 700.h),
+                              Gap(isMobile? 160.h : 700.h),
                               // Experience and Strategic Locations Section
                               Container(
                                 width: double.infinity,
@@ -104,19 +132,23 @@ class CorporateLeasingScreen extends StatelessWidget {
                                     _buildBulletPoint(
                                       context,
                                       isMobile,
-                                      'WE_HAVE_EXTENSIVE_EXPERIENCE'.tr,
+                                      'corporate-leasing',
+                                      'experience-text',
+                                      'WE_HAVE_EXTENSIVE_EXPERIENCE'.tr(context),
                                     ),
                                     SizedBox(height: 10.h),
                                     _buildBulletPoint(
                                       context,
                                       isMobile,
-                                      'STRATEGIC_LOCATIONS'.tr,
+                                      'corporate-leasing',
+                                      'locations-text',
+                                      'STRATEGIC_LOCATIONS'.tr(context),
                                     ),
                                   ],
                                 ),
                               ),
 
-                              Gap(isMobile? 20.h : 300.h),
+                              Gap(isMobile? 10.h : 300.h),
                               // Our Services Include Section
                               Container(
                                 width: double.infinity,
@@ -127,31 +159,51 @@ class CorporateLeasingScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'OUR_SERVICES'.tr + ' ',
-                                            style: TextStyle(
-                                              fontFamily: 'OptimalBold',
-                                              color: Colors.white,
-                                              fontSize: isMobile ? 22.sp : 70.sp,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: 'INCLUDE'.tr,
-                                            style: TextStyle(
-                                              fontFamily: 'OptimalBold',
-                                              color: const Color(0xFFF4ED47),
-                                              fontSize: isMobile ? 22.sp : 70.sp,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
-                                            ),
-                                          ),
-                                        ],
+                                    FutureBuilder<String>(
+                                      future: ContentHelper.getText(
+                                        context,
+                                        'corporate-leasing',
+                                        'services-title',
+                                        defaultValue: 'OUR_SERVICES'.tr(context),
                                       ),
+                                      builder: (context, servicesSnapshot) {
+                                        return FutureBuilder<String>(
+                                          future: ContentHelper.getText(
+                                            context,
+                                            'corporate-leasing',
+                                            'services-include',
+                                            defaultValue: 'INCLUDE'.tr(context),
+                                          ),
+                                          builder: (context, includeSnapshot) {
+                                            return RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: '${servicesSnapshot.data ?? 'OUR_SERVICES'.tr(context)} ',
+                                                    style: TextStyle(
+                                                      fontFamily: 'OptimalBold',
+                                                      color: Colors.white,
+                                                      fontSize: isMobile ? 22.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: includeSnapshot.data ?? 'INCLUDE'.tr(context),
+                                                    style: TextStyle(
+                                                      fontFamily: 'OptimalBold',
+                                                      color: const Color(0xFFF4ED47),
+                                                      fontSize: isMobile ? 22.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 2,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
                                     ),
                                     SizedBox(height: isMobile? 10.h:40.h),
                                     Container(
@@ -167,28 +219,84 @@ class CorporateLeasingScreen extends StatelessWidget {
                                           _buildServiceItem(
                                             context,
                                             isMobile,
-                                            'LARGE_INVENTORY'.tr,
+                                            'corporate-leasing',
+                                            'service-1',
+                                            'LARGE_INVENTORY'.tr(context),
                                           ),
                                           SizedBox(height: isMobile ? 8.h:20.h),
                                           _buildServiceItem(
                                             context,
                                             isMobile,
-                                            'FLEXIBLE_PAYMENT'.tr,
+                                            'corporate-leasing',
+                                            'service-2',
+                                            'FLEXIBLE_PAYMENT'.tr(context),
                                           ),
                                           SizedBox(height: isMobile ? 8.h:20.h),
                                           _buildServiceItem(
                                             context,
                                             isMobile,
-                                            'SMART_SOLUTIONS'.tr,
+                                            'corporate-leasing',
+                                            'service-3',
+                                            'SMART_SOLUTIONS'.tr(context),
                                           ),
                                           SizedBox(height: isMobile ? 8.h:20.h),
                                           _buildServiceItem(
                                             context,
                                             isMobile,
-                                            'FULL_SUPPORT'.tr,
+                                            'corporate-leasing',
+                                            'service-4',
+                                            'FULL_SUPPORT'.tr(context),
                                           ),
                                         ],
                                       ),
+                                    ),
+                                    Gap(isMobile ? 10.h : 120.h),
+                                    ClientsLogosSection(
+                                      pageId: 'corporate-leasing', // Fetch logos from Firebase for this page
+                                      backgroundColor: Colors.grey[900]!,
+                                      logos: [
+                                        Assets.logosConsultation1,
+                                        Assets.logosConsultation2,
+                                        Assets.logosConsultation3,
+                                        Assets.logosConsultation4,
+                                        Assets.logosConsultation5,
+                                        Assets.logosConsultation6,
+                                        Assets.logosConsultation7,
+                                        Assets.logosConsultation8,
+                                        Assets.logosConsultation9,
+                                        Assets.logosConsultation10,
+                                        Assets.logosConsultation11,
+                                        Assets.logosConsultation12,
+                                        Assets.logosConsultation13,
+                                        Assets.logosConsultation14,
+                                        Assets.logosConsultation15,
+                                        Assets.logosConsultation16,
+                                        Assets.logosConsultation17,
+                                        Assets.logosConsultation18,
+                                        Assets.logosConsultation19,
+                                        Assets.logosConsultation20,
+                                        Assets.logosConsultation21,
+                                        Assets.logosConsultation22,
+                                        Assets.logosConsultation23,
+                                        Assets.logosConsultation24,
+                                        Assets.logosConsultation25,
+                                        Assets.logosConsultation26,
+                                        Assets.logosConsultation27,
+                                        Assets.logosConsultation28,
+                                        Assets.logosConsultation29,
+                                        Assets.logosConsultation30,
+                                        Assets.logosConsultation31,
+                                        Assets.logosConsultation32,
+                                        Assets.logosConsultation33,
+                                        Assets.logosConsultation34,
+                                        Assets.logosConsultation35,
+                                        Assets.logosConsultation36,
+                                        Assets.logosConsultation37,
+                                        Assets.logosConsultation38,
+                                        Assets.logosConsultation39,
+                                        Assets.logosConsultation40,
+                                      ],
+                                      visibleLogosCount: 5,
                                     ),
                                   ],
                                 ),
@@ -200,9 +308,16 @@ class CorporateLeasingScreen extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ));
+                      },
                     ),
                   ),
                   const ContentServiceSection(),
+                  // Footer
+                  if(MediaQuery.of(context).size.width >= 600)
+                    const FooterSection()
+                  else if(kIsWeb)
+                    const FooterSectionMob(),
                 ],
               ),
             ),
@@ -221,31 +336,48 @@ class CorporateLeasingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBulletPoint(BuildContext context, bool isMobile, String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '• ',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: isMobile ? 10.sp : 40.sp,
-            height: 1.8,
-          ),
-        ),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
+  Widget _buildBulletPoint(
+    BuildContext context,
+    bool isMobile,
+    String pageId,
+    String sectionId,
+    String defaultText,
+  ) {
+    return FutureBuilder<String>(
+      future: ContentHelper.getText(
+        context,
+        pageId,
+        sectionId,
+        defaultValue: defaultText,
+      ),
+      builder: (context, snapshot) {
+        final text = snapshot.data ?? defaultText;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '• ',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: isMobile ? 10.sp : 22.sp,
-                height: isMobile ? 1.2 : 1.8,
+                fontSize: isMobile ? 10.sp : 40.sp,
+                height: 1.8,
               ),
-              children: _buildHighlightedText(text, isMobile),
             ),
-          ),
-        ),
-      ],
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: isMobile ? 10.sp : 22.sp,
+                    height: isMobile ? 1.2 : 1.8,
+                  ),
+                  children: _buildHighlightedText(text, isMobile),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -326,31 +458,48 @@ class CorporateLeasingScreen extends StatelessWidget {
     return spans;
   }
 
-  Widget _buildServiceItem(BuildContext context, bool isMobile, String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '• ',
-          style: TextStyle(
-            fontFamily: 'AloeveraDisplaySemiBold',
-            color: Colors.white,
-            fontSize: isMobile ? 10.sp : 32.sp,
-            height: 1.6,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(
-              fontFamily: 'AloeveraDisplaySemiBold',
-              color: Colors.white,
-              fontSize: isMobile ? 10.sp : 32.sp,
-              height: 1.6,
+  Widget _buildServiceItem(
+    BuildContext context,
+    bool isMobile,
+    String pageId,
+    String sectionId,
+    String defaultText,
+  ) {
+    return FutureBuilder<String>(
+      future: ContentHelper.getText(
+        context,
+        pageId,
+        sectionId,
+        defaultValue: defaultText,
+      ),
+      builder: (context, snapshot) {
+        final text = snapshot.data ?? defaultText;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '• ',
+              style: TextStyle(
+                fontFamily: 'AloeveraDisplaySemiBold',
+                color: Colors.white,
+                fontSize: isMobile ? 10.sp : 32.sp,
+                height: 1.6,
+              ),
             ),
-          ),
-        ),
-      ],
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontFamily: 'AloeveraDisplaySemiBold',
+                  color: Colors.white,
+                  fontSize: isMobile ? 10.sp : 32.sp,
+                  height: 1.6,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

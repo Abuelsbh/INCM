@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:incm/Modules/AllLogos/all_logos_screen.dart';
 import 'package:provider/provider.dart';
 import '../core/Language/locales.dart';
 import '../core/Language/app_languages.dart';
@@ -20,6 +21,8 @@ import '../Modules/Services/Marketing/marketing_screen.dart';
 import '../Modules/Services/MedicalLeasing/medical_leasing_screen.dart';
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
+import '../Modules/Admin/admin_panel_screen.dart';
+import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -38,14 +41,14 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
 
   List<Map<String, String>> get services {
     return [
-      {'name': 'CORPORATE_LEASING'.tr, 'route': CorporateLeasingScreen.routeName},
-      {'name': 'CONSULTATION'.tr, 'route': ConsultationScreen.routeName},
-      {'name': 'MARKETING'.tr, 'route': MarketingScreen.routeName},
-      {'name': 'MEDICAL_LEASING'.tr, 'route': MedicalLeasingScreen.routeName},
-      {'name': 'FACILITY_MANAGEMENT'.tr, 'route': FacilityManagementScreen.routeName},
-      {'name': 'PRIMARY_INVESTMENT'.tr, 'route': PrimaryInvestmentScreen.routeName},
-      {'name': 'RETAIL_LEASING'.tr, 'route': RetailLeasingScreen.routeName},
-      {'name': 'FRANCHISE_INVESTMENT'.tr, 'route': FranchiseInvestmentScreen.routeName},
+      {'name': 'CORPORATE_LEASING'.tr(context), 'route': CorporateLeasingScreen.routeName},
+      {'name': 'CONSULTATION'.tr(context), 'route': ConsultationScreen.routeName},
+      {'name': 'MARKETING'.tr(context), 'route': MarketingScreen.routeName},
+      {'name': 'MEDICAL_LEASING'.tr(context), 'route': MedicalLeasingScreen.routeName},
+      {'name': 'FACILITY_MANAGEMENT'.tr(context), 'route': FacilityManagementScreen.routeName},
+      {'name': 'PRIMARY_INVESTMENT'.tr(context), 'route': PrimaryInvestmentScreen.routeName},
+      {'name': 'RETAIL_LEASING'.tr(context), 'route': RetailLeasingScreen.routeName},
+      {'name': 'FRANCHISE_INVESTMENT'.tr(context), 'route': FranchiseInvestmentScreen.routeName},
     ];
   }
 
@@ -135,6 +138,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
 
                     // Explore Us Button (Web only)
                     if (kIsWeb) ButtonStyles.getAppButton(
+                        context: context,
                         onPressed: () => {},
                         width: 55.w
                     ),
@@ -204,7 +208,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'AR_EN'.tr,
+                              'AR_EN'.tr(context),
                               style: TextStyle(
                                 color: const Color(0xFFF4ED47),
                                 fontSize: 16.sp,
@@ -245,9 +249,21 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                         ),
                       ),
                       // Menu Items
-                      _buildMenuItem('HOME'.tr, () => context.go(HomeScreen.routeName)),
-                      _buildMenuItem('ABOUT_US'.tr, () => context.go(AboutScreen.routeName)),
-                      _buildMenuItem('SERVICES'.tr, _toggleServices, hasDropdown: true),
+                      _buildMenuItem('HOME'.tr(context), () {
+                        _toggleMenu();
+                        context.go(HomeScreen.routeName);
+                      }),
+                      _buildMenuItem('ABOUT_US'.tr(context), () {
+                        _toggleMenu();
+                        context.go(AboutScreen.routeName);
+                      }),
+                      // Admin Panel (only in debug mode)
+                      if (kDebugMode)
+                        _buildMenuItem('لوحة التحكم', () {
+                          _toggleMenu();
+                          context.go(AdminPanelScreen.routeName);
+                        }),
+                      _buildMenuItem('SERVICES'.tr(context), _toggleServices, hasDropdown: true),
 
                       // Services Submenu
                       AnimatedContainer(
@@ -267,12 +283,13 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                           ),
                         ),
                       ),
-
-                      _buildMenuItem('BUY'.tr, () => context.go(BuyScreen.routeName)),
-                      _buildMenuItem('SELL'.tr, () => context.go(SellScreen.routeName)),
-                      _buildMenuItem('CAREERS'.tr, () => context.go(CareerScreen.routeName)),
-                      _buildMenuItem('CONTACT_US'.tr, () => _navigateTo(ContactsScreen.routeName)),
-                      _buildMenuItem('LEASE'.tr, () => context.go(LeaseScreen.routeName)),
+                      _buildMenuItem('EXCLUSIVE_LEASING_PROJECTS'.tr(context), () => _navigateTo(ExclusiveLeasingProjectsScreen.routeName)),
+                      _buildMenuItem('OUR_CLIENTS'.tr(context), () => context.go(AllLogosScreen.routeName)),
+                      _buildMenuItem('BUY'.tr(context), () => context.go(BuyScreen.routeName)),
+                      _buildMenuItem('SELL'.tr(context), () => context.go(SellScreen.routeName)),
+                      _buildMenuItem('LEASE'.tr(context), () => context.go(LeaseScreen.routeName)),
+                      _buildMenuItem('CAREERS'.tr(context), () => context.go(CareerScreen.routeName)),
+                      _buildMenuItem('CONTACT_US'.tr(context), () => _navigateTo(ContactsScreen.routeName)),
                       SizedBox(height: 20.h),
                     ],
                   ),

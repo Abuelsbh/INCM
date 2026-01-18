@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -28,7 +29,7 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
     );
 
     _colorAnimation = ColorTween(
-      begin: const Color(0xFF000000), // أسود
+      begin: const Color(0xFFFFFFFF), // أسود
       end: const Color(0xFFC63424), // أحمر
     ).animate(CurvedAnimation(
       parent: _colorController,
@@ -56,11 +57,11 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 450.h,
+      height: 520.h,
       width: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: const AssetImage(Assets.imagesFollowUsBackground), // your background image asset
+          image: AssetImage(Assets.imagesFooterDesktop), // your background image asset
           fit: BoxFit.cover,
         ),
       ),
@@ -68,7 +69,7 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
         children: [
           // Main content
           Padding(
-            padding: EdgeInsets.all(60.w),
+            padding: EdgeInsets.symmetric(horizontal: 60.w, vertical: 50.h,),
             child: Row(
               children: [
                 // Left side - Contact info and social media
@@ -82,38 +83,42 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                       Row(
                         children: [
                           Text(
-                            'FOLLOW_US'.tr,
+                            'FOLLOW_US'.tr(context),
                             style: TextStyle(
                               fontFamily: 'AloeveraDisplayBold',
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 28.sp,
+                              color: Colors.white,
+                              fontSize: 42.sp,
                               letterSpacing: 1,
                             ),
                           ),
                           SizedBox(width: 28.w),
-                          AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,
+                          AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
                             onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 40.r,),
                           SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,
+                          AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
                             onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 40.r,),
                           SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,
+                          AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
                             onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 40.r,),
                           SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,
+                          AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
                             onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 40.r,),
                         ],
                       ),
 
 
-                      SizedBox(height: 40.h),
+                      SizedBox(height: 50.h),
 
                       // Contact information
                       AnimatedContactInfo(
                         icon: Assets.iconsMail,
                         text: 'Incomercial@gmail.com',
+                        textColor: const Color(0xFFFFFFFF),
+                        iconColor: const Color(0xFFF4ED47),
                         isClickable: true,
+                        textSize: 28.sp,
+                        iconSize: 28.sp,
                         onTap: () => _sendEmail('Incomercial@gmail.com'),
                       ),
 
@@ -123,6 +128,10 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                         icon: Assets.iconsLocation,
                         text: '14 A/2 Admin building, New Cairo, Egypt',
                         isClickable: true,
+                        textColor: const Color(0xFFFFFFFF),
+                        iconColor: const Color(0xFFF4ED47),
+                        textSize: 28.sp,
+                        iconSize: 28.sp,
                         onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
                       ),
 
@@ -132,6 +141,10 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                         icon: Assets.iconsCall,
                         text: '0111-032-7777',
                         isClickable: true,
+                        textSize: 28.sp,
+                        iconSize: 28.sp,
+                        textColor: const Color(0xFFFFFFFF),
+                        iconColor: const Color(0xFFF4ED47),
                         onTap: () => _makePhoneCall('0111-032-7777'),
                       ),
                     ],
@@ -140,19 +153,18 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
 
                 // Right side - App download
                 Expanded(
-                  flex: 4,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       AnimatedBuilder(
                         animation: _colorController,
                         builder: (context, child) {
                           return Text(
-                            'DOWNLOAD_OUR_APP'.tr,
+                            'DOWNLOAD_OUR_APP'.tr(context),
                             style: TextStyle(
                               fontFamily: 'AloeveraDisplayBold',
-                              color: _colorAnimation.value ?? const Color(0xFF000000),
-                              fontSize: 36.sp,
+                              color: _colorAnimation.value ?? const Color(0xFFFFFFFF),
+                              fontSize: 32.sp,
                               fontWeight: FontWeight.w900,
                             ),
                           );
@@ -162,33 +174,47 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                       SizedBox(height: 10.h),
 
                       // QR Code placeholder
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   crossAxisAlignment: CrossAxisAlignment.center,
-                      //   children: [
-                      //
-                      //
-                      //     Gap(30.w),
-                      //     Container(
-                      //       width: 60.w,
-                      //       height: 60.h,
-                      //       decoration: BoxDecoration(
-                      //         borderRadius: BorderRadius.circular(8.r),
-                      //
-                      //       ),
-                      //       child: Center(
-                      //         child: Image.asset(
-                      //           Assets.iconsAppStore,
-                      //           width: 60.w,
-                      //           height: 60.h,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
 
-                      Image.asset(Assets.imagesDownloadAppStore,height: 80.h, width: 300.w,),
-                      Image.asset(Assets.imagesDownloadGooglePlay,height: 120.h, width: 450.w,)
+                          Container(
+                            width: 60.w,
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                Assets.iconsGooglePlay,
+                                width: 60.w,
+                                height: 60.h,
+                              ),
+                            ),
+                          ),
+                          Gap(30.w),
+                          Container(
+                            width: 60.w,
+                            height: 60.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                Assets.iconsAppStore,
+                                width: 60.w,
+                                height: 60.h,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Image.asset(Assets.imagesDownloadAppStore,height: 80.h, width: 300.w,),
+                      // Image.asset(Assets.imagesDownloadGooglePlay,height: 120.h, width: 450.w,)
 
                     ],
                   ),
@@ -206,9 +232,9 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
               children: [
                 Center(
                   child: Text(
-                    'INCOMERCIAL_REAL_ESTATE_2025'.tr,
+                    'INCOMERCIAL_REAL_ESTATE_2025'.tr(context),
                     style: TextStyle(
-                      color: const Color(0xFF000000),
+                      color: const Color(0xFFFFFFFF),
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1,
@@ -217,15 +243,7 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                 ),
                 Gap(10.h),
                 Center(
-                  child: Text(
-                    'POWERED_BY'.tr,
-                    style: TextStyle(
-                      color: const Color(0xFF000000),
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1,
-                    ),
-                  ),
+                  child: _buildPoweredByText(),
                 ),
               ],
             ),
@@ -257,5 +275,80 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
     }
   }
 
+  // Widget لبناء نص "Powered by E-CODE WAVE" مع تأثير hover
+  Widget _buildPoweredByText() {
+    return _ClickableTextSpan(
+      onTap: () => _openLink('https://e-codewave.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio'),
+      baseStyle: TextStyle(
+        color: const Color(0xFFFFFFFF),
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 1,
+      ),
+      clickableText: 'E_CODE_WAVE'.tr(context),
+      prefixText: 'POWERED_BY_PREFIX'.tr(context),
+    );
+  }
+}
 
+// Widget مخصص لجعل جزء من النص فقط قابل للنقر مع hover effect
+class _ClickableTextSpan extends StatefulWidget {
+  final VoidCallback onTap;
+  final TextStyle baseStyle;
+  final String clickableText;
+  final String prefixText;
+
+  const _ClickableTextSpan({
+    required this.onTap,
+    required this.baseStyle,
+    required this.clickableText,
+    required this.prefixText,
+  });
+
+  @override
+  State<_ClickableTextSpan> createState() => _ClickableTextSpanState();
+}
+
+class _ClickableTextSpanState extends State<_ClickableTextSpan> {
+  bool _isHovered = false;
+  final TapGestureRecognizer _tapRecognizer = TapGestureRecognizer();
+
+  @override
+  void initState() {
+    super.initState();
+    _tapRecognizer.onTap = widget.onTap;
+  }
+
+  @override
+  void dispose() {
+    _tapRecognizer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      hitTestBehavior: HitTestBehavior.translucent,
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: widget.baseStyle,
+          children: [
+            TextSpan(text: widget.prefixText),
+            TextSpan(
+              text: widget.clickableText,
+              recognizer: _tapRecognizer,
+              style: widget.baseStyle.copyWith(
+                color: _isHovered ? const Color(0xFFC63424) : widget.baseStyle.color,
+                decoration: _isHovered ? TextDecoration.underline : TextDecoration.none,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

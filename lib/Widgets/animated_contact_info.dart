@@ -48,7 +48,7 @@ class _AnimatedContactInfoState extends State<AnimatedContactInfo>
     ));
 
     _colorAnimation = ColorTween(
-      begin: widget.textColor ?? const Color(0xFF000000),
+      begin: widget.textColor ?? widget.textColor ?? const Color(0xFF000000),
       end: const Color(0xFFC63424), // يتغير للون الأحمر
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -56,7 +56,7 @@ class _AnimatedContactInfoState extends State<AnimatedContactInfo>
     ));
 
     _iconColorAnimation = ColorTween(
-      begin: widget.iconColor ?? const Color(0xFF000000),
+      begin: widget.iconColor ?? widget.iconColor ??const Color(0xFF000000),
       end: const Color(0xFFC63424), // يتغير للون الأحمر عند hover
     ).animate(CurvedAnimation(
       parent: _controller,

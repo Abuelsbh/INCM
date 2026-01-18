@@ -149,14 +149,14 @@ class _BottomNavBarItemModel {
   });
 
   static _BottomNavBarItemModel sellYourUnit(BuildContext context) => _BottomNavBarItemModel(
-    title: 'SELL_YOUR_UNIT'.tr,
+    title: 'SELL_YOUR_UNIT'.tr(context),
     iconPath: Assets.iconsSellYourUnit,
     type: SelectedBottomNavBar.sellYourUnit,
     routeName: SellScreen.routeName,
   );
 
   static _BottomNavBarItemModel services(BuildContext context) => _BottomNavBarItemModel(
-    title: 'BUY'.tr,
+    title: 'BUY'.tr(context),
     iconPath: Assets.iconsServices,
     type: SelectedBottomNavBar.services,
     routeName: CareerScreen.routeName,
@@ -164,14 +164,14 @@ class _BottomNavBarItemModel {
   );
 
   static _BottomNavBarItemModel home(BuildContext context) => _BottomNavBarItemModel(
-    title: 'HOME_TITLE'.tr,
+    title: 'HOME_TITLE'.tr(context),
     iconPath: Assets.iconsHome,
     type: SelectedBottomNavBar.home,
     routeName: HomeScreen.routeName,
   );
 
   static _BottomNavBarItemModel aboutUs(BuildContext context) => _BottomNavBarItemModel(
-    title: 'LEASE'.tr,
+    title: 'LEASE'.tr(context),
     iconPath: Assets.iconsLease,
     type: SelectedBottomNavBar.aboutUs,
     routeName: AboutScreen.routeName,
@@ -179,7 +179,7 @@ class _BottomNavBarItemModel {
   );
 
   static _BottomNavBarItemModel contacts(BuildContext context) => _BottomNavBarItemModel(
-      title: 'CONTACTS_TITLE'.tr,
+      title: 'CONTACTS_TITLE'.tr(context),
       iconPath: Assets.iconsContacts,
       type: SelectedBottomNavBar.contacts,
       routeName: ContactsScreen.routeName

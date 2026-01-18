@@ -14,6 +14,8 @@ import '../../Widgets/custom_button.dart';
 import '../../Widgets/departments_grid_section.dart';
 import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
+import '../../Widgets/footer_section.dart';
+import '../../Widgets/footer_section_mob.dart';
 import '../../generated/assets.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -312,6 +314,11 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                         _buildCareerBenefitsSectionMob(context),
                       if(MediaQuery.of(context).size.width < 600)
                         _buildLatestNewsSectionMob(context),
+                      // Footer
+                      if(MediaQuery.of(context).size.width >= 600)
+                        const FooterSection()
+                      else if(kIsWeb)
+                        const FooterSectionMob(),
                     ],
                   ),
                 ),
@@ -522,6 +529,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       ),
                       Gap(60.h),
                       ButtonStyles.submitButton(
+                        context: context,
                         fontSize: isMobile ? 24.sp : (isTablet ? 26.sp : 42.sp),
                         width: isMobile ? 120.w : (isTablet ? 120.w : 180.w),
                         onPressed: _handleSubmit,
@@ -872,7 +880,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
       //   ),
       // ),
       width: double.infinity,
-      height: 786.h,
+      height: 450.h,
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -918,7 +926,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
       //   ),
       // ),
       width: double.infinity,
-      height: 786.h,
+      height: 700.h,
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -1020,6 +1028,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
 
                       Gap(28.h),
                       ButtonStyles.submitButtonMob(
+                        context: context,
                         width: isMobile ? 80.w : (isTablet ? 120.w : 140.w),
                         onPressed: _handleSubmit,
                       ),
@@ -1044,7 +1053,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
       //   ),
       // ),
       width: double.infinity,
-      height: 786.h,
+      height: 700.h,
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -1132,7 +1141,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
       //   ),
       // ),
       width: double.infinity,
-      height: 786.h,
+      height: 650.h,
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {

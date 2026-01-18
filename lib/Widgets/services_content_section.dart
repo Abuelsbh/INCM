@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'dart:async';
 import 'package:go_router/go_router.dart';
 
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 import '../Modules/Services/Consultation/consultation_screen.dart';
@@ -35,45 +36,45 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
   late Animation<double> _scaleAnimation;
 
   // Service content data
-  final List<Map<String, String>> serviceData = [
+  List<Map<String, String>> get serviceData => [
     {
       'title': 'CONSULTATION',
       'description': 'Our real estate consulting services are designed to provide clients with strategic insights and expert guidance across all stages of projects development, acquisition, and investment.',
       'route': ConsultationScreen.routeName,
     },
     {
-      'title': 'RETAIL LEASING',
+      'title': 'RETAIL_LEASING',
       'description': 'We provide comprehensive support across all stages of the retail leasing process, offering a wide selection of units in prime locations with flexible space configurations. By curating the right tenant mix — including brands, services, and experiences — we foster strong customer engagement and maintain a balanced, high- performing commercial environment.',
       'route': RetailLeasingScreen.routeName,
     },
     {
-      'title': 'MEDICAL LEASING',
+      'title': 'MEDICAL_LEASING',
       'description': 'We offer dedicated medical leasing services tailored to meet the unique requirements of healthcare providers, medical practitioners, and institutional tenants. With a deep understanding of the complexities of medical real estate, we help clients secure optimal spaces that align with both clinical needs and long-term business objectives.',
       'route': MedicalLeasingScreen.routeName,
     },
     {
-      'title': 'CORPORATE LEASING',
+      'title': 'CORPORATE_LEASING',
       'description': 'We have extensive experience in commercial real estate leasing transactions. Whether you are looking for an office space, an entire building, or even an industrial facility, we provide all that and more — with a variety of spaces tailored to different needs and in strategic locations close to business hubs.',
       'route': CorporateLeasingScreen.routeName,
     },
     {
-      'title': 'FACILITY MANAGEMENT',
+      'title': 'FACILITY_MANAGEMENT',
       'description': 'To ensure the seamless operation, safety, and sustainability of commercial properties, we provide comprehensive property and facility management solutions. Our services cover day- to-day operations, preventive maintenance, and the optimization of building systems and infrastructure.',
       'route': FacilityManagementScreen.routeName,
     },
     {
-      'title': 'FRANCHISE INVESTMENT',
+      'title': 'FRANCHISE_INVESTMENT',
       'description': 'For investors seeking stable, and scalable opportunities in the franchise sector, we provide expert guidance in identifying, evaluating, and securing high-performing franchise brands. From market research and brand vetting to location sourcing and lease negotiation.',
       'route': FranchiseInvestmentScreen.routeName,
     },
     {
-      'title': 'PRIMARY INVESTMENT',
+      'title': 'PRIMARY_INVESTMENT',
       'description': 'We specialize in sourcing and securing high- potential real estate assets at early development stages or during market entry. By collaborating closely with investors, we identify opportunities in emerging markets, growth corridors, and strategically located assets with strong long-term return potential.',
       'route': PrimaryInvestmentScreen.routeName,
     },
     {
       'title': 'MARKETING',
-      'description': 'We provide comprehensive marketing solutions tailored for developers, agents, and real estate projects seeking to promote their listings effectively and achieve measurable results. Our strategy is built on a deep understanding of each unit’s unique features, enabling us to craft targeted, results-driven campaigns that reach the right audience.',
+      'description': "We provide comprehensive marketing solutions tailored for developers, agents, and real estate projects seeking to promote their listings effectively and achieve measurable results. Our strategy is built on a deep understanding of each unit's unique features, enabling us to craft targeted, results-driven campaigns that reach the right audience.",
       'route': MarketingScreen.routeName,
     },
   ];
@@ -213,7 +214,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
           children: [
             // Title
             Text(
-              'EXPLORE OUR SERVICES',
+              'EXPLORE_OUR_SERVICES'.tr(context),
               style: TextStyle(
                 fontFamily: 'OptimalBold',
                 color: Colors.white,
@@ -313,7 +314,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "IT'S A ",
+                        'ITS_A'.tr(context),
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: Colors.white,
@@ -324,7 +325,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: Text(
-                          serviceData[currentIndex]['title']!,
+                          serviceData[currentIndex]['title']!.tr(context),
                           style: TextStyle(
                             fontFamily: 'OptimalBold',
                             color: currentIndex % 2 == 0 ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
@@ -336,7 +337,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
 
 
                       Text(
-                        " SERVICE",
+                        'SERVICE'.tr(context),
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: Colors.white,
@@ -360,7 +361,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                             position: _slideAnimation,
                             child: Text(
                               serviceData[currentIndex]['description']!,
-                              textAlign: TextAlign.justify,
+                              //textAlign: TextAlign.justify,
                               maxLines: 8,                    // ✅ limit to 6 lines
                               overflow: TextOverflow.ellipsis, // ✅ show "..."
                               style: TextStyle(
@@ -427,6 +428,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                                   bottom: 20.h,
                                   right: 20.w,
                                   child: ButtonStyles.learnMoreButton(
+                                    context: context,
                                     onPressed: () {
                                       context.go(serviceData[currentIndex]['route']!);
                                     },

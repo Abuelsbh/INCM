@@ -60,11 +60,18 @@ class _MainContactButtonState extends State<MainContactButton>
                   return Transform.rotate(
                     angle: widget.rotationAnimation.value * 2 * 3.14159, // دوران 45 درجة
                     child: Container(
-                      width: MediaQuery.of(context).size.width < 600 ? 48.r : 60.r,
-                      height: MediaQuery.of(context).size.width < 600 ? 48.r : 60.r,
+                      width: 60.w,
+                      height: 60.w,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFC63424),
-                        borderRadius: BorderRadius.circular(10),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: <Color>[
+                            Color(0xFFF4ED47),
+                            Color(0xFFC63424),
+                          ],
+                        ),
+                        shape: BoxShape.circle,
                         boxShadow: const <BoxShadow>[
                           BoxShadow(
                             color: Color(0x66C63424),
@@ -75,9 +82,9 @@ class _MainContactButtonState extends State<MainContactButton>
                       ),
                       child: Center(
                         child: Icon(
-                          widget.isExpanded ? Icons.close : Icons.call,
-                          color: const Color(0xFFF4ED47),
-                          size: MediaQuery.of(context).size.width < 600 ? 18.sp : 32.sp,
+                          widget.isExpanded ? Icons.close : Icons.chat,
+                          color: Colors.white,
+                          size: 28.sp,
                         ),
                       ),
                     ),
