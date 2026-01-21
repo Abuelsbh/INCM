@@ -5,11 +5,13 @@ import '../core/Language/locales.dart';
 
 class DepartmentsGridSection extends StatelessWidget {
   final List<String> departments;
+  final BuildContext context;
   //final Function(String)? onDepartmentTap;
 
   const DepartmentsGridSection({
     super.key,
     required this.departments,
+    required this.context,
     /*this.onDepartmentTap,*/
   });
 
@@ -58,7 +60,7 @@ class DepartmentsGridSection extends StatelessWidget {
                             return Padding(
                               padding: EdgeInsets.only(bottom: 12.h),
                               child:Text(
-                                text,
+                                text.tr(context),
                                 style: TextStyle(
                                   fontFamily: 'AloeveraDisplaySemiBold',
                                   color: const Color(0xFFF4ED47), // Yellow/gold
@@ -125,7 +127,14 @@ class DepartmentsGridSection extends StatelessWidget {
       constraints: BoxConstraints(
         maxWidth: isMobile ? double.infinity : (isTablet ? 800.w : 1450.w),
       ),
-     
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.white.withOpacity(0.3),
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         children: List.generate(3, (rowIndex) {
           return _buildGridRow(context, rowIndex, isMobile, isTablet);
@@ -157,8 +166,9 @@ class DepartmentsGridSection extends StatelessWidget {
         ),
         if (rowIndex < 2) // Add horizontal line between rows (not after last row)
           Container(
-            height: 1,
-            color: Colors.white,
+            height: 1.5,
+            color: Colors.white.withOpacity(0.4),
+            margin: EdgeInsets.symmetric(horizontal: 0),
           ),
       ],
     );
@@ -172,29 +182,49 @@ class DepartmentsGridSection extends StatelessWidget {
     bool hasRightBorder,
   ) {
     return Container(
-      height: isMobile ? 100.h : (isTablet ? 140.h : 160.h),
+      height: isMobile ? 100.h : (isTablet ? 140.h : 180.h),
       decoration: BoxDecoration(
         border: Border(
           right: hasRightBorder
-              ? const BorderSide(
-            color: Colors.white,
-            width: 1,
+              ? BorderSide(
+            color: Colors.white.withOpacity(0.4),
+            width: 1.5,
           )
               : BorderSide.none,
         ),
+        color: department.isNotEmpty 
+            ? const Color(0xFFF4ED47).withOpacity(0.08) 
+            : Colors.transparent,
+        gradient: department.isNotEmpty
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  const Color(0xFFF4ED47).withOpacity(0.05),
+                  const Color(0xFFF4ED47).withOpacity(0.12),
+                ],
+              )
+            : null,
       ),
       child: Center(
         child: Padding(
-          padding: EdgeInsets.all(8.w),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           child: Text(
-            department,
+            department.isNotEmpty ? department.tr(context) : '',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'AloeveraDisplayBold',
-              fontSize: isMobile ? 12.sp : (isTablet ? 24.sp : 38.sp),
+              fontSize: isMobile ? 12.sp : (isTablet ? 22.sp : 34.sp),
               fontWeight: FontWeight.bold,
               color: const Color(0xFFF4ED47), // Yellow/gold
-              letterSpacing: 1.2,
+              letterSpacing: 1.5,
+              shadows: [
+                Shadow(
+                  color: const Color(0xFFF4ED47).withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,

@@ -39,7 +39,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
 
-  List<Map<String, String>> get services {
+  List<Map<String, String>> getServices(BuildContext context) {
     return [
       {'name': 'CORPORATE_LEASING'.tr(context), 'route': CorporateLeasingScreen.routeName},
       {'name': 'CONSULTATION'.tr(context), 'route': ConsultationScreen.routeName},
@@ -189,110 +189,108 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                 ],
               ),
               child: SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header with logo and language toggle
-                      Container(
-                        padding: EdgeInsets.all(20.w),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: const Color(0xFFF4ED47).withOpacity(0.2),
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'AR_EN'.tr(context),
-                              style: TextStyle(
-                                color: const Color(0xFFF4ED47),
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
+                child: Consumer<AppLanguage>(
+                  builder: (context, appLanguage, child) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Header with logo and language toggle
+                          Container(
+                            padding: EdgeInsets.all(20.w),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: const Color(0xFFF4ED47).withOpacity(0.2),
+                                  width: 1,
+                                ),
                               ),
                             ),
-                            // Language Toggle Button
-                            // Consumer<AppLanguage>(
-                            //   builder: (context, appLanguage, _) {
-                            //     return InkWell(
-                            //       onTap: () {
-                            //         appLanguage.changeLanguage();
-                            //       },
-                            //       child: Container(
-                            //         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                            //         decoration: BoxDecoration(
-                            //           color: const Color(0xFFF4ED47).withOpacity(0.2),
-                            //           borderRadius: BorderRadius.circular(6.r),
-                            //           border: Border.all(
-                            //             color: const Color(0xFFF4ED47),
-                            //             width: 1,
-                            //           ),
-                            //         ),
-                            //         child: Text(
-                            //           appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
-                            //           style: TextStyle(
-                            //             color: const Color(0xFFF4ED47),
-                            //             fontSize: 14.sp,
-                            //             fontWeight: FontWeight.bold,
-                            //             letterSpacing: 1,
-                            //           ),
-                            //         ),
-                            //       ),
-                            //     );
-                            //   },
-                            // ),
-                          ],
-                        ),
-                      ),
-                      // Menu Items
-                      _buildMenuItem('HOME'.tr(context), () {
-                        _toggleMenu();
-                        context.go(HomeScreen.routeName);
-                      }),
-                      _buildMenuItem('ABOUT_US'.tr(context), () {
-                        _toggleMenu();
-                        context.go(AboutScreen.routeName);
-                      }),
-                      // Admin Panel (only in debug mode)
-                      if (kDebugMode)
-                        _buildMenuItem('لوحة التحكم', () {
-                          _toggleMenu();
-                          context.go(AdminPanelScreen.routeName);
-                        }),
-                      _buildMenuItem('SERVICES'.tr(context), _toggleServices, hasDropdown: true),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
 
-                      // Services Submenu
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        height: isServicesExpanded ? services.length * 50.h : 0,
-                        child: ClipRect(
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            itemCount: services.length,
-                            itemBuilder: (context, index) {
-                              return _buildSubMenuItem(
-                                services[index]['name']!,
-                                    () => _navigateTo(services[index]['route']!),
+                                // Language Toggle Button
+                                InkWell(
+                                  onTap: () {
+                                    appLanguage.changeLanguage();
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF4ED47).withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(6.r),
+                                      border: Border.all(
+                                        color: const Color(0xFFF4ED47),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
+                                      style: TextStyle(
+                                        color: const Color(0xFFF4ED47),
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Menu Items
+                          _buildMenuItem('HOME'.tr(context), () {
+                            _toggleMenu();
+                            context.go(HomeScreen.routeName);
+                          }),
+                          _buildMenuItem('ABOUT_US'.tr(context), () {
+                            _toggleMenu();
+                            context.go(AboutScreen.routeName);
+                          }),
+                          // Admin Panel (only in debug mode)
+                          if (kDebugMode)
+                            _buildMenuItem('ADMIN_PANEL'.tr(context), () {
+                              _toggleMenu();
+                              context.go(AdminPanelScreen.routeName);
+                            }),
+                          _buildMenuItem('SERVICES'.tr(context), _toggleServices, hasDropdown: true),
+
+                          // Services Submenu
+                          Builder(
+                            builder: (context) {
+                              final servicesList = getServices(context);
+                              return AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                height: isServicesExpanded ? servicesList.length * 50.h : 0,
+                                child: ClipRect(
+                                  child: ListView.builder(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.zero,
+                                    itemCount: servicesList.length,
+                                    itemBuilder: (context, index) {
+                                      return _buildSubMenuItem(
+                                        servicesList[index]['name']!,
+                                        () => _navigateTo(servicesList[index]['route']!),
+                                      );
+                                    },
+                                  ),
+                                ),
                               );
                             },
                           ),
-                        ),
+                          _buildMenuItem('EXCLUSIVE_LEASING_PROJECTS'.tr(context), () => _navigateTo(ExclusiveLeasingProjectsScreen.routeName)),
+                          _buildMenuItem('OUR_CLIENTS'.tr(context), () => context.go(AllLogosScreen.routeName)),
+                          _buildMenuItem('BUY'.tr(context), () => context.go(BuyScreen.routeName)),
+                          _buildMenuItem('SELL'.tr(context), () => context.go(SellScreen.routeName)),
+                          _buildMenuItem('LEASE'.tr(context), () => context.go(LeaseScreen.routeName)),
+                          _buildMenuItem('CAREERS'.tr(context), () => context.go(CareerScreen.routeName)),
+                          _buildMenuItem('CONTACT_US'.tr(context), () => _navigateTo(ContactsScreen.routeName)),
+                          SizedBox(height: 20.h),
+                        ],
                       ),
-                      _buildMenuItem('EXCLUSIVE_LEASING_PROJECTS'.tr(context), () => _navigateTo(ExclusiveLeasingProjectsScreen.routeName)),
-                      _buildMenuItem('OUR_CLIENTS'.tr(context), () => context.go(AllLogosScreen.routeName)),
-                      _buildMenuItem('BUY'.tr(context), () => context.go(BuyScreen.routeName)),
-                      _buildMenuItem('SELL'.tr(context), () => context.go(SellScreen.routeName)),
-                      _buildMenuItem('LEASE'.tr(context), () => context.go(LeaseScreen.routeName)),
-                      _buildMenuItem('CAREERS'.tr(context), () => context.go(CareerScreen.routeName)),
-                      _buildMenuItem('CONTACT_US'.tr(context), () => _navigateTo(ContactsScreen.routeName)),
-                      SizedBox(height: 20.h),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
             ),

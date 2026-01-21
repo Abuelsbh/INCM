@@ -71,7 +71,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                         ),
                       ),
                       TextSpan(
-                        text: 'US',
+                        text: 'US'.tr(context),
                         style: TextStyle(
                           fontFamily: 'OptimalBold',
                           color: Colors.white, // أبيض
@@ -105,7 +105,7 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Text(
-                    'We were established in 2019 as a comprehensive real estate company, entering a competitive market with a clear vision and ambitious goals. Our unique synergy and team of experts have enabled us to stand out In the industry by offering a full spectrum of services tailored to diverse client needs',
+                    'WE_WERE_ESTABLISHED'.tr(context),
                     //textAlign: TextAlign.justify,// ✅ يجعل النص في المنتصف
                     style: TextStyle(
                       fontFamily: 'AloeveraDisplaySemiBold',

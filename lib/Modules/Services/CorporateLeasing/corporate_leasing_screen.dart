@@ -26,311 +26,315 @@ class CorporateLeasingScreen extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 600;
     final ScrollController scrollController = ScrollController();
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
-            ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
-            : null,
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getDecorationImage(
-                        context,
-                        'corporate-leasing',
-                        'background-image',
-                        fit: BoxFit.contain,
-                      ),
-                      builder: (context, snapshot) {
-                        DecorationImage? decorationImage = snapshot.data;
-                        
-                        // Fallback to asset if Firebase image not available
-                        if (decorationImage == null) {
-                          decorationImage = DecorationImage(
-                            image: AssetImage(Assets.imagesService1),
-                            fit: BoxFit.contain,
-                          );
-                        }
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+              ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
+              : null,
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: FutureBuilder<DecorationImage?>(
+                        future: ContentHelper.getDecorationImage(
+                          context,
+                          'corporate-leasing',
+                          'background-image',
+                          fit: BoxFit.contain,
+                        ),
+                        builder: (context, snapshot) {
+                          DecorationImage? decorationImage = snapshot.data;
 
-                        return Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: decorationImage,
-                          ),
-                          child: Stack(
-                            children: [
-                              // الصورة الشفافة لحساب الارتفاع (fallback)
-                              Image.asset(
-                                Assets.imagesService1,
-                                width: double.infinity,
-                                fit: BoxFit.none,
-                                color: Colors.transparent,
-                              ),
+                          // Fallback to asset if Firebase image not available
+                          if (decorationImage == null) {
+                            decorationImage = DecorationImage(
+                              image: AssetImage(Assets.imagesService1),
+                              fit: BoxFit.contain,
+                            );
+                          }
 
-                        // هنا المحتوى اللي انت عايزه فوق الصورة
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(isMobile ? 20.w : 60.w, isMobile ? 70.h : 300.h, 20.w, isMobile ? 0.h:120.h),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // العنوان الأول - من Firebase
-                              DynamicText(
-                                pageId: 'corporate-leasing',
-                                sectionId: 'hero-title-1',
-                                defaultValue: 'CORPORATE'.tr(context),
-                                style: TextStyle(
-                                  fontFamily: 'OptimalBold',
-                                  color: Colors.white,
-                                  fontSize: isMobile ? 17.sp : 80.sp,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 2,
+                          return Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              image: decorationImage,
+                            ),
+                            child: Stack(
+                              children: [
+                                // الصورة الشفافة لحساب الارتفاع (fallback)
+                                Image.asset(
+                                  Assets.imagesService1,
+                                  width: double.infinity,
+                                  fit: BoxFit.none,
+                                  color: Colors.transparent,
                                 ),
-                              ),
-                              // العنوان الثاني - من Firebase
-                              DynamicText(
-                                pageId: 'corporate-leasing',
-                                sectionId: 'hero-title-2',
-                                defaultValue: 'LEASING'.tr(context),
-                                style: TextStyle(
-                                  fontFamily: 'OptimalBold',
-                                  color: const Color(0xFFF4ED47),
-                                  fontSize: isMobile ? 17.sp : 90.sp,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 2,
-                                ),
-                              ),
-                              SizedBox(height: isMobile? 18.h: 80.h),
-                              SizedBox(
-                                width: isMobile ? 170.w : 900.w,
-                                child: DynamicText(
+
+                          // هنا المحتوى اللي انت عايزه فوق الصورة
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(isMobile ? 20.w : 60.w, isMobile ? 65.h : 300.h, 20.w, isMobile ? 0.h:120.h),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // العنوان الأول - من Firebase
+                                DynamicText(
                                   pageId: 'corporate-leasing',
-                                  sectionId: 'hero-subtitle',
-                                  defaultValue: 'YOUR_WORKSPACE_SHAPES'.tr(context),
+                                  sectionId: 'hero-title-1',
+                                  defaultValue: 'CORPORATE',
                                   style: TextStyle(
-                                    fontFamily: 'AloeveraDisplaySemiBold',
+                                    fontFamily: 'OptimalBold',
                                     color: Colors.white,
-                                    fontSize: isMobile ? 9.sp : 42.sp,
-                                    height: 1.2,
+                                    fontSize: isMobile ? 17.sp : 80.sp,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
                                   ),
                                 ),
-                              ),
-                              
-                              Gap(isMobile? 160.h : 700.h),
-                              // Experience and Strategic Locations Section
-                              Container(
-                                width: double.infinity,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildBulletPoint(
-                                      context,
-                                      isMobile,
-                                      'corporate-leasing',
-                                      'experience-text',
-                                      'WE_HAVE_EXTENSIVE_EXPERIENCE'.tr(context),
-                                    ),
-                                    SizedBox(height: 10.h),
-                                    _buildBulletPoint(
-                                      context,
-                                      isMobile,
-                                      'corporate-leasing',
-                                      'locations-text',
-                                      'STRATEGIC_LOCATIONS'.tr(context),
-                                    ),
-                                  ],
+                                // العنوان الثاني - من Firebase
+                                DynamicText(
+                                  pageId: 'corporate-leasing',
+                                  sectionId: 'hero-title-2',
+                                  defaultValue: 'LEASING',
+                                  style: TextStyle(
+                                    fontFamily: 'OptimalBold',
+                                    color: const Color(0xFFF4ED47),
+                                    fontSize: isMobile ? 17.sp : 90.sp,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                  ),
                                 ),
-                              ),
+                                SizedBox(height: isMobile? 18.h: 80.h),
+                                SizedBox(
+                                  width: isMobile ? 170.w : 900.w,
+                                  child: DynamicText(
+                                    pageId: 'corporate-leasing',
+                                    sectionId: 'hero-subtitle',
+                                    defaultValue: 'YOUR_WORKSPACE_SHAPES',
+                                    style: TextStyle(
+                                      fontFamily: 'AloeveraDisplaySemiBold',
+                                      color: Colors.white,
+                                      fontSize: isMobile ? 9.sp : 42.sp,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ),
 
-                              Gap(isMobile? 10.h : 300.h),
-                              // Our Services Include Section
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: isMobile ? 0.w : 40.w,
-                                  vertical: isMobile ? 10 : 40.h,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    FutureBuilder<String>(
-                                      future: ContentHelper.getText(
+                                Gap(isMobile? 150.h : 700.h),
+                                // Experience and Strategic Locations Section
+                                Container(
+                                  width: double.infinity,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _buildBulletPoint(
                                         context,
+                                        isMobile,
                                         'corporate-leasing',
-                                        'services-title',
-                                        defaultValue: 'OUR_SERVICES'.tr(context),
+                                        'experience-text',
+                                        'WE_HAVE_EXTENSIVE_EXPERIENCE'.tr(context),
                                       ),
-                                      builder: (context, servicesSnapshot) {
-                                        return FutureBuilder<String>(
-                                          future: ContentHelper.getText(
-                                            context,
-                                            'corporate-leasing',
-                                            'services-include',
-                                            defaultValue: 'INCLUDE'.tr(context),
-                                          ),
-                                          builder: (context, includeSnapshot) {
-                                            return RichText(
-                                              text: TextSpan(
-                                                children: [
-                                                  TextSpan(
-                                                    text: '${servicesSnapshot.data ?? 'OUR_SERVICES'.tr(context)} ',
-                                                    style: TextStyle(
-                                                      fontFamily: 'OptimalBold',
-                                                      color: Colors.white,
-                                                      fontSize: isMobile ? 22.sp : 70.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                      letterSpacing: 2,
-                                                    ),
-                                                  ),
-                                                  TextSpan(
-                                                    text: includeSnapshot.data ?? 'INCLUDE'.tr(context),
-                                                    style: TextStyle(
-                                                      fontFamily: 'OptimalBold',
-                                                      color: const Color(0xFFF4ED47),
-                                                      fontSize: isMobile ? 22.sp : 70.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                      letterSpacing: 2,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                    SizedBox(height: isMobile? 10.h:40.h),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.symmetric(horizontal: isMobile ? 10.w : 30.w, vertical: isMobile ? 10.h : 40.h),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[900]!.withOpacity(1),
-                                        borderRadius: BorderRadius.circular(12.r),
+                                      SizedBox(height: 10.h),
+                                      _buildBulletPoint(
+                                        context,
+                                        isMobile,
+                                        'corporate-leasing',
+                                        'locations-text',
+                                        'STRATEGIC_LOCATIONS'.tr(context),
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          _buildServiceItem(
-                                            context,
-                                            isMobile,
-                                            'corporate-leasing',
-                                            'service-1',
-                                            'LARGE_INVENTORY'.tr(context),
-                                          ),
-                                          SizedBox(height: isMobile ? 8.h:20.h),
-                                          _buildServiceItem(
-                                            context,
-                                            isMobile,
-                                            'corporate-leasing',
-                                            'service-2',
-                                            'FLEXIBLE_PAYMENT'.tr(context),
-                                          ),
-                                          SizedBox(height: isMobile ? 8.h:20.h),
-                                          _buildServiceItem(
-                                            context,
-                                            isMobile,
-                                            'corporate-leasing',
-                                            'service-3',
-                                            'SMART_SOLUTIONS'.tr(context),
-                                          ),
-                                          SizedBox(height: isMobile ? 8.h:20.h),
-                                          _buildServiceItem(
-                                            context,
-                                            isMobile,
-                                            'corporate-leasing',
-                                            'service-4',
-                                            'FULL_SUPPORT'.tr(context),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Gap(isMobile ? 10.h : 120.h),
-                                    ClientsLogosSection(
-                                      pageId: 'corporate-leasing', // Fetch logos from Firebase for this page
-                                      backgroundColor: Colors.grey[900]!,
-                                      logos: [
-                                        Assets.logosConsultation1,
-                                        Assets.logosConsultation2,
-                                        Assets.logosConsultation3,
-                                        Assets.logosConsultation4,
-                                        Assets.logosConsultation5,
-                                        Assets.logosConsultation6,
-                                        Assets.logosConsultation7,
-                                        Assets.logosConsultation8,
-                                        Assets.logosConsultation9,
-                                        Assets.logosConsultation10,
-                                        Assets.logosConsultation11,
-                                        Assets.logosConsultation12,
-                                        Assets.logosConsultation13,
-                                        Assets.logosConsultation14,
-                                        Assets.logosConsultation15,
-                                        Assets.logosConsultation16,
-                                        Assets.logosConsultation17,
-                                        Assets.logosConsultation18,
-                                        Assets.logosConsultation19,
-                                        Assets.logosConsultation20,
-                                        Assets.logosConsultation21,
-                                        Assets.logosConsultation22,
-                                        Assets.logosConsultation23,
-                                        Assets.logosConsultation24,
-                                        Assets.logosConsultation25,
-                                        Assets.logosConsultation26,
-                                        Assets.logosConsultation27,
-                                        Assets.logosConsultation28,
-                                        Assets.logosConsultation29,
-                                        Assets.logosConsultation30,
-                                        Assets.logosConsultation31,
-                                        Assets.logosConsultation32,
-                                        Assets.logosConsultation33,
-                                        Assets.logosConsultation34,
-                                        Assets.logosConsultation35,
-                                        Assets.logosConsultation36,
-                                        Assets.logosConsultation37,
-                                        Assets.logosConsultation38,
-                                        Assets.logosConsultation39,
-                                        Assets.logosConsultation40,
-                                      ],
-                                      visibleLogosCount: 5,
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
+
+                                Gap(isMobile? 10.h : 300.h),
+                                // Our Services Include Section
+                                Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: isMobile ? 0.w : 40.w,
+                                    vertical: isMobile ? 10 : 40.h,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      FutureBuilder<String>(
+                                        future: ContentHelper.getText(
+                                          context,
+                                          'corporate-leasing',
+                                          'services-title',
+                                          defaultValue: 'OUR_SERVICES',
+                                        ),
+                                        builder: (context, servicesSnapshot) {
+                                          return FutureBuilder<String>(
+                                            future: ContentHelper.getText(
+                                              context,
+                                              'corporate-leasing',
+                                              'services-include',
+                                              defaultValue: 'INCLUDE',
+                                            ),
+                                            builder: (context, includeSnapshot) {
+                                              return RichText(
+                                                textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
+                                                text: TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: '${servicesSnapshot.data ?? 'OUR_SERVICES'.tr(context)} ',
+                                                      style: TextStyle(
+                                                        fontFamily: 'OptimalBold',
+                                                        color: Colors.white,
+                                                        fontSize: isMobile ? 22.sp : 70.sp,
+                                                        fontWeight: FontWeight.bold,
+                                                        letterSpacing: 2,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: includeSnapshot.data ?? 'INCLUDE'.tr(context),
+                                                      style: TextStyle(
+                                                        fontFamily: 'OptimalBold',
+                                                        color: const Color(0xFFF4ED47),
+                                                        fontSize: isMobile ? 22.sp : 70.sp,
+                                                        fontWeight: FontWeight.bold,
+                                                        letterSpacing: 2,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: isMobile? 10.h:40.h),
+                                      Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.symmetric(horizontal: isMobile ? 10.w : 30.w, vertical: isMobile ? 10.h : 40.h),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[900]!.withOpacity(1),
+                                          borderRadius: BorderRadius.circular(12.r),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            _buildServiceItem(
+                                              context,
+                                              isMobile,
+                                              'corporate-leasing',
+                                              'service-1',
+                                              'LARGE_INVENTORY'.tr(context),
+                                            ),
+                                            SizedBox(height: isMobile ? 8.h:20.h),
+                                            _buildServiceItem(
+                                              context,
+                                              isMobile,
+                                              'corporate-leasing',
+                                              'service-2',
+                                              'FLEXIBLE_PAYMENT'.tr(context),
+                                            ),
+                                            SizedBox(height: isMobile ? 8.h:20.h),
+                                            _buildServiceItem(
+                                              context,
+                                              isMobile,
+                                              'corporate-leasing',
+                                              'service-3',
+                                              'SMART_SOLUTIONS'.tr(context),
+                                            ),
+                                            SizedBox(height: isMobile ? 8.h:20.h),
+                                            _buildServiceItem(
+                                              context,
+                                              isMobile,
+                                              'corporate-leasing',
+                                              'service-4',
+                                              'FULL_SUPPORT'.tr(context),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Gap(isMobile ? 10.h : 120.h),
+                                      ClientsLogosSection(
+                                        pageId: 'corporate-leasing', // Fetch logos from Firebase for this page
+                                        backgroundColor: Colors.grey[900]!,
+                                        logos: [
+                                          Assets.logosConsultation1,
+                                          Assets.logosConsultation2,
+                                          Assets.logosConsultation3,
+                                          Assets.logosConsultation4,
+                                          Assets.logosConsultation5,
+                                          Assets.logosConsultation6,
+                                          Assets.logosConsultation7,
+                                          Assets.logosConsultation8,
+                                          Assets.logosConsultation9,
+                                          Assets.logosConsultation10,
+                                          Assets.logosConsultation11,
+                                          Assets.logosConsultation12,
+                                          Assets.logosConsultation13,
+                                          Assets.logosConsultation14,
+                                          Assets.logosConsultation15,
+                                          Assets.logosConsultation16,
+                                          Assets.logosConsultation17,
+                                          Assets.logosConsultation18,
+                                          Assets.logosConsultation19,
+                                          Assets.logosConsultation20,
+                                          Assets.logosConsultation21,
+                                          Assets.logosConsultation22,
+                                          Assets.logosConsultation23,
+                                          Assets.logosConsultation24,
+                                          Assets.logosConsultation25,
+                                          Assets.logosConsultation26,
+                                          Assets.logosConsultation27,
+                                          Assets.logosConsultation28,
+                                          Assets.logosConsultation29,
+                                          Assets.logosConsultation30,
+                                          Assets.logosConsultation31,
+                                          Assets.logosConsultation32,
+                                          Assets.logosConsultation33,
+                                          Assets.logosConsultation34,
+                                          Assets.logosConsultation35,
+                                          Assets.logosConsultation36,
+                                          Assets.logosConsultation37,
+                                          Assets.logosConsultation38,
+                                          Assets.logosConsultation39,
+                                          Assets.logosConsultation40,
+                                        ],
+                                        visibleLogosCount: 5,
+                                      ),
+                                    ],
+                                  ),
+                                ),
 
 
-                              Gap(isMobile? 10.h : 350.h),
-                            ],
+                                Gap(isMobile? 10.h : 350.h),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ));
-                      },
+                        ],
+                      ));
+                        },
+                      ),
                     ),
-                  ),
-                  const ContentServiceSection(),
-                  // Footer
-                  if(MediaQuery.of(context).size.width >= 600)
-                    const FooterSection()
-                  else if(kIsWeb)
-                    const FooterSectionMob(),
-                ],
+                    const ContentServiceSection(),
+                    // Footer
+                    if(MediaQuery.of(context).size.width >= 600)
+                      const FooterSection()
+                    else if(kIsWeb)
+                      const FooterSectionMob(),
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
-            ),
-            const FloatingContactButtons(),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              ),
+              const FloatingContactButtons(),
 
-            ScrollToTopButton(scrollController: scrollController),
-          ],
+              ScrollToTopButton(scrollController: scrollController),
+            ],
+          ),
         ),
       ),
     );
@@ -365,6 +369,7 @@ class CorporateLeasingScreen extends StatelessWidget {
             ),
             Expanded(
               child: RichText(
+                textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
                 text: TextSpan(
                   style: TextStyle(
                     color: Colors.white,
@@ -489,6 +494,7 @@ class CorporateLeasingScreen extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
+                textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
                 style: TextStyle(
                   fontFamily: 'AloeveraDisplaySemiBold',
                   color: Colors.white,

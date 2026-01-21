@@ -29,6 +29,8 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
   final Map<String, TextEditingController> _textControllers = {};
   String? _imageBase64;
   List<SectionIdOption> _availableSectionIds = [];
+  bool _useManualInput = false;
+  final TextEditingController _manualSectionIdController = TextEditingController();
 
   @override
   void initState() {
@@ -41,6 +43,11 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
     _selectedSectionId = content?.sectionId;
     _selectedType = content?.type ?? ContentType.text;
     _imageBase64 = content?.imageBase64;
+    
+    // Initialize manual input controller if editing existing content
+    if (content?.sectionId != null) {
+      _manualSectionIdController.text = content!.sectionId;
+    }
 
     // Initialize text controllers for both languages
     _textControllers['en'] = TextEditingController(
@@ -67,13 +74,19 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
   void dispose() {
     _textControllers['en']?.dispose();
     _textControllers['ar']?.dispose();
+    _manualSectionIdController.dispose();
     super.dispose();
   }
 
   void _save() {
-    if (_selectedSectionId == null || _selectedSectionId!.isEmpty) {
+    // Get section ID from dropdown or manual input
+    final sectionId = _useManualInput 
+        ? _manualSectionIdController.text.trim()
+        : _selectedSectionId;
+    
+    if (sectionId == null || sectionId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('يرجى اختيار معرف القسم')),
+        const SnackBar(content: Text('يرجى اختيار أو إدخال معرف القسم')),
       );
       return;
     }
@@ -81,7 +94,7 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
     final content = ContentModel(
       id: widget.initialContent?.id ?? '',
       pageId: widget.pageId,
-      sectionId: _selectedSectionId!,
+      sectionId: sectionId,
       type: _selectedType,
       values: {
         'en': _textControllers['en']?.text ?? '',
@@ -126,85 +139,143 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
                 ],
               ),
               SizedBox(height: 20.h),
-              // Section ID Dropdown
+              // Section ID Dropdown or Manual Input
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'معرف القسم (Section ID)',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            'معرف القسم (Section ID)',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Text(
+                            ' *',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ],
                       ),
-                      const Text(
-                        ' *',
-                        style: TextStyle(color: Colors.red),
+                      Row(
+                        children: [
+                          Text(
+                            'إدخال يدوي',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Switch(
+                            value: _useManualInput,
+                            onChanged: (value) {
+                              setState(() {
+                                _useManualInput = value;
+                                if (value && _selectedSectionId != null) {
+                                  _manualSectionIdController.text = _selectedSectionId!;
+                                } else if (!value && _manualSectionIdController.text.isNotEmpty) {
+                                  _selectedSectionId = _manualSectionIdController.text;
+                                }
+                                // Auto-detect type from section ID
+                                final sectionId = value 
+                                    ? _manualSectionIdController.text 
+                                    : _selectedSectionId ?? '';
+                                if (sectionId.contains('image') || sectionId.contains('logo')) {
+                                  _selectedType = ContentType.image;
+                                }
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  DropdownButtonFormField<String>(
-                    value: _selectedSectionId,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[100],
-                      hintText: 'اختر معرف القسم',
-                    ),
-                    items: _availableSectionIds.map((option) {
-                      return DropdownMenuItem<String>(
-                        value: option.id,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              option.id,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                            Text(
-                              option.label,
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ],
+                  if (!_useManualInput)
+                    DropdownButtonFormField<String>(
+                      value: _selectedSectionId,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedSectionId = value;
-                        // Auto-set type based on suggested type
-                        if (value != null) {
-                          final option = _availableSectionIds.firstWhere(
-                            (s) => s.id == value,
-                            orElse: () => SectionIdOption('', '', 'text'),
-                          );
-                          // Force text type for service items and other text-only sections
-                          if (option.suggestedType == 'image' && 
-                              !option.id.contains('service') &&
-                              !option.id.contains('text') &&
-                              !option.id.contains('title') &&
-                              !option.id.contains('subtitle') &&
-                              !option.id.contains('description')) {
-                            _selectedType = ContentType.image;
-                          } else {
-                            _selectedType = ContentType.text;
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        hintText: 'اختر معرف القسم',
+                      ),
+                      items: _availableSectionIds.map((option) {
+                        return DropdownMenuItem<String>(
+                          value: option.id,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                option.id,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                              Text(
+                                option.label,
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedSectionId = value;
+                          // Auto-set type based on suggested type
+                          if (value != null) {
+                            final option = _availableSectionIds.firstWhere(
+                              (s) => s.id == value,
+                              orElse: () => SectionIdOption('', '', 'text'),
+                            );
+                            // Force text type for service items and other text-only sections
+                            if (option.suggestedType == 'image' && 
+                                !option.id.contains('service') &&
+                                !option.id.contains('text') &&
+                                !option.id.contains('title') &&
+                                !option.id.contains('subtitle') &&
+                                !option.id.contains('description')) {
+                              _selectedType = ContentType.image;
+                            } else {
+                              _selectedType = ContentType.text;
+                            }
                           }
+                        });
+                      },
+                    )
+                  else
+                    TextField(
+                      controller: _manualSectionIdController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        hintText: 'أدخل معرف القسم (مثال: umc-logo أو umc-image-0)',
+                        helperText: 'مثال: umc-logo, park-mall-image-0, terrace-logo, إلخ',
+                      ),
+                      onChanged: (value) {
+                        // Auto-detect type from section ID
+                        if (value.contains('image') || value.contains('logo')) {
+                          setState(() {
+                            _selectedType = ContentType.image;
+                          });
                         }
-                      });
-                    },
-                  ),
+                      },
+                    ),
                 ],
               ),
               SizedBox(height: 16.h),

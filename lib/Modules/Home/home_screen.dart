@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rush/rush.dart';
+import '../../Modules/AllLogos/all_logos_screen.dart';
+import '../../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../../Widgets/about_content_section_mob.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
 import '../../Widgets/clients_logos_section.dart';
@@ -26,6 +29,7 @@ import '../../Widgets/services_content_section_mob.dart';
 import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
 import '../../generated/assets.dart';
+import '../../core/Language/locales.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -72,29 +76,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       // About Us Section
                       const AboutContentSection(),
                       //SizedBox(height: 100.h),
+                      // Exclusive Projects Section
+                      Container(
+                        height: 380.h,
+                        margin: EdgeInsets.all(12.w),
+                        child: ClientsLogosSection(
+                          title: 'OUR_EXCLUSIVE_PROJECTS',
+                          backgroundColor: Colors.grey[900]!,
+                          fetchAllServices: true, // Fetch logos from Firebase from all 8 services
+                          visibleLogosCount: 5,
+                          onLearnMorePressed: () {
+                            context.go(ExclusiveLeasingProjectsScreen.routeName);
+                          },
+                        ),
+                      ),
                       // Services Section
                       const ServicesContentSection(),
                       // Performance Highlights Section
                       const PerformanceHighlightsSection(),
                       //SizedBox(height: 100.h),
                       Container(
-                        height: 280.h,
+                        height: 380.h,
                         margin: EdgeInsets.all(12.w),
                         child: ClientsLogosSection(
                           backgroundColor: Colors.grey[900]!,
-                          logos: [
-                            Assets.logosLogo2,
-                            Assets.logosLogo3,
-                            Assets.logosLogo4,
-                            Assets.logosLogo6,
-                            Assets.logosLogo2,
-                            Assets.logosLogo2,
-                            Assets.logosLogo3,
-                            Assets.logosLogo4,
-                            Assets.logosLogo6,
-                            Assets.logosLogo2,
-                          ],
+                          fetchAllServices: true, // Fetch logos from Firebase from all 8 services
                           visibleLogosCount: 5,
+                          onLearnMorePressed: () {
+                            context.go(AllLogosScreen.routeName);
+                          },
                         ),
                       ),
 
@@ -148,27 +158,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const HomeSearchSectionMob(),
                       const AboutContentSectionMob(),
+                      // Exclusive Projects Section
+                      Container(
+                        height: 210.h,
+                        margin: EdgeInsets.all(12.w),
+                        child: ClientsLogosSection(
+                          title: 'OUR_EXCLUSIVE_PROJECTS',
+                          backgroundColor: Colors.grey[900]!,
+                          fetchAllServices: true, // Fetch logos from Firebase from all 8 services
+                          visibleLogosCount: 5,
+                          onLearnMorePressed: () {
+                            context.go(ExclusiveLeasingProjectsScreen.routeName);
+                          },
+                        ),
+                      ),
                       const ServicesContentSectionMob(),
                       const PerformanceHighlightsSectionMob(),
                       //const AnimatedLogosFooterV2(),
                       Container(
-                        height: 180.h,
+                        height: 210.h,
                         margin: EdgeInsets.all(12.w),
                         child: ClientsLogosSection(
                           backgroundColor: Colors.grey[900]!,
-                          logos: [
-                            Assets.logosLogo2,
-                            Assets.logosLogo3,
-                            Assets.logosLogo4,
-                            Assets.logosLogo6,
-                            Assets.logosLogo2,
-                            Assets.logosLogo2,
-                            Assets.logosLogo3,
-                            Assets.logosLogo4,
-                            Assets.logosLogo6,
-                            Assets.logosLogo2,
-                          ],
+                          fetchAllServices: true, // Fetch logos from Firebase from all 8 services
                           visibleLogosCount: 5,
+                          onLearnMorePressed: () {
+                            context.go(AllLogosScreen.routeName);
+                          },
                         ),
                       ),
                       const ContactsContentSectionMob(),

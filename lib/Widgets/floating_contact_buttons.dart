@@ -117,9 +117,9 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                         ),
                       ),
                     ),
-                  
+
                   if (_isExpanded) SizedBox(height: 12.h),
-                  
+
                   // زر الواتساب
                   if (_isExpanded)
                     Transform.scale(
@@ -129,15 +129,15 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                         child: _ContactButton(
                           icon: Assets.iconsCall,
                           onTap: () => _openWhatsApp(ContactInfo.whatsappNumber),
-                          backgroundColor: const Color(0xFF25D366),
+                          backgroundColor: const Color(0xFFF4ED47),
                           useAsset: true,
-                          iconData: Icons.chat_bubble_outline,
+                          iconData: Icons.call,
                         ),
                       ),
                     ),
-                  
+
                   if (_isExpanded) SizedBox(height: 12.h),
-                  
+
                   // زر الاتصال
                   if (_isExpanded)
                     Transform.scale(
@@ -152,13 +152,13 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                         ),
                       ),
                     ),
-                  
+
                   if (_isExpanded) SizedBox(height: 12.h),
                 ],
               );
             },
           ),
-          
+
           // الزر الرئيسي
           MainContactButton(
             onTap: _toggleExpansion,

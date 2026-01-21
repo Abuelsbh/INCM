@@ -6,6 +6,7 @@ import '../../Widgets/custom_app_bar.dart';
 import '../../Widgets/footer_section.dart';
 import '../../Widgets/footer_section_mob.dart';
 import '../../core/Language/app_languages.dart';
+import '../../core/Language/locales.dart';
 import '../../generated/assets.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -110,7 +111,7 @@ class _SearchScreenState extends State<SearchScreen>
       // For now, we'll just show a snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Searching for: $query'),
+          content: Text('SEARCHING_FOR'.tr(context).replaceAll('{query}', query)),
           backgroundColor: const Color(0xFFFFC700),
           behavior: SnackBarBehavior.floating,
         ),
@@ -160,38 +161,26 @@ class _SearchScreenState extends State<SearchScreen>
                           SizedBox(height: 40.h),
 
                           // Title
-                          Consumer<AppLanguage>(
-                            builder: (context, appLanguage, child) {
-                              return Text(
-                                appLanguage.appLang == Languages.ar
-                                    ? 'البحث'
-                                    : 'Search',
-                                style: TextStyle(
-                                  color: const Color(0xFFFFC700),
-                                  fontSize: 32.sp,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 2,
-                                ),
-                              );
-                            },
+                          Text(
+                            'SEARCH'.tr(context),
+                            style: TextStyle(
+                              color: const Color(0xFFFFC700),
+                              fontSize: 32.sp,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                            ),
                           ),
 
                           SizedBox(height: 16.h),
 
                           // Subtitle
-                          Consumer<AppLanguage>(
-                            builder: (context, appLanguage, child) {
-                              return Text(
-                                appLanguage.appLang == Languages.ar
-                                    ? 'ابحث عن الخدمات والعقارات'
-                                    : 'Find services and properties',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              );
-                            },
+                          Text(
+                            'SEARCH_SUBTITLE'.tr(context),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
 
                           SizedBox(height: 40.h),

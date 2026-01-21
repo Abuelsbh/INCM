@@ -60,21 +60,14 @@ class _MainContactButtonState extends State<MainContactButton>
                   return Transform.rotate(
                     angle: widget.rotationAnimation.value * 2 * 3.14159, // دوران 45 درجة
                     child: Container(
-                      width: 60.w,
-                      height: 60.w,
+                      width: MediaQuery.of(context).size.width >= 600 ? 56.w : 48.w,
+                      height: MediaQuery.of(context).size.width >= 600 ? 56.w : 48.w,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: <Color>[
-                            Color(0xFFF4ED47),
-                            Color(0xFFC63424),
-                          ],
-                        ),
-                        shape: BoxShape.circle,
+                        color: const Color(0xFFC63424), // أحمر
+                        borderRadius: BorderRadius.circular(8.r), // زوايا دائرية
                         boxShadow: const <BoxShadow>[
                           BoxShadow(
-                            color: Color(0x66C63424),
+                            color: Colors.black26,
                             blurRadius: 12,
                             offset: Offset(0, 6),
                           ),
@@ -82,9 +75,9 @@ class _MainContactButtonState extends State<MainContactButton>
                       ),
                       child: Center(
                         child: Icon(
-                          widget.isExpanded ? Icons.close : Icons.chat,
-                          color: Colors.white,
-                          size: 28.sp,
+                          widget.isExpanded ? Icons.close : Icons.call,
+                          color: const Color(0xFFF4ED47), // أصفر
+                          size:  MediaQuery.of(context).size.width >= 600 ? 36.sp : 24.sp,
                         ),
                       ),
                     ),

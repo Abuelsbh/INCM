@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:incm/generated/assets.dart';
 import 'package:provider/provider.dart';
 import '../core/Content/content_provider.dart';
 import '../core/Firebase/firebase_logos_service.dart';
 import '../core/Language/locales.dart';
 import 'base64_image_widget.dart';
+import 'custom_button.dart';
 
 class ClientsLogosSection extends StatefulWidget {
   final List<String>? logos; // Fallback logos from assets
@@ -22,6 +24,7 @@ class ClientsLogosSection extends StatefulWidget {
   final double? logoHeight;
   final int visibleLogosCount;
   final double? opacity;
+  final VoidCallback? onLearnMorePressed; // Optional callback for LEARN MORE button
 
   const ClientsLogosSection({
     super.key,
@@ -32,8 +35,10 @@ class ClientsLogosSection extends StatefulWidget {
     this.backgroundColor,
     this.logoWidth,
     this.logoHeight,
-    this.visibleLogosCount = 5, this.title,
+    this.visibleLogosCount = 5, 
+    this.title,
     this.opacity,
+    this.onLearnMorePressed,
   });
 
   @override
@@ -527,7 +532,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
         Padding(
           padding: EdgeInsets.only(bottom: isMobile ? 0.h :30.h),
           child: Text(
-            widget.title?.toUpperCase()??'OUR_CLIENTS'.tr(context),
+            widget.title != null ? widget.title!.tr(context).toUpperCase() : 'OUR_CLIENTS'.tr(context),
             style: TextStyle(
               fontFamily: 'OptimalBold',
               color: titleColor,
@@ -637,8 +642,22 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
               ),
             ],
           ),
-        )
-
+        ),
+        // LEARN MORE Button
+        if (widget.onLearnMorePressed != null) ...[
+          Gap(isMobile ? 20.h : 30.h),
+          Center(
+            child: isMobile
+                ? ButtonStyles.learnMoreButtonMob(
+                    context: context,
+                    onPressed: widget.onLearnMorePressed!,
+                  )
+                : ButtonStyles.learnMoreButton(
+                    context: context,
+                    onPressed: widget.onLearnMorePressed!,
+                  ),
+          ),
+        ],
       ],
     );
 

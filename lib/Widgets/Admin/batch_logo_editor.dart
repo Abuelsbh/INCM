@@ -36,7 +36,7 @@ class _BatchLogoEditorState extends State<BatchLogoEditor> {
     if (_selectedImages.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select images for the logos'),
+          content: Text('يرجى اختيار صور للوجو'),
           backgroundColor: Colors.red,
         ),
       );
@@ -46,7 +46,7 @@ class _BatchLogoEditorState extends State<BatchLogoEditor> {
     if (_selectedPageId == null || _selectedPageId!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select a page'),
+          content: Text('يرجى اختيار صفحة'),
           backgroundColor: Colors.red,
         ),
       );
@@ -84,7 +84,7 @@ class _BatchLogoEditorState extends State<BatchLogoEditor> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Add Multiple Logos',
+                  'إضافة عدة لوجو',
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
@@ -105,7 +105,7 @@ class _BatchLogoEditorState extends State<BatchLogoEditor> {
                     DropdownButtonFormField<String>(
                       value: _selectedPageId?.isEmpty ?? true ? null : _selectedPageId,
                       decoration: InputDecoration(
-                        labelText: 'Page *',
+                        labelText: 'الصفحة *',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -124,7 +124,7 @@ class _BatchLogoEditorState extends State<BatchLogoEditor> {
                     ),
                     SizedBox(height: 20.h),
                     MultiImagePickerWidget(
-                      label: 'Logo Images *',
+                      label: 'صور اللوجو *',
                       initialBase64List: _selectedImages,
                       onImagesSelected: (images) {
                         setState(() {
@@ -147,7 +147,7 @@ class _BatchLogoEditorState extends State<BatchLogoEditor> {
                             SizedBox(width: 8.w),
                             Expanded(
                               child: Text(
-                                'Will add ${_selectedImages.length} logo${_selectedImages.length > 1 ? 's' : ''} to page: ${_pageNames[_selectedPageId] ?? _selectedPageId}',
+                                'سيتم إضافة ${_selectedImages.length} لوجو إلى صفحة: ${_pageNames[_selectedPageId] ?? _selectedPageId}',
                                 style: TextStyle(
                                   color: Colors.blue[900],
                                   fontSize: 14.sp,
@@ -167,7 +167,7 @@ class _BatchLogoEditorState extends State<BatchLogoEditor> {
               children: [
                 TextButton(
                   onPressed: _isSaving ? null : () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: const Text('إلغاء'),
                 ),
                 SizedBox(width: 16.w),
                 ElevatedButton(
@@ -185,7 +185,7 @@ class _BatchLogoEditorState extends State<BatchLogoEditor> {
                             valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
                           ),
                         )
-                      : Text('Add ${_selectedImages.isEmpty ? '' : '(${_selectedImages.length})'}'),
+                      : Text('إضافة ${_selectedImages.isEmpty ? '' : '(${_selectedImages.length})'}'),
                 ),
               ],
             ),

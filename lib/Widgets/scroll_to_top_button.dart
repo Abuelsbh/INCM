@@ -160,8 +160,8 @@ class _AnimatedArrowButtonState extends State<_AnimatedArrowButton>
               child: Transform.scale(
                 scale: _scaleAnimation.value,
                 child: Container(
-                  width: 60.w,
-                  height: 60.w,
+                  width: MediaQuery.of(context).size.width >= 600 ? 60.w : 48.w,
+                  height: MediaQuery.of(context).size.width >= 600 ? 60.w : 48.w,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF4ED47),
                     borderRadius: BorderRadius.circular(10), // 🔹 هنا الكيرف
@@ -177,7 +177,7 @@ class _AnimatedArrowButtonState extends State<_AnimatedArrowButton>
                     child: Icon(
                       Icons.keyboard_arrow_up_rounded,
                       color: const Color(0xFFC63424),
-                      size: 36.sp,
+                      size:  MediaQuery.of(context).size.width >= 600 ? 36.sp : 28.sp,
                     ),
                   ),
                 ),

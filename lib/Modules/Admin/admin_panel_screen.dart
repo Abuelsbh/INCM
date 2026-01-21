@@ -11,6 +11,7 @@ import '../../Models/logo_model.dart';
 import '../../Widgets/Admin/content_item_editor.dart';
 import '../../Widgets/Admin/logo_editor.dart';
 import '../../Widgets/Admin/batch_logo_editor.dart';
+import '../../core/Language/locales.dart';
 
 class AdminPanelScreen extends StatefulWidget {
   static const String routeName = '/admin';
@@ -113,8 +114,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
       // Validate logo data
       if (logo.imageBase64.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error: Image is empty'),
+          SnackBar(
+            content: Text('ERROR_IMAGE_EMPTY'.tr(context)),
             backgroundColor: Colors.red,
           ),
         );
@@ -126,8 +127,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
 
       if (logo.pageId.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error: Please select a page'),
+          SnackBar(
+            content: Text('ERROR_SELECT_PAGE'.tr(context)),
             backgroundColor: Colors.red,
           ),
         );
@@ -154,8 +155,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
       if (success) {
         debugPrint('Logo saved successfully');
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Logo saved successfully'),
+          SnackBar(
+            content: Text('LOGO_SAVED_SUCCESS'.tr(context)),
             backgroundColor: Colors.green,
           ),
         );
@@ -163,8 +164,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
       } else {
         debugPrint('Failed to save logo');
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error occurred while saving logo'),
+          SnackBar(
+            content: Text('ERROR_SAVING_LOGO'.tr(context)),
             backgroundColor: Colors.red,
           ),
         );
@@ -189,17 +190,17 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this logo?'),
+        title: Text('CONFIRM_DELETE'.tr(context)),
+        content: Text('CONFIRM_DELETE_LOGO'.tr(context)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text('CANCEL'.tr(context)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text('DELETE'.tr(context)),
           ),
         ],
       ),
@@ -214,16 +215,16 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
         final success = await _logosService.deleteLogo(logo.id);
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Logo deleted successfully'),
+            SnackBar(
+              content: Text('LOGO_DELETED_SUCCESS'.tr(context)),
               backgroundColor: Colors.green,
             ),
           );
           await _loadLogos(pageId: _selectedLogoPageId);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Error occurred while deleting logo'),
+            SnackBar(
+              content: Text('ERROR_DELETING_LOGO'.tr(context)),
               backgroundColor: Colors.red,
             ),
           );
@@ -251,6 +252,10 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
           Navigator.pop(context);
           _saveLogo(logo);
         },
+        onSaveBatch: (logos) {
+          Navigator.pop(context);
+          _saveLogosBatch(logos);
+        },
       ),
     );
   }
@@ -270,8 +275,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
   Future<void> _saveLogosBatch(List<LogoModel> logos) async {
     if (logos.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No logos to save'),
+        SnackBar(
+          content: Text('NO_LOGOS_TO_SAVE'.tr(context)),
           backgroundColor: Colors.red,
         ),
       );
@@ -298,7 +303,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
         debugPrint('Batch logos saved successfully');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Successfully saved ${logos.length} logo(s)'),
+            content: Text('LOGOS_SAVED_SUCCESS'.tr(context).replaceAll('{count}', logos.length.toString())),
             backgroundColor: Colors.green,
           ),
         );
@@ -306,8 +311,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
       } else {
         debugPrint('Failed to save batch logos');
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error occurred while saving logos'),
+          SnackBar(
+            content: Text('ERROR_SAVING_LOGOS'.tr(context)),
             backgroundColor: Colors.red,
           ),
         );
@@ -375,8 +380,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
     if (mounted) {
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Content saved successfully'),
+          SnackBar(
+            content: Text('CONTENT_SAVED_SUCCESS'.tr(context)),
             backgroundColor: Colors.green,
           ),
         );
@@ -385,8 +390,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error occurred while saving content'),
+          SnackBar(
+            content: Text('ERROR_SAVING_CONTENT'.tr(context)),
             backgroundColor: Colors.red,
           ),
         );
@@ -398,17 +403,17 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this content?'),
+        title: Text('CONFIRM_DELETE'.tr(context)),
+        content: Text('CONFIRM_DELETE_CONTENT'.tr(context)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: Text('CANCEL'.tr(context)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text('DELETE'.tr(context)),
           ),
         ],
       ),
@@ -424,8 +429,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
       if (mounted) {
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Content deleted successfully'),
+            SnackBar(
+              content: Text('CONTENT_DELETED_SUCCESS'.tr(context)),
               backgroundColor: Colors.green,
             ),
           );
@@ -434,8 +439,8 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
           }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Error occurred while deleting content'),
+            SnackBar(
+              content: Text('ERROR_DELETING_CONTENT'.tr(context)),
               backgroundColor: Colors.red,
             ),
           );
@@ -447,7 +452,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
   void _showAddContentDialog() {
     if (_selectedPageId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a page first')),
+        SnackBar(content: Text('PLEASE_SELECT_PAGE'.tr(context))),
       );
       return;
     }
@@ -494,9 +499,9 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
       return Scaffold(
         backgroundColor: Colors.grey[900],
         appBar: AppBar(
-          title: const Text(
-            'Control Panel',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            'ADMIN_PANEL'.tr(context),
+            style: const TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.black,
         ),
@@ -513,7 +518,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 ),
                 SizedBox(height: 24.h),
                 Text(
-                  'Firebase Not Initialized',
+                  'FIREBASE_NOT_INITIALIZED'.tr(context),
                   style: TextStyle(
                     fontSize: 24.sp,
                     fontWeight: FontWeight.bold,
@@ -522,7 +527,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'Firebase must be initialized first to use the admin panel',
+                  'FIREBASE_MUST_BE_INITIALIZED'.tr(context),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.sp,
@@ -532,7 +537,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  'On Web: Add Web App in Firebase Console',
+                  'FIREBASE_WEB_SETUP'.tr(context),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14.sp,
@@ -547,27 +552,19 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('How to Setup Firebase'),
-                        content: const Text(
-                          '1. Open Firebase Console\n'
-                          '2. Select your project\n'
-                          '3. Add Web App (</> icon)\n'
-                          '4. Copy appId\n'
-                          '5. Open lib/core/Firebase/firebase_options.dart\n'
-                          '6. Replace YOUR_WEB_APP_ID with appId\n'
-                          '\nSee FIREBASE_WEB_SETUP.md for details',
-                        ),
+                        title: Text('HOW_TO_SETUP_FIREBASE'.tr(context)),
+                        content: Text('FIREBASE_SETUP_INSTRUCTIONS'.tr(context)),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('OK'),
+                            child: Text('OK'.tr(context)),
                           ),
                         ],
                       ),
                     );
                   },
                   icon: const Icon(Icons.info),
-                  label: const Text('Setup Instructions'),
+                  label: Text('SETUP_INSTRUCTIONS'.tr(context)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF4ED47),
                     foregroundColor: Colors.black,
@@ -583,9 +580,9 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
     return Scaffold(
       backgroundColor: Colors.grey[900],
       appBar: AppBar(
-        title: const Text(
-          'Control Panel',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          'ADMIN_PANEL'.tr(context),
+          style: const TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.black,
         bottom: TabBar(
@@ -593,16 +590,16 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
           indicatorColor: const Color(0xFFF4ED47),
           labelColor: const Color(0xFFF4ED47),
           unselectedLabelColor: Colors.grey,
-          tabs: const [
-            Tab(text: 'Content', icon: Icon(Icons.description)),
-            Tab(text: 'Logos', icon: Icon(Icons.business)),
+          tabs: [
+            Tab(text: 'TAB_CONTENT'.tr(context), icon: const Icon(Icons.description)),
+            Tab(text: 'TAB_LOGOS'.tr(context), icon: const Icon(Icons.business)),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: _tabController.index == 0 ? _loadPages : _loadLogos,
-            tooltip: 'Refresh',
+            tooltip: 'REFRESH'.tr(context),
           ),
         ],
       ),
@@ -633,7 +630,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                         child: ElevatedButton.icon(
                           onPressed: _showAddContentDialog,
                           icon: const Icon(Icons.add),
-                          label: const Text('Add Content'),
+                          label: Text('ADD_CONTENT'.tr(context)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFF4ED47),
                             foregroundColor: Colors.black,
@@ -692,7 +689,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                               ),
                               SizedBox(height: 16.h),
                               Text(
-                                'Select a page to manage its content',
+                                'SELECT_PAGE_TO_MANAGE'.tr(context),
                                 style: TextStyle(
                                   fontSize: 18.sp,
                                   color: Colors.grey,
@@ -716,14 +713,14 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             Icon(Icons.inbox, size: 100.sp, color: Colors.grey),
             SizedBox(height: 16.h),
             Text(
-              'No content on this page',
+              'NO_CONTENT_ON_PAGE'.tr(context),
               style: TextStyle(fontSize: 18.sp, color: Colors.grey),
             ),
             SizedBox(height: 16.h),
             ElevatedButton.icon(
               onPressed: _showAddContentDialog,
               icon: const Icon(Icons.add),
-              label: const Text('Add New Content'),
+              label: Text('ADD_NEW_CONTENT'.tr(context)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFF4ED47),
                 foregroundColor: Colors.black,
@@ -742,7 +739,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Content: ${_pageNames[_selectedPageId]}',
+                'CONTENT_FOR'.tr(context).replaceAll('{page}', _pageNames[_selectedPageId] ?? ''),
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -752,7 +749,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
               ElevatedButton.icon(
                 onPressed: _showAddContentDialog,
                 icon: const Icon(Icons.add),
-                label: const Text('Add Content'),
+                label: Text('ADD_CONTENT'.tr(context)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFF4ED47),
                   foregroundColor: Colors.black,
@@ -792,7 +789,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Section ID: ${content.sectionId}',
+                        'SECTION_ID'.tr(context) + ' ${content.sectionId}',
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
@@ -801,7 +798,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        'Type: ${_getTypeName(content.type)}',
+                        'TYPE'.tr(context) + ': ${_getTypeName(content.type)}',
                         style: TextStyle(
                           fontSize: 14.sp,
                           color: Colors.grey[300],
@@ -815,12 +812,12 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                     IconButton(
                       icon: const Icon(Icons.edit, color: Colors.blue),
                       onPressed: () => _showEditContentDialog(content),
-                      tooltip: 'Edit',
+                      tooltip: 'EDIT'.tr(context),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () => _deleteContent(content),
-                      tooltip: 'Delete',
+                      tooltip: 'DELETE'.tr(context),
                     ),
                   ],
                 ),
@@ -830,12 +827,12 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
             if (content.type == ContentType.text) ...[
               if (content.values['ar']?.isNotEmpty == true)
                 Text(
-                  'Arabic: ${content.values['ar']}',
+                  'ARABIC'.tr(context) + ': ${content.values['ar']}',
                   style: TextStyle(fontSize: 14.sp, color: Colors.white),
                 ),
               if (content.values['en']?.isNotEmpty == true)
                 Text(
-                  'English: ${content.values['en']}',
+                  'ENGLISH'.tr(context) + ': ${content.values['en']}',
                   style: TextStyle(fontSize: 14.sp, color: Colors.white),
                 ),
             ] else if (content.type == ContentType.image &&
@@ -865,13 +862,13 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
   String _getTypeName(ContentType type) {
     switch (type) {
       case ContentType.text:
-        return 'Text';
+        return 'TYPE_TEXT'.tr(context);
       case ContentType.image:
-        return 'Image';
+        return 'TYPE_IMAGE'.tr(context);
       case ContentType.video:
-        return 'Video';
+        return 'TYPE_VIDEO'.tr(context);
       case ContentType.link:
-        return 'Link';
+        return 'TYPE_LINK'.tr(context);
     }
   }
 
@@ -886,7 +883,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Manage Logos (Our Partners)',
+                    'MANAGE_LOGOS'.tr(context),
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
@@ -898,7 +895,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                       ElevatedButton.icon(
                         onPressed: _showAddLogoDialog,
                         icon: const Icon(Icons.add),
-                        label: const Text('Add Logo'),
+                        label: Text('ADD_LOGO'.tr(context)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF4ED47),
                           foregroundColor: Colors.black,
@@ -908,7 +905,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                       ElevatedButton.icon(
                         onPressed: _showBatchAddLogoDialog,
                         icon: const Icon(Icons.add_photo_alternate),
-                        label: const Text('Add Multiple Logos'),
+                        label: Text('ADD_MULTIPLE_LOGOS'.tr(context)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           foregroundColor: Colors.white,
@@ -927,7 +924,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                     child: DropdownButtonFormField<String>(
                       value: _selectedLogoPageId,
                       decoration: InputDecoration(
-                        labelText: 'Filter by Page',
+                        labelText: 'FILTER_BY_PAGE'.tr(context),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -938,9 +935,9 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                       dropdownColor: Colors.grey[800],
                       style: const TextStyle(color: Colors.white),
                       items: [
-                        const DropdownMenuItem<String>(
+                        DropdownMenuItem<String>(
                           value: null,
-                          child: Text('All Pages'),
+                          child: Text('ALL_PAGES'.tr(context)),
                         ),
                         ..._serviceNamesEnglish.entries.map((entry) {
                           return DropdownMenuItem<String>(
@@ -967,7 +964,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                         _loadLogos();
                       },
                       icon: const Icon(Icons.clear),
-                      label: const Text('Clear Filter'),
+                      label: Text('CLEAR_FILTER'.tr(context)),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.white,
                       ),
@@ -986,14 +983,14 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                       Icon(Icons.business, size: 100.sp, color: Colors.grey),
                       SizedBox(height: 16.h),
                       Text(
-                        'No logos',
+                        'NO_LOGOS'.tr(context),
                         style: TextStyle(fontSize: 18.sp, color: Colors.grey),
                       ),
                       SizedBox(height: 16.h),
                       ElevatedButton.icon(
                         onPressed: _showAddLogoDialog,
                         icon: const Icon(Icons.add),
-                        label: const Text('Add New Logo'),
+                        label: Text('ADD_NEW_LOGO'.tr(context)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFF4ED47),
                           foregroundColor: Colors.black,
@@ -1057,7 +1054,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'Page: ${_serviceNamesEnglish[logo.pageId] ?? _pageNames[logo.pageId] ?? logo.pageId}',
+                    'PAGE'.tr(context) + ': ${_serviceNamesEnglish[logo.pageId] ?? _pageNames[logo.pageId] ?? logo.pageId}',
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.grey[300],
@@ -1065,7 +1062,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'Order: ${logo.order + 1}',
+                    'ORDER'.tr(context) + ': ${logo.order + 1}',
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.grey[300],
@@ -1080,12 +1077,12 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 IconButton(
                   icon: const Icon(Icons.edit, color: Colors.blue),
                   onPressed: () => _showEditLogoDialog(logo),
-                  tooltip: 'Edit',
+                  tooltip: 'EDIT'.tr(context),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => _deleteLogo(logo),
-                  tooltip: 'Delete',
+                  tooltip: 'DELETE'.tr(context),
                 ),
               ],
             ),

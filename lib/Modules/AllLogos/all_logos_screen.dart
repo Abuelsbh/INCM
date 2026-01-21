@@ -1,149 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../Widgets/custom_app_bar.dart';
 import '../../Widgets/custom_app_bar_mob.dart';
-import '../../generated/assets.dart';
 import '../../core/Language/locales.dart';
+import '../../core/Firebase/firebase_logos_service.dart';
+import '../../Models/logo_model.dart';
+import '../../Widgets/base64_image_widget.dart';
 
-class AllLogosScreen extends StatelessWidget {
+class AllLogosScreen extends StatefulWidget {
   static const String routeName = '/all-logos';
 
   const AllLogosScreen({Key? key}) : super(key: key);
 
-  // Group logos by service
-  Map<String, List<String>> _getLogosByService() {
-    return {
-      'CONSULTATION': [
-        'assets/logos/consultation/consultation1.png',
-        'assets/logos/consultation/2.png',
-        'assets/logos/consultation/3.png',
-        'assets/logos/consultation/4.png',
-        'assets/logos/consultation/5.png',
-        'assets/logos/consultation/6.png',
-        'assets/logos/consultation/7.png',
-        'assets/logos/consultation/8.png',
-        'assets/logos/consultation/9.png',
-        'assets/logos/consultation/10.png',
-        'assets/logos/consultation/11.png',
-        'assets/logos/consultation/12.png',
-        'assets/logos/consultation/13.png',
-        'assets/logos/consultation/14.png',
-        'assets/logos/consultation/15.png',
-        'assets/logos/consultation/16.png',
-        'assets/logos/consultation/17.png',
-        'assets/logos/consultation/18.png',
-        'assets/logos/consultation/19.png',
-        'assets/logos/consultation/20.png',
-        'assets/logos/consultation/21.png',
-        'assets/logos/consultation/22.png',
-        'assets/logos/consultation/23.png',
-        'assets/logos/consultation/24.png',
-        'assets/logos/consultation/25.png',
-        'assets/logos/consultation/26.png',
-        'assets/logos/consultation/27.png',
-        'assets/logos/consultation/28.png',
-        'assets/logos/consultation/29.png',
-        'assets/logos/consultation/30.png',
-        'assets/logos/consultation/31.png',
-        'assets/logos/consultation/32.png',
-        'assets/logos/consultation/33.png',
-        'assets/logos/consultation/34.png',
-        'assets/logos/consultation/35.png',
-        'assets/logos/consultation/36.png',
-        'assets/logos/consultation/37.png',
-        'assets/logos/consultation/38.png',
-        'assets/logos/consultation/39.png',
-        'assets/logos/consultation/40.png',
-      ],
-      'FACILITY_MANAGEMENT': [
-        'assets/logos/facility/aisle.png',
-        'assets/logos/facility/ariana.png',
-        'assets/logos/facility/attracta.png',
-        'assets/logos/facility/b.png',
-        'assets/logos/facility/break-yard.png',
-        'assets/logos/facility/capitaal.png',
-        'assets/logos/facility/capital.png',
-        'assets/logos/facility/cloudnine.png',
-        'assets/logos/facility/eleven.png',
-        'assets/logos/facility/five.png',
-        'assets/logos/facility/gar..png',
-        'assets/logos/facility/glitz.png',
-        'assets/logos/facility/itiz.png',
-        'assets/logos/facility/jaya.png',
-        'assets/logos/facility/kernel.png',
-        'assets/logos/facility/mall.png',
-        'assets/logos/facility/neux.png',
-        'assets/logos/facility/nova.png',
-        'assets/logos/facility/rayan.png',
-        'assets/logos/facility/see90.png',
-        'assets/logos/facility/solaria.png',
-        'assets/logos/facility/star.png',
-        'assets/logos/facility/terrace.png',
-        'assets/logos/facility/umc.png',
-        'assets/logos/facility/v.png',
-        'assets/logos/facility/vitali.png',
-        'assets/logos/facility/voco-mall.png',
-        'assets/logos/facility/zoom.png',
-        'assets/logos/facility/Untitled-1.png',
-        'assets/logos/facility/نبض.png',
-      ],
-      'FRANCHISE_INVESTMENT': [
-        'assets/logos/franchise/2.png',
-        'assets/logos/franchise/3.png',
-        'assets/logos/franchise/4.png',
-        'assets/logos/franchise/5.png',
-        'assets/logos/franchise/6.png',
-        'assets/logos/franchise/7.png',
-        'assets/logos/franchise/8.png',
-        'assets/logos/franchise/9.png',
-        'assets/logos/franchise/10.png',
-        'assets/logos/franchise/11.png',
-        'assets/logos/franchise/12.png',
-        'assets/logos/franchise/13.png',
-        'assets/logos/franchise/14.png',
-        'assets/logos/franchise/Untitled-1.png',
-      ],
-      'PRIMARY_INVESTMENT': [
-        'assets/logos/primary/1.png',
-        'assets/logos/primary/2.png',
-        'assets/logos/primary/3.png',
-        'assets/logos/primary/4.png',
-        'assets/logos/primary/5.png',
-        'assets/logos/primary/6.png',
-        'assets/logos/primary/7.png',
-        'assets/logos/primary/8.png',
-        'assets/logos/primary/9.png',
-        'assets/logos/primary/10.png',
-        'assets/logos/primary/11.png',
-        'assets/logos/primary/12.png',
-      ],
-      'RETAIL_LEASING': [
-        'assets/logos/retail/1.png',
-        'assets/logos/retail/2.png',
-        'assets/logos/retail/3.png',
-        'assets/logos/retail/4.png',
-        'assets/logos/retail/5.png',
-        'assets/logos/retail/6.png',
-        'assets/logos/retail/7.png',
-        'assets/logos/retail/8.png',
-        'assets/logos/retail/9.png',
-      ],
-      'MARKETING': [
-        'assets/logos/marketing/1.png',
-        'assets/logos/marketing/2.png',
-        'assets/logos/marketing/3.png',
-        'assets/logos/marketing/4.png',
-        'assets/logos/marketing/5.png',
-        'assets/logos/marketing/6.png',
-      ],
-    };
+  @override
+  State<AllLogosScreen> createState() => _AllLogosScreenState();
+}
+
+class _AllLogosScreenState extends State<AllLogosScreen> {
+  final FirebaseLogosService _logosService = FirebaseLogosService();
+  late Future<Map<String, List<LogoModel>>> _logosFuture;
+
+  // Map pageId to Arabic service names
+  final Map<String, String> _serviceNames = {
+    'corporate-leasing': 'إيجار الشركات',
+    'retail-leasing': 'إيجار التجزئة',
+    'medical-leasing': 'إيجار طبي',
+    'facility-management': 'إدارة المرافق',
+    'franchise-investment': 'استثمار الامتياز',
+    'primary-investment': 'الاستثمار الأساسي',
+    'marketing': 'التسويق',
+    'consultation': 'الاستشارة',
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _logosFuture = _loadLogos();
+  }
+
+  Future<Map<String, List<LogoModel>>> _loadLogos() async {
+    try {
+      final logos = await _logosService.getAllServicesLogos();
+      
+      // Group logos by service (pageId)
+      final Map<String, List<LogoModel>> groupedLogos = {};
+      for (var logo in logos) {
+        if (logo.imageBase64.isNotEmpty) {
+          if (!groupedLogos.containsKey(logo.pageId)) {
+            groupedLogos[logo.pageId] = [];
+          }
+          groupedLogos[logo.pageId]!.add(logo);
+        }
+      }
+
+      return groupedLogos;
+    } catch (e) {
+      debugPrint('Error loading logos: $e');
+      rethrow;
+    }
+  }
+
+  void _retryLoadLogos() {
+    setState(() {
+      _logosFuture = _loadLogos();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
-    final logosByService = _getLogosByService();
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -157,7 +82,7 @@ class AllLogosScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                   child: Text(
-                    'OUR CLIENTS',
+                    'OUR_CLIENTS'.tr(context),
                     style: TextStyle(
                       fontFamily: 'OptimalBold',
                       color: const Color(0xFFF4ED47),
@@ -167,60 +92,117 @@ class AllLogosScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Logos grouped by service
-                ...logosByService.entries.map((entry) {
-                  final serviceName = entry.key;
-                  final logos = entry.value;
-                  
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      bottom: isMobile ? 30.h : 50.h,
-                      left: isMobile ? 12.w : 40.w,
-                      right: isMobile ? 12.w : 40.w,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Service Title
-                        Padding(
-                          padding: EdgeInsets.only(
-                            bottom: isMobile ? 15.h : 25.h,
-                            left: isMobile ? 8.w : 0,
-                          ),
-                          child: Text(
-                            serviceName.tr(context),
-                            style: TextStyle(
-                              fontFamily: 'OptimalBold',
-                              color: const Color(0xFFF4ED47),
-                              fontSize: isMobile ? 22.sp : 40.sp,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.5,
+                // Use FutureBuilder for async loading
+                FutureBuilder<Map<String, List<LogoModel>>>(
+                  future: _logosFuture,
+                  builder: (context, snapshot) {
+                    // Loading state
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return _buildLoadingState(isMobile);
+                    }
+                    
+                    // Error state
+                    if (snapshot.hasError) {
+                      return Padding(
+                        padding: EdgeInsets.all(40.h),
+                        child: Column(
+                          children: [
+                            Text(
+                              'حدث خطأ أثناء تحميل الشعارات',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: isMobile ? 16.sp : 20.sp,
+                              ),
                             ),
+                            SizedBox(height: 20.h),
+                            ElevatedButton(
+                              onPressed: _retryLoadLogos,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFF4ED47),
+                                foregroundColor: Colors.black,
+                              ),
+                              child: Text('إعادة المحاولة'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    
+                    // Success state
+                    final logosByService = snapshot.data ?? {};
+                    
+                    if (logosByService.isEmpty) {
+                      return Padding(
+                        padding: EdgeInsets.all(40.h),
+                        child: Text(
+                          'لا توجد شعارات متاحة',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: isMobile ? 16.sp : 20.sp,
                           ),
                         ),
-                        // Logos Grid for this service
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: isMobile ? 2 : 4,
-                            crossAxisSpacing: isMobile ? 12.w : 30.w,
-                            mainAxisSpacing: isMobile ? 12.h : 30.h,
-                            childAspectRatio: isMobile ? 1.2 : 1.5,
+                      );
+                    }
+                    
+                    // Logos grouped by service
+                    return Column(
+                      children: logosByService.entries.map((entry) {
+                        final pageId = entry.key;
+                        final logos = entry.value;
+                        final serviceName = _serviceNames[pageId] ?? pageId;
+                        
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: isMobile ? 30.h : 50.h,
+                            left: isMobile ? 12.w : 40.w,
+                            right: isMobile ? 12.w : 40.w,
                           ),
-                          itemCount: logos.length,
-                          itemBuilder: (context, index) {
-                            return _buildLogoItem(
-                              context,
-                              logos[index],
-                              isMobile,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Service Title
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: isMobile ? 15.h : 25.h,
+                                  left: isMobile ? 8.w : 0,
+                                ),
+                                child: Text(
+                                  serviceName,
+                                  style: TextStyle(
+                                    fontFamily: 'OptimalBold',
+                                    color: const Color(0xFFF4ED47),
+                                    fontSize: isMobile ? 22.sp : 40.sp,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.5,
+                                  ),
+                                ),
+                              ),
+                              // Logos Grid for this service
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: isMobile ? 2 : 4,
+                                  crossAxisSpacing: isMobile ? 12.w : 30.w,
+                                  mainAxisSpacing: isMobile ? 12.h : 30.h,
+                                  childAspectRatio: isMobile ? 1.2 : 1.5,
+                                ),
+                                itemCount: logos.length,
+                                itemBuilder: (context, index) {
+                                  return _buildLogoItem(
+                                    context,
+                                    logos[index],
+                                    isMobile,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
                 SizedBox(height: isMobile ? 40.h : 80.h),
               ],
             ),
@@ -239,7 +221,7 @@ class AllLogosScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLogoItem(BuildContext context, String logoPath, bool isMobile) {
+  Widget _buildLogoItem(BuildContext context, LogoModel logo, bool isMobile) {
     return Container(
       padding: EdgeInsets.all(isMobile ? 8.w : 16.w),
       decoration: BoxDecoration(
@@ -250,35 +232,109 @@ class AllLogosScreen extends StatelessWidget {
           width: 1,
         ),
       ),
-      child: Builder(
-        builder: (_) {
-          try {
-            // Try SVG first
-            if (logoPath.toLowerCase().endsWith('.svg')) {
-              return SvgPicture.asset(
-                logoPath,
+      child: Base64ImageWidget(
+        base64String: logo.imageBase64,
                 fit: BoxFit.contain,
-                colorFilter: const ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
+      ),
+    );
+  }
+
+  Widget _buildLoadingState(bool isMobile) {
+    // Create skeleton loading that mimics the actual layout
+    final serviceNames = _serviceNames.values.toList();
+    
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 12.w : 40.w,
+        vertical: 20.h,
+      ),
+      child: Column(
+        children: [
+          // Loading indicator with text
+          Padding(
+            padding: EdgeInsets.only(bottom: 40.h),
+            child: Column(
+              children: [
+                const CircularProgressIndicator(
+                  color: Color(0xFFF4ED47),
+                  strokeWidth: 3,
+                ),
+                SizedBox(height: 20.h),
+                Text(
+                  'جاري تحميل الشعارات...',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: isMobile ? 14.sp : 18.sp,
+                    fontFamily: 'OptimalBold',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Skeleton placeholders for services
+          ...List.generate(
+            serviceNames.length > 3 ? 3 : serviceNames.length,
+            (serviceIndex) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: isMobile ? 30.h : 50.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Service title skeleton
+                    Container(
+                      width: isMobile ? 150.w : 250.w,
+                      height: isMobile ? 25.h : 40.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800]!.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    ),
+                    SizedBox(height: isMobile ? 15.h : 25.h),
+                    // Logos grid skeleton
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: isMobile ? 2 : 4,
+                        crossAxisSpacing: isMobile ? 12.w : 30.w,
+                        mainAxisSpacing: isMobile ? 12.h : 30.h,
+                        childAspectRatio: isMobile ? 1.2 : 1.5,
+                      ),
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        return _buildSkeletonLogoItem(isMobile);
+                      },
+                    ),
+                  ],
                 ),
               );
-            } else {
-              // Try Image
-              return Image.asset(
-                logoPath,
-                fit: BoxFit.contain,
-              );
-            }
-          } catch (e) {
-            debugPrint('Error loading logo $logoPath: $e');
-            return Icon(
-              Icons.business,
-              color: Colors.white.withOpacity(0.5),
-              size: isMobile ? 30.sp : 50.sp,
-            );
-          }
-        },
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSkeletonLogoItem(bool isMobile) {
+    return Container(
+      padding: EdgeInsets.all(isMobile ? 8.w : 16.w),
+      decoration: BoxDecoration(
+        color: Colors.grey[800]!.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(isMobile ? 12.r : 20.r),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.05),
+          width: 1,
+        ),
+      ),
+      child: Center(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.grey[700]!.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
       ),
     );
   }

@@ -2,18 +2,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../Models/logo_model.dart';
-import 'image_picker_widget.dart';
+import 'multi_image_picker_widget.dart';
 import 'text_editor_widget.dart';
 
 class LogoEditor extends StatefulWidget {
   final LogoModel? initialLogo;
   final Function(LogoModel) onSave;
+  final Function(List<LogoModel>)? onSaveBatch; // Optional batch save callback
   final VoidCallback? onCancel;
 
   const LogoEditor({
     super.key,
     this.initialLogo,
     required this.onSave,
+    this.onSaveBatch,
     this.onCancel,
   });
 
@@ -23,7 +25,7 @@ class LogoEditor extends StatefulWidget {
 
 class _LogoEditorState extends State<LogoEditor> {
   late TextEditingController _nameController;
-  String? _imageBase64;
+  List<String> _selectedImages = [];
   String? _selectedPageId;
   int _order = 0;
 
@@ -44,7 +46,10 @@ class _LogoEditorState extends State<LogoEditor> {
     super.initState();
     final logo = widget.initialLogo;
     _nameController = TextEditingController(text: logo?.name ?? '');
-    _imageBase64 = logo?.imageBase64;
+    // If editing existing logo, add its image to the list
+    if (logo?.imageBase64 != null && logo!.imageBase64.isNotEmpty) {
+      _selectedImages = [logo.imageBase64];
+    }
     _selectedPageId = logo?.pageId ?? '';
     _order = logo?.order ?? 0;
   }
@@ -56,31 +61,93 @@ class _LogoEditorState extends State<LogoEditor> {
   }
 
   void _save() {
-    if (_imageBase64 == null || _imageBase64!.isEmpty) {
+    if (_selectedImages.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select an image for the logo')),
+        const SnackBar(
+          content: Text('يرجى اختيار صورة واحدة على الأقل للوجو'),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
 
     if (_selectedPageId == null || _selectedPageId!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a page')),
+        const SnackBar(
+          content: Text('يرجى اختيار صفحة'),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
 
-    final logo = LogoModel(
-      id: widget.initialLogo?.id ?? '',
-      name: _nameController.text.trim(),
-      imageBase64: _imageBase64!,
-      pageId: _selectedPageId!,
-      order: _order,
-      createdAt: widget.initialLogo?.createdAt ?? DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
-    widget.onSave(logo);
+    // If editing existing logo and only one image selected, update it
+    if (widget.initialLogo != null && _selectedImages.length == 1) {
+      final logo = LogoModel(
+        id: widget.initialLogo!.id,
+        name: _nameController.text.trim(),
+        imageBase64: _selectedImages.first,
+        pageId: _selectedPageId!,
+        order: _order,
+        createdAt: widget.initialLogo!.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      widget.onSave(logo);
+    } else if (_selectedImages.length > 1 && widget.onSaveBatch != null) {
+      // If multiple images selected and batch save is available, use it
+      final logos = _selectedImages.asMap().entries.map((entry) {
+        final index = entry.key;
+        return LogoModel(
+          id: widget.initialLogo?.id ?? '',
+          name: _nameController.text.trim().isEmpty 
+              ? '' 
+              : '${_nameController.text.trim()} ${index + 1}',
+          imageBase64: entry.value,
+          pageId: _selectedPageId!,
+          order: _order + index,
+          createdAt: widget.initialLogo?.createdAt ?? DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+      }).toList();
+      
+      widget.onSaveBatch!(logos);
+      
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('سيتم إضافة ${_selectedImages.length} لوجو'),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      }
+    } else {
+      // Fallback: save each one separately
+      for (var i = 0; i < _selectedImages.length; i++) {
+        final logo = LogoModel(
+          id: widget.initialLogo?.id ?? '',
+          name: _nameController.text.trim().isEmpty 
+              ? '' 
+              : '${_nameController.text.trim()} ${i + 1}',
+          imageBase64: _selectedImages[i],
+          pageId: _selectedPageId!,
+          order: _order + i,
+          createdAt: widget.initialLogo?.createdAt ?? DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        widget.onSave(logo);
+      }
+      
+      // Show success message
+      if (mounted && _selectedImages.length > 1) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('تم إضافة ${_selectedImages.length} لوجو بنجاح'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -100,8 +167,8 @@ class _LogoEditorState extends State<LogoEditor> {
                 children: [
                   Text(
                     widget.initialLogo == null
-                        ? 'Add New Logo'
-                        : 'Edit Logo',
+                        ? 'إضافة لوجو (متعددة)'
+                        : 'تعديل اللوجو',
                     style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
@@ -117,7 +184,7 @@ class _LogoEditorState extends State<LogoEditor> {
               DropdownButtonFormField<String>(
                 value: _selectedPageId?.isEmpty ?? true ? null : _selectedPageId,
                 decoration: InputDecoration(
-                  labelText: 'Page *',
+                  labelText: 'الصفحة *',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -136,27 +203,54 @@ class _LogoEditorState extends State<LogoEditor> {
               ),
               SizedBox(height: 16.h),
               TextEditorWidget(
-                label: 'Logo Name (optional)',
+                label: 'اسم اللوجو (اختياري)',
                 initialValue: _nameController.text,
                 onChanged: (value) => _nameController.text = value,
               ),
               SizedBox(height: 16.h),
-              ImagePickerWidget(
-                label: 'Logo Image *',
-                initialBase64: _imageBase64,
-                onImageSelected: (base64) {
+              MultiImagePickerWidget(
+                label: 'صور اللوجو *',
+                initialBase64List: _selectedImages,
+                onImagesSelected: (images) {
                   setState(() {
-                    _imageBase64 = base64;
+                    _selectedImages = images;
                   });
                 },
               ),
+              if (_selectedImages.isNotEmpty && _selectedImages.length > 1)
+                Padding(
+                  padding: EdgeInsets.only(top: 12.h),
+                  child: Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue[200]!),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline, color: Colors.blue[700]),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            'سيتم إضافة ${_selectedImages.length} لوجو إلى صفحة: ${_pageNames[_selectedPageId] ?? _selectedPageId}',
+                            style: TextStyle(
+                              color: Colors.blue[900],
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               SizedBox(height: 24.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
                     onPressed: widget.onCancel ?? () => Navigator.pop(context),
-                    child: const Text('Cancel'),
+                    child: const Text('إلغاء'),
                   ),
                   SizedBox(width: 16.w),
                   ElevatedButton(
@@ -165,7 +259,11 @@ class _LogoEditorState extends State<LogoEditor> {
                       backgroundColor: const Color(0xFFF4ED47),
                       foregroundColor: Colors.black,
                     ),
-                    child: const Text('Save'),
+                    child: Text(
+                      _selectedImages.isEmpty 
+                          ? 'حفظ'
+                          : 'حفظ ${_selectedImages.length > 1 ? '(${_selectedImages.length})' : ''}',
+                    ),
                   ),
                 ],
               ),

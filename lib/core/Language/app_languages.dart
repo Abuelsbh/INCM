@@ -12,10 +12,14 @@ class AppLanguage extends ChangeNotifier {
   static const Languages defaultLanguage = Languages.en;
 
   Languages _appLanguage = defaultLanguage;
+  bool _isInitialized = false;
 
   Languages get appLang => _appLanguage;
 
   Future fetchLocale() async {
+    // Only fetch once to avoid resetting language
+    if (_isInitialized) return;
+    
     if (SharedPref.getLanguage() == null){
       if(!kDebugMode){
         final List<String> systemLocales = WidgetsBinding.instance.platformDispatcher.locales.map((e) => e.languageCode).toList();
@@ -26,6 +30,7 @@ class AppLanguage extends ChangeNotifier {
     }else{
       _appLanguage = Languages.values.firstWhere((lang) => lang.name == SharedPref.getLanguage());
     }
+    _isInitialized = true;
   }
 
   Future changeLanguage({Languages? language}) async {

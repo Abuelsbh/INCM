@@ -120,223 +120,226 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
     final isMobile = MediaQuery.of(context).size.width < 600;
     final ScrollController scrollController = ScrollController();
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
-            ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
-            : null,
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getDecorationImage(
-                        context,
-                        'franchise-investment',
-                        'background-image',
-                        fit: BoxFit.contain,
-                      ),
-                      builder: (context, snapshot) {
-                        DecorationImage? decorationImage = snapshot.data;
-                        
-                        // Fallback to asset if Firebase image not available
-                        if (decorationImage == null) {
-                          decorationImage = DecorationImage(
-                            image: AssetImage(Assets.imagesService8),
-                            fit: BoxFit.contain,
-                          );
-                        }
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+              ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
+              : null,
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: FutureBuilder<DecorationImage?>(
+                        future: ContentHelper.getDecorationImage(
+                          context,
+                          'franchise-investment',
+                          'background-image',
+                          fit: BoxFit.contain,
+                        ),
+                        builder: (context, snapshot) {
+                          DecorationImage? decorationImage = snapshot.data;
 
-                        return Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: decorationImage,
-                          ),
-                          child: Stack(
-                            children: [
-                              // Fallback image for height calculation
-                              Image.asset(
-                                Assets.imagesService8,
-                                width: double.infinity,
-                                fit: BoxFit.none,
-                                color: Colors.transparent,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                    isMobile ? 10.w : 150.w,
-                                    isMobile ? 55.h : 150.h,
-                                    isMobile ? 10.w : 150.w,
-                                    20.h),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    DynamicText(
-                                      pageId: 'franchise-investment',
-                                      sectionId: 'hero-title-1',
-                                      defaultValue: 'FRANCHISE',
-                                      style: TextStyle(
-                                        fontFamily: 'OptimalBold',
-                                        color: Colors.white,
-                                        fontSize: isMobile ? 16.sp : 70.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Gap(8.h),
-                                    DynamicText(
-                                      pageId: 'franchise-investment',
-                                      sectionId: 'hero-title-2',
-                                      defaultValue: 'INVESTMENT SERVICE',
-                                      style: TextStyle(
-                                        fontFamily: 'OptimalBold',
-                                        color: const Color(0xFFF4ED47),
-                                        fontSize: isMobile ? 16.sp : 75.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Gap(isMobile ? 2.h : 40.h),
-                                    SizedBox(
-                                      width: isMobile ? double.infinity : double.infinity,
-                                      child: DynamicText(
+                          // Fallback to asset if Firebase image not available
+                          if (decorationImage == null) {
+                            decorationImage = DecorationImage(
+                              image: AssetImage(Assets.imagesService8),
+                              fit: BoxFit.contain,
+                            );
+                          }
+
+                          return Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              image: decorationImage,
+                            ),
+                            child: Stack(
+                              children: [
+                                // Fallback image for height calculation
+                                Image.asset(
+                                  Assets.imagesService8,
+                                  width: double.infinity,
+                                  fit: BoxFit.none,
+                                  color: Colors.transparent,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                      isMobile ? 10.w : 150.w,
+                                      isMobile ? 55.h : 150.h,
+                                      isMobile ? 10.w : 150.w,
+                                      20.h),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      DynamicText(
                                         pageId: 'franchise-investment',
-                                        sectionId: 'hero-subtitle',
-                                        defaultValue: 'A franchise lets you start your success story ahead of the rest.',
+                                        sectionId: 'hero-title-1',
+                                        defaultValue: 'FRANCHISE_HERO_TITLE_1',
                                         style: TextStyle(
-                                          fontFamily: 'AloeveraDisplaySemiBold',
+                                          fontFamily: 'OptimalBold',
                                           color: Colors.white,
-                                          fontSize: isMobile ? 10.sp : 38.sp,
-                                          height: isMobile ? 2 : 1.6,
+                                          fontSize: isMobile ? 16.sp : 70.sp,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                    Gap(isMobile ? 12.h : 180.h),
-                                    _buildDescriptionBox(
-                                      context: context,
-                                      isMobile: isMobile,
-                                      pageId: 'franchise-investment',
-                                      sectionId: 'description-1',
-                                      defaultValue: 'For investors seeking stable, and scalable opportunities in the franchise sector, we provide expert guidance in identifying, evaluating, and securing high-performing franchise brands.',
-                                      highlightText: 'For investors seeking',
-                                    ),
-                                    SizedBox(height: isMobile ? 8.h : 50.h),
-                                    _buildDescriptionBox(
-                                      context: context,
-                                      isMobile: isMobile,
-                                      pageId: 'franchise-investment',
-                                      sectionId: 'description-2',
-                                      defaultValue: 'From market research and brand vetting to location sourcing and lease negotiation, we offer end to end support throughout the entire investment process',
-                                      highlightText: 'From market research and brand vetting to',
-                                    ),
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth: isMobile ? 180.w : 1100.w,
+                                      Gap(8.h),
+                                      DynamicText(
+                                        pageId: 'franchise-investment',
+                                        sectionId: 'hero-title-2',
+                                        defaultValue: 'FRANCHISE_HERO_TITLE_2',
+                                        style: TextStyle(
+                                          fontFamily: 'OptimalBold',
+                                          color: const Color(0xFFF4ED47),
+                                          fontSize: isMobile ? 16.sp : 75.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(height: isMobile ? 8.h : 50.h),
-                                          _buildDescriptionBox(
-                                            width: 600,
-                                            context: context,
-                                            isMobile: isMobile,
-                                            pageId: 'franchise-investment',
-                                            sectionId: 'description-3',
-                                            defaultValue: 'We offer a smart and secure investment opportunity, providing access to successful brands, proven operational methods, a trusted name, and high ROI.',
-                                            highlightText: 'We offer',
+                                      Gap(isMobile ? 2.h : 40.h),
+                                      SizedBox(
+                                        width: isMobile ? double.infinity : double.infinity,
+                                        child: DynamicText(
+                                          pageId: 'franchise-investment',
+                                          sectionId: 'hero-subtitle',
+                                          defaultValue: 'FRANCHISE_HERO_SUBTITLE',
+                                          style: TextStyle(
+                                            fontFamily: 'AloeveraDisplaySemiBold',
+                                            color: Colors.white,
+                                            fontSize: isMobile ? 10.sp : 38.sp,
+                                            height: isMobile ? 2 : 1.6,
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                    Gap(isMobile ? 100.h : 600.h),
-                                    // Our Services Include Section
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: isMobile ? 20.w : 40.w,
-                                        vertical: isMobile ? 10.h : 40.h,
+                                      Gap(isMobile ? 12.h : 180.h),
+                                      _buildDescriptionBox(
+                                        context: context,
+                                        isMobile: isMobile,
+                                        pageId: 'franchise-investment',
+                                        sectionId: 'description-1',
+                                        defaultValue: 'FRANCHISE_DESCRIPTION_1',
+                                        highlightText: 'For investors seeking',
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          DynamicText(
-                                            pageId: 'franchise-investment',
-                                            sectionId: 'services-title',
-                                            defaultValue: 'OUR SERVICES INCLUDE',
-                                            style: TextStyle(
-                                              fontFamily: 'OptimalBold',
-                                              color: const Color(0xFFF4ED47),
-                                              fontSize: isMobile ? 18.sp : 70.sp,
-                                              fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
+                                      SizedBox(height: isMobile ? 8.h : 50.h),
+                                      _buildDescriptionBox(
+                                        context: context,
+                                        isMobile: isMobile,
+                                        pageId: 'franchise-investment',
+                                        sectionId: 'description-2',
+                                        defaultValue: 'FRANCHISE_DESCRIPTION_2',
+                                        highlightText: 'From market research and brand vetting to',
+                                      ),
+                                      Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: isMobile ? 180.w : 1100.w,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: isMobile ? 8.h : 50.h),
+                                            _buildDescriptionBox(
+                                              width: 600,
+                                              context: context,
+                                              isMobile: isMobile,
+                                              pageId: 'franchise-investment',
+                                              sectionId: 'description-3',
+                                              defaultValue: 'FRANCHISE_DESCRIPTION_3',
+                                              highlightText: 'We offer',
                                             ),
-                                          ),
-                                          SizedBox(height: isMobile ? 10.h : 60.h),
-                                          _buildDescriptionBox(
-                                            context: context,
-                                            isMobile: isMobile,
-                                            pageId: 'franchise-investment',
-                                            sectionId: 'service-1',
-                                            defaultValue: '. Access to a curated portfolio of over 100 successful international brands. \n\n. Expert guidance to select the brand that best fits your goals, budget, and growth potential. \n\n. Comprehensive end-to-end support-from initial setup and operational training to launch and beyond.',
-                                            width: 1200.w,
-                                          ),
-                                          Gap(isMobile ? 20.h : 40.h),
-                                          InkWell(
-                                            onTap: isDownloading ? null : downloadFile,
-                                            child: Container(
-                                              padding: EdgeInsets.all(isMobile ? 8 : 4),
-                                              decoration: BoxDecoration(
-                                                color: _isPrimaryColor ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
-                                                borderRadius: BorderRadius.circular(4),
+                                          ],
+                                        ),
+                                      ),
+                                      Gap(isMobile ? 100.h : 600.h),
+                                      // Our Services Include Section
+                                      Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: isMobile ? 20.w : 40.w,
+                                          vertical: isMobile ? 10.h : 40.h,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            DynamicText(
+                                              pageId: 'franchise-investment',
+                                              sectionId: 'services-title',
+                                              defaultValue: 'FRANCHISE_SERVICE_TITLE',
+                                              style: TextStyle(
+                                                fontFamily: 'OptimalBold',
+                                                color: const Color(0xFFF4ED47),
+                                                fontSize: isMobile ? 18.sp : 70.sp,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 2,
                                               ),
-                                              child: Text(
-                                                "DOWNLOAD_FRANCHISING_BROCHURE".tr(context),
-                                                style: TextStyle(
-                                                  fontFamily: 'OptimalBold',
-                                                  color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
-                                                  fontSize: isMobile ? 12.sp : 25.sp,
-                                                  fontWeight: FontWeight.bold,
+                                            ),
+                                            SizedBox(height: isMobile ? 10.h : 60.h),
+                                            _buildDescriptionBox(
+                                              context: context,
+                                              isMobile: isMobile,
+                                              pageId: 'franchise-investment',
+                                              sectionId: 'service-1',
+                                              defaultValue: 'FRANCHISE_SERVICE_1',
+                                              width: 1200.w,
+                                            ),
+                                            Gap(isMobile ? 20.h : 40.h),
+                                            InkWell(
+                                              onTap: isDownloading ? null : downloadFile,
+                                              child: Container(
+                                                padding: EdgeInsets.all(isMobile ? 8 : 4),
+                                                decoration: BoxDecoration(
+                                                  color: _isPrimaryColor ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: Text(
+                                                  "DOWNLOAD_FRANCHISING_BROCHURE".tr(context),
+                                                  style: TextStyle(
+                                                    fontFamily: 'OptimalBold',
+                                                    color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
+                                                    fontSize: isMobile ? 12.sp : 25.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    Gap(isMobile ? 40.h : 420.h),
-                                    ClientsLogosSection(
-                                      pageId: 'franchise-investment',
-                                      backgroundColor: Colors.grey[900]!,
-                                      visibleLogosCount: 5,
-                                    ),
-                                  ],
+                                      Gap(isMobile ? 40.h : 420.h),
+                                      ClientsLogosSection(
+                                        pageId: 'franchise-investment',
+                                        backgroundColor: Colors.grey[900]!,
+                                        visibleLogosCount: 5,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  const ContentServiceSection(
-                    showCategoryField: true,
-                  ),
-                ],
+                    const ContentServiceSection(
+                      showCategoryField: true,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
-            ),
-            const FloatingContactButtons(),
-            ScrollToTopButton(scrollController: scrollController),
-          ],
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              ),
+              const FloatingContactButtons(),
+              ScrollToTopButton(scrollController: scrollController),
+            ],
+          ),
         ),
       ),
     );
@@ -376,6 +379,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
               ? _buildHighlightedText(displayText, highlightText, isMobile)
               : Text(
                   displayText,
+                  textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: isMobile ? 10.sp : 42.sp,
@@ -390,6 +394,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
     if (highlightIndex == -1) {
       return Text(
         text,
+        textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
         style: TextStyle(
           color: Colors.white,
           fontSize: isMobile ? 10.sp : 32.sp,
@@ -403,6 +408,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
     final afterText = text.substring(highlightIndex + highlightText.length);
 
     return RichText(
+      textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
       text: TextSpan(
         children: [
           TextSpan(

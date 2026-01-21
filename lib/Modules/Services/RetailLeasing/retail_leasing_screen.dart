@@ -11,6 +11,7 @@ import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/Language/locales.dart';
 import '../../../generated/assets.dart';
 
 class RetailLeasingScreen extends StatelessWidget {
@@ -88,7 +89,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                         DynamicText(
                                           pageId: 'retail-leasing',
                                           sectionId: 'hero-title-1',
-                                          defaultValue: 'RETAIL',
+                                          defaultValue: 'RETAIL_HERO_TITLE_1',
                                           style: TextStyle(
                                             fontFamily: 'OptimalBold',
                                             color: Colors.white,
@@ -99,7 +100,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                         DynamicText(
                                           pageId: 'retail-leasing',
                                           sectionId: 'hero-title-2',
-                                          defaultValue: ' LEASING SERVICE',
+                                          defaultValue: 'RETAIL_HERO_TITLE_2',
                                           style: TextStyle(
                                             fontFamily: 'OptimalBold',
                                             color: const Color(0xFFF4ED47),
@@ -113,7 +114,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                     DynamicText(
                                       pageId: 'retail-leasing',
                                       sectionId: 'hero-subtitle',
-                                      defaultValue: 'Your Ideal unit, always ready - exactly where you want it',
+                                      defaultValue: 'RETAIL_HERO_SUBTITLE',
                                       style: TextStyle(
                                         fontFamily: 'AloeveraDisplaySemiBold',
                                         color: Colors.white,
@@ -132,7 +133,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'retail-leasing',
                                       sectionId: 'description-1',
-                                      defaultValue: 'We provide comprehensive support across all stages of the retail leasing process, offering a wide selection of units in prime locations with flexible space configurations.',
+                                      defaultValue: 'RETAIL_DESCRIPTION_1',
                                     ),
                                     SizedBox(height: isMobile ? 225.h : 1000.h),
                                     _buildDescriptionBox(
@@ -140,7 +141,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'retail-leasing',
                                       sectionId: 'description-2',
-                                      defaultValue: 'By curating the right tenant mix — including brands, services, and experiences — we foster strong customer engagement and maintain a balanced, high-performing commercial environment.',
+                                      defaultValue: 'RETAIL_DESCRIPTION_2',
                                     ),
                                     // SizedBox(height: isMobile ? 10.h : 30.h),
                                     // _buildDescriptionBox2(
@@ -183,7 +184,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
-                                                    text: '${servicesSnapshot.data ?? 'OUR SERVICES'} ',
+                                                    text: '${servicesSnapshot.data ?? 'OUR_SERVICES'.tr(context)} ',
                                                     style: TextStyle(
                                                       fontFamily: 'OptimalBold',
                                                       color: Colors.white,
@@ -193,7 +194,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                   TextSpan(
-                                                    text: includeSnapshot.data ?? 'INCLUDE',
+                                                    text: includeSnapshot.data ?? 'INCLUDE'.tr(context),
                                                     style: TextStyle(
                                                       fontFamily: 'OptimalBold',
                                                       color: const Color(0xFFF4ED47),
@@ -215,7 +216,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'retail-leasing',
                                       sectionId: 'service-1',
-                                      defaultValue: 'Diverse commercial units in prime locations',
+                                      defaultValue: 'RETAIL_SERVICE_1',
                                       width: 1200.w
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 30.h),
@@ -224,7 +225,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'retail-leasing',
                                       sectionId: 'service-2',
-                                      defaultValue: 'Creating the perfect tenant mix to ensure higher traffic',
+                                      defaultValue: 'RETAIL_SERVICE_2',
                                       width: 1200.w
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 30.h),
@@ -233,7 +234,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'retail-leasing',
                                       sectionId: 'service-3',
-                                      defaultValue: 'Customized solutions in pricing and space, tailored to suit every need',
+                                      defaultValue: 'RETAIL_SERVICE_3',
                                       width: 1200.w
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 30.h),
@@ -242,7 +243,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'retail-leasing',
                                       sectionId: 'service-4',
-                                      defaultValue: 'Access to exclusive projects',
+                                      defaultValue: 'RETAIL_SERVICE_4',
                                       width: 1200.w
                                     ),
                                     SizedBox(height: isMobile ? 10.h : 30.h),
@@ -251,7 +252,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'retail-leasing',
                                       sectionId: 'service-5',
-                                      defaultValue: 'After-leasing service and follow-up',
+                                      defaultValue: 'RETAIL_SERVICE_5',
                                       width: 1200.w
                                     ),
                                   ],
@@ -335,6 +336,7 @@ class RetailLeasingScreen extends StatelessWidget {
             : Text(
                 displayText,
                 textAlign: TextAlign.center,
+                textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: isMobile ? 10.sp : 42.sp,
@@ -358,6 +360,7 @@ class RetailLeasingScreen extends StatelessWidget {
       ),
       child: Center(
         child: RichText(
+          textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
           text: TextSpan(
             children: [
               TextSpan(

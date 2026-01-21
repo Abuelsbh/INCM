@@ -25,254 +25,256 @@ class FacilityManagementScreen extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 600;
     final ScrollController scrollController = ScrollController();
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
-            ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
-            : null,
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getDecorationImage(
-                        context,
-                        'facility-management',
-                        'background-image',
-                        fit: BoxFit.contain,
-                      ),
-                      builder: (context, snapshot) {
-                        DecorationImage? decorationImage = snapshot.data;
-                        
-                        // Fallback to asset if Firebase image not available
-                        if (decorationImage == null) {
-                          decorationImage = DecorationImage(
-                            image: AssetImage(isMobile ? Assets.imagesService5Mob : Assets.imagesService5Web),
-                            fit: BoxFit.contain,
-                          );
-                        }
-
-                        return Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            image: decorationImage,
-                          ),
-                          child: Stack(
-                            children: [
-                              // Fallback image for height calculation
-                              Image.asset(
-                                isMobile ? Assets.imagesService5Mob : Assets.imagesService5Web,
-                                width: double.infinity,
-                                fit: BoxFit.none,
-                                color: Colors.transparent,
-                              ),
-                              Positioned(
-                                top: isMobile ? 110.h : 350.h,
-                                right: isMobile ? 28.w : 240.w,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    DynamicText(
-                                      pageId: 'facility-management',
-                                      sectionId: 'hero-title-1',
-                                      defaultValue: 'FACILITY',
-                                      style: TextStyle(
-                                        fontFamily: 'OptimalBold',
-                                        color: Colors.black,
-                                        fontSize: isMobile ? 16.sp : 60.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Gap(isMobile ? 4.h : 20.h),
-                                    DynamicText(
-                                      pageId: 'facility-management',
-                                      sectionId: 'hero-title-2',
-                                      defaultValue: 'MANAGEMENT',
-                                      style: TextStyle(
-                                        fontFamily: 'OptimalBold',
-                                        color: Colors.black,
-                                        fontSize: isMobile ? 16.sp : 60.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Gap(isMobile ? 8.h : 40.h),
-                                    SizedBox(
-                                      width: isMobile ? 120.w : 450.w,
-                                      child: DynamicText(
-                                        pageId: 'facility-management',
-                                        sectionId: 'hero-subtitle',
-                                        defaultValue: 'Day-to-day operations are our responsibility, so you can focus on growing your business.',
-                                        style: TextStyle(
-                                          fontFamily: 'AloeveraDisplaySemiBold',
-                                          color: Colors.black,
-                                          fontSize: isMobile ? 10.sp : 36.sp,
-                                          height: isMobile ? 2 : 3,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+              ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
+              : null,
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: FutureBuilder<DecorationImage?>(
+                        future: ContentHelper.getDecorationImage(
+                          context,
+                          'facility-management',
+                          'background-image',
+                          fit: BoxFit.contain,
+                        ),
+                        builder: (context, snapshot) {
+                          DecorationImage? decorationImage = snapshot.data;
+                          
+                          // Fallback to asset if Firebase image not available
+                          if (decorationImage == null) {
+                            decorationImage = DecorationImage(
+                              image: AssetImage(isMobile ? Assets.imagesService5Mob : Assets.imagesService5Web),
+      
+                            );
+                          }
+      
+                          return Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              image: decorationImage,
+                            ),
+                            child: Stack(
+                              children: [
+                                // Fallback image for height calculation
+                                Image.asset(
+                                  isMobile ? Assets.imagesService5Mob : Assets.imagesService5Web,
+                                  width: double.infinity,
+      
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                    isMobile ? 10.w : 50.w,
-                                    isMobile ? 60.h : 300.h,
-                                    isMobile ? 10.w : 50.w,
-                                    20.h),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        DynamicText(
-                                          pageId: 'facility-management',
-                                          sectionId: 'hero-title-1',
-                                          defaultValue: 'FACILITY',
-                                          style: TextStyle(
-                                            fontFamily: 'OptimalBold',
-                                            color: Colors.white,
-                                            fontSize: isMobile ? 18.sp : 70.sp,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                Positioned(
+                                  top: isMobile ? 110.h : 350.h,
+                                  right: isMobile ? 28.w : 220.w,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      DynamicText(
+                                        pageId: 'facility-management',
+                                        sectionId: 'hero-title-1',
+                                        defaultValue: 'FACILITY_HERO_TITLE_1',
+                                        style: TextStyle(
+                                          fontFamily: 'OptimalBold',
+                                          color: Colors.black,
+                                          fontSize: isMobile ? 16.sp : 60.sp,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                        Gap(8.w),
-                                        DynamicText(
-                                          pageId: 'facility-management',
-                                          sectionId: 'hero-title-2',
-                                          defaultValue: 'MANAGEMENT',
-                                          style: TextStyle(
-                                            fontFamily: 'OptimalBold',
-                                            color: const Color(0xFFF4ED47),
-                                            fontSize: isMobile ? 18.sp : 75.sp,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth: isMobile ? 200.w : 1050.w,
                                       ),
-                                      child: Column(
+                                      Gap(isMobile ? 4.h : 20.h),
+                                      DynamicText(
+                                        pageId: 'facility-management',
+                                        sectionId: 'hero-title-2',
+                                        defaultValue: 'FACILITY_HERO_TITLE_2',
+                                        style: TextStyle(
+                                          fontFamily: 'OptimalBold',
+                                          color: Colors.black,
+                                          fontSize: isMobile ? 16.sp : 60.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Gap(isMobile ? 8.h : 40.h),
+                                      SizedBox(
+                                        width: isMobile ? 120.w : 450.w,
+                                        child: DynamicText(
+                                          pageId: 'facility-management',
+                                          sectionId: 'hero-subtitle',
+                                          defaultValue: 'FACILITY_HERO_SUBTITLE',
+                                          style: TextStyle(
+                                            fontFamily: 'AloeveraDisplaySemiBold',
+                                            color: Colors.black,
+                                            fontSize: isMobile ? 10.sp : 36.sp,
+                                            height: isMobile ? 2 : 3,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                      isMobile ? 10.w : 50.w,
+                                      isMobile ? 60.h : 300.h,
+                                      isMobile ? 10.w : 50.w,
+                                      20.h),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(height: isMobile ? 24.h : 50.h),
-                                          _buildDescriptionBox(
-                                            context: context,
-                                            isMobile: isMobile,
-                                            pageId: 'facility-management',
-                                            sectionId: 'description-1',
-                                            defaultValue: 'Our services cover day-to-day operations, preventive maintenance, and the optimization of building systems and infrastructure, ensuring your property runs efficiently and reliably.',
-                                          ),
-                                          SizedBox(height: isMobile ? 8.h : 30.h),
-                                          _buildDescriptionBox(
-                                            context: context,
-                                            isMobile: isMobile,
-                                            pageId: 'facility-management',
-                                            sectionId: 'description-2',
-                                            defaultValue: 'Our experienced team focuses on operational excellence, cost-efficiency, and long-term asset performance, helping you maximize the return on investment (ROI).',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Gap(isMobile ? 150.h : 600.h),
-                                    // Our Services Include Section
-                                    Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: isMobile ? 20.w : 40.w,
-                                        vertical: isMobile ? 10.h : 40.h,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           DynamicText(
                                             pageId: 'facility-management',
-                                            sectionId: 'services-title',
-                                            defaultValue: 'OUR SERVICE INCLUDES',
+                                            sectionId: 'hero-title-1',
+                                            defaultValue: 'FACILITY',
+                                            style: TextStyle(
+                                              fontFamily: 'OptimalBold',
+                                              color: Colors.white,
+                                              fontSize: isMobile ? 18.sp : 70.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Gap(8.w),
+                                          DynamicText(
+                                            pageId: 'facility-management',
+                                            sectionId: 'hero-title-2',
+                                            defaultValue: 'MANAGEMENT',
                                             style: TextStyle(
                                               fontFamily: 'OptimalBold',
                                               color: const Color(0xFFF4ED47),
-                                              fontSize: isMobile ? 18.sp : 70.sp,
+                                              fontSize: isMobile ? 18.sp : 75.sp,
                                               fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
                                             ),
-                                          ),
-                                          SizedBox(height: isMobile ? 10.h : 40.h),
-                                          _buildDescriptionBox(
-                                            context: context,
-                                            isMobile: isMobile,
-                                            pageId: 'facility-management',
-                                            sectionId: 'service-1',
-                                            defaultValue: 'Comprehensive operational support to keep your property running smoothly.',
-                                            width: 1200.w,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          SizedBox(height: isMobile ? 8.h : 30.h),
-                                          _buildDescriptionBox(
-                                            context: context,
-                                            isMobile: isMobile,
-                                            pageId: 'facility-management',
-                                            sectionId: 'service-2',
-                                            defaultValue: 'Strategic asset management to optimize performance and maximize ROI.',
-                                            width: 1200.w,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          SizedBox(height: isMobile ? 8.h : 30.h),
-                                          _buildDescriptionBox(
-                                            context: context,
-                                            isMobile: isMobile,
-                                            pageId: 'facility-management',
-                                            sectionId: 'service-3',
-                                            defaultValue: 'Expert maintenance and facility optimization services.',
-                                            width: 1200.w,
-                                            textAlign: TextAlign.center,
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    Gap(isMobile ? 10.h : 120.h),
-                                    ClientsLogosSection(
-                                      pageId: 'facility-management',
-                                      backgroundColor: Colors.grey[900]!,
-                                      visibleLogosCount: 5,
-                                    ),
-                                  ],
+                                      Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: isMobile ? 200.w : 1050.w,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: isMobile ? 24.h : 50.h),
+                                            _buildDescriptionBox(
+                                              context: context,
+                                              isMobile: isMobile,
+                                              pageId: 'facility-management',
+                                              sectionId: 'description-1',
+                                              defaultValue: 'FACILITY_DESCRIPTION_1',
+                                            ),
+                                            SizedBox(height: isMobile ? 8.h : 30.h),
+                                            _buildDescriptionBox(
+                                              context: context,
+                                              isMobile: isMobile,
+                                              pageId: 'facility-management',
+                                              sectionId: 'description-2',
+                                              defaultValue: 'FACILITY_DESCRIPTION_2',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Gap(isMobile ? 150.h : 600.h),
+                                      // Our Services Include Section
+                                      Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: isMobile ? 20.w : 40.w,
+                                          vertical: isMobile ? 10.h : 10.h,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            DynamicText(
+                                              pageId: 'facility-management',
+                                              sectionId: 'services-title',
+                                              defaultValue: 'FACILITY_SERVICE_TITLE',
+                                              style: TextStyle(
+                                                fontFamily: 'OptimalBold',
+                                                color: const Color(0xFFF4ED47),
+                                                fontSize: isMobile ? 18.sp : 70.sp,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 2,
+                                              ),
+                                            ),
+                                            SizedBox(height: isMobile ? 10.h : 40.h),
+                                            _buildDescriptionBox(
+                                              context: context,
+                                              isMobile: isMobile,
+                                              pageId: 'facility-management',
+                                              sectionId: 'service-1',
+                                              defaultValue: 'FACILITY_SERVICE_1',
+                                              width: 1200.w,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: isMobile ? 8.h : 30.h),
+                                            _buildDescriptionBox(
+                                              context: context,
+                                              isMobile: isMobile,
+                                              pageId: 'facility-management',
+                                              sectionId: 'service-2',
+                                              defaultValue: 'FACILITY_SERVICE_2',
+                                              width: 1200.w,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: isMobile ? 8.h : 30.h),
+                                            _buildDescriptionBox(
+                                              context: context,
+                                              isMobile: isMobile,
+                                              pageId: 'facility-management',
+                                              sectionId: 'service-3',
+                                              defaultValue: 'FACILITY_SERVICE_3',
+                                              width: 1200.w,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Gap(isMobile ? 10.h : 100.h),
+                                      ClientsLogosSection(
+                                        pageId: 'facility-management',
+                                        backgroundColor: Colors.grey[900]!,
+                                        visibleLogosCount: 5,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                  const ContentServiceSection(),
-                  // Footer
-                  if(MediaQuery.of(context).size.width >= 600)
-                    const FooterSection()
-                  else if(kIsWeb)
-                    const FooterSectionMob(),
-                ],
+                    const ContentServiceSection(),
+                    // Footer
+                    if(MediaQuery.of(context).size.width >= 600)
+                      const FooterSection()
+                    else if(kIsWeb)
+                      const FooterSectionMob(),
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
-            ),
-            const FloatingContactButtons(),
-            ScrollToTopButton(scrollController: scrollController),
-          ],
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              ),
+              const FloatingContactButtons(),
+              ScrollToTopButton(scrollController: scrollController),
+            ],
+          ),
         ),
       ),
     );
@@ -313,6 +315,7 @@ class FacilityManagementScreen extends StatelessWidget {
             : Text(
                 text ?? defaultValue ?? '',
                 textAlign: textAlign,
+                textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
                 style: TextStyle(
                   color: highlightColor ?? Colors.white,
                   fontSize: isMobile ? 10.sp : 42.sp,

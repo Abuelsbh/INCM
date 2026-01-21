@@ -84,7 +84,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                     DynamicText(
                                       pageId: 'primary-investment',
                                       sectionId: 'hero-title-1',
-                                      defaultValue: 'PRIMARY INVESTMENT SERVICE',
+                                      defaultValue: 'PRIMARY_HERO_TITLE_1',
                                       style: TextStyle(
                                         fontFamily: 'OptimalBold',
                                         color: Colors.white,
@@ -104,8 +104,8 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                             children: [
                                               DynamicText(
                                                 pageId: 'primary-investment',
-                                                sectionId: 'hero-title-1',
-                                                defaultValue: 'PRIMARY',
+                                                sectionId: 'hero-title-2',
+                                                defaultValue: 'PRIMARY_HERO_TITLE_2',
                                                 style: TextStyle(
                                                   fontFamily: 'OptimalBold',
                                                   color: Colors.white,
@@ -115,8 +115,8 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                               ),
                                               DynamicText(
                                                 pageId: 'primary-investment',
-                                                sectionId: 'hero-title-2',
-                                                defaultValue: 'INVESTMENT',
+                                                sectionId: 'hero-title-3',
+                                                defaultValue: 'PRIMARY_HERO_TITLE_3',
                                                 style: TextStyle(
                                                   fontFamily: 'OptimalBold',
                                                   color: const Color(0xFFF4ED47),
@@ -141,7 +141,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                             child: DynamicText(
                                               pageId: 'primary-investment',
                                               sectionId: 'hero-subtitle',
-                                              defaultValue: 'We specialize in sourcing and securing high potential real estate assets at early development stages or during market entry',
+                                              defaultValue: 'PRIMARY_HERO_SUBTITLE',
                                               style: TextStyle(
                                                 fontFamily: 'OptimalBold',
                                                 color: Colors.white,
@@ -159,7 +159,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'primary-investment',
                                       sectionId: 'description-1',
-                                      defaultValue: 'We also provide clients with access to a curated selection of premium, first-release real estate developments.',
+                                      defaultValue: 'PRIMARY_DESCRIPTION_1',
                                     ),
                                     SizedBox(height: isMobile ? 20.h : 100.h),
                                     _buildDescriptionBox(
@@ -167,7 +167,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                       isMobile: isMobile,
                                       pageId: 'primary-investment',
                                       sectionId: 'description-2',
-                                      defaultValue: 'By collaborating closely with investors, we identify opportunities in emerging markets, growth corridors, and strategically located assets with strong long-term return potential — all backed by in depth market analysis and disciplined risk management',
+                                      defaultValue: 'PRIMARY_DESCRIPTION_2',
                                     ),
                                     Gap(isMobile ? 10.h : 240.h),
                                     // Our Services Include Section
@@ -183,7 +183,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                           DynamicText(
                                             pageId: 'primary-investment',
                                             sectionId: 'services-title',
-                                            defaultValue: 'OUR SERVICES INCLUDE',
+                                            defaultValue: 'PRIMARY_SERVICE_TITLE',
                                             style: TextStyle(
                                               fontFamily: 'OptimalBold',
                                               color: const Color(0xFFF4ED47),
@@ -198,7 +198,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                             isMobile: isMobile,
                                             pageId: 'primary-investment',
                                             sectionId: 'service-1',
-                                            defaultValue: '. Sourcing high-potential real estate at early stages. \n. Access to emerging markets and prime locations. \n. Exclusive early access to premium developments. \n. Market analysis and risk-managed investment support.',
+                                            defaultValue: 'PRIMARY_SERVICE_1',
                                             width: 1500.w,
                                           ),
                                         ],
@@ -272,6 +272,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
             )
           : Text(
               text ?? defaultValue ?? '',
+              textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
               style: TextStyle(
                 color: textColor ?? Colors.white,
                 fontSize: isMobile ? 10.sp : 40.sp,

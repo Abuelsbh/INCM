@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/Content/content_helper.dart';
+import '../core/Language/locales.dart';
 
 /// Widget to display text content from Firebase with fallback
 class DynamicText extends StatelessWidget {
@@ -32,11 +33,17 @@ class DynamicText extends StatelessWidget {
         defaultValue: defaultValue,
       ),
       builder: (context, snapshot) {
-        final text = snapshot.data ?? defaultValue;
+        String text = snapshot.data ?? defaultValue;
+        // If no text from Firebase and defaultValue looks like a translation key (contains _ and is uppercase),
+        // use translation system
+        if (text == defaultValue && defaultValue.contains('_') && defaultValue == defaultValue.toUpperCase()) {
+          text = defaultValue.tr(context);
+        }
         return Text(
           text,
           style: style,
           textAlign: textAlign,
+          textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
           maxLines: maxLines,
           overflow: overflow,
         );

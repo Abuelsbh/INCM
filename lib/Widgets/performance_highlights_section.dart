@@ -50,11 +50,12 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
   }
 
   Widget _buildPerformanceSection() {
-    return Column(
-
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
         // Title
         AnimatedScale(
           scale: _isVisible ? 1.0 : 0.8,
@@ -102,12 +103,12 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                   children: [
                     _buildMetricCard(
                       '+84,321',
-                      'SQM of retail space successfully leased',
+                      'SQM_RETAIL_SPACE_LEASED'.tr(context),
                     ),
                     SizedBox(height: 150.h),
                     _buildMetricCard(
                       '+32',
-                      'Of assets under active facility management',
+                      'ASSETS_FACILITY_MANAGEMENT'.tr(context),
                     ),
                   ],
                 ),
@@ -121,12 +122,12 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                   children: [
                     _buildMetricCard(
                       '+100',
-                      'Franchise agreements established across key markets',
+                      'FRANCHISE_AGREEMENTS_ESTABLISHED'.tr(context),
                     ),
                     SizedBox(height: 150.h),
                     _buildMetricCard(
                       '+45',
-                      'Real estate consulting engagements completed',
+                      'REAL_ESTATE_CONSULTING_COMPLETED'.tr(context),
                     ),
                   ],
                 ),
@@ -135,6 +136,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
           ),
         ),
       ],
+      ),
     );
   }
 

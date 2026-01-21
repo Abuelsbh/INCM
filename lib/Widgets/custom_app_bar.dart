@@ -263,35 +263,35 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // Language Toggle Button
-                        // Consumer<AppLanguage>(
-                        //   builder: (context, appLanguage, _) {
-                        //     return InkWell(
-                        //       onTap: () {
-                        //         appLanguage.changeLanguage();
-                        //       },
-                        //       child: Container(
-                        //         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                        //         decoration: BoxDecoration(
-                        //           color: const Color(0xFFF4ED47).withOpacity(0.2),
-                        //           borderRadius: BorderRadius.circular(6.r),
-                        //           border: Border.all(
-                        //             color: const Color(0xFFF4ED47),
-                        //             width: 1,
-                        //           ),
-                        //         ),
-                        //         child: Text(
-                        //           appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
-                        //           style: TextStyle(
-                        //             color: const Color(0xFFF4ED47),
-                        //             fontSize: 14.sp,
-                        //             fontWeight: FontWeight.bold,
-                        //             letterSpacing: 1,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
+                        Consumer<AppLanguage>(
+                          builder: (context, appLanguage, _) {
+                            return InkWell(
+                              onTap: () {
+                                appLanguage.changeLanguage();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF4ED47).withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(6.r),
+                                  border: Border.all(
+                                    color: const Color(0xFFF4ED47),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Text(
+                                  appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
+                                  style: TextStyle(
+                                    color: const Color(0xFFF4ED47),
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                         SizedBox(width: 16.w),
                         // Contact Us Button
                         ButtonStyles.exploreUsButton(
@@ -416,7 +416,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     _buildSideMenuItem('CONTACTS'.tr(context), Icons.contact_phone, 'contacts',() {}),
                     // Admin Panel (only in debug mode or for development)
                     if (kDebugMode)
-                      _buildSideMenuItem('لوحة التحكم', Icons.admin_panel_settings, 'admin', () {
+                      _buildSideMenuItem('ADMIN_PANEL'.tr(context), Icons.admin_panel_settings, 'admin', () {
                         setState(() => isMenuOpen = false);
                         context.go(AdminPanelScreen.routeName);
                       }),

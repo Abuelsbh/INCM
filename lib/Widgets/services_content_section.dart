@@ -36,45 +36,45 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
   late Animation<double> _scaleAnimation;
 
   // Service content data
-  List<Map<String, String>> get serviceData => [
+  List<Map<String, String>> getServiceData(BuildContext context) => [
     {
       'title': 'CONSULTATION',
-      'description': 'Our real estate consulting services are designed to provide clients with strategic insights and expert guidance across all stages of projects development, acquisition, and investment.',
+      'description': 'CONSULTATION_DESCRIPTION'.tr(context),
       'route': ConsultationScreen.routeName,
     },
     {
       'title': 'RETAIL_LEASING',
-      'description': 'We provide comprehensive support across all stages of the retail leasing process, offering a wide selection of units in prime locations with flexible space configurations. By curating the right tenant mix — including brands, services, and experiences — we foster strong customer engagement and maintain a balanced, high- performing commercial environment.',
+      'description': 'RETAIL_LEASING_DESCRIPTION'.tr(context),
       'route': RetailLeasingScreen.routeName,
     },
     {
       'title': 'MEDICAL_LEASING',
-      'description': 'We offer dedicated medical leasing services tailored to meet the unique requirements of healthcare providers, medical practitioners, and institutional tenants. With a deep understanding of the complexities of medical real estate, we help clients secure optimal spaces that align with both clinical needs and long-term business objectives.',
+      'description': 'MEDICAL_LEASING_DESCRIPTION'.tr(context),
       'route': MedicalLeasingScreen.routeName,
     },
     {
       'title': 'CORPORATE_LEASING',
-      'description': 'We have extensive experience in commercial real estate leasing transactions. Whether you are looking for an office space, an entire building, or even an industrial facility, we provide all that and more — with a variety of spaces tailored to different needs and in strategic locations close to business hubs.',
+      'description': 'CORPORATE_LEASING_DESCRIPTION'.tr(context),
       'route': CorporateLeasingScreen.routeName,
     },
     {
       'title': 'FACILITY_MANAGEMENT',
-      'description': 'To ensure the seamless operation, safety, and sustainability of commercial properties, we provide comprehensive property and facility management solutions. Our services cover day- to-day operations, preventive maintenance, and the optimization of building systems and infrastructure.',
+      'description': 'FACILITY_MANAGEMENT_DESCRIPTION'.tr(context),
       'route': FacilityManagementScreen.routeName,
     },
     {
       'title': 'FRANCHISE_INVESTMENT',
-      'description': 'For investors seeking stable, and scalable opportunities in the franchise sector, we provide expert guidance in identifying, evaluating, and securing high-performing franchise brands. From market research and brand vetting to location sourcing and lease negotiation.',
+      'description': 'FRANCHISE_INVESTMENT_DESCRIPTION'.tr(context),
       'route': FranchiseInvestmentScreen.routeName,
     },
     {
       'title': 'PRIMARY_INVESTMENT',
-      'description': 'We specialize in sourcing and securing high- potential real estate assets at early development stages or during market entry. By collaborating closely with investors, we identify opportunities in emerging markets, growth corridors, and strategically located assets with strong long-term return potential.',
+      'description': 'PRIMARY_INVESTMENT_DESCRIPTION'.tr(context),
       'route': PrimaryInvestmentScreen.routeName,
     },
     {
       'title': 'MARKETING',
-      'description': "We provide comprehensive marketing solutions tailored for developers, agents, and real estate projects seeking to promote their listings effectively and achieve measurable results. Our strategy is built on a deep understanding of each unit's unique features, enabling us to craft targeted, results-driven campaigns that reach the right audience.",
+      'description': 'MARKETING_DESCRIPTION'.tr(context),
       'route': MarketingScreen.routeName,
     },
   ];
@@ -143,7 +143,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
       setState(() {
         timeRemaining--;
         if (timeRemaining <= 0) {
-          currentIndex = (currentIndex + 1) % serviceData.length; // Cycle through 0-8
+          currentIndex = (currentIndex + 1) % getServiceData(context).length; // Cycle through 0-8
           timeRemaining = 5; // Reset for next cycle
           _animationController.reset();
           _animationController.forward();
@@ -229,7 +229,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
             // Service indicator (1-9)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(serviceData.length, (index) {
+              children: List.generate(getServiceData(context).length, (index) {
                 final isActive = index == currentIndex;
 
                 return MouseRegion(
@@ -284,7 +284,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                               ),
                             ),
                             // Connecting line between boxes
-                            if (index < serviceData.length - 1)
+                            if (index < getServiceData(context).length - 1)
                               Container(
                                 width: 50,
                                 height: 3,
@@ -325,7 +325,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: Text(
-                          serviceData[currentIndex]['title']!.tr(context),
+                          getServiceData(context)[currentIndex]['title']!.tr(context),
                           style: TextStyle(
                             fontFamily: 'OptimalBold',
                             color: currentIndex % 2 == 0 ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
@@ -360,7 +360,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                           child: SlideTransition(
                             position: _slideAnimation,
                             child: Text(
-                              serviceData[currentIndex]['description']!,
+                              getServiceData(context)[currentIndex]['description']!,
                               //textAlign: TextAlign.justify,
                               maxLines: 8,                    // ✅ limit to 6 lines
                               overflow: TextOverflow.ellipsis, // ✅ show "..."
@@ -430,7 +430,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                                   child: ButtonStyles.learnMoreButton(
                                     context: context,
                                     onPressed: () {
-                                      context.go(serviceData[currentIndex]['route']!);
+                                      context.go(getServiceData(context)[currentIndex]['route']!);
                                     },
                                   ),
                                 ),

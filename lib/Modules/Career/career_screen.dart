@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:incm/core/Language/locales.dart';
 import 'package:incm/Utilities/router_config.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
@@ -62,30 +63,30 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
   ];
 
   String? selectedDepartment;
-  List<String> departments = [
-    "SALES TEAM",
+  List<String> get departments => [
+    "SALES_TEAM",
     "LEASING",
     "CONSULTATION",
     "FRANCHISING",
-    "FACILITY MANAGEMENT",
+    "FACILITY_MANAGEMENT",
     "OPERATIONS",
     "MARKETING",
-    "HUMAN RESOURCES",
+    "HUMAN_RESOURCES",
     "FINANCE",
   ];
-  List<String> benefits = [
-    "Competitive Salary",
-    "Exclusive Projects",
-    "Training Programs",
-    "Supportive Management",
-    "Career Growth Opportunities",
-    "Professional Work Environment",
-    "Team Collaboration",
-    "Recognition & Rewards",
-    "Work-Life Balance",
-    "Leadership Development",
-    "Networking Opportunities",
-    "Highest Commission Scheme",
+  List<String> get benefits => [
+    "COMPETITIVE_SALARY",
+    "EXCLUSIVE_PROJECTS",
+    "TRAINING_PROGRAMS",
+    "SUPPORTIVE_MANAGEMENT",
+    "CAREER_GROWTH",
+    "PROFESSIONAL_ENVIRONMENT",
+    "TEAM_COLLABORATION",
+    "RECOGNITION_REWARDS",
+    "WORK_LIFE_BALANCE",
+    "LEADERSHIP_DEVELOPMENT",
+    "NETWORKING_OPPORTUNITIES",
+    "HIGHEST_COMMISSION",
   ];
 
   @override
@@ -164,47 +165,48 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
   }
 
   void _handleSubmit() {
+    final context = this.context;
     if (_fullNameController.text.trim().isEmpty) {
-      _showToast('Please enter your full name');
+      _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
       return;
     }
 
     if (_fullNameController.text.trim().length < 3) {
-      _showToast('Full name must be at least 3 characters');
+      _showToast('FULL_NAME_MIN_CHARS'.tr(context));
       return;
     }
 
     if (_phoneController.text.trim().isEmpty) {
-      _showToast('Please enter your phone number');
+      _showToast('PLEASE_ENTER_PHONE'.tr(context));
       return;
     }
 
     if (!_validatePhone(_phoneController.text.trim())) {
-      _showToast('Please enter a valid phone number (9-15 digits)');
+      _showToast('PLEASE_ENTER_VALID_PHONE'.tr(context));
       return;
     }
 
     if (_jobTitleController.text.trim().isEmpty) {
-      _showToast('Please enter the job title');
+      _showToast('PLEASE_ENTER_JOB_TITLE'.tr(context));
       return;
     }
 
     if (_emailController.text.trim().isEmpty) {
-      _showToast('Please enter your email');
+      _showToast('PLEASE_ENTER_EMAIL'.tr(context));
       return;
     }
 
     if (!_validateEmail(_emailController.text.trim())) {
-      _showToast('Please enter a valid email address');
+      _showToast('PLEASE_ENTER_VALID_EMAIL'.tr(context));
       return;
     }
 
     if (_linkOrFileController.text.trim().isEmpty) {
-      _showToast('Please upload or send your CV');
+      _showToast('PLEASE_UPLOAD_CV'.tr(context));
       return;
     }
 
-    _showToast('Form submitted successfully!', isError: false);
+    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
 
     _fullNameController.clear();
     _phoneController.clear();
@@ -223,9 +225,9 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     return width >= 600 && width < 1024;
   }
 
-  final List<Map<String, String>> items = [
+  List<Map<String, String>> get items => [
     {
-      'title': 'FINAL RAMADAN',
+      'title': 'FINAL_RAMADAN',
       'image': Assets.imagesPic3,
     },
     {
@@ -233,7 +235,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
       'image': Assets.imagesPic2,
     },
     {
-      'title': 'FUN DAY',
+      'title': 'FUN_DAY',
       'image': Assets.imagesPic4,
     },
 
@@ -295,7 +297,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       if(MediaQuery.of(context).size.width > 600)
                         _buildJoinFamilySection(context),
                       if(MediaQuery.of(context).size.width > 600)
-                        DepartmentsGridSection(departments: departments,),
+                        DepartmentsGridSection(departments: departments, context: context,),
                       if(MediaQuery.of(context).size.width > 600)
                         _buildCareerBenefitsSection(context),
                       if(MediaQuery.of(context).size.width > 600)
@@ -309,7 +311,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       if(MediaQuery.of(context).size.width < 600)
                         _buildJoinFamilySectionMob(context),
                       if(MediaQuery.of(context).size.width < 600)
-                        DepartmentsGridSection(departments: departments,),
+                        DepartmentsGridSection(departments: departments, context: context,),
                       if(MediaQuery.of(context).size.width < 600)
                         _buildCareerBenefitsSectionMob(context),
                       if(MediaQuery.of(context).size.width < 600)
@@ -369,7 +371,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('WELCOME TO INCM FAMILY'),
+                _buildSectionTitle('WELCOME_TO_INCM_FAMILY'.tr(context)),
                 Gap(120.h),
                 Container(
                   decoration: BoxDecoration(
@@ -419,7 +421,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('JOIN INCM FAMILY NOW'),
+                _buildSectionTitle('JOIN_INCM_FAMILY_NOW'.tr(context)),
                 Gap(60.h),
                 Column(
                     children: [
@@ -428,7 +430,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                         children: [
                           Expanded(
                             child: _buildFormField(
-                              'FULL NAME',
+                              'FULL_NAME'.tr(context),
                               controller: _fullNameController,
                               keyboardType: TextInputType.name,
                               isMobile: isMobile,
@@ -446,7 +448,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                         children: [
                           Expanded(
                             child: _buildFormField(
-                              'E-MAIL',
+                              'E_MAIL'.tr(context),
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
                               isMobile: isMobile,
@@ -455,7 +457,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                           ),
                           SizedBox(width: isTablet ? 75.w : 150.w),
                           Expanded(
-                              child:_buildDropdownField("DEPARTMENT","SELECT DEPARTMENT",
+                              child:_buildDropdownField("DEPARTMENT".tr(context),"SELECT_DEPARTMENT".tr(context),
                                 value: selectedDepartment,
                                 items: departments,
                                 isMobile: isMobile,
@@ -475,7 +477,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                         children: [
                           Expanded(
                             child: _buildFormField(
-                              'JOB TITLE',
+                              'JOB_TITLE'.tr(context),
                               controller: _jobTitleController,
                               keyboardType: TextInputType.emailAddress,
                               isMobile: isMobile,
@@ -485,7 +487,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                           SizedBox(width: isTablet ? 75.w : 150.w),
                           Expanded(
                               child: BuildFileOrLinkField(
-                                  "UPLOAD YOUR CV",
+                                  "UPLOAD_YOUR_CV".tr(context),
                                   controller: _linkOrFileController,
                                   isMobile: isMobile,
                                   isTablet: isTablet,
@@ -558,6 +560,41 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     ),
   );
 
+  Widget _buildCareerBenefitsTitle(BuildContext context, bool isMobile, bool isTablet) {
+    final translated = 'CAREER_BENEFITS'.tr(context);
+    final parts = translated.split(' ');
+    final firstPart = parts.isNotEmpty ? parts.first : '';
+    final rest = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+    
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: firstPart + (rest.isNotEmpty ? ' ' : ''),
+            style: TextStyle(
+              fontFamily: 'OptimalBold',
+              color: const Color(0xFFF4ED47),
+              fontSize: isMobile ? 32.sp : (isTablet ? 48.sp : 80.sp),
+              letterSpacing: 3,
+            ),
+          ),
+          if (rest.isNotEmpty)
+            TextSpan(
+              text: rest,
+              style: TextStyle(
+                fontFamily: 'OptimalBold',
+                color: Colors.white,
+                fontSize: isMobile ? 32.sp : (isTablet ? 48.sp : 80.sp),
+                fontWeight: FontWeight.w800,
+                letterSpacing: 3,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildCareerBenefitsSection(BuildContext context) {
     final isMobile = _isMobile(context);
     final isTablet = _isTablet(context);
@@ -589,32 +626,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'CAREER ',
-                          style: TextStyle(
-                            fontFamily: 'OptimalBold',
-                            color: const Color(0xFFF4ED47),
-                            fontSize: isMobile ? 32.sp : (isTablet ? 48.sp : 80.sp),
-                            letterSpacing: 3,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'BENEFITS',
-                          style: TextStyle(
-                            fontFamily: 'OptimalBold',
-                            color: Colors.white,
-                            fontSize: isMobile ? 32.sp : (isTablet ? 48.sp : 80.sp),
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildCareerBenefitsTitle(context, isMobile, isTablet),
                   Gap(isMobile ? 30.h : 50.h),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -648,7 +660,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                     ),
                                     Expanded(
                                       child: Text(
-                                        text,
+                                        text.tr(context),
                                         style: TextStyle(
                                           fontFamily: 'AloeveraDisplaySemiBold',
                                           color: Colors.white,
@@ -695,7 +707,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                     ),
                                     Expanded(
                                       child: Text(
-                                        text,
+                                        text.tr(context),
                                         style: TextStyle(
                                           fontFamily: 'AloeveraDisplaySemiBold',
                                           color: Colors.white,
@@ -748,7 +760,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('OUR FAMILY MEMBERS'),
+                _buildSectionTitle('OUR_FAMILY_MEMBERS'.tr(context)),
                 Gap(40.h),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 60.h),
@@ -756,7 +768,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 600.h,
+                        height: 650.h,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
@@ -796,7 +808,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                           ),
                                           SizedBox(height: 30.h),
                                           Text(
-                                            item['title']!,
+                                            item['title']!.tr(context),
                                             style: TextStyle(
                                               fontFamily: 'OptimalBold',
                                               color: Colors.white,
@@ -896,7 +908,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('WELCOME TO INCM FAMILY'),
+                _buildSectionTitle('WELCOME_TO_INCM_FAMILY'.tr(context)),
                 Gap(40.h),
                 Container(
                   decoration: BoxDecoration(
@@ -943,12 +955,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('JOIN INCM FAMILY NOW'),
+                _buildSectionTitle('JOIN_INCM_FAMILY_NOW'.tr(context)),
                 Gap(30.h),
                 Column(
                     children: [
                       _buildFormField(
-                        'FULL NAME',
+                        'FULL_NAME'.tr(context),
                         controller: _fullNameController,
                         keyboardType: TextInputType.name,
                         isMobile: isMobile,
@@ -958,14 +970,14 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
                       Gap(22.h),
                       _buildFormField(
-                        'E-MAIL',
+                        'E_MAIL'.tr(context),
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         isMobile: isMobile,
                         isTablet: isTablet,
                       ),
                       Gap(22.h),
-                      _buildDropdownField("DEPARTMENT","SELECT DEPARTMENT",
+                      _buildDropdownField("DEPARTMENT".tr(context),"SELECT_DEPARTMENT".tr(context),
                         value: selectedDepartment,
                         items: departments,
                         isMobile: isMobile,
@@ -978,7 +990,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       ),
                       Gap(22.h),
                       _buildFormField(
-                        'JOB TITLE',
+                        'JOB_TITLE'.tr(context),
                         controller: _jobTitleController,
                         keyboardType: TextInputType.emailAddress,
                         isMobile: isMobile,
@@ -986,7 +998,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       ),
                       Gap(22.h),
                       BuildFileOrLinkField(
-                          "UPLOAD YOUR CV",
+                          "UPLOAD_YOUR_CV".tr(context),
                           controller: _linkOrFileController,
                           isMobile: isMobile,
                           isTablet: isTablet,
@@ -1071,32 +1083,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'CAREER ',
-                          style: TextStyle(
-                            fontFamily: 'OptimalBold',
-                            color: const Color(0xFFF4ED47),
-                            fontSize: 28.sp,
-                            letterSpacing: 3,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'BENEFITS',
-                          style: TextStyle(
-                            fontFamily: 'OptimalBold',
-                            color: Colors.white,
-                            fontSize: 30.sp,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _buildCareerBenefitsTitle(context, true, false),
                   Gap(20.h),
                  Column(
                     children: [
@@ -1111,7 +1098,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                           ),
                           child: Center(
                             child: Text(
-                              text,
+                              text.tr(context),
                               style: TextStyle(
                                 fontFamily: 'AloeveraDisplaySemiBold',
                                 color: Colors.white,
@@ -1157,7 +1144,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('OUR FAMILY MEMBERS'),
+                _buildSectionTitle('OUR_FAMILY_MEMBERS'.tr(context)),
                 Gap(10.h),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -1415,6 +1402,19 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.3,
                 ),
+                selectedItemBuilder: (BuildContext context) {
+                  return items.map((item) {
+                    return Text(
+                      item.tr(context),
+                      style: TextStyle(
+                        fontSize: isMobile ? 14.sp : (isTablet ? 18.sp : 22.sp),
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3,
+                      ),
+                    );
+                  }).toList();
+                },
                 items: items.map((item) {
                   return DropdownMenuItem<String>(
                     value: item,
@@ -1436,7 +1436,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                           ),
                           Expanded(
                             child: Text(
-                              item,
+                              item.tr(context),
                               style: TextStyle(
                                 fontSize: isMobile ? 14.sp : (isTablet ? 18.sp : 20.sp),
                                 color: Colors.black87,
@@ -1469,7 +1469,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'PHONE',
+          'PHONE'.tr(context),
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: const Color(0xFFF4ED47),

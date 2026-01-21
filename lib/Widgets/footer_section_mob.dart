@@ -4,8 +4,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 import '../core/Language/locales.dart';
+import '../core/Language/app_languages.dart';
 import '../generated/assets.dart';
 import 'animated_contact_info.dart';
 
@@ -31,15 +33,24 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
     } else {
       print("Running as Mobile App");
     }
-    return Container(
-      height: 220.h,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesFooterMOBILE),
-          fit: BoxFit.cover,
-        ),
-      ),
+    return Consumer<AppLanguage>(
+      builder: (context, appLang, child) {
+        final isRTL = appLang.appLang == Languages.ar;
+        return Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()..scale(isRTL ? -1.0 : 1.0, 1.0),
+          child: Container(
+            height: 220.h,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(Assets.imagesFooterMOBILE),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()..scale(isRTL ? -1.0 : 1.0, 1.0),
       child: Stack(
         children: [
           // Main content
@@ -168,8 +179,12 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
               ],
             ),
           ),
-        ],
-      ),
+            ],
+          ),
+            ),
+          ),
+        );
+      },
     );
   }
 

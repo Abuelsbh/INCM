@@ -21,6 +21,7 @@ import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../generated/assets.dart';
 import '../core/Content/content_helper.dart';
+import '../core/Language/locales.dart';
 
 class HomeSearchSectionMob extends StatefulWidget {
   const HomeSearchSectionMob({super.key});
@@ -36,7 +37,6 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
   final FocusNode _searchFocusNode = FocusNode();
   List<Map<String, String>> _searchResults = [];
   bool _showResults = false;
-  String _searchPlaceholder = 'Search...';
 
   // List of all searchable pages
   final List<Map<String, String>> _searchableItems = [
@@ -70,23 +70,8 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
   void initState() {
     super.initState();
     _initializeVideo();
-    _loadSearchPlaceholder();
     _searchController.addListener(_onSearchChanged);
     _searchFocusNode.addListener(_onFocusChanged);
-  }
-
-  Future<void> _loadSearchPlaceholder() async {
-    final placeholder = await ContentHelper.getText(
-      context,
-      'home',
-      'search-placeholder',
-      defaultValue: 'Search by service or location...',
-    );
-    if (mounted) {
-      setState(() {
-        _searchPlaceholder = placeholder;
-      });
-    }
   }
 
   void _onSearchChanged() {
@@ -163,6 +148,38 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
   }
 
 
+  String _translateSearchItemName(String name) {
+    final translations = {
+      'Home': 'HOME',
+      'About Us': 'ABOUT_US',
+      'Contacts': 'CONTACTS',
+      'Buy': 'BUY',
+      'Sell': 'SELL',
+      'Lease': 'LEASE',
+      'Career': 'CAREERS',
+      'Corporate Leasing': 'CORPORATE_LEASING',
+      'Consultation': 'CONSULTATION',
+      'Marketing': 'MARKETING',
+      'Medical Leasing': 'MEDICAL_LEASING',
+      'Facility Management': 'FACILITY_MANAGEMENT',
+      'Primary Investment': 'PRIMARY_INVESTMENT',
+      'Retail Leasing': 'RETAIL_LEASING',
+      'Franchise Investment': 'FRANCHISE_INVESTMENT',
+    };
+    final key = translations[name] ?? name;
+    return key.tr(context);
+  }
+
+  String _translateCategory(String category) {
+    final translations = {
+      'Main': 'CATEGORY_MAIN',
+      'Services': 'CATEGORY_SERVICES',
+      'Projects': 'CATEGORY_PROJECTS',
+    };
+    final key = translations[category] ?? category;
+    return key.tr(context);
+  }
+
   @override
   void dispose() {
     _videoController.dispose();
@@ -208,44 +225,25 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  FutureBuilder<String>(
-                    future: ContentHelper.getText(
-                      context,
-                      'home',
-                      'search-title',
-                      defaultValue: 'EXPLORE INCM WORLD',
+                  Text(
+                    'EXPLORE_INCM_WORLD'.tr(context),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'AloeveraDisplayBold',
+                      color: const Color(0xFFF4ED47),
+                      fontSize: 26.sp,
+                      height: 1,
                     ),
-                    builder: (context, snapshot) {
-                      return Text(
-                        snapshot.data ?? 'EXPLORE INCM WORLD',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'AloeveraDisplayBold',
-                          color: const Color(0xFFF4ED47),
-                          fontSize: 26.sp,
-                          height: 0.2,
-                        ),
-                      );
-                    },
                   ),
-                  FutureBuilder<String>(
-                    future: ContentHelper.getText(
-                      context,
-                      'home',
-                      'search-subtitle',
-                      defaultValue: 'STEP INTO A WORLD WHERE REAL ESTATE MEETS INNOVATION AND EXCELLENCE',
+                  Text(
+                    'STEP_INTO_WORLD'.tr(context),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'AloeveraDisplayRegular',
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      height: 1,
                     ),
-                    builder: (context, snapshot) {
-                      return Text(
-                        snapshot.data ?? 'STEP INTO A WORLD WHERE REAL ESTATE MEETS INNOVATION AND EXCELLENCE',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'AloeveraDisplayRegular',
-                          color: Colors.white,
-                          fontSize: 14.sp,
-                        ),
-                      );
-                    },
                   ),
                   Gap(50.h),
                   // Search Bar
@@ -284,7 +282,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                                     controller: _searchController,
                                     focusNode: _searchFocusNode,
                                     decoration: InputDecoration(
-                                      hintText: _searchPlaceholder,
+                                      hintText: 'SEARCH_BY_SERVICE_OR_LOCATION'.tr(context),
                                       hintStyle: TextStyle(
                                         color: Colors.grey[500],
                                         fontSize: 16.sp,
@@ -358,7 +356,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                item['name']!,
+                                                _translateSearchItemName(item['name']!),
                                                 style: TextStyle(
                                                   fontSize: 16.sp,
                                                   fontWeight: FontWeight.w600,
@@ -367,7 +365,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                                               ),
                                               SizedBox(height: 2.h),
                                               Text(
-                                                item['category']!,
+                                                _translateCategory(item['category']!),
                                                 style: TextStyle(
                                                   fontSize: 12.sp,
                                                   color: Colors.grey[600],

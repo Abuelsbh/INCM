@@ -245,7 +245,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: 'Need experts advice'.toUpperCase(),
+                              text: 'NEED_EXPERTS_ADVICE'.tr(context).toUpperCase(),
                               style: TextStyle(
                                 fontFamily: 'OptimalBold',
                                 color: const Color(0xFFF4ED47),

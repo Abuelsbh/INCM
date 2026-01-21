@@ -52,11 +52,12 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
   }
 
   Widget _buildPerformanceSection() {
-    return Column(
-
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         SizedBox(height: 50.h),
         Center(
           child: AnimatedScale(
@@ -105,27 +106,28 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
             children: [
               _buildMetricCard(
                 '+84,321',
-                'SQM of retail space successfully leased',
+                'SQM_RETAIL_SPACE_LEASED'.tr(context),
               ),
               SizedBox(height: 18.h),
               _buildMetricCard(
                 '+32',
-                'Of assets under active facility management',
+                'ASSETS_FACILITY_MANAGEMENT'.tr(context),
               ),
               SizedBox(height: 18.h),
               _buildMetricCard(
                 '+100',
-                'Franchise agreements established across key markets',
+                'FRANCHISE_AGREEMENTS_ESTABLISHED'.tr(context),
               ),
               SizedBox(height: 18.h),
               _buildMetricCard(
                 '+45',
-                'Real estate consulting engagements completed',
+                'REAL_ESTATE_CONSULTING_COMPLETED'.tr(context),
               ),
             ],
           ),
         ),
       ],
+      ),
     );
   }
 

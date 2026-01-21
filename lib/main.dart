@@ -72,44 +72,49 @@ class EntryPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appLan = Provider.of<AppLanguage>(context);
-    final appTheme = Provider.of<ThemeProvider>(context);
-    appLan.fetchLocale();
-    appTheme.fetchTheme();
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return ScreenUtilInit(
-          designSize: RushSetup.getSize(
-            maxWidth: constraints.maxWidth,
-            largeSize: const Size(1920,1080),
-            mediumSize: const Size(1000,780),
-            smallSize: const Size(375,812),
-          ),
-          builder:(_,__)=> MaterialApp.router(
-            scrollBehavior: MyCustomScrollBehavior(),
-            routerConfig: GoRouterConfig.router,
-            debugShowCheckedModeBanner: false,
-            title: 'INCOMERCIAL',
-            locale: Locale(appLan.appLang.name),
-            theme: appTheme.appThemeMode,
-            supportedLocales: Languages.values.map((e) => Locale(e.name)).toList(),
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate,
-              DefaultMaterialLocalizations.delegate
-            ],
-            builder: (context, child) {
-              return Directionality(
-                textDirection: appLan.appLang == Languages.ar 
-                    ? TextDirection.rtl 
-                    : TextDirection.ltr,
-                child: child!,
-              );
-            },
-          ),
+    // Use Consumer to listen to changes
+    return Consumer2<AppLanguage, ThemeProvider>(
+      builder: (context, appLan, appTheme, child) {
+        // Fetch locale on first build
+        appLan.fetchLocale();
+        appTheme.fetchTheme();
+        
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return ScreenUtilInit(
+              designSize: RushSetup.getSize(
+                maxWidth: constraints.maxWidth,
+                largeSize: const Size(1920,1080),
+                mediumSize: const Size(1000,780),
+                smallSize: const Size(375,812),
+              ),
+              builder:(_,__)=> MaterialApp.router(
+                scrollBehavior: MyCustomScrollBehavior(),
+                routerConfig: GoRouterConfig.router,
+                debugShowCheckedModeBanner: false,
+                title: 'INCOMERCIAL',
+                locale: Locale(appLan.appLang.name),
+                theme: appTheme.appThemeMode,
+                supportedLocales: Languages.values.map((e) => Locale(e.name)).toList(),
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                  DefaultCupertinoLocalizations.delegate,
+                  DefaultMaterialLocalizations.delegate
+                ],
+                builder: (context, child) {
+                  return Directionality(
+                    textDirection: appLan.appLang == Languages.ar 
+                        ? TextDirection.rtl 
+                        : TextDirection.ltr,
+                    child: child!,
+                  );
+                },
+              ),
+            );
+          },
         );
       },
     );

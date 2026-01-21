@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../core/Language/locales.dart';
+import '../../core/Language/app_languages.dart';
+import 'package:provider/provider.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
 import '../../Widgets/custom_app_bar.dart';
 import '../../Widgets/about_content_section.dart';
@@ -409,13 +411,17 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                   child: child,
                 );
               },
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 80.w),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    width: 600,
-                    padding: EdgeInsets.all(40.w),
+              child: Consumer<AppLanguage>(
+                builder: (context, appLang, child) {
+                  final isRTL = appLang.appLang == Languages.ar;
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 80.w),
+                    child: Align(
+                      alignment: isRTL ? Alignment.centerRight : Alignment.centerLeft,
+                      child: Container(
+                        margin: EdgeInsets.only(right: isRTL ? 200.w : 0),
+                        width: 600,
+                        padding: EdgeInsets.all(40.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center, // ✅ makes sure text is vertically centered inside column
@@ -446,7 +452,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                           ),
                         ),
                         Text(
-                          'WE_WERE_ESTABLISHED'.tr(context),
+                          'WE_WERE_ESTABLISHED_FULL'.tr(context),
                           //textAlign: TextAlign.justify,
                           style: TextStyle(
                             color: Colors.white,
@@ -481,7 +487,9 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                       ],
                     ),
                   ),
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -808,7 +816,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Text(
-                      'WE_WERE_ESTABLISHED'.tr(context),
+                      'WE_WERE_ESTABLISHED_FULL'.tr(context),
                      // textAlign: TextAlign.justify,
                       style: TextStyle(
                         color: Colors.white,

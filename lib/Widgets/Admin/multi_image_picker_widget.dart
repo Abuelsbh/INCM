@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
 class MultiImagePickerWidget extends StatefulWidget {
@@ -22,7 +20,6 @@ class MultiImagePickerWidget extends StatefulWidget {
 
 class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
   List<String> _currentBase64List = [];
-  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -32,83 +29,34 @@ class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
 
   Future<void> _pickImages() async {
     try {
-      if (kIsWeb) {
-        // Use file_picker for web - allows multiple files
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-          allowMultiple: true, // Enable multiple selection
-          withData: true,
-        );
-        
-        if (result != null && result.files.isNotEmpty) {
-          final newBase64List = <String>[];
-          
-          for (var file in result.files) {
-            if (file.bytes != null) {
-              final base64String = base64Encode(file.bytes!);
-              newBase64List.add(base64String);
-            }
-          }
-          
-          setState(() {
-            _currentBase64List.addAll(newBase64List);
-          });
-          
-          widget.onImagesSelected(_currentBase64List);
-          
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Added ${newBase64List.length} image(s)'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          }
-        }
-      } else {
-        // On mobile, show dialog to choose source, then pick multiple
-        final source = await _showImageSourceDialog();
-        if (source != null) {
-          // For mobile, we'll pick one at a time but allow multiple selections
-          _pickImageFromSource(source);
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error selecting images: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _pickImageFromSource(ImageSource source) async {
-    try {
-      final XFile? image = await _picker.pickImage(
-        source: source,
-        maxWidth: 4096, // Higher resolution for better quality
-        maxHeight: 4096,
-        imageQuality: 95, // Higher quality (95% instead of 85%)
+      // Use file_picker for both web and mobile - allows multiple files
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        allowMultiple: true, // Enable multiple selection on all platforms
+        withData: true,
       );
-
-      if (image != null) {
-        final bytes = await image.readAsBytes();
-        final base64String = base64Encode(bytes);
+      
+      if (result != null && result.files.isNotEmpty) {
+        final newBase64List = <String>[];
+        
+        for (var file in result.files) {
+          if (file.bytes != null) {
+            final base64String = base64Encode(file.bytes!);
+            newBase64List.add(base64String);
+          }
+        }
         
         setState(() {
-          _currentBase64List.add(base64String);
+          _currentBase64List.addAll(newBase64List);
         });
         
         widget.onImagesSelected(_currentBase64List);
         
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Image added'),
+            SnackBar(
+              content: Text('تم إضافة ${newBase64List.length} صورة'),
               backgroundColor: Colors.green,
             ),
           );
@@ -118,7 +66,7 @@ class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error selecting image: $e'),
+            content: Text('خطأ في اختيار الصور: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -126,33 +74,6 @@ class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
     }
   }
 
-  Future<ImageSource?> _showImageSourceDialog() async {
-    if (kIsWeb) {
-      return ImageSource.gallery;
-    }
-    
-    return showDialog<ImageSource>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('اختر مصدر الصورة'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('الكاميرا'),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('المعرض'),
-              onTap: () => Navigator.pop(context, ImageSource.gallery),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _removeImage(int index) {
     setState(() {
@@ -274,10 +195,22 @@ class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
                     children: [
                       const Icon(Icons.photo_library, size: 48, color: Colors.grey),
                       const SizedBox(height: 8),
+                      Text(
+                        'يمكنك اختيار عدة صور في وقت واحد',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
                       ElevatedButton.icon(
                         onPressed: _pickImages,
                         icon: const Icon(Icons.add_photo_alternate),
-                        label: const Text('اختر صور'),
+                        label: const Text('اختر صور متعددة'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        ),
                       ),
                     ],
                   ),
@@ -295,7 +228,10 @@ class _MultiImagePickerWidgetState extends State<MultiImagePickerWidget> {
                     ElevatedButton.icon(
                       onPressed: _pickImages,
                       icon: const Icon(Icons.add_photo_alternate),
-                      label: const Text('إضافة المزيد'),
+                      label: const Text('إضافة المزيد من الصور'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      ),
                     ),
                   ],
                 ),

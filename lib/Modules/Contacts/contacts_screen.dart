@@ -188,46 +188,46 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
 
   void _handleSubmit() {
     if (_fullNameController.text.trim().isEmpty) {
-      _showToast('Please enter your full name');
+      _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
       return;
     }
 
     if (_fullNameController.text.trim().length < 3) {
-      _showToast('Full name must be at least 3 characters');
+      _showToast('FULL_NAME_MIN_CHARS'.tr(context));
       return;
     }
 
     if (_phoneController.text.trim().isEmpty) {
-      _showToast('Please enter your phone number');
+      _showToast('PLEASE_ENTER_PHONE'.tr(context));
       return;
     }
 
     if (!_validatePhone(_phoneController.text.trim())) {
-      _showToast('Please enter a valid phone number (9-15 digits)');
+      _showToast('PLEASE_ENTER_VALID_PHONE'.tr(context));
       return;
     }
 
     if (_areaController.text.trim().isEmpty) {
-      _showToast('Please enter the area');
+      _showToast('PLEASE_ENTER_MESSAGE'.tr(context));
       return;
     }
 
     if (selectedLocation == null || selectedLocation!.isEmpty) {
-      _showToast('Please select a location');
+      _showToast('PLEASE_SELECT_LOCATION'.tr(context));
       return;
     }
 
     if (_emailController.text.trim().isEmpty) {
-      _showToast('Please enter your email');
+      _showToast('PLEASE_ENTER_EMAIL'.tr(context));
       return;
     }
 
     if (!_validateEmail(_emailController.text.trim())) {
-      _showToast('Please enter a valid email address');
+      _showToast('PLEASE_ENTER_VALID_EMAIL'.tr(context));
       return;
     }
 
-    _showToast('Form submitted successfully!', isError: false);
+    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
 
     _fullNameController.clear();
     _phoneController.clear();
@@ -325,7 +325,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                 children: [
                   Gap(isMobile? 60.h : isTablet ? 70.h : 80.h),
                   Text(
-                    'CONTACT US',
+                    'CONTACT_US'.tr(context),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'OptimalBold',
@@ -340,7 +340,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                   Gap(isMobile ? 50.h : (isTablet ? 20.h : 100.h)),
                   _buildGetInTouchSection(context, isMobile, isTablet),
 
-                  Gap(isMobile ? 15.h : (isTablet ? 40.h : 180.h)),
+                  Gap(isMobile ? 15.h : (isTablet ? 40.h : 120.h)),
                   Container(
                     decoration: BoxDecoration(
                       color: const Color(0xFFC63424),
@@ -348,7 +348,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
                     child: Text(
-                      'OUR LOCATION',
+                      'OUR_LOCATION'.tr(context),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'OptimalBold',
@@ -418,24 +418,27 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
       children: [
         if (isMobile) ...[
           _buildFormField(
-            'FULL NAME',
+            'FULL_NAME'.tr(context),
+            context: context,
             controller: _fullNameController,
             keyboardType: TextInputType.name,
             isMobile: isMobile,
             isTablet: isTablet,
           ),
           SizedBox(height: 15.h),
-          _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
+          _buildPhoneField(context: context, isMobile: isMobile, isTablet: isTablet),
           SizedBox(height: 15.h),
           _buildFormField(
-            'E-MAIL',
+            'E_MAIL'.tr(context),
+            context: context,
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             isMobile: isMobile,
             isTablet: isTablet,
           ),
           SizedBox(height: 15.h),
-          _buildDropdownField("LOCATION","SELECT LOCATION",
+          _buildDropdownField('LOCATION'.tr(context),'SELECT_LOCATION'.tr(context),
+            context: context,
             value: selectedLocation,
             items: locations,
             isMobile: isMobile,
@@ -451,7 +454,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             children: [
               Expanded(
                 child: _buildFormField(
-                  'FULL NAME',
+                  'FULL_NAME'.tr(context),
+                  context: context,
                   controller: _fullNameController,
                   keyboardType: TextInputType.name,
                   isMobile: isMobile,
@@ -460,7 +464,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               ),
               SizedBox(width: isTablet ? 75.w : 150.w),
               Expanded(
-                child: _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
+                child: _buildPhoneField(context: context, isMobile: isMobile, isTablet: isTablet),
               ),
             ],
           ),
@@ -469,7 +473,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             children: [
               Expanded(
                 child: _buildFormField(
-                  'E-MAIL',
+                  'E_MAIL'.tr(context),
+                  context: context,
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   isMobile: isMobile,
@@ -478,7 +483,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               ),
               SizedBox(width: isTablet ? 75.w : 150.w),
               Expanded(
-                child: _buildDropdownField("LOCATION","CHOOSE",
+                child: _buildDropdownField('LOCATION'.tr(context),'CHOOSE'.tr(context),
+                  context: context,
                   value: selectedLocation,
                   items: locations,
                   isMobile: isMobile,
@@ -495,8 +501,9 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ],
         SizedBox(height: isMobile ? 15.h : isTablet ? 40.h : 60.h),
         _buildFormField(
-          'MESSAGE',
-          hint: 'type your message',
+          'MESSAGE'.tr(context),
+          context: context,
+          hint: 'TYPE_YOUR_MESSAGE'.tr(context),
           controller: _areaController,
           isMobile: isMobile,
           isTablet: isTablet,
@@ -525,7 +532,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'GET IN TOUCH',
+            'GET_IN_TOUCH'.tr(context),
             style: TextStyle(
               color: const Color(0xFFFFFFFF),
               fontSize: 22.sp,
@@ -542,7 +549,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               children: [
                 Gap(24.h),
                 Text(
-                  'WORKING HOURS: 10AM TO 6PM',
+                  'WORKING_HOURS'.tr(context),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -551,7 +558,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                   ),
                 ),
                 Text(
-                  '  FROM SUNDAY TO THURSDAY',
+                  'FROM_SUNDAY_TO_THURSDAY'.tr(context),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -575,7 +582,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'GET IN TOUCH',
+              'GET_IN_TOUCH'.tr(context),
               style: TextStyle(
                 color: const Color(0xFFFFFFFF),
                 fontSize: isTablet ? 48.sp : 70.sp,
@@ -687,7 +694,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ),
 
         Text(
-          'WORKING HOURS: 10AM TO 6PM',
+          'WORKING_HOURS'.tr(context),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
@@ -696,7 +703,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           ),
         ),
         Text(
-          '  FROM SUNDAY TO THURSDAY',
+          'FROM_SUNDAY_TO_THURSDAY'.tr(context),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
@@ -711,6 +718,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
 
   Widget _buildFormField(
       String label, {
+        required BuildContext context,
         required TextEditingController controller,
         TextInputType? keyboardType,
         String? hint,
@@ -754,6 +762,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                     horizontal: 16.w,
                     vertical: 12.h,
                   ),
+                  hintText: hint,
                   hintStyle: TextStyle(
                     fontFamily: 'AloeveraDisplayBold',
                     color: Colors.grey[500],
@@ -773,12 +782,12 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     );
   }
 
-  Widget _buildPhoneField({required bool isMobile, required bool isTablet}) {
+  Widget _buildPhoneField({required BuildContext context, required bool isMobile, required bool isTablet}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'PHONE',
+          'PHONE'.tr(context),
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
@@ -891,6 +900,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
   Widget _buildDropdownField(
       String label,
       String hint, {
+        required BuildContext context,
         required String? value,
         required List<String> items,
         required Function(String?) onChanged,

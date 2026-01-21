@@ -211,59 +211,59 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
     // Default validation and submission logic
     // Validate full name
     if (_fullNameController.text.trim().isEmpty) {
-      _showToast('Please enter your full name');
+      _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
       return;
     }
 
     if (_fullNameController.text.trim().length < 3) {
-      _showToast('Full name must be at least 3 characters');
+      _showToast('FULL_NAME_MIN_CHARS'.tr(context));
       return;
     }
 
     // Validate phone
     if (_phoneController.text.trim().isEmpty) {
-      _showToast('Please enter your phone number');
+      _showToast('PLEASE_ENTER_PHONE'.tr(context));
       return;
     }
 
     if (!_validatePhone(_phoneController.text.trim())) {
-      _showToast('Please enter a valid phone number (9-15 digits)');
+      _showToast('PLEASE_ENTER_VALID_PHONE'.tr(context));
       return;
     }
 
     // Validate area
     if (_messageController.text.trim().isEmpty) {
-      _showToast('Please enter the message');
+      _showToast('PLEASE_ENTER_MESSAGE'.tr(context));
       return;
     }
 
     // Validate category (if category field is shown)
     if (widget.showCategoryField) {
       if (selectedCategory == null || selectedCategory!.isEmpty) {
-        _showToast('Please select a category');
+        _showToast('PLEASE_SELECT_CATEGORY'.tr(context));
         return;
       }
     }
 
     // Validate location
     if (selectedLocation == null || selectedLocation!.isEmpty) {
-      _showToast('Please select a location');
+      _showToast('PLEASE_SELECT_LOCATION'.tr(context));
       return;
     }
 
     // Validate email
     if (_emailController.text.trim().isEmpty) {
-      _showToast('Please enter your email');
+      _showToast('PLEASE_ENTER_EMAIL'.tr(context));
       return;
     }
 
     if (!_validateEmail(_emailController.text.trim())) {
-      _showToast('Please enter a valid email address');
+      _showToast('PLEASE_ENTER_VALID_EMAIL'.tr(context));
       return;
     }
 
     // All validations passed
-    _showToast('Form submitted successfully!', isError: false);
+    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
     
     // Clear form after successful submission
     _fullNameController.clear();
@@ -379,7 +379,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                             children: [
                               Expanded(
                                 child: _buildFormField(
-                                  'FULL NAME',
+                                  'FULL_NAME'.tr(context),
                                   controller: _fullNameController,
                                   keyboardType: TextInputType.name,
                                 ),
@@ -396,7 +396,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                             children: [
                               Expanded(
                                 child:_buildFormField(
-                                  'E-MAIL',
+                                  'E_MAIL'.tr(context),
                                   controller: _emailController,
                                   keyboardType: TextInputType.emailAddress,
                                 ),
@@ -405,8 +405,8 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                               Expanded(
                                 child: widget.showCategoryField
                                     ? _buildDropdownField(
-                                        'CATEGORY',
-                                        'SELECT CATEGORY',
+                                        'CATEGORY'.tr(context),
+                                        'SELECT_CATEGORY'.tr(context),
                                         value: selectedCategory,
                                         items: categories,
                                         onChanged: (val) {
@@ -416,8 +416,8 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                                         },
                                       )
                                     : _buildDropdownField(
-                                        'LOCATION',
-                                        'SELECT LOCATION',
+                                        'LOCATION'.tr(context),
+                                        'SELECT_LOCATION'.tr(context),
                                         value: selectedLocation,
                                         items: locations,
                                         onChanged: (val) {
@@ -435,8 +435,8 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                               children: [
                                 Expanded(
                                   child: _buildDropdownField(
-                                    'LOCATION',
-                                    'SELECT LOCATION',
+                                    'LOCATION'.tr(context),
+                                    'SELECT_LOCATION'.tr(context),
                                     value: selectedLocation,
                                     items: locations,
                                     onChanged: (val) {

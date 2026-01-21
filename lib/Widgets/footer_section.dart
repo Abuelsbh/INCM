@@ -4,9 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 import '../generated/assets.dart';
 import '../core/Language/locales.dart';
+import '../core/Language/app_languages.dart';
 import 'animated_contact_info.dart';
 
 class FooterSection extends StatefulWidget {
@@ -56,15 +58,24 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 520.h,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesFooterDesktop), // your background image asset
-          fit: BoxFit.cover,
-        ),
-      ),
+    return Consumer<AppLanguage>(
+      builder: (context, appLang, child) {
+        final isRTL = appLang.appLang == Languages.ar;
+        return Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()..scale(isRTL ? -1.0 : 1.0, 1.0),
+          child: Container(
+            height: 520.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(Assets.imagesFooterDesktop),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()..scale(isRTL ? -1.0 : 1.0, 1.0),
       child: Stack(
         children: [
           // Main content
@@ -247,9 +258,13 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                 ),
               ],
             ),
+            ),
+          ],
+        ),
+            ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

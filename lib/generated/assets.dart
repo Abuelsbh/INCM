@@ -210,7 +210,9 @@ class Assets {
   static const String logosRetail9 = 'assets/logos/retail/9.png';
   static const String videosMobile = 'assets/videos/mobile.mp4';
   static const String videosWebsite = 'assets/videos/website.mp4';
+  static const String videosLandingPage= 'assets/videos/landingPage.gif';
   static const String logosINCM = 'assets/logos/INCM.png';
+  static const String logosINCMLogo = 'assets/logos/INCMLogo.png';
   // Images - Exclusive Leasing
   static const String imagesExclusiveLeasingUmcC0020T01 = 'assets/images/exclusive-leasing/umc/C0020T01.JPG';
   static const String imagesExclusiveLeasingUmcC0025T01 = 'assets/images/exclusive-leasing/umc/C0025T01.JPG';

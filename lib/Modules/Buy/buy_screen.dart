@@ -486,7 +486,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
               children: [
                 Expanded(
                   child: _buildFormField(
-                    'FULL NAME',
+                    'FULL_NAME'.tr(context),
                     controller: _fullNameController,
                     keyboardType: TextInputType.name,
                     isMobile: isMobile,
@@ -503,7 +503,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             Row(
               children: [
                 Expanded(
-                    child: _buildDropdownField("PREFERRED PROPERTY TYPE","CHOOSE",
+                    child: _buildDropdownField("PREFERRED_PROPERTY_TYPE".tr(context),"CHOOSE".tr(context),
                       value: selectedPreferredPropertyType,
                       items: preferredPropertyType,
                       isMobile: isMobile,
@@ -518,7 +518,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                 SizedBox(width: isTablet ? 50.w : 100.w),
                 Expanded(
                   child: _buildFormField(
-                    'BUDGET (EGP)',
+                    'BUDGET_EGP'.tr(context),
                     controller: _budgetController,
                     keyboardType: TextInputType.emailAddress,
                     isMobile: isMobile,
@@ -532,7 +532,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             Row(
               children: [
                 Expanded(
-                    child: _buildDropdownField("LOCATION","CHOOSE",
+                    child: _buildDropdownField("LOCATION".tr(context),"CHOOSE".tr(context),
                       value: selectedLocation,
                       items: locations,
                       isMobile: isMobile,
@@ -547,7 +547,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                 SizedBox(width: isTablet ? 50.w : 100.w),
                 Expanded(
                   child: _buildFormField(
-                    'UNIT SIZE (SQM)',
+                    'UNIT_SIZE_SQM'.tr(context),
                     controller: _sizeController,
                     keyboardType: TextInputType.emailAddress,
                     isMobile: isMobile,
@@ -567,8 +567,8 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                 Expanded(
                   flex: 2,
                   child: _buildDropdownField(
-                    "PURPOSE OF PURCHASE",
-                    "CHOOSE",
+                    "PURPOSE_OF_PURCHASE".tr(context),
+                    "CHOOSE".tr(context),
                     value: selectedPurposeOfPurchase,
                     items: purposeOfPurchase,
                     isMobile: isMobile,
@@ -590,7 +590,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                   Expanded(
                     flex: 2,
                     child: _buildFormField(
-                      'SPECIFY PURPOSE',
+                      'SPECIFY_PURPOSE'.tr(context),
                       controller: _purposeController,
                       keyboardType: TextInputType.text,
                       isMobile: isMobile,

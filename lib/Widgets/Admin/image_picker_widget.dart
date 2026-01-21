@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import '../../core/Language/locales.dart';
 
 class ImagePickerWidget extends StatefulWidget {
   final String? initialBase64;
@@ -75,7 +76,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error picking image: $e')),
+          SnackBar(content: Text('ERROR_PICKING_IMAGE'.tr(context).replaceAll('{error}', e.toString()))),
         );
       }
     }
