@@ -29,10 +29,20 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+        if (android.appId.contains('YOUR_ANDROID_APP_ID')) {
+          throw UnsupportedError(
+            'Android App ID not configured in firebase_options.dart.',
+          );
+        }
         return android;
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
+        if (macos.appId.contains('YOUR_MACOS_APP_ID')) {
+          throw UnsupportedError(
+            'macOS App ID not configured in firebase_options.dart.',
+          );
+        }
         return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
@@ -71,8 +81,8 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB-UomzDJ7g02oF_3o_vtWYD5pcbmb924k',
-    appId: '1:75851289116:ios:YOUR_IOS_APP_ID',
+    apiKey: 'AIzaSyBDi2glrU-hpSnJ24Ms-7kA5xGIVWQYU10',
+    appId: '1:75851289116:ios:5ab863f054c8dfcf2bc5d9',
     messagingSenderId: '75851289116',
     projectId: 'incm-c87aa',
     storageBucket: 'incm-c87aa.firebasestorage.app',
@@ -88,4 +98,3 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.incm.realestate',
   );
 }
-

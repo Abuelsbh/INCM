@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:incm/core/Language/locales.dart';
+import '../../Utilities/font_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
@@ -60,56 +61,56 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
     {'code': '+44', 'country': 'GB', 'flag': '🇬🇧'},
   ];
 
-  List<String> preferredPropertyType = [
-    "Commercial Unit",
-    "Administrative Office",
-    "Medical Clinic",
-    "Hospital",
-    "Building",
-    "Land / Plot"
+  List<String> get preferredPropertyTypeKeys => [
+    "COMMERCIAL_UNIT",
+    "ADMINISTRATIVE_OFFICE",
+    "MEDICAL_CLINIC",
+    "HOSPITAL",
+    "BUILDING",
+    "LAND_PLOT"
   ];
   String? selectedPreferredPropertyType;
 
-  List<String> locations = [
-    "Alexandria",
-    "6th Settlement",
-    "Northern Expansion",
-    "El Gouna",
-    "North Coast-Sahel",
-    "El Shorouk",
-    "El Choueifat",
-    "New Zayed",
-    "El Sheikh Zayed",
-    "Al Dabaa",
-    "New Capital City",
-    "Al Alamein",
-    "Ain Sokhna",
-    "Hurghada",
-    "New Cairo",
-    "Old Cairo",
-    "Central Cairo",
-    "El Lotus",
-    "South Investors",
-    "North Investors",
-    "Maadi",
-    "South New Cairo",
-    "Golden Square",
-    "October Gardens",
-    "New Capital Gardens",
-    "Ras El Hekma",
-    "Ras Sudr",
-    "New Sphinx",
-    "Sahl Hasheesh",
-    "Somabay",
-    "Sidi Heneish",
-    "Sidi Abdel Rahman",
-    "Ghazala Bay",
-    "6th of October City",
-    "Mostakbal City",
-    "Madinaty",
-    "Mokattam",
-    "New Heliopolis",
-    "Heliopolis",
+  List<String> get locationKeys => [
+    "LOCATION_ALEXANDRIA",
+    "LOCATION_6TH_SETTLEMENT",
+    "LOCATION_NORTHERN_EXPANSION",
+    "LOCATION_EL_GOUNA",
+    "LOCATION_NORTH_COAST_SAHEL",
+    "LOCATION_EL_SHOROUK",
+    "LOCATION_EL_CHOUEIFAT",
+    "LOCATION_NEW_ZAYED",
+    "LOCATION_EL_SHEIKH_ZAYED",
+    "LOCATION_AL_DABAA",
+    "LOCATION_NEW_CAPITAL_CITY",
+    "LOCATION_AL_ALAMEIN",
+    "LOCATION_AIN_SOKHNA",
+    "LOCATION_HURGHADA",
+    "LOCATION_NEW_CAIRO",
+    "LOCATION_OLD_CAIRO",
+    "LOCATION_CENTRAL_CAIRO",
+    "LOCATION_EL_LOTUS",
+    "LOCATION_SOUTH_INVESTORS",
+    "LOCATION_NORTH_INVESTORS",
+    "LOCATION_MAADI",
+    "LOCATION_SOUTH_NEW_CAIRO",
+    "LOCATION_GOLDEN_SQUARE",
+    "LOCATION_OCTOBER_GARDENS",
+    "LOCATION_NEW_CAPITAL_GARDENS",
+    "LOCATION_RAS_EL_HEKMA",
+    "LOCATION_RAS_SUDR",
+    "LOCATION_NEW_SPHINX",
+    "LOCATION_SAHL_HASHEESH",
+    "LOCATION_SOMABAY",
+    "LOCATION_SIDI_HENEISH",
+    "LOCATION_SIDI_ABDEL_RAHMAN",
+    "LOCATION_GHAZALA_BAY",
+    "LOCATION_6TH_OF_OCTOBER_CITY",
+    "LOCATION_MOSTAKBAL_CITY",
+    "LOCATION_MADINATY",
+    "LOCATION_MOKATTAM",
+    "LOCATION_NEW_HELIOPOLIS",
+    "LOCATION_HELIOPOLIS",
   ];
   String? selectedLocation;
 
@@ -359,11 +360,10 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                           'SELL_YOUR_UNIT'.tr(context),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontFamily: 'OptimalBold',
+                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
                             color: const Color(0xFFF4ED47),
                             fontSize: isMobile ? 26.sp : (isTablet ? 50.sp : 70.sp),
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold
                           ),
                         ),
                         SizedBox(height: isMobile ? 20.h : (isTablet ? 20.h : 30.h)),
@@ -415,7 +415,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
             SizedBox(height: 15.h),
             _buildDropdownField("PROPERTY_TYPE".tr(context),"CHOOSE".tr(context),
               value: selectedPreferredPropertyType,
-              items: preferredPropertyType,
+              items: preferredPropertyTypeKeys,
               isMobile: isMobile,
               isTablet: isTablet,
               onChanged: (val) {
@@ -437,7 +437,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
 
             _buildDropdownField("LOCATION".tr(context),"SELECT_LOCATION".tr(context),
               value: selectedLocation,
-              items: locations,
+              items: locationKeys,
               isMobile: isMobile,
               isTablet: isTablet,
               onChanged: (val) {
@@ -478,7 +478,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                 Expanded(
                     child: _buildDropdownField("PROPERTY_TYPE".tr(context),"CHOOSE".tr(context),
                       value: selectedPreferredPropertyType,
-                      items: preferredPropertyType,
+                      items: preferredPropertyTypeKeys,
                       isMobile: isMobile,
                       isTablet: isTablet,
                       onChanged: (val) {
@@ -507,7 +507,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                 Expanded(
                     child: _buildDropdownField("LOCATION".tr(context),"CHOOSE".tr(context),
                       value: selectedLocation,
-                      items: locations,
+                      items: locationKeys,
                       isMobile: isMobile,
                       isTablet: isTablet,
                       onChanged: (val) {
@@ -567,7 +567,6 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
           style: TextStyle(
             color: const Color(0xFFF4ED47),
             fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
-            letterSpacing: 1,
             fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
@@ -627,7 +626,6 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
           style: TextStyle(
             color: const Color(0xFFF4ED47),
             fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
-            letterSpacing: 1,
             fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
@@ -760,7 +758,6 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
           style: TextStyle(
             color: const Color(0xFFF4ED47),
             fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 30.sp),
-            letterSpacing: 1,
             fontWeight: FontWeight.w900, // هنا السُمك
           ),
         ),
@@ -815,6 +812,22 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                 ),
               ),
 
+              selectedItemBuilder: (BuildContext context) {
+                return items.map<Widget>((String item) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    child: Text(
+                      value != null ? value!.tr(context) : hint,
+                      style: TextStyle(
+                        fontSize: fontSize(),
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  );
+                }).toList();
+              },
+
               dropdownColor: Colors.white,
               style: TextStyle(
                 fontSize: fontSize(),
@@ -838,7 +851,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                       ),
                       Expanded(
                         child: Text(
-                          item,
+                          item.tr(context),
                           style: TextStyle(
                             fontSize: fontSize(),
                             fontWeight: FontWeight.w500,

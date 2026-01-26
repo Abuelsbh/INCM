@@ -8,6 +8,10 @@ class Assets {
   static const String fontsAloeveraDisplaySemiBold = 'assets/fonts/AloeveraDisplaySemiBold.ttf';
   static const String fontsOptimal = 'assets/fonts/Optimal.ttf';
   static const String fontsOptimalBold = 'assets/fonts/OptimalBold.ttf';
+
+
+  static const String fontsNotoKufiArabicBold = 'assets/fonts/NotoKufiArabic-Bold.ttf';
+  static const String fontsNotoKufiArabicSemiBold = 'assets/fonts/NotoKufiArabic-SemiBold.ttf';
   static const String i18nAr = 'i18n/ar.json';
   static const String i18nEn = 'i18n/en.json';
   static const String iconsAboutUs = 'assets/icons/aboutUs.png';
@@ -166,7 +170,7 @@ class Assets {
   static const String logosFacilityVocoMall = 'assets/logos/facility/voco-mall.png';
   static const String logosFacilityZoom = 'assets/logos/facility/zoom.png';
   static const String logosFacilityUntitled1 = 'assets/logos/facility/Untitled-1.png';
-  static const String logosFacilityNabed = 'assets/logos/facility/نبض.png';
+  static const String logosFacilityNabed = 'assets/logos/facility/nabed.png';
   static const String logosFranchise2 = 'assets/logos/franchise/2.png';
   static const String logosFranchise3 = 'assets/logos/franchise/3.png';
   static const String logosFranchise4 = 'assets/logos/franchise/4.png';

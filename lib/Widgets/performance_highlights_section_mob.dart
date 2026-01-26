@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'animated_logos_footer.dart';
 
@@ -71,10 +72,9 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
               child: RichText(
                 text: TextSpan(
                   style: TextStyle(
-                    fontFamily: 'OptimalBold',
+                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
                     color: Colors.white, // اللون الافتراضي للنص
                   ),
                   children: [
@@ -162,7 +162,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
                     "${hasPlus ? '+' : ''}${value.toInt().toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',')}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontFamily: 'OptimalBold',
+                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
                       color: const Color(0xFFF4ED47),
                       fontSize: 24.sp,
                       fontWeight: FontWeight.bold,

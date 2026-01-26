@@ -14,6 +14,7 @@ import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
 import '../../../generated/assets.dart';
+import '../../../Utilities/font_helper.dart';
 
 class FacilityManagementScreen extends StatelessWidget {
   static const String routeName = '/services/facility-management';
@@ -50,15 +51,15 @@ class FacilityManagementScreen extends StatelessWidget {
                         ),
                         builder: (context, snapshot) {
                           DecorationImage? decorationImage = snapshot.data;
-                          
+
                           // Fallback to asset if Firebase image not available
                           if (decorationImage == null) {
                             decorationImage = DecorationImage(
                               image: AssetImage(isMobile ? Assets.imagesService5Mob : Assets.imagesService5Web),
-      
+
                             );
                           }
-      
+
                           return Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -70,21 +71,20 @@ class FacilityManagementScreen extends StatelessWidget {
                                 Image.asset(
                                   isMobile ? Assets.imagesService5Mob : Assets.imagesService5Web,
                                   width: double.infinity,
-      
+
                                 ),
                                 Positioned(
                                   top: isMobile ? 110.h : 350.h,
                                   right: isMobile ? 28.w : 220.w,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
+
                                     children: [
                                       DynamicText(
                                         pageId: 'facility-management',
                                         sectionId: 'hero-title-1',
                                         defaultValue: 'FACILITY_HERO_TITLE_1',
                                         style: TextStyle(
-                                          fontFamily: 'OptimalBold',
+                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                           color: Colors.black,
                                           fontSize: isMobile ? 16.sp : 60.sp,
                                           fontWeight: FontWeight.bold,
@@ -96,7 +96,7 @@ class FacilityManagementScreen extends StatelessWidget {
                                         sectionId: 'hero-title-2',
                                         defaultValue: 'FACILITY_HERO_TITLE_2',
                                         style: TextStyle(
-                                          fontFamily: 'OptimalBold',
+                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                           color: Colors.black,
                                           fontSize: isMobile ? 16.sp : 60.sp,
                                           fontWeight: FontWeight.bold,
@@ -110,7 +110,7 @@ class FacilityManagementScreen extends StatelessWidget {
                                           sectionId: 'hero-subtitle',
                                           defaultValue: 'FACILITY_HERO_SUBTITLE',
                                           style: TextStyle(
-                                            fontFamily: 'AloeveraDisplaySemiBold',
+                                            fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                             color: Colors.black,
                                             fontSize: isMobile ? 10.sp : 36.sp,
                                             height: isMobile ? 2 : 3,
@@ -137,9 +137,9 @@ class FacilityManagementScreen extends StatelessWidget {
                                           DynamicText(
                                             pageId: 'facility-management',
                                             sectionId: 'hero-title-1',
-                                            defaultValue: 'FACILITY',
+                                            defaultValue: 'FACILITY_HERO_TITLE_1',
                                             style: TextStyle(
-                                              fontFamily: 'OptimalBold',
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                               color: Colors.white,
                                               fontSize: isMobile ? 18.sp : 70.sp,
                                               fontWeight: FontWeight.bold,
@@ -149,9 +149,9 @@ class FacilityManagementScreen extends StatelessWidget {
                                           DynamicText(
                                             pageId: 'facility-management',
                                             sectionId: 'hero-title-2',
-                                            defaultValue: 'MANAGEMENT',
+                                            defaultValue: 'FACILITY_HERO_TITLE_2',
                                             style: TextStyle(
-                                              fontFamily: 'OptimalBold',
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                               color: const Color(0xFFF4ED47),
                                               fontSize: isMobile ? 18.sp : 75.sp,
                                               fontWeight: FontWeight.bold,
@@ -201,11 +201,10 @@ class FacilityManagementScreen extends StatelessWidget {
                                               sectionId: 'services-title',
                                               defaultValue: 'FACILITY_SERVICE_TITLE',
                                               style: TextStyle(
-                                                fontFamily: 'OptimalBold',
+                                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                                 color: const Color(0xFFF4ED47),
                                                 fontSize: isMobile ? 18.sp : 70.sp,
                                                 fontWeight: FontWeight.bold,
-                                                letterSpacing: 2,
                                               ),
                                             ),
                                             SizedBox(height: isMobile ? 10.h : 40.h),

@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../Widgets/bottom_navbar_widget.dart';
 import '../../../Widgets/clients_logos_section.dart';
@@ -17,7 +18,9 @@ import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/Language/app_languages.dart';
 import '../../../core/Language/locales.dart';
+import '../../../Utilities/font_helper.dart';
 import '../../../generated/assets.dart';
 
 class FranchiseInvestmentScreen extends StatefulWidget {
@@ -178,28 +181,45 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      DynamicText(
-                                        pageId: 'franchise-investment',
-                                        sectionId: 'hero-title-1',
-                                        defaultValue: 'FRANCHISE_HERO_TITLE_1',
-                                        style: TextStyle(
-                                          fontFamily: 'OptimalBold',
-                                          color: Colors.white,
-                                          fontSize: isMobile ? 16.sp : 70.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Gap(8.h),
-                                      DynamicText(
-                                        pageId: 'franchise-investment',
-                                        sectionId: 'hero-title-2',
-                                        defaultValue: 'FRANCHISE_HERO_TITLE_2',
-                                        style: TextStyle(
-                                          fontFamily: 'OptimalBold',
-                                          color: const Color(0xFFF4ED47),
-                                          fontSize: isMobile ? 16.sp : 75.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Builder(
+                                        builder: (context) {
+                                          final isArabic =
+                                              Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                                  Languages.ar;
+
+                                          return SizedBox(
+                                            width: double.infinity,
+                                            child: Column(
+                                              mainAxisAlignment: isArabic ?  MainAxisAlignment.end : MainAxisAlignment.start,
+                                              crossAxisAlignment: isArabic ?  CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                              children: [
+                                                DynamicText(
+                                                  pageId: 'franchise-investment',
+                                                  sectionId: 'hero-title-1',
+                                                  defaultValue: 'FRANCHISE_HERO_TITLE_1',
+                                                  style: TextStyle(
+                                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                    color: Colors.white,
+                                                    fontSize: isMobile ? 16.sp : 70.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Gap(8.h),
+                                                DynamicText(
+                                                  pageId: 'franchise-investment',
+                                                  sectionId: 'hero-title-2',
+                                                  defaultValue: 'FRANCHISE_HERO_TITLE_2',
+                                                  style: TextStyle(
+                                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                    color: const Color(0xFFF4ED47),
+                                                    fontSize: isMobile ? 16.sp : 75.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }
                                       ),
                                       Gap(isMobile ? 2.h : 40.h),
                                       SizedBox(
@@ -209,7 +229,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                                           sectionId: 'hero-subtitle',
                                           defaultValue: 'FRANCHISE_HERO_SUBTITLE',
                                           style: TextStyle(
-                                            fontFamily: 'AloeveraDisplaySemiBold',
+                                            fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                             color: Colors.white,
                                             fontSize: isMobile ? 10.sp : 38.sp,
                                             height: isMobile ? 2 : 1.6,
@@ -270,11 +290,10 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                                               sectionId: 'services-title',
                                               defaultValue: 'FRANCHISE_SERVICE_TITLE',
                                               style: TextStyle(
-                                                fontFamily: 'OptimalBold',
+                                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                                 color: const Color(0xFFF4ED47),
                                                 fontSize: isMobile ? 18.sp : 70.sp,
                                                 fontWeight: FontWeight.bold,
-                                                letterSpacing: 2,
                                               ),
                                             ),
                                             SizedBox(height: isMobile ? 10.h : 60.h),
@@ -298,7 +317,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                                                 child: Text(
                                                   "DOWNLOAD_FRANCHISING_BROCHURE".tr(context),
                                                   style: TextStyle(
-                                                    fontFamily: 'OptimalBold',
+                                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                                     color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
                                                     fontSize: isMobile ? 12.sp : 25.sp,
                                                     fontWeight: FontWeight.bold,
@@ -309,7 +328,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                                           ],
                                         ),
                                       ),
-                                      Gap(isMobile ? 40.h : 420.h),
+                                      Gap(isMobile ? 10.h : 420.h),
                                       ClientsLogosSection(
                                         pageId: 'franchise-investment',
                                         backgroundColor: Colors.grey[900]!,

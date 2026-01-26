@@ -41,12 +41,23 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
     _availableSectionIds = SectionIdsConfig.getSectionIdsForPage(widget.pageId);
     
     _selectedSectionId = content?.sectionId;
-    _selectedType = content?.type ?? ContentType.text;
     _imageBase64 = content?.imageBase64;
     
     // Initialize manual input controller if editing existing content
     if (content?.sectionId != null) {
       _manualSectionIdController.text = content!.sectionId;
+    }
+
+    // Auto-detect type from section ID if editing existing content
+    if (content != null && content.sectionId.isNotEmpty) {
+      if (content.sectionId.contains('image') || content.sectionId.contains('logo')) {
+        // Force image type for image/logo sections, even if saved as text
+        _selectedType = ContentType.image;
+      } else {
+        _selectedType = content.type;
+      }
+    } else {
+      _selectedType = ContentType.text;
     }
 
     // Initialize text controllers for both languages
@@ -61,10 +72,15 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
     if (content != null && _selectedSectionId != null) {
       final exists = _availableSectionIds.any((s) => s.id == _selectedSectionId);
       if (!exists) {
+        // Determine suggested type based on section ID
+        final suggestedType = (_selectedSectionId!.contains('image') || 
+                              _selectedSectionId!.contains('logo'))
+            ? 'image'
+            : content.type.toString().split('.').last;
         _availableSectionIds.insert(0, SectionIdOption(
           _selectedSectionId!,
           '${_selectedSectionId!} (موجود)',
-          content.type.toString().split('.').last,
+          suggestedType,
         ));
       }
     }

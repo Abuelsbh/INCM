@@ -182,10 +182,12 @@ class _HomeMediaSectionState extends State<HomeMediaSection> {
               });
             }
 
-            return Container(
-              width: double.infinity,
-              height: height.h,
-              child: _buildMedia(contentType),
+            return RepaintBoundary(
+              child: Container(
+                width: double.infinity,
+                height: height.h,
+                child: _buildMedia(contentType),
+              ),
             );
           },
         );

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../Modules/About/about_screen.dart';
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -62,21 +63,19 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'ABOUT'.tr(context),
+                        text: ' ${'ABOUT'.tr(context)} ',
                         style: TextStyle(
-                          fontFamily: 'OptimalBold',
+                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
                           color: const Color(0xFFF4ED47), // أصفر
                           fontSize: 32.sp,
-                          letterSpacing: 3,
                         ),
                       ),
                       TextSpan(
                         text: 'US'.tr(context),
                         style: TextStyle(
-                          fontFamily: 'OptimalBold',
+                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
                           color: Colors.white, // أبيض
                           fontSize: 32.sp,
-                          letterSpacing: 3,
                         ),
                       ),
                     ],
@@ -108,11 +107,10 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                     'WE_WERE_ESTABLISHED'.tr(context),
                     //textAlign: TextAlign.justify,// ✅ يجعل النص في المنتصف
                     style: TextStyle(
-                      fontFamily: 'AloeveraDisplaySemiBold',
+                      fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                       color: Colors.white,
                       fontSize: 12.sp,
                       height: 1.8,
-                      letterSpacing: 2,
                     ),
                   ),
                 ),

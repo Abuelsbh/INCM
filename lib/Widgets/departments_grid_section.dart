@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../core/Language/locales.dart';
+import '../core/Language/app_languages.dart';
+import '../Utilities/font_helper.dart';
 
 class DepartmentsGridSection extends StatelessWidget {
   final List<String> departments;
@@ -62,11 +65,10 @@ class DepartmentsGridSection extends StatelessWidget {
                               child:Text(
                                 text.tr(context),
                                 style: TextStyle(
-                                  fontFamily: 'AloeveraDisplaySemiBold',
+                                  fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                   color: const Color(0xFFF4ED47), // Yellow/gold
                                   fontSize: 18.sp,
                                   height: 1.8,
-                                  letterSpacing: 1,
                                 ),
                               ),
                             );
@@ -97,11 +99,10 @@ class DepartmentsGridSection extends StatelessWidget {
           TextSpan(
             text: 'EXPLORE_OUR'.tr(context),
             style: TextStyle(
-              fontFamily: 'OptimalBold',
+              fontFamily: getLocalizedFont(context, 'OptimalBold'),
               fontSize: isMobile ? 30.sp : (isTablet ? 60.sp : 85.sp),
               fontWeight: FontWeight.bold,
               color: const Color(0xFFF4ED47), // Yellow/gold
-              letterSpacing: 2,
             ),
           ),
           // "OUR"
@@ -110,11 +111,10 @@ class DepartmentsGridSection extends StatelessWidget {
           TextSpan(
             text: 'DEPARTMENTS'.tr(context),
             style: TextStyle(
-              fontFamily: 'OptimalBold',
+              fontFamily: getLocalizedFont(context, 'OptimalBold'),
               fontSize: isMobile ? 30.sp : (isTablet ? 60.sp :85.sp),
               fontWeight: FontWeight.bold,
               color: Colors.white, // Yellow/gold
-              letterSpacing: 2,
             ),
           ),
         ],
@@ -144,14 +144,33 @@ class DepartmentsGridSection extends StatelessWidget {
   }
 
   Widget _buildGridRow(BuildContext context, int rowIndex, bool isMobile, bool isTablet) {
-    //final rowDepartments = departments.skip(rowIndex * 3).take(3).toList();
+    final isRTL = Provider.of<AppLanguage>(context, listen: false).appLang == Languages.ar;
+    
+    // Get departments for this row
+    final rowDepartments = <String>[];
+    for (int i = 0; i < 3; i++) {
+      final index = rowIndex * 3 + i;
+      if (index < departments.length) {
+        rowDepartments.add(departments[index]);
+      } else {
+        rowDepartments.add('');
+      }
+    }
+    
+    // Reverse order for RTL
+    final orderedDepartments = isRTL ? rowDepartments.reversed.toList() : rowDepartments;
     
     return Column(
       children: [
         Row(
           children: List.generate(3, (colIndex) {
-            final index = rowIndex * 3 + colIndex;
-            final department = index < departments.length ? departments[index] : '';
+            final department = orderedDepartments[colIndex];
+            
+            // For RTL: first column (index 0) should have left border, last column should have no border
+            // For LTR: first columns should have right border, last column should have no border
+            final hasBorder = isRTL 
+                ? colIndex < 2  // Has left border for RTL
+                : colIndex < 2; // Has right border for LTR
             
             return Expanded(
               child: _buildGridCell(
@@ -159,7 +178,8 @@ class DepartmentsGridSection extends StatelessWidget {
                 department,
                 isMobile,
                 isTablet,
-                colIndex < 2, // Has right border
+                hasBorder,
+                isRTL,
               ),
             );
           }),
@@ -179,13 +199,20 @@ class DepartmentsGridSection extends StatelessWidget {
     String department,
     bool isMobile,
     bool isTablet,
-    bool hasRightBorder,
+    bool hasBorder,
+    bool isRTL,
   ) {
     return Container(
       height: isMobile ? 100.h : (isTablet ? 140.h : 180.h),
       decoration: BoxDecoration(
         border: Border(
-          right: hasRightBorder
+          right: (!isRTL && hasBorder)
+              ? BorderSide(
+            color: Colors.white.withOpacity(0.4),
+            width: 1.5,
+          )
+              : BorderSide.none,
+          left: (isRTL && hasBorder)
               ? BorderSide(
             color: Colors.white.withOpacity(0.4),
             width: 1.5,
@@ -217,7 +244,6 @@ class DepartmentsGridSection extends StatelessWidget {
               fontSize: isMobile ? 12.sp : (isTablet ? 22.sp : 34.sp),
               fontWeight: FontWeight.bold,
               color: const Color(0xFFF4ED47), // Yellow/gold
-              letterSpacing: 1.5,
               shadows: [
                 Shadow(
                   color: const Color(0xFFF4ED47).withOpacity(0.3),

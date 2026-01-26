@@ -7,6 +7,7 @@ import 'package:incm/Modules/AllLogos/all_logos_screen.dart';
 import 'package:provider/provider.dart';
 import '../core/Language/locales.dart';
 import '../core/Language/app_languages.dart';
+import '../Utilities/font_helper.dart';
 import 'package:incm/Modules/Career/career_screen.dart';
 import 'package:incm/Modules/Lease/lease_screen.dart';
 import 'package:incm/Modules/Sell/sell_screen.dart';
@@ -205,24 +206,26 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ),
 
         // App Bar
-        Container(
-          height: 80.h,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.5),
-            border: Border(
-              bottom: BorderSide(
-                color: const Color(0xFFF4ED47).withOpacity(0.2),
-                width: 1,
+        SafeArea(
+          bottom: false,
+          child: Container(
+            height: 80.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.5),
+              border: Border(
+                bottom: BorderSide(
+                  color: const Color(0xFFF4ED47).withOpacity(0.2),
+                  width: 1,
+                ),
               ),
             ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
 
                 // Logo Section (Left) - INCOMERCIAL with tagline
                 Expanded(
@@ -285,14 +288,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                     color: const Color(0xFFF4ED47),
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
                                   ),
                                 ),
                               ),
                             );
                           },
                         ),
-                        SizedBox(width: 16.w),
+                        SizedBox(width: 8.w),
                         // Contact Us Button
                         ButtonStyles.exploreUsButton(
                           context: context,
@@ -322,8 +324,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ),
           ),
         ),
+      ),
 
-        // Side Menu (Mobile)
+      // Side Menu (Mobile)
         if (MediaQuery.of(context).size.width <= 768)
           _buildSideMenu(context),
       ],
@@ -388,11 +391,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     Text(
                       'MENU'.tr(context),
                       style: TextStyle(
-                        fontFamily: 'OptimalBold',
+                        fontFamily: getLocalizedFont(context, 'OptimalBold'),
                         color: const Color(0xFFF4ED47),
                         fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
                       ),
                     ),
                   ],
@@ -517,7 +519,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     color: Colors.white,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
-                    letterSpacing: 0.8,
                   ),
                 ),
               ),
@@ -642,8 +643,7 @@ class _HoverMenuItemState extends State<_HoverMenuItem> {
                   fontFamily: 'AloeveraDisplay',
                   color: _isHovered ? const Color(0xFFC63424) : Colors.white,
                   fontSize: 20.sp,
-                  fontWeight: _isHovered ? FontWeight.w700 : FontWeight.w500,
-                  letterSpacing: _isHovered ? 1.0 : 0.8,
+                  fontWeight: _isHovered ? FontWeight.w700 : FontWeight.w500
                 ),
                 child: Text(widget.text),
               ),
@@ -724,7 +724,6 @@ class _ServicesDropdownItemState extends State<_ServicesDropdownItem> {
               color: _isHovered ? const Color(0xFFF4ED47) : Colors.white,
               fontSize: 16.sp,
               fontWeight: _isHovered ? FontWeight.w600 : FontWeight.w500,
-              letterSpacing: 0.5,
             ),
           ),
         ),

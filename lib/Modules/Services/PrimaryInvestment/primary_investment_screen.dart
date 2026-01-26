@@ -14,6 +14,7 @@ import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
 import '../../../generated/assets.dart';
+import '../../../Utilities/font_helper.dart';
 
 class PrimaryInvestmentScreen extends StatelessWidget {
   static const String routeName = '/services/primary-investment';
@@ -86,7 +87,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                       sectionId: 'hero-title-1',
                                       defaultValue: 'PRIMARY_HERO_TITLE_1',
                                       style: TextStyle(
-                                        fontFamily: 'OptimalBold',
+                                        fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                         color: Colors.white,
                                         fontSize: isMobile ? 18.sp : 70.sp,
                                         fontWeight: FontWeight.bold,
@@ -107,7 +108,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                                 sectionId: 'hero-title-2',
                                                 defaultValue: 'PRIMARY_HERO_TITLE_2',
                                                 style: TextStyle(
-                                                  fontFamily: 'OptimalBold',
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                                   color: Colors.white,
                                                   fontSize: isMobile ? 12.sp : 70.sp,
                                                   fontWeight: FontWeight.bold,
@@ -118,7 +119,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                                 sectionId: 'hero-title-3',
                                                 defaultValue: 'PRIMARY_HERO_TITLE_3',
                                                 style: TextStyle(
-                                                  fontFamily: 'OptimalBold',
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                                   color: const Color(0xFFF4ED47),
                                                   fontSize: isMobile ? 12.sp : 75.sp,
                                                   fontWeight: FontWeight.bold,
@@ -143,7 +144,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                               sectionId: 'hero-subtitle',
                                               defaultValue: 'PRIMARY_HERO_SUBTITLE',
                                               style: TextStyle(
-                                                fontFamily: 'OptimalBold',
+                                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                                 color: Colors.white,
                                                 fontSize: isMobile ? 8.sp : 36.sp,
                                                 fontWeight: FontWeight.bold,
@@ -185,11 +186,10 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                             sectionId: 'services-title',
                                             defaultValue: 'PRIMARY_SERVICE_TITLE',
                                             style: TextStyle(
-                                              fontFamily: 'OptimalBold',
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                               color: const Color(0xFFF4ED47),
                                               fontSize: isMobile ? 20.sp : 70.sp,
                                               fontWeight: FontWeight.bold,
-                                              letterSpacing: 2,
                                             ),
                                           ),
                                           SizedBox(height: isMobile ? 10.h : 40.h),

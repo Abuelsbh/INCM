@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:incm/Modules/About/about_screen.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -69,22 +70,20 @@ class _AboutContentSectionState extends State<AboutContentSection> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: 'ABOUT'.tr(context),
+                                text: ' ${'ABOUT'.tr(context)} ',
                                 style: TextStyle(
-                                  fontFamily: 'OptimalBold',
+                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                   color: const Color(0xFFF4ED47), // أصفر
                                   fontSize: 60.sp,
-                                  letterSpacing: 3,
                                 ),
                               ),
                               TextSpan(
                                 text: 'US'.tr(context),
                                 style: TextStyle(
-                                  fontFamily: 'OptimalBold',
+                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                   color: Colors.white, // أبيض
                                   fontSize: 60.sp,
                                   fontWeight: FontWeight.w800,
-                                  letterSpacing: 3,
                                 ),
                               ),
                             ],
@@ -115,11 +114,10 @@ class _AboutContentSectionState extends State<AboutContentSection> {
                           'WE_WERE_ESTABLISHED'.tr(context),
                           //textAlign: TextAlign.justify,  // ✅ يجعل النص في المنتصف
                           style: TextStyle(
-                            fontFamily: 'AloeveraDisplaySemiBold',
+                            fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                             color: Colors.white,
                             fontSize: 35.sp,
                             height: 1.8,
-                            letterSpacing: 1.6,
                           ),
                         ),
                       ),

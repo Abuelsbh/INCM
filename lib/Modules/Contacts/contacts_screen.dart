@@ -15,7 +15,10 @@ import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/animated_contact_info.dart';
 import '../../core/Language/locales.dart';
+import '../../core/Language/app_languages.dart';
+import '../../Utilities/font_helper.dart';
 import '../../generated/assets.dart';
+import 'package:provider/provider.dart';
 
 class ContactsScreen extends StatefulWidget {
   static const String routeName = '/contacts';
@@ -328,16 +331,15 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                     'CONTACT_US'.tr(context),
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontFamily: 'OptimalBold',
+                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
                       color: const Color(0xFFF4ED47),
                       fontSize: isMobile ? 26.sp : (isTablet ? 50.sp : 70.sp),
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
                     ),
                   ),
                   SizedBox(height: isMobile ? 20.h : (isTablet ? 20.h : 30.h)),
                   _buildContactForm(context, isMobile, isTablet),
-                  Gap(isMobile ? 50.h : (isTablet ? 20.h : 100.h)),
+                  Gap(isMobile ? 50.h : (isTablet ? 20.h : 60.h)),
                   _buildGetInTouchSection(context, isMobile, isTablet),
 
                   Gap(isMobile ? 15.h : (isTablet ? 40.h : 120.h)),
@@ -351,7 +353,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                       'OUR_LOCATION'.tr(context),
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontFamily: 'OptimalBold',
+                        fontFamily: getLocalizedFont(context, 'OptimalBold'),
                         color: const Color(0xFFF4ED47),
                         fontSize: isMobile ? 20.sp : (isTablet ? 38.sp : 50.sp),
                         fontWeight: FontWeight.bold,
@@ -384,9 +386,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                                 ? const Color(0xFFC63424)
                                 : const Color(0xFFFFFFFF),
                             fontSize: isMobile ? 14.sp : (isTablet ? 30.sp : 40.sp),
-                            fontFamily: 'OptimalBold',
+                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
                             fontWeight: FontWeight.w700,
-                            letterSpacing: 1,
                             decorationColor: _isAddressHovered
                                 ? const Color(0xFFC63424)
                                 : const Color(0xFFFFFFFF),
@@ -500,7 +501,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           ),
         ],
         SizedBox(height: isMobile ? 15.h : isTablet ? 40.h : 60.h),
-        _buildFormField(
+        _buildMessageField(
           'MESSAGE'.tr(context),
           context: context,
           hint: 'TYPE_YOUR_MESSAGE'.tr(context),
@@ -508,12 +509,15 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           isMobile: isMobile,
           isTablet: isTablet,
         ),
-        SizedBox(height: isMobile ? 50.h : (isTablet ? 70.h : 80.h)),
+        SizedBox(height: isMobile ? 50.h : (isTablet ? 70.h : 40.h)),
         if(isMobile)
-          ButtonStyles.submitButtonMob(
-            context: context,
-            width: isMobile ? 90.w : (isTablet ? 120.w : 180.w),
-            onPressed: _handleSubmit,
+          SizedBox(
+            width: double.infinity,
+            child: ButtonStyles.submitButtonMob(
+              context: context,
+              width: double.infinity,
+              onPressed: _handleSubmit,
+            ),
           ),
         if(!isMobile)
         ButtonStyles.submitButton(
@@ -536,9 +540,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             style: TextStyle(
               color: const Color(0xFFFFFFFF),
               fontSize: 22.sp,
-              fontFamily: 'OptimalBold',
+              fontFamily: getLocalizedFont(context, 'OptimalBold'),
               fontWeight: FontWeight.w700,
-              letterSpacing: 1,
             ),
           ),
 
@@ -586,9 +589,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               style: TextStyle(
                 color: const Color(0xFFFFFFFF),
                 fontSize: isTablet ? 48.sp : 70.sp,
-                fontFamily: 'OptimalBold',
+                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                 fontWeight: FontWeight.w700,
-                letterSpacing: 1,
               ),
             ),
             _buildSocialMediaRow(isMobile, isTablet),
@@ -619,8 +621,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           style: TextStyle(
             color: const Color(0xFFFFFFFF),
             fontSize: isMobile ? 14.sp : (isTablet ? 32.sp : 50.sp),
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1,
+            fontWeight: FontWeight.w700
           ),
         ),
         SizedBox(width: spacing),
@@ -736,7 +737,6 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             color: Colors.white,
             fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
             fontWeight: FontWeight.bold,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: 1.h),
@@ -782,6 +782,74 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     );
   }
 
+  Widget _buildMessageField(
+      String label, {
+        required BuildContext context,
+        required TextEditingController controller,
+        String? hint,
+        double? height,
+        required bool isMobile,
+        required bool isTablet
+      }) {
+    final appLang = Provider.of<AppLanguage>(context, listen: false);
+    final isArabic = appLang.appLang == Languages.ar;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          label??'',
+          style: TextStyle(
+            fontFamily: 'AloeveraDisplayBold',
+            color: Colors.white,
+            fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 1.h),
+        SizedBox(
+          height: height ?? (isMobile ? 80.h : (isTablet ? 100.h : 120.h)),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15.r),
+              border: Border.all(
+                color: Colors.grey[300]!,
+                width: 1,
+              ),
+            ),
+            child: TextField(
+              controller: controller,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              textAlignVertical: TextAlignVertical.top,
+              textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+              decoration: InputDecoration(
+                isDense: true,
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 12.h,
+                ),
+                hintText: hint,
+                hintTextDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+                hintStyle: TextStyle(
+                  fontFamily: 'AloeveraDisplayBold',
+                  color: Colors.grey[500],
+                  fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 28.sp),
+                ),
+              ),
+              style: TextStyle(
+                fontSize: isMobile ? 14.sp : 28.sp,
+                color: Colors.black,
+                fontFamily: 'AloeveraDisplayBold',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildPhoneField({required BuildContext context, required bool isMobile, required bool isTablet}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -793,7 +861,6 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             color: Colors.white,
             fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
             fontWeight: FontWeight.bold,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: 2.h),
@@ -824,44 +891,48 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                       ),
                     ),
                   ),
-                  child: DropdownButton<String>(
-                    value: _selectedCountryCode,
-                    underline: const SizedBox(),
-                    isExpanded: false,
-                    icon: Icon(Icons.arrow_drop_down, size: 18.sp),
-                    items: _countryCodes.map((country) {
-                      return DropdownMenuItem<String>(
-                        value: country['code'],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              country['flag']!,
-                              style: TextStyle(
-                                fontFamily: 'AloeveraDisplayBold',
-                                fontSize: isMobile ? 12.sp : 14.sp,
+                  child: Center(
+                    child: DropdownButton<String>(
+                      value: _selectedCountryCode,
+                      underline: const SizedBox(),
+                      isExpanded: false,
+                      icon: Icon(Icons.arrow_drop_down, size: 18.sp),
+                      alignment: Alignment.center,
+                      items: _countryCodes.map((country) {
+                        return DropdownMenuItem<String>(
+                          value: country['code'],
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                country['flag']!,
+                                style: TextStyle(
+                                  fontFamily: 'AloeveraDisplayBold',
+                                  fontSize: isMobile ? 12.sp : 14.sp,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 2.w),
-                            Text(
-                              country['code']!,
-                              style: TextStyle(
-                                fontFamily: 'AloeveraDisplayBold',
-                                fontSize: isMobile ? 14.sp : (isTablet ? 16.sp : 20.sp),
-                                color: Colors.black,
+                              SizedBox(width: 2.w),
+                              Text(
+                                country['code']!,
+                                style: TextStyle(
+                                  fontFamily: 'AloeveraDisplayBold',
+                                  fontSize: isMobile ? 14.sp : (isTablet ? 16.sp : 20.sp),
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          _selectedCountryCode = value;
-                        });
-                      }
-                    },
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _selectedCountryCode = value;
+                          });
+                        }
+                      },
+                    ),
                   ),
                 ),
                 Expanded(
@@ -930,7 +1001,6 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
             color: Colors.white,
             fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
             fontWeight: FontWeight.bold,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: isMobile ? 4.h : 10.h),

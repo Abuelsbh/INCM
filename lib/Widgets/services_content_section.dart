@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:go_router/go_router.dart';
 
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 import '../Modules/Services/Consultation/consultation_screen.dart';
@@ -216,11 +217,10 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
             Text(
               'EXPLORE_OUR_SERVICES'.tr(context),
               style: TextStyle(
-                fontFamily: 'OptimalBold',
+                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                 color: Colors.white,
                 fontSize: 60.sp,
-                fontWeight: FontWeight.bold, // سيختار ملف Optimal-Bold تلقائيًا
-                letterSpacing: 2,
+                fontWeight: FontWeight.bold,
               ),
             ),
 
@@ -316,7 +316,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                       Text(
                         'ITS_A'.tr(context),
                         style: TextStyle(
-                          fontFamily: 'OptimalBold',
+                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
                           color: Colors.white,
                           fontSize: 60.sp,
                           fontWeight: FontWeight.bold,
@@ -327,7 +327,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                         child: Text(
                           getServiceData(context)[currentIndex]['title']!.tr(context),
                           style: TextStyle(
-                            fontFamily: 'OptimalBold',
+                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
                             color: currentIndex % 2 == 0 ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
                             fontSize: 60.sp,
                             fontWeight: FontWeight.bold,
@@ -339,7 +339,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                       Text(
                         'SERVICE'.tr(context),
                         style: TextStyle(
-                          fontFamily: 'OptimalBold',
+                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
                           color: Colors.white,
                           fontSize: 60.sp,
                           fontWeight: FontWeight.bold,
@@ -365,7 +365,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                               maxLines: 8,                    // ✅ limit to 6 lines
                               overflow: TextOverflow.ellipsis, // ✅ show "..."
                               style: TextStyle(
-                                fontFamily: 'AloeveraDisplaySemiBold',
+                                fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                 color: Colors.white,
                                 fontSize: 26.sp,
                                 height: 2,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:incm/core/Language/locales.dart';
 
 class BuildFileOrLinkField extends StatefulWidget {
   final String label;
@@ -99,7 +100,7 @@ class _BuildFileOrLinkFieldState extends State<BuildFileOrLinkField> {
                     controller: widget.controller,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: "Enter link or upload file",
+                      hintText: "ENTER_LINK_OR_UPLOAD_FILE".tr(context),
                       isDense: true,
                       hintStyle: TextStyle(
                         fontFamily: 'AloeveraDisplayBold',

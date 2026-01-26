@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../Widgets/bottom_navbar_widget.dart';
 import '../../Widgets/custom_app_bar.dart';
 import '../../Widgets/custom_app_bar_mob.dart';
 import '../../core/Language/locales.dart';
+import '../../Utilities/font_helper.dart';
 import '../../core/Firebase/firebase_logos_service.dart';
 import '../../Models/logo_model.dart';
 import '../../Widgets/base64_image_widget.dart';
@@ -70,153 +73,154 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: isMobile ? 80.h : 120.h),
-                // Title
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                  child: Text(
-                    'OUR_CLIENTS'.tr(context),
-                    style: TextStyle(
-                      fontFamily: 'OptimalBold',
-                      color: const Color(0xFFF4ED47),
-                      fontSize: isMobile ? 28.sp : 60.sp,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.sellYourUnit) : null,
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: isMobile ? 80.h : 120.h),
+                  // Title
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                    child: Text(
+                      'OUR_CLIENTS'.tr(context),
+                      style: TextStyle(
+                        fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                        color: const Color(0xFFF4ED47),
+                        fontSize: isMobile ? 28.sp : 60.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                // Use FutureBuilder for async loading
-                FutureBuilder<Map<String, List<LogoModel>>>(
-                  future: _logosFuture,
-                  builder: (context, snapshot) {
-                    // Loading state
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return _buildLoadingState(isMobile);
-                    }
-                    
-                    // Error state
-                    if (snapshot.hasError) {
-                      return Padding(
-                        padding: EdgeInsets.all(40.h),
-                        child: Column(
-                          children: [
-                            Text(
-                              'حدث خطأ أثناء تحميل الشعارات',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: isMobile ? 16.sp : 20.sp,
-                              ),
-                            ),
-                            SizedBox(height: 20.h),
-                            ElevatedButton(
-                              onPressed: _retryLoadLogos,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFF4ED47),
-                                foregroundColor: Colors.black,
-                              ),
-                              child: Text('إعادة المحاولة'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    
-                    // Success state
-                    final logosByService = snapshot.data ?? {};
-                    
-                    if (logosByService.isEmpty) {
-                      return Padding(
-                        padding: EdgeInsets.all(40.h),
-                        child: Text(
-                          'لا توجد شعارات متاحة',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: isMobile ? 16.sp : 20.sp,
-                          ),
-                        ),
-                      );
-                    }
-                    
-                    // Logos grouped by service
-                    return Column(
-                      children: logosByService.entries.map((entry) {
-                        final pageId = entry.key;
-                        final logos = entry.value;
-                        final serviceName = _serviceNames[pageId] ?? pageId;
-                        
+                  // Use FutureBuilder for async loading
+                  FutureBuilder<Map<String, List<LogoModel>>>(
+                    future: _logosFuture,
+                    builder: (context, snapshot) {
+                      // Loading state
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return _buildLoadingState(isMobile);
+                      }
+                      
+                      // Error state
+                      if (snapshot.hasError) {
                         return Padding(
-                          padding: EdgeInsets.only(
-                            bottom: isMobile ? 30.h : 50.h,
-                            left: isMobile ? 12.w : 40.w,
-                            right: isMobile ? 12.w : 40.w,
-                          ),
+                          padding: EdgeInsets.all(40.h),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Service Title
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: isMobile ? 15.h : 25.h,
-                                  left: isMobile ? 8.w : 0,
-                                ),
-                                child: Text(
-                                  serviceName,
-                                  style: TextStyle(
-                                    fontFamily: 'OptimalBold',
-                                    color: const Color(0xFFF4ED47),
-                                    fontSize: isMobile ? 22.sp : 40.sp,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.5,
-                                  ),
+                              Text(
+                                'حدث خطأ أثناء تحميل الشعارات',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: isMobile ? 16.sp : 20.sp,
                                 ),
                               ),
-                              // Logos Grid for this service
-                              GridView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: isMobile ? 2 : 4,
-                                  crossAxisSpacing: isMobile ? 12.w : 30.w,
-                                  mainAxisSpacing: isMobile ? 12.h : 30.h,
-                                  childAspectRatio: isMobile ? 1.2 : 1.5,
+                              SizedBox(height: 20.h),
+                              ElevatedButton(
+                                onPressed: _retryLoadLogos,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFF4ED47),
+                                  foregroundColor: Colors.black,
                                 ),
-                                itemCount: logos.length,
-                                itemBuilder: (context, index) {
-                                  return _buildLogoItem(
-                                    context,
-                                    logos[index],
-                                    isMobile,
-                                  );
-                                },
+                                child: Text('إعادة المحاولة'),
                               ),
                             ],
                           ),
                         );
-                      }).toList(),
-                    );
-                  },
-                ),
-                SizedBox(height: isMobile ? 40.h : 80.h),
-              ],
+                      }
+                      
+                      // Success state
+                      final logosByService = snapshot.data ?? {};
+                      
+                      if (logosByService.isEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.all(40.h),
+                          child: Text(
+                            'لا توجد شعارات متاحة',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isMobile ? 16.sp : 20.sp,
+                            ),
+                          ),
+                        );
+                      }
+                      
+                      // Logos grouped by service
+                      return Column(
+                        children: logosByService.entries.map((entry) {
+                          final pageId = entry.key;
+                          final logos = entry.value;
+                          final serviceName = _serviceNames[pageId] ?? pageId;
+                          
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: isMobile ? 30.h : 50.h,
+                              left: isMobile ? 12.w : 40.w,
+                              right: isMobile ? 12.w : 40.w,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Service Title
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: isMobile ? 15.h : 25.h,
+                                    left: isMobile ? 8.w : 0,
+                                  ),
+                                  child: Text(
+                                    serviceName,
+                                    style: TextStyle(
+                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                      color: const Color(0xFFF4ED47),
+                                      fontSize: isMobile ? 22.sp : 40.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                // Logos Grid for this service
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: isMobile ? 2 : 4,
+                                    crossAxisSpacing: isMobile ? 12.w : 30.w,
+                                    mainAxisSpacing: isMobile ? 12.h : 30.h,
+                                    childAspectRatio: isMobile ? 1.2 : 1.5,
+                                  ),
+                                  itemCount: logos.length,
+                                  itemBuilder: (context, index) {
+                                    return _buildLogoItem(
+                                      context,
+                                      logos[index],
+                                      isMobile,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
+                  SizedBox(height: isMobile ? 40.h : 80.h),
+                ],
+              ),
             ),
-          ),
-          // App Bar
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: isMobile
-                ? const CustomAppBarMob()
-                : const CustomAppBar(),
-          ),
-        ],
+            // App Bar
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: isMobile
+                  ? const CustomAppBarMob()
+                  : const CustomAppBar(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -265,7 +269,7 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: isMobile ? 14.sp : 18.sp,
-                    fontFamily: 'OptimalBold',
+                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
                   ),
                 ),
               ],

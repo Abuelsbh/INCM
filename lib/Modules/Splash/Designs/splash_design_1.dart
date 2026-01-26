@@ -55,19 +55,24 @@ class _SplashDesign1State extends State<SplashDesign1>
     return Scaffold(
       backgroundColor: const Color(0xFFF4ED47), // Yellow background
       body: Center(
-        child: AnimatedBuilder(
-          animation: _typewriterAnimation,
-          builder: (context, _) {
-            return ClipRect(
-              clipper: TypewriterClipper(_typewriterAnimation.value),
-              child: Image.asset(
-                Assets.logosINCMLogo,
-                width: logoSize,
-                height: logoSize,
-                fit: BoxFit.contain,
-              ),
-            );
-          },
+        child: RepaintBoundary(
+          child: AnimatedBuilder(
+            animation: _typewriterAnimation,
+            builder: (context, _) {
+              return ClipRect(
+                clipper: TypewriterClipper(_typewriterAnimation.value),
+                child: Image.asset(
+                  Assets.logosINCMLogo,
+                  width: logoSize,
+                  height: logoSize,
+                  fit: BoxFit.contain,
+                  cacheWidth: logoSize.toInt(),
+                  cacheHeight: logoSize.toInt(),
+                  filterQuality: FilterQuality.medium,
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -78,7 +83,7 @@ class _SplashDesign1State extends State<SplashDesign1>
 class TypewriterClipper extends CustomClipper<Rect> {
   final double progress;
 
-  TypewriterClipper(this.progress);
+  const TypewriterClipper(this.progress);
 
   @override
   Rect getClip(Size size) {

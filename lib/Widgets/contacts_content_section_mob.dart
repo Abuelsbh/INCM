@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -247,11 +248,10 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                             TextSpan(
                               text: 'NEED_EXPERTS_ADVICE'.tr(context).toUpperCase(),
                               style: TextStyle(
-                                fontFamily: 'OptimalBold',
+                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                 color: const Color(0xFFF4ED47),
                                 fontSize: 22.sp,
                                 fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
                               ),
                             ),
                             TextSpan(
@@ -260,7 +260,6 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                                 color: const Color(0xFFF4ED47),
                                 fontSize: 22.sp,
                                 fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
                               ),
                             ),
                           ],
@@ -352,7 +351,6 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: 8.h),
@@ -410,7 +408,6 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: 8.h),
@@ -526,7 +523,6 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: 8.h),

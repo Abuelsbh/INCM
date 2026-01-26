@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import '../../../Widgets/bottom_navbar_widget.dart';
 import '../../../Widgets/clients_logos_section.dart';
 import '../../../Widgets/content_service_section.dart';
@@ -11,7 +12,9 @@ import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/Language/app_languages.dart';
 import '../../../generated/assets.dart';
+import '../../../Utilities/font_helper.dart';
 
 class MarketingScreen extends StatelessWidget {
   static const String routeName = '/services/marketing';
@@ -74,61 +77,124 @@ class MarketingScreen extends StatelessWidget {
                                 Positioned(
                                   top: isMobile ? 100.h : 340.h,
                                   right: isMobile ? 40.w : 260.w,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      DynamicText(
-                                        pageId: 'marketing',
-                                        sectionId: 'hero-title-1',
-                                        defaultValue: 'MARKETING_HERO_TITLE_1',
-                                        style: TextStyle(
-                                          fontFamily: 'OptimalBold',
-                                          color: Colors.black,
-                                          fontSize: isMobile ? 16.sp : 80.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-
-                                      Gap(isMobile ? 4.h : 20.h),
-                                      DynamicText(
-                                        pageId: 'marketing',
-                                        sectionId: 'hero-title-2',
-                                        defaultValue: 'MARKETING_HERO_TITLE_2',
-                                        style: TextStyle(
-                                          fontFamily: 'OptimalBold',
-                                          color: const Color(0xFFC63424),
-                                          fontSize: isMobile ? 16.sp : 75.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-
-                                      Gap(isMobile ? 8.h : 40.h),
-                                      Container(
-                                        height: 2,
-                                        width: isMobile ? 100.w : 450.w,
-                                        decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.circular(isMobile ? 20.r : 50.r),
-                                        ),
-
-                                      ),
-                                      Gap(isMobile ? 8.h : 40.h),
-                                      SizedBox(
-                                        width: isMobile ? 120.w : 450.w,
-                                        child: DynamicText(
-                                          pageId: 'marketing',
-                                          sectionId: 'hero-subtitle',
-                                          defaultValue: 'MARKETING_HERO_SUBTITLE',
-                                          style: TextStyle(
-                                            fontFamily: 'AloeveraDisplaySemiBold',
-                                            color: Colors.black,
-                                            fontSize: isMobile ? 10.sp : 36.sp,
-                                            height: isMobile ? 2 : 3,
+                                  child: Builder(
+                                    builder: (context) {
+                                      final isArabic =
+                                          Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                              Languages.ar;
+                                      return isArabic ? Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          DynamicText(
+                                            pageId: 'marketing',
+                                            sectionId: 'hero-title-2',
+                                            defaultValue: 'MARKETING_HERO_TITLE_2',
+                                            style: TextStyle(
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                              color: const Color(0xFFC63424),
+                                              fontSize: isMobile ? 16.sp : 75.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
+
+                                          Gap(isMobile ? 4.h : 20.h),
+
+                                          DynamicText(
+                                            pageId: 'marketing',
+                                            sectionId: 'hero-title-1',
+                                            defaultValue: 'MARKETING_HERO_TITLE_1',
+                                            style: TextStyle(
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                              color: Colors.black,
+                                              fontSize: isMobile ? 16.sp : 80.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+
+                                          Gap(isMobile ? 8.h : 40.h),
+                                          Container(
+                                            height: 2,
+                                            width: isMobile ? 100.w : 450.w,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius: BorderRadius.circular(isMobile ? 20.r : 50.r),
+                                            ),
+
+                                          ),
+                                          Gap(isMobile ? 8.h : 40.h),
+                                          SizedBox(
+                                            width: isMobile ? 120.w : 450.w,
+                                            child: DynamicText(
+                                              pageId: 'marketing',
+                                              sectionId: 'hero-subtitle',
+                                              defaultValue: 'MARKETING_HERO_SUBTITLE',
+                                              style: TextStyle(
+                                                fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
+                                                color: Colors.black,
+                                                fontSize: isMobile ? 10.sp : 36.sp,
+                                                height: isMobile ? 2 : 3,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ) : Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          DynamicText(
+                                            pageId: 'marketing',
+                                            sectionId: 'hero-title-1',
+                                            defaultValue: 'MARKETING_HERO_TITLE_1',
+                                            style: TextStyle(
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                              color: Colors.black,
+                                              fontSize: isMobile ? 16.sp : 80.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+
+                                          Gap(isMobile ? 4.h : 20.h),
+                                          DynamicText(
+                                            pageId: 'marketing',
+                                            sectionId: 'hero-title-2',
+                                            defaultValue: 'MARKETING_HERO_TITLE_2',
+                                            style: TextStyle(
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                              color: const Color(0xFFC63424),
+                                              fontSize: isMobile ? 16.sp : 75.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+
+                                          Gap(isMobile ? 8.h : 40.h),
+                                          Container(
+                                            height: 2,
+                                            width: isMobile ? 100.w : 450.w,
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius: BorderRadius.circular(isMobile ? 20.r : 50.r),
+                                            ),
+
+                                          ),
+                                          Gap(isMobile ? 8.h : 40.h),
+                                          SizedBox(
+                                            width: isMobile ? 120.w : 450.w,
+                                            child: DynamicText(
+                                              pageId: 'marketing',
+                                              sectionId: 'hero-subtitle',
+                                              defaultValue: 'MARKETING_HERO_SUBTITLE',
+                                              style: TextStyle(
+                                                fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
+                                                color: Colors.black,
+                                                fontSize: isMobile ? 10.sp : 36.sp,
+                                                height: isMobile ? 2 : 3,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
                                   ),
                                 ),
 
@@ -148,7 +214,7 @@ class MarketingScreen extends StatelessWidget {
                                 //       TextSpan(
                                 //         text: 'MARKETING',
                                 //         style: TextStyle(
-                                //           fontFamily: 'OptimalBold',
+                                //           fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                 //           color: Colors.white,
                                 //           fontSize: isMobile ? 32.sp : 70.sp,
                                 //           fontWeight: FontWeight.bold,
@@ -157,7 +223,7 @@ class MarketingScreen extends StatelessWidget {
                                 //       TextSpan(
                                 //         text: ' SERVICE',
                                 //         style: TextStyle(
-                                //           fontFamily: 'OptimalBold',
+                                //           fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                 //           color: const Color(0xFFF4ED47),
                                 //           fontSize: isMobile ? 48.sp : 75.sp,
                                 //           fontWeight: FontWeight.bold,
@@ -172,7 +238,7 @@ class MarketingScreen extends StatelessWidget {
                                 //   child: Text(
                                 //     'YOU MAY OFFER A HIGHLY COMPETITIVE SERVICE, BUT WITHOUT MARKETING, WHO WILL KNOW?',
                                 //     style: TextStyle(
-                                //       fontFamily: 'AloeveraDisplaySemiBold',
+                                //       fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                 //       color: Colors.white,
                                 //       fontSize: isMobile ? 14.sp : 32.sp,
                                 //       height: 1.6,
@@ -189,6 +255,7 @@ class MarketingScreen extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       _buildDescriptionBox(
+                                        textAlign: TextAlign.start,
                                         context: context,
                                         isMobile: isMobile,
                                         pageId: 'marketing',
@@ -251,11 +318,10 @@ class MarketingScreen extends StatelessWidget {
                                         sectionId: 'services-title',
                                         defaultValue: 'MARKETING_SERVICE_TITLE',
                                         style: TextStyle(
-                                          fontFamily: 'OptimalBold',
+                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                           color: const Color(0xFFF4ED47),
                                           fontSize: isMobile ? 18.sp : 70.sp,
                                           fontWeight: FontWeight.bold,
-                                          letterSpacing: 2,
                                         ),
                                       ),
 

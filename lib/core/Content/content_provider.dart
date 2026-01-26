@@ -57,7 +57,7 @@ class ContentProvider extends ChangeNotifier {
       return content;
     } catch (e) {
       _errorMessage = 'Error loading content: $e';
-      notifyListeners();
+      // Don't notify listeners for cache misses - only notify on actual errors that need UI updates
       return null;
     }
   }
@@ -79,8 +79,18 @@ class ContentProvider extends ChangeNotifier {
   /// Get image content as base64
   Future<String?> getImageContent(String pageId, String sectionId) async {
     final content = await getContent(pageId, sectionId);
-    if (content != null && content.type == ContentType.image) {
-      return content.imageBase64;
+    if (content != null) {
+      // Check if it's explicitly an image type
+      if (content.type == ContentType.image) {
+        return content.imageBase64;
+      }
+      // Also check if sectionId suggests it's an image/logo and has base64 data
+      // This handles cases where content was saved with wrong type
+      if ((sectionId.contains('image') || sectionId.contains('logo')) &&
+          content.imageBase64 != null &&
+          content.imageBase64!.isNotEmpty) {
+        return content.imageBase64;
+      }
     }
     return null;
   }
@@ -111,27 +121,19 @@ class ContentProvider extends ChangeNotifier {
         final cacheKey = '${content.pageId}-${content.sectionId}';
         _singleContentCache.remove(cacheKey);
         
-        // Also clear page cache to ensure fresh data
-        if (_contentCache.containsKey(content.pageId)) {
-          _contentCache.remove(content.pageId);
-        }
+        // Clear page cache to ensure fresh data
+        _contentCache.remove(content.pageId);
 
-        // Update cache with fresh data
-        if (_contentCache.containsKey(content.pageId)) {
-          final index = _contentCache[content.pageId]!
-              .indexWhere((c) => c.id == content.id);
-          if (index >= 0) {
-            _contentCache[content.pageId]![index] = content;
-          } else {
-            _contentCache[content.pageId]!.add(content);
-          }
-        } else {
-          // Reload page content to get fresh data
+        // Reload the specific content from Firebase to get the latest data (including new ID if it was created)
+        final updatedContent = await _contentService.getContent(content.pageId, content.sectionId);
+        
+        if (updatedContent != null) {
+          // Update single content cache with fresh data
+          _singleContentCache[cacheKey] = updatedContent;
+          
+          // Reload page content to update the page cache
           await getPageContent(content.pageId);
         }
-
-        // Update single content cache
-        _singleContentCache[cacheKey] = content;
       }
 
       _isLoading = false;

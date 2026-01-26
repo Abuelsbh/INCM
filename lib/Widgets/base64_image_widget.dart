@@ -68,7 +68,9 @@ class Base64ImageWidget extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        filterQuality: FilterQuality.high, // High quality rendering
+        cacheWidth: width?.toInt(),
+        cacheHeight: height?.toInt(),
+        filterQuality: FilterQuality.medium, // Medium quality for better performance
         errorBuilder: (context, error, stackTrace) {
           if (kDebugMode) {
             debugPrint('Base64ImageWidget: Image.memory failed: $error');
@@ -92,7 +94,9 @@ class Base64ImageWidget extends StatelessWidget {
           width: width,
           height: height,
           fit: fit,
-          filterQuality: FilterQuality.high, // High quality rendering
+          cacheWidth: width?.toInt(),
+          cacheHeight: height?.toInt(),
+          filterQuality: FilterQuality.medium, // Medium quality for better performance
           errorBuilder: (context, error, stackTrace) {
             return _buildErrorIcon();
           },

@@ -12,6 +12,7 @@ import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
 import '../../../core/Language/locales.dart';
+import '../../../Utilities/font_helper.dart';
 import '../../../generated/assets.dart';
 
 class RetailLeasingScreen extends StatelessWidget {
@@ -91,7 +92,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                           sectionId: 'hero-title-1',
                                           defaultValue: 'RETAIL_HERO_TITLE_1',
                                           style: TextStyle(
-                                            fontFamily: 'OptimalBold',
+                                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                             color: Colors.white,
                                             fontSize: isMobile ? 18.sp : 70.sp,
                                             fontWeight: FontWeight.bold,
@@ -102,7 +103,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                           sectionId: 'hero-title-2',
                                           defaultValue: 'RETAIL_HERO_TITLE_2',
                                           style: TextStyle(
-                                            fontFamily: 'OptimalBold',
+                                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                             color: const Color(0xFFF4ED47),
                                             fontSize: isMobile ? 18.sp : 75.sp,
                                             fontWeight: FontWeight.bold,
@@ -116,7 +117,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                       sectionId: 'hero-subtitle',
                                       defaultValue: 'RETAIL_HERO_SUBTITLE',
                                       style: TextStyle(
-                                        fontFamily: 'AloeveraDisplaySemiBold',
+                                        fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                         color: Colors.white,
                                         fontSize: isMobile ? 8.sp : 32.sp,
                                       ),
@@ -169,7 +170,7 @@ class RetailLeasingScreen extends StatelessWidget {
                                         context,
                                         'retail-leasing',
                                         'services-title',
-                                        defaultValue: 'OUR SERVICES',
+                                        defaultValue: 'OUR_SERVICES',
                                       ),
                                       builder: (context, servicesSnapshot) {
                                         return FutureBuilder<String>(
@@ -180,27 +181,36 @@ class RetailLeasingScreen extends StatelessWidget {
                                             defaultValue: 'INCLUDE',
                                           ),
                                           builder: (context, includeSnapshot) {
+                                            String servicesText = servicesSnapshot.data ?? 'OUR_SERVICES';
+                                            String includeText = includeSnapshot.data ?? 'INCLUDE';
+                                            
+                                            // Translate if the value is a translation key
+                                            if (servicesText == 'OUR_SERVICES' || (servicesText.contains('_') && servicesText == servicesText.toUpperCase())) {
+                                              servicesText = servicesText.tr(context);
+                                            }
+                                            if (includeText == 'INCLUDE' || (includeText.contains('_') && includeText == includeText.toUpperCase())) {
+                                              includeText = includeText.tr(context);
+                                            }
+                                            
                                             return RichText(
                                               text: TextSpan(
                                                 children: [
                                                   TextSpan(
-                                                    text: '${servicesSnapshot.data ?? 'OUR_SERVICES'.tr(context)} ',
+                                                    text: '$servicesText ',
                                                     style: TextStyle(
-                                                      fontFamily: 'OptimalBold',
+                                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                                       color: Colors.white,
                                                       fontSize: isMobile ? 12.sp : 70.sp,
                                                       fontWeight: FontWeight.bold,
-                                                      letterSpacing: 2,
                                                     ),
                                                   ),
                                                   TextSpan(
-                                                    text: includeSnapshot.data ?? 'INCLUDE'.tr(context),
+                                                    text: includeText,
                                                     style: TextStyle(
-                                                      fontFamily: 'OptimalBold',
+                                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                                       color: const Color(0xFFF4ED47),
                                                       fontSize: isMobile ? 12.sp : 70.sp,
                                                       fontWeight: FontWeight.bold,
-                                                      letterSpacing: 2,
                                                     ),
                                                   ),
                                                 ],

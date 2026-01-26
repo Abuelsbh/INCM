@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../core/Content/content_helper.dart';
+import '../core/Content/content_provider.dart';
 import '../core/Language/locales.dart';
 
 /// Widget to display text content from Firebase with fallback
@@ -9,6 +11,7 @@ class DynamicText extends StatelessWidget {
   final String defaultValue;
   final TextStyle? style;
   final TextAlign? textAlign;
+  final TextDirection? textDirection;
   final int? maxLines;
   final TextOverflow? overflow;
 
@@ -19,38 +22,56 @@ class DynamicText extends StatelessWidget {
     required this.defaultValue,
     this.style,
     this.textAlign,
+    this.textDirection,
     this.maxLines,
     this.overflow,
   });
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: ContentHelper.getText(
-        context,
-        pageId,
-        sectionId,
-        defaultValue: defaultValue,
-      ),
-      builder: (context, snapshot) {
-        String text = snapshot.data ?? defaultValue;
-        // If no text from Firebase and defaultValue looks like a translation key (contains _ and is uppercase),
-        // use translation system
-        if (text == defaultValue && defaultValue.contains('_') && defaultValue == defaultValue.toUpperCase()) {
-          text = defaultValue.tr(context);
-        }
-        return Text(
-          text,
-          style: style,
-          textAlign: textAlign,
-          textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
-          maxLines: maxLines,
-          overflow: overflow,
+    final isArabic =
+        Localizations.localeOf(context).languageCode == 'ar';
+
+    return Consumer<ContentProvider>(
+      builder: (context, contentProvider, child) {
+        return FutureBuilder<String>(
+          future: ContentHelper.getText(
+            context,
+            pageId,
+            sectionId,
+            defaultValue: defaultValue,
+          ),
+          builder: (context, snapshot) {
+            String text = snapshot.data ?? defaultValue;
+
+            if (text == defaultValue &&
+                defaultValue.contains('_') &&
+                defaultValue == defaultValue.toUpperCase()) {
+              text = defaultValue.tr(context);
+            }
+
+            // Convert literal \n (from i18n/Firebase) to actual newlines for display
+            text = text.replaceAll(r'\n', '\n');
+
+            return Text(
+              text,
+              style: style,
+              maxLines: maxLines,
+              overflow: overflow,
+
+              // ⭐ المهم هنا
+              textDirection:
+              textDirection ?? (isArabic ? TextDirection.rtl : TextDirection.ltr),
+              textAlign:
+              textAlign ?? (isArabic ? TextAlign.right : TextAlign.left),
+            );
+          },
         );
       },
     );
   }
 }
+
 
 /// Widget to display image from Firebase with fallback
 class DynamicImage extends StatelessWidget {
@@ -94,6 +115,9 @@ class DynamicImage extends StatelessWidget {
             width: width,
             height: height,
             fit: fit,
+            cacheWidth: width?.toInt(),
+            cacheHeight: height?.toInt(),
+            filterQuality: FilterQuality.medium,
           );
         }
         return Container(

@@ -379,6 +379,9 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
 
     if (mounted) {
       if (success) {
+        // Clear cache for the page to ensure fresh data is loaded
+        contentProvider.clearPageCache(content.pageId);
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('CONTENT_SAVED_SUCCESS'.tr(context)),

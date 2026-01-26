@@ -25,8 +25,9 @@ class ThemeProvider extends ChangeNotifier {
     final savedTheme = SharedPref.getTheme();
     if (savedTheme != null) {
       // Apply saved theme if needed
+      // Only notify if theme actually changed
     }
-    notifyListeners();
+    // Don't notify listeners if nothing changed - this prevents unnecessary rebuilds
   }
 
   Future<void> setTheme(ThemeModel theme) async {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 
 class CustomButton extends StatefulWidget {
   final String text;
@@ -99,7 +100,7 @@ class _CustomButtonState extends State<CustomButton> {
           child: Text(
             widget.text,
             style: TextStyle(
-              fontFamily: 'OptimalBold',
+              fontFamily: getLocalizedFont(context, 'OptimalBold'),
               fontSize: widget.fontSize ?? 18.sp,
               fontWeight: widget.fontWeight ?? FontWeight.w900,
               //letterSpacing: widget.letterSpacing ?? 0.8,

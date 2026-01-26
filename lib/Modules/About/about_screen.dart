@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../core/Language/locales.dart';
 import '../../core/Language/app_languages.dart';
+import '../../Utilities/font_helper.dart';
 import 'package:provider/provider.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
 import '../../Widgets/custom_app_bar.dart';
@@ -337,11 +338,10 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
     text,
     textAlign: TextAlign.center,
     style: TextStyle(
-      fontFamily: 'OptimalBold',
+      fontFamily: getLocalizedFont(context, 'OptimalBold'),
       color: const Color(0xFFF4ED47),
       fontSize: 80.sp,
       fontWeight: FontWeight.bold,
-      letterSpacing: 2,
     ),
   );
 
@@ -359,7 +359,6 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
         color: Colors.white,
         fontSize: 26.sp,
         fontWeight: FontWeight.bold,
-        letterSpacing: 2,
         height: 1.5,
       ),
     ),
@@ -433,11 +432,10 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                               TextSpan(
                                 text: 'WHO_ARE_WE'.tr(context),
                                 style: TextStyle(
-                                  fontFamily: 'OptimalBold',
+                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                   color: const Color(0xFFF4ED47),
                                   fontSize: 80.sp,
                                   fontWeight: FontWeight.bold,
-                                  letterSpacing: 2,
                                 ),
                               ),
                               TextSpan(
@@ -458,7 +456,6 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             color: Colors.white,
                             fontSize: 24.sp,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
                             height: 1.8,
                           ),
                         ),
@@ -475,7 +472,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             child: Text(
                               "CLICK_TO_DOWNLOAD_PROFILE".tr(context),
                               style: TextStyle(
-                                fontFamily: 'OptimalBold',
+                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                 color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
                                 fontSize: 25.sp,
                                 fontWeight: FontWeight.bold,
@@ -572,11 +569,10 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                                           Text(
                                             item['title']!,
                                             style: TextStyle(
-                                              fontFamily: 'OptimalBold',
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                               color: const Color(0xFFF4ED47),
                                               fontSize: 40.sp,
                                               fontWeight: FontWeight.bold,
-                                              letterSpacing: 1.5,
                                             ),
                                           ),
                                           const SizedBox(height: 8),
@@ -604,10 +600,17 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             Positioned(
                               top: 165,
                               left: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                                iconSize: 40,
-                                onPressed: _previousPage,
+                              child: Builder(
+                                builder: (context) {
+                                  final isArabic =
+                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                          Languages.ar;
+                                  return IconButton(
+                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios, color: Colors.white),
+                                    iconSize: 40,
+                                    onPressed: _previousPage,
+                                  );
+                                }
                               ),
                             ),
 
@@ -616,10 +619,17 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             Positioned(
                               top: 165,
                               right: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                                iconSize: 40,
-                                onPressed: _nextPage,
+                              child: Builder(
+                                builder: (context) {
+                                  final isArabic =
+                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                          Languages.ar;
+                                  return IconButton(
+                                    icon: Icon(isArabic?Icons.arrow_back_ios:Icons.arrow_forward_ios, color: Colors.white),
+                                    iconSize: 40,
+                                    onPressed: _nextPage,
+                                  );
+                                }
                               ),
                             ),
                           ],
@@ -712,11 +722,10 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
     text,
     textAlign: TextAlign.center,
     style: TextStyle(
-      fontFamily: 'OptimalBold',
+      fontFamily: getLocalizedFont(context, 'OptimalBold'),
       color: const Color(0xFFF4ED47),
       fontSize: 24.sp,
       fontWeight: FontWeight.bold,
-      letterSpacing: 2,
     ),
   );
 
@@ -791,11 +800,10 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                         TextSpan(
                           text: 'WHO_ARE_WE'.tr(context),
                           style: TextStyle(
-                            fontFamily: 'OptimalBold',
+                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
                             color: const Color(0xFFF4ED47),
                             fontSize: 40.sp,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
                           ),
                         ),
                         TextSpan(
@@ -837,7 +845,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                       child: Text(
                         "CLICK_TO_DOWNLOAD_PROFILE".tr(context),
                         style: TextStyle(
-                          fontFamily: 'OptimalBold',
+                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
                           color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
                           fontSize: 12.sp,
                           fontWeight: FontWeight.bold,
@@ -925,11 +933,10 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                                         Text(
                                           item['title']!,
                                           style: TextStyle(
-                                            fontFamily: 'OptimalBold',
+                                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                             color: const Color(0xFFF4ED47),
                                             fontSize: 24.sp,
                                             fontWeight: FontWeight.bold,
-                                            letterSpacing: 1.5,
                                           ),
                                         ),
                                         const SizedBox(height: 8),
@@ -955,10 +962,17 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             Positioned(
                               top: 135,
                               left: 0,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                                iconSize: 40,
-                                onPressed: _previousPage,
+                              child: Builder(
+                                builder: (context) {
+                                  final isArabic =
+                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                          Languages.ar;
+                                  return IconButton(
+                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios, color: Colors.white),
+                                    iconSize: 40,
+                                    onPressed: _previousPage,
+                                  );
+                                }
                               ),
                             ),
 
@@ -966,10 +980,17 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             Positioned(
                               top: 135,
                               right: -10,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                                iconSize: 40,
-                                onPressed: _nextPage,
+                              child: Builder(
+                                builder: (context) {
+                                  final isArabic =
+                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                          Languages.ar;
+                                  return IconButton(
+                                    icon: Icon(isArabic?Icons.arrow_back_ios: Icons.arrow_forward_ios, color: Colors.white),
+                                    iconSize: 40,
+                                    onPressed: _nextPage,
+                                  );
+                                }
                               ),
                             ),
                           ],

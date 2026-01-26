@@ -101,201 +101,202 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 50.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
-                border: Border(
-                  bottom: BorderSide(
-                    color: const Color(0xFFF4ED47).withOpacity(0.2),
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Logo Section
-                    GestureDetector(
-                      onTap: () => context.go(HomeScreen.routeName),
-                      child: Image.asset(
-                        kIsWeb ? Assets.imagesINCMLogo : Assets.imagesINCMLogoMob,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
-                        width: kIsWeb ? 100.w : 50.w,
-                      ),
-                    ),
-                    const Spacer(),
-
-                    // Explore Us Button (Web only)
-                    if (kIsWeb) ButtonStyles.getAppButton(
-                        context: context,
-                        onPressed: () => {},
-                        width: 55.w
-                    ),
-                    if (kIsWeb) SizedBox(width: 16.w),
-
-                    // Menu Icon
-                    InkWell(
-                      onTap: _toggleMenu,
-                      child: Icon(
-                        isMenuOpen ? Icons.close : Icons.menu,
-                        color: Colors.white,
-                        size: 24.sp,
-                      ),
-                    )
-                  ],
+        SafeArea(
+          bottom: false,
+          child: Container(
+            height: 50.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.5),
+              border: Border(
+                bottom: BorderSide(
+                  color: const Color(0xFFF4ED47).withOpacity(0.2),
+                  width: 1,
                 ),
               ),
             ),
-          ],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Logo Section
+                  GestureDetector(
+                    onTap: () => context.go(HomeScreen.routeName),
+                      child: Image.asset(
+                        kIsWeb ? Assets.imagesINCMLogo : Assets.imagesINCMLogoMob,
+                        height: double.infinity,
+                        fit: BoxFit.contain,
+                        width: kIsWeb ? 100.w : 50.w,
+                      ),
+                  ),
+                  const Spacer(),
+
+                  // Explore Us Button (Web only)
+                  if (kIsWeb) ButtonStyles.getAppButton(
+                      context: context,
+                      onPressed: () => {},
+                      width: 55.w
+                  ),
+                  if (kIsWeb) SizedBox(width: 16.w),
+
+                  // Menu Icon
+                  InkWell(
+                    onTap: _toggleMenu,
+                    child: Icon(
+                      isMenuOpen ? Icons.close : Icons.menu,
+                      color: Colors.white,
+                      size: 24.sp,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
         ),
 
         // Slide-out Menu
         if (isMenuOpen)
-          GestureDetector(
-            onTap: _toggleMenu,
-            child: Container(
-              color: Colors.black.withOpacity(0.5),
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height,
-            ),
-          ),
-
-        SlideTransition(
-          position: _slideAnimation,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              width: 280.w,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                color: const Color(0xFF1a1a1a),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(-5, 0),
-                  ),
-                ],
+          Stack(
+            children: [
+              GestureDetector(
+                onTap: _toggleMenu,
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height,
+                ),
               ),
-              child: SafeArea(
-                child: Consumer<AppLanguage>(
-                  builder: (context, appLanguage, child) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Header with logo and language toggle
-                          Container(
-                            padding: EdgeInsets.all(20.w),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: const Color(0xFFF4ED47).withOpacity(0.2),
-                                  width: 1,
-                                ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              SlideTransition(
+                position: _slideAnimation,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: 280.w,
+                    height: MediaQuery.of(context).size.height,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1a1a1a),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(-5, 0),
+                        ),
+                      ],
+                    ),
+                    child: SafeArea(
+                      child: Consumer<AppLanguage>(
+                        builder: (context, appLanguage, child) {
+                          return SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-
-                                // Language Toggle Button
-                                InkWell(
-                                  onTap: () {
-                                    appLanguage.changeLanguage();
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFFF4ED47).withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(6.r),
-                                      border: Border.all(
-                                        color: const Color(0xFFF4ED47),
+                                // Header with logo and language toggle
+                                Container(
+                                  padding: EdgeInsets.all(20.w),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: const Color(0xFFF4ED47).withOpacity(0.2),
                                         width: 1,
                                       ),
                                     ),
-                                    child: Text(
-                                      appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
-                                      style: TextStyle(
-                                        color: const Color(0xFFF4ED47),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+
+                                      // Language Toggle Button
+                                      InkWell(
+                                        onTap: () {
+                                          appLanguage.changeLanguage();
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF4ED47).withOpacity(0.2),
+                                            borderRadius: BorderRadius.circular(6.r),
+                                            border: Border.all(
+                                              color: const Color(0xFFF4ED47),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            appLanguage.appLang == Languages.ar ? 'EN' : 'AR',
+                                            style: TextStyle(
+                                              color: const Color(0xFFF4ED47),
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
+                                // Menu Items
+                                _buildMenuItem('HOME'.tr(context), () {
+                                  _toggleMenu();
+                                  context.go(HomeScreen.routeName);
+                                }),
+                                _buildMenuItem('ABOUT_US'.tr(context), () {
+                                  _toggleMenu();
+                                  context.go(AboutScreen.routeName);
+                                }),
+                                // Admin Panel (only in debug mode)
+                                if (kDebugMode)
+                                  _buildMenuItem('ADMIN_PANEL'.tr(context), () {
+                                    _toggleMenu();
+                                    context.go(AdminPanelScreen.routeName);
+                                  }),
+                                _buildMenuItem('SERVICES'.tr(context), _toggleServices, hasDropdown: true),
+
+                                // Services Submenu
+                                Builder(
+                                  builder: (context) {
+                                    final servicesList = getServices(context);
+                                    return AnimatedContainer(
+                                      duration: const Duration(milliseconds: 300),
+                                      height: isServicesExpanded ? servicesList.length * 50.h : 0,
+                                      child: ClipRect(
+                                        child: ListView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          padding: EdgeInsets.zero,
+                                          itemCount: servicesList.length,
+                                          itemBuilder: (context, index) {
+                                            return _buildSubMenuItem(
+                                              servicesList[index]['name']!,
+                                              () => _navigateTo(servicesList[index]['route']!),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                _buildMenuItem('EXCLUSIVE_LEASING_PROJECTS'.tr(context), () => _navigateTo(ExclusiveLeasingProjectsScreen.routeName)),
+                                _buildMenuItem('OUR_CLIENTS'.tr(context), () => context.go(AllLogosScreen.routeName)),
+                                _buildMenuItem('BUY'.tr(context), () => context.go(BuyScreen.routeName)),
+                                _buildMenuItem('SELL'.tr(context), () => context.go(SellScreen.routeName)),
+                                _buildMenuItem('LEASE'.tr(context), () => context.go(LeaseScreen.routeName)),
+                                _buildMenuItem('CAREERS'.tr(context), () => context.go(CareerScreen.routeName)),
+                                _buildMenuItem('CONTACT_US'.tr(context), () => _navigateTo(ContactsScreen.routeName)),
+                                SizedBox(height: 20.h),
                               ],
                             ),
-                          ),
-                          // Menu Items
-                          _buildMenuItem('HOME'.tr(context), () {
-                            _toggleMenu();
-                            context.go(HomeScreen.routeName);
-                          }),
-                          _buildMenuItem('ABOUT_US'.tr(context), () {
-                            _toggleMenu();
-                            context.go(AboutScreen.routeName);
-                          }),
-                          // Admin Panel (only in debug mode)
-                          if (kDebugMode)
-                            _buildMenuItem('ADMIN_PANEL'.tr(context), () {
-                              _toggleMenu();
-                              context.go(AdminPanelScreen.routeName);
-                            }),
-                          _buildMenuItem('SERVICES'.tr(context), _toggleServices, hasDropdown: true),
-
-                          // Services Submenu
-                          Builder(
-                            builder: (context) {
-                              final servicesList = getServices(context);
-                              return AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                height: isServicesExpanded ? servicesList.length * 50.h : 0,
-                                child: ClipRect(
-                                  child: ListView.builder(
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    padding: EdgeInsets.zero,
-                                    itemCount: servicesList.length,
-                                    itemBuilder: (context, index) {
-                                      return _buildSubMenuItem(
-                                        servicesList[index]['name']!,
-                                        () => _navigateTo(servicesList[index]['route']!),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          _buildMenuItem('EXCLUSIVE_LEASING_PROJECTS'.tr(context), () => _navigateTo(ExclusiveLeasingProjectsScreen.routeName)),
-                          _buildMenuItem('OUR_CLIENTS'.tr(context), () => context.go(AllLogosScreen.routeName)),
-                          _buildMenuItem('BUY'.tr(context), () => context.go(BuyScreen.routeName)),
-                          _buildMenuItem('SELL'.tr(context), () => context.go(SellScreen.routeName)),
-                          _buildMenuItem('LEASE'.tr(context), () => context.go(LeaseScreen.routeName)),
-                          _buildMenuItem('CAREERS'.tr(context), () => context.go(CareerScreen.routeName)),
-                          _buildMenuItem('CONTACT_US'.tr(context), () => _navigateTo(ContactsScreen.routeName)),
-                          SizedBox(height: 20.h),
-                        ],
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ),
       ],
     );
   }
@@ -313,7 +314,6 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                 color: Colors.white,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
-                letterSpacing: 0.5,
               ),
             ),
             if (hasDropdown) ...[
@@ -345,7 +345,6 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
             color: Colors.white.withOpacity(0.8),
             fontSize: 13.sp,
             fontWeight: FontWeight.w300,
-            letterSpacing: 0.3,
           ),
         ),
       ),

@@ -15,6 +15,8 @@ import '../../Widgets/dynamic_content_widget.dart';
 import '../../generated/assets.dart';
 import '../../core/Content/content_helper.dart';
 import '../../core/Content/content_provider.dart';
+import '../../Utilities/font_helper.dart';
+import '../../core/Language/locales.dart';
 import 'package:provider/provider.dart';
 
 class ExclusiveLeasingProjectsScreen extends StatefulWidget {
@@ -324,14 +326,13 @@ class _ExclusiveLeasingProjectsScreenState
                               SizedBox(height: isMobile ? 60.h : 100.h),
                               // Title
                               Text(
-                                'EXCLUSIVE LEASING PROJECTS',
+                                'EXCLUSIVE_LEASING_PROJECTS'.tr(context),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontFamily: 'OptimalBold',
+                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                   color: const Color(0xFFF4ED47),
                                   fontSize: isMobile ? 32.sp : 60.sp,
                                   fontWeight: FontWeight.bold,
-                                  letterSpacing: 2,
                                 ),
                               ),
                               SizedBox(height: isMobile ? 40.h : 80.h),
@@ -408,25 +409,29 @@ class _ExclusiveLeasingProjectsScreenState
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FutureBuilder<Widget>(
-                      future: ContentHelper.getImage(
-                        context,
-                        'exclusive-leasing-projects',
-                        '${projectId}-logo',
-                        fallbackAssetPath: logoFallback,
-                        width: 140.w,
-                        height: 140.h,
-                        fit: BoxFit.contain,
-                      ),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return snapshot.data!;
-                        }
-                        return Image.asset(
-                          logoFallback,
-                          width: 140.w,
-                          height: 140.h,
-                          fit: BoxFit.contain,
+                    Consumer<ContentProvider>(
+                      builder: (context, contentProvider, child) {
+                        return FutureBuilder<Widget>(
+                          future: ContentHelper.getImage(
+                            context,
+                            'exclusive-leasing-projects',
+                            '${projectId}-logo',
+                            fallbackAssetPath: logoFallback,
+                            width: 140.w,
+                            height: 140.h,
+                            fit: BoxFit.contain,
+                          ),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return snapshot.data!;
+                            }
+                            return _buildImageWithErrorHandling(
+                              logoFallback,
+                              width: 140.w,
+                              height: 140.h,
+                              fit: BoxFit.contain,
+                            );
+                          },
                         );
                       },
                     ),
@@ -436,7 +441,7 @@ class _ExclusiveLeasingProjectsScreenState
                     //     sectionId: '${projectId}-title',
                     //     defaultValue: titleEn,
                     //     style: TextStyle(
-                    //       fontFamily: 'OptimalBold',
+                    //       fontFamily: getLocalizedFont(context, 'OptimalBold'),
                     //       color: Colors.white,
                     //       fontSize: 24.sp,
                     //       fontWeight: FontWeight.bold,
@@ -453,11 +458,10 @@ class _ExclusiveLeasingProjectsScreenState
                   sectionId: '${projectId}-description',
                   defaultValue: _getDefaultDescription(projectId),
                   style: TextStyle(
-                    fontFamily: 'AloeveraDisplaySemiBold',
+                    fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                     color: Colors.white,
                     fontSize: 14.sp,
                     height: 1.8,
-                    letterSpacing: 0.5,
                   ),
                 ),
                 SizedBox(height: 20.h),
@@ -484,25 +488,29 @@ class _ExclusiveLeasingProjectsScreenState
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          FutureBuilder<Widget>(
-                            future: ContentHelper.getImage(
-                              context,
-                              'exclusive-leasing-projects',
-                              '${projectId}-logo',
-                              fallbackAssetPath: logoFallback,
-                              width: 150.w,
-                              height: 150.h,
-                              fit: BoxFit.contain,
-                            ),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return snapshot.data!;
-                              }
-                              return Image.asset(
-                                logoFallback,
-                                width: 150.w,
-                                height: 150.h,
-                                fit: BoxFit.contain,
+                          Consumer<ContentProvider>(
+                            builder: (context, contentProvider, child) {
+                              return FutureBuilder<Widget>(
+                                future: ContentHelper.getImage(
+                                  context,
+                                  'exclusive-leasing-projects',
+                                  '${projectId}-logo',
+                                  fallbackAssetPath: logoFallback,
+                                  width: 150.w,
+                                  height: 150.h,
+                                  fit: BoxFit.contain,
+                                ),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return snapshot.data!;
+                                  }
+                                  return _buildImageWithErrorHandling(
+                                    logoFallback,
+                                    width: 150.w,
+                                    height: 150.h,
+                                    fit: BoxFit.contain,
+                                  );
+                                },
                               );
                             },
                           ),
@@ -513,7 +521,7 @@ class _ExclusiveLeasingProjectsScreenState
                           //     sectionId: '${projectId}-title',
                           //     defaultValue: titleEn,
                           //     style: TextStyle(
-                          //       fontFamily: 'OptimalBold',
+                          //       fontFamily: getLocalizedFont(context, 'OptimalBold'),
                           //       color: Colors.white,
                           //       fontSize: 40.sp,
                           //       fontWeight: FontWeight.bold,
@@ -530,11 +538,10 @@ class _ExclusiveLeasingProjectsScreenState
                         sectionId: '${projectId}-description',
                         defaultValue: _getDefaultDescription(projectId),
                         style: TextStyle(
-                          fontFamily: 'AloeveraDisplaySemiBold',
+                          fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                           color: Colors.white,
                           fontSize: 24.sp,
                           height: 1.8,
-                          letterSpacing: 0.5,
                         ),
                       ),
                     ],
@@ -577,9 +584,11 @@ class _ExclusiveLeasingProjectsScreenState
       imageSectionIds.add('${projectId}-image-$i');
     }
 
-    return FutureBuilder<List<String?>>(
-      future: _loadImageSectionIds(imageSectionIds),
-      builder: (context, snapshot) {
+    return Consumer<ContentProvider>(
+      builder: (context, contentProvider, child) {
+        return FutureBuilder<List<String?>>(
+          future: _loadImageSectionIds(imageSectionIds),
+          builder: (context, snapshot) {
         if (!snapshot.hasData) {
           // Loading state - show local images or fallback
           return _buildLocalImagesCarousel(localImages, fallbackImage, isMobile, projectId);
@@ -636,25 +645,29 @@ class _ExclusiveLeasingProjectsScreenState
                       //     width: 1,
                       //   ),
                       // ),
-                      child: FutureBuilder<Widget>(
-                        future: ContentHelper.getImage(
-                          context,
-                          'exclusive-leasing-projects',
-                          sectionId,
-                          fallbackAssetPath: fallbackImage,
-                          width: double.infinity,
-                          height: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return snapshot.data!;
-                          }
-                          return Image.asset(
-                            fallbackImage,
-                            width: 600.sp,
-                            height: 600.sp,
-                            fit: BoxFit.cover,
+                      child: Consumer<ContentProvider>(
+                        builder: (context, contentProvider, child) {
+                          return FutureBuilder<Widget>(
+                            future: ContentHelper.getImage(
+                              context,
+                              'exclusive-leasing-projects',
+                              sectionId,
+                              fallbackAssetPath: fallbackImage,
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return snapshot.data!;
+                              }
+                              return _buildImageWithErrorHandling(
+                                fallbackImage,
+                                width: 600.sp,
+                                height: 600.sp,
+                                fit: BoxFit.cover,
+                              );
+                            },
                           );
                         },
                       ),
@@ -675,6 +688,8 @@ class _ExclusiveLeasingProjectsScreenState
                 constraints: BoxConstraints(),
               ),
           ],
+        );
+          },
         );
       },
     );
@@ -734,7 +749,7 @@ class _ExclusiveLeasingProjectsScreenState
                   //     width: 1,
                   //   ),
                   // ),
-                  child: Image.asset(
+                  child: _buildImageWithErrorHandling(
                     imagesToShow[index],
                     width: double.infinity,
                     height: double.infinity,
@@ -768,7 +783,7 @@ class _ExclusiveLeasingProjectsScreenState
         alignment: Alignment.center,
         children: [
           Container(
-            child: Image.asset(
+            child: _buildImageWithErrorHandling(
               imagePath,
               width: 600.sp,
               height: 600.sp,
@@ -799,6 +814,50 @@ class _ExclusiveLeasingProjectsScreenState
     );
   }
 
+  Widget _buildImageWithErrorHandling(
+    String imagePath, {
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    return Image.asset(
+      imagePath,
+      width: width,
+      height: height,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) {
+        // Return a placeholder when image fails to load
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey[800],
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.broken_image,
+                  color: Colors.grey[400],
+                  size: (width != null && height != null) 
+                      ? (width < height ? width * 0.2 : height * 0.2)
+                      : 48,
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Image not available',
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<List<String?>> _loadImageSectionIds(List<String> sectionIds) async {
     final contentProvider =
         Provider.of<ContentProvider>(context, listen: false);
@@ -822,21 +881,21 @@ class _ExclusiveLeasingProjectsScreenState
   String _getDefaultDescription(String projectId) {
     switch (projectId) {
       case 'umc':
-        return 'Located in the Heart of New Cairo, our Luxury Medical Hub Redefines Healthcare Excellence with a Blend of State of the art Medical Services & an Unparalleled Patient Experience. At our Hub, Every Detail is Meticulously Crafted to Ensure the Highest Standards of Care, Privacy, & Comfort, Making us the ultimate destination for those Seeking Premium health and Wellness Solutions.';
+        return 'EXCLUSIVE_LEASING_UMC_DESCRIPTION';
       case 'park-mall':
-        return 'Park Mall is a Retail Complex with Shops and Eateries in a Contemporary setup with Unique lighting and Water Features, Located in one of New Cairo\'s Vital Spots.';
+        return 'EXCLUSIVE_LEASING_PARK_MALL_DESCRIPTION';
       case 'terrace':
-        return 'Terrace Mall Consists of 2 Buildings Located in the Heart of EL-Shorouk City, Terrace Arcade is Lined with National Brands and Chains of many Restaurants and Cafes all of that makes Terrace your First Choice.';
+        return 'EXCLUSIVE_LEASING_TERRACE_DESCRIPTION';
       case 'point90':
-        return 'Point 90 Structure Design takes you into A Naturally Lighted Wide Space & Luxuriuos Interiors. Point 90 Plan Designed on Strategic Facilities Allowing Maximum Efficiency of Entertainment, Dinning & Shopping. Strategically Located in the Heart of New Cairo in Front of Gate 5 American University.';
+        return 'EXCLUSIVE_LEASING_POINT90_DESCRIPTION';
       case 'kernel':
-        return 'A large mall on North Teseen Street in New Cairo\'s Fifth Settlement, offering a variety of fully finished units for administrative, commercial, and medical use.';
+        return 'EXCLUSIVE_LEASING_KERNEL_DESCRIPTION';
       case 'city-square':
-        return 'It\'s not just an entertainment mall, but a destination offering a wide range of services including restaurants, cafes, fitness clubs, and more. All spread over a large area near Gate 6 of Al Rehab.';
+        return 'EXCLUSIVE_LEASING_CITY_SQUARE_DESCRIPTION';
       case 'vitali':
-        return 'A commercial mall offering the best shopping experience with a wide range of international brands, located in front of AUC, Gate 4, New Cairo.';
+        return 'EXCLUSIVE_LEASING_VITALI_DESCRIPTION';
       case 'seashell':
-        return 'Seashell hill walk in a prime location for the Sahel season. Covering 1 million SQM of land with 1 km of pristine mediterranean beach on north coast of Egypt. Offering a variety of rental spaces and comprehensive services.';
+        return 'EXCLUSIVE_LEASING_SEASHELL_DESCRIPTION';
       default:
         return '';
     }

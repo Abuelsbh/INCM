@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -76,7 +77,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
             child: Text(
               'OUR_SUCCESS_PARTNERS'.tr(context),
               style: TextStyle(
-                fontFamily: 'OptimalBold',
+                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                 color: const Color(0xFFC63424),
                 fontSize:  MediaQuery.of(context).size.width >= 600 ? 32.sp : 24.sp,
                 fontWeight: FontWeight.w900,

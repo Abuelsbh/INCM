@@ -46,11 +46,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isDesktop = screenWidth >= 600;
+    final isMobile = screenWidth < 600;
+    
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.black,
-          bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
-          body: MediaQuery.of(context).size.width >= 600 ? Stack(
+          bottomNavigationBar: isMobile && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
+          body: isDesktop ? Stack(
             children: [
               // المحتوى القابل للتمرير
               ScrollConfiguration(
@@ -123,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               // ✅ الـAppBar الشفاف فوق الكل
-              MediaQuery.of(context).size.width >= 600 ?
-              const Positioned(
+              isDesktop
+              ? const Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
@@ -196,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               // ✅ الـAppBar الشفاف فوق الكل
-              MediaQuery.of(context).size.width >= 600 ?
-              const Positioned(
+              isDesktop
+              ? const Positioned(
                 top: 0,
                 left: 0,
                 right: 0,

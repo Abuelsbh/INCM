@@ -42,7 +42,7 @@ class GoRouterConfig{
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
-            child: HomeScreen(),
+            child: const HomeScreen(),
           );
         },
       ),
@@ -51,7 +51,7 @@ class GoRouterConfig{
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
-            child: ContactsScreen(),
+            child: const ContactsScreen(),
           );
         },
       ),
@@ -60,7 +60,7 @@ class GoRouterConfig{
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
-            child: AboutScreen(),
+            child: const AboutScreen(),
           );
         },
       ),
@@ -69,7 +69,7 @@ class GoRouterConfig{
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
-            child: CareerScreen(),
+            child: const CareerScreen(),
           );
         },
       ),
@@ -78,7 +78,7 @@ class GoRouterConfig{
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
-            child: BuyScreen(),
+            child: const BuyScreen(),
           );
         },
       ),
@@ -87,7 +87,7 @@ class GoRouterConfig{
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
-            child: SellScreen(),
+            child: const SellScreen(),
           );
         },
       ),
@@ -96,7 +96,7 @@ class GoRouterConfig{
         pageBuilder: (_, GoRouterState state) {
           return getCustomTransitionPage(
             state: state,
-            child: LeaseScreen(),
+            child: const LeaseScreen(),
           );
         },
       ),

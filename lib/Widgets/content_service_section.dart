@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'clients_logos_section.dart';
 import 'custom_button.dart';
@@ -313,11 +314,10 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                   // Title
                  Text( 'CONTACT_US'.tr(context),
                    style: TextStyle(
-                     fontFamily: 'OptimalBold',
+                     fontFamily: getLocalizedFont(context, 'OptimalBold'),
                      color: const Color(0xFFF4ED47),
                      fontSize: isMobile? 32.sp : 72.sp,
                      fontWeight: FontWeight.bold,
-                     letterSpacing: 2,
                    ),),
 
 
@@ -505,7 +505,6 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
             fontSize: isMobile? 14.sp :26.sp,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: 8.h),
@@ -532,7 +531,6 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                 fontFamily: 'AloeveraDisplayBold',
                 color: Colors.black,
                 fontSize: 26.sp,
-                letterSpacing: 1,
               ),
             ),
           ),
@@ -554,7 +552,6 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
             color: Colors.white,
             fontSize: isMobile? 14.sp : 26.sp,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: 8.h),
@@ -596,7 +593,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                           children: [
                             Text(
                               country['flag']!,
-                              style: TextStyle( fontFamily: 'OptimalBold',fontSize: 14.sp),
+                              style: TextStyle( fontFamily: getLocalizedFont(context, 'OptimalBold'),fontSize: 14.sp),
                             ),
                             SizedBox(width: 2.w),
                             Text(
@@ -665,7 +662,6 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
             fontSize: isMobile? 14.sp : 26.sp,
-            letterSpacing: 1,
           ),
         ),
         SizedBox(height: 8.h),

@@ -9,7 +9,9 @@ import 'package:incm/generated/assets.dart';
 import 'package:provider/provider.dart';
 import '../core/Content/content_provider.dart';
 import '../core/Firebase/firebase_logos_service.dart';
+import '../core/Language/app_languages.dart';
 import '../core/Language/locales.dart';
+import '../Utilities/font_helper.dart';
 import 'base64_image_widget.dart';
 import 'custom_button.dart';
 
@@ -301,8 +303,9 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
             width: logoWidth,
             height: logoHeight,
             fit: BoxFit.contain,
-            // Don't cache dimensions to preserve full quality
-            filterQuality: FilterQuality.high,
+            cacheWidth: logoWidth.toInt(),
+            cacheHeight: logoHeight.toInt(),
+            filterQuality: FilterQuality.medium, // Medium quality for better performance
             gaplessPlayback: true, // Smooth transitions
             errorBuilder: (context, error, stackTrace) {
               return Icon(
@@ -534,11 +537,10 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
           child: Text(
             widget.title != null ? widget.title!.tr(context).toUpperCase() : 'OUR_CLIENTS'.tr(context),
             style: TextStyle(
-              fontFamily: 'OptimalBold',
+              fontFamily: getLocalizedFont(context, 'OptimalBold'),
               color: titleColor,
               fontSize: isMobile ? 22.sp : 60.sp,
               fontWeight: FontWeight.bold,
-              letterSpacing: 2,
             ),
           ),
         ),
@@ -623,9 +625,16 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
                   if (_showArrows)
                     Positioned(
                       left: 0,
-                      child: _buildArrowButton(
-                        icon: Icons.arrow_back_ios,
-                        onPressed: _canScrollLeft ? _scrollLeft : null,
+                      child: Builder(
+                        builder: (context) {
+                          final isArabic =
+                              Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                  Languages.ar;
+                          return _buildArrowButton(
+                            icon: isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+                            onPressed: _canScrollLeft ? _scrollLeft : null,
+                          );
+                        }
                       ),
                     ),
 
@@ -633,9 +642,16 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
                   if (_showArrows)
                     Positioned(
                       right: 0,
-                      child: _buildArrowButton(
-                        icon: Icons.arrow_forward_ios,
-                        onPressed: _canScrollRight ? _scrollRight : null,
+                      child: Builder(
+                        builder: (context) {
+                          final isArabic =
+                              Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                  Languages.ar;
+                          return _buildArrowButton(
+                            icon: isArabic ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+                            onPressed: _canScrollRight ? _scrollRight : null,
+                          );
+                        }
                       ),
                     ),
                 ],
@@ -801,11 +817,3 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
     );
   }
 }
-
-
-
-
-
-
-
-

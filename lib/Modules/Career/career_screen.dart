@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:incm/core/Language/locales.dart';
+import 'package:provider/provider.dart';
+import '../../Utilities/font_helper.dart';
 import 'package:incm/Utilities/router_config.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
@@ -17,6 +19,7 @@ import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/footer_section.dart';
 import '../../Widgets/footer_section_mob.dart';
+import '../../core/Language/app_languages.dart';
 import '../../generated/assets.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -552,11 +555,10 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     text,
     textAlign: TextAlign.center,
     style: TextStyle(
-      fontFamily: 'OptimalBold',
+      fontFamily: getLocalizedFont(context, 'OptimalBold'),
       color: const Color(0xFFF4ED47),
       fontSize: MediaQuery.of(context).size.width > 600 ? 80.sp : 28.sp,
       fontWeight: FontWeight.bold,
-      letterSpacing: 2,
     ),
   );
 
@@ -573,21 +575,19 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
           TextSpan(
             text: firstPart + (rest.isNotEmpty ? ' ' : ''),
             style: TextStyle(
-              fontFamily: 'OptimalBold',
+              fontFamily: getLocalizedFont(context, 'OptimalBold'),
               color: const Color(0xFFF4ED47),
               fontSize: isMobile ? 32.sp : (isTablet ? 48.sp : 80.sp),
-              letterSpacing: 3,
             ),
           ),
           if (rest.isNotEmpty)
             TextSpan(
               text: rest,
               style: TextStyle(
-                fontFamily: 'OptimalBold',
+                fontFamily: getLocalizedFont(context, 'OptimalBold'),
                 color: Colors.white,
                 fontSize: isMobile ? 32.sp : (isTablet ? 48.sp : 80.sp),
                 fontWeight: FontWeight.w800,
-                letterSpacing: 3,
               ),
             ),
         ],
@@ -651,22 +651,20 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                     Text(
                                       "•  ",
                                       style: TextStyle(
-                                        fontFamily: 'AloeveraDisplaySemiBold',
+                                        fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                         color: Colors.white,
                                         fontSize: isTablet ? 24.sp : 40.sp,
                                         height: 1.8,
-                                        letterSpacing: 1,
                                       ),
                                     ),
                                     Expanded(
                                       child: Text(
                                         text.tr(context),
                                         style: TextStyle(
-                                          fontFamily: 'AloeveraDisplaySemiBold',
+                                          fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                           color: Colors.white,
                                           fontSize: isTablet ? 24.sp : 40.sp,
                                           height: 1.8,
-                                          letterSpacing: 1,
                                         ),
                                       ),
                                     ),
@@ -698,22 +696,20 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                     Text(
                                       "•  ",
                                       style: TextStyle(
-                                        fontFamily: 'AloeveraDisplaySemiBold',
+                                        fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                         color: Colors.white,
                                         fontSize: isTablet ? 24.sp : 40.sp,
                                         height: 1.8,
-                                        letterSpacing: 1,
                                       ),
                                     ),
                                     Expanded(
                                       child: Text(
                                         text.tr(context),
                                         style: TextStyle(
-                                          fontFamily: 'AloeveraDisplaySemiBold',
+                                          fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                           color: Colors.white,
                                           fontSize: isTablet ? 24.sp : 40.sp,
                                           height: 1.8,
-                                          letterSpacing: 1,
                                         ),
                                       ),
                                     ),
@@ -810,11 +806,10 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                           Text(
                                             item['title']!.tr(context),
                                             style: TextStyle(
-                                              fontFamily: 'OptimalBold',
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                               color: Colors.white,
                                               fontSize: 50.sp,
                                               fontWeight: FontWeight.bold,
-                                              letterSpacing: 1.5,
                                             ),
                                           ),
                                         ],
@@ -829,10 +824,18 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                             Positioned(
                               left: 0,
                               top: 165,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                                iconSize: 40,
-                                onPressed: _previousPage,
+                              child: Builder(
+                                builder: (context) {
+                                  final isArabic =
+                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                          Languages.ar;
+
+                                  return IconButton(
+                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios, color: Colors.white),
+                                    iconSize: 40,
+                                    onPressed: _previousPage,
+                                  );
+                                }
                               ),
                             ),
 
@@ -840,10 +843,17 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                             Positioned(
                               right: 0,
                               top: 165,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                                iconSize: 40,
-                                onPressed: _nextPage,
+                              child: Builder(
+                                builder: (context) {
+                                  final isArabic =
+                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                          Languages.ar;
+                                  return IconButton(
+                                    icon: Icon(isArabic?Icons.arrow_back_ios:Icons.arrow_forward_ios, color: Colors.white),
+                                    iconSize: 40,
+                                    onPressed: _nextPage,
+                                  );
+                                }
                               ),
                             ),
                           ],
@@ -1100,7 +1110,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                             child: Text(
                               text.tr(context),
                               style: TextStyle(
-                                fontFamily: 'AloeveraDisplaySemiBold',
+                                fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                                 color: Colors.white,
                                 fontSize: 16.sp,
                               ),
@@ -1192,9 +1202,9 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                           ),
                                           SizedBox(height: 10.h),
                                           Text(
-                                            item['title']!,
+                                            item['title']!.tr(context),
                                             style: TextStyle(
-                                              fontFamily: 'OptimalBold',
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                               color: Colors.white,
                                               fontSize: 26.sp,
                                               fontWeight: FontWeight.bold,
@@ -1212,10 +1222,17 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                             Positioned(
                               left: 0,
                               top: 130,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                                iconSize: 40,
-                                onPressed: _previousPage,
+                              child: Builder(
+                                builder: (context) {
+                                  final isArabic =
+                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                          Languages.ar;
+                                  return IconButton(
+                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios, color: Colors.white),
+                                    iconSize: 40,
+                                    onPressed: _previousPage,
+                                  );
+                                }
                               ),
                             ),
 
@@ -1223,10 +1240,17 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                             Positioned(
                               right: 0,
                               top: 130,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                                iconSize: 40,
-                                onPressed: _nextPage,
+                              child: Builder(
+                                builder: (context) {
+                                  final isArabic =
+                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                          Languages.ar;
+                                  return IconButton(
+                                    icon: Icon(isArabic?Icons.arrow_back_ios:Icons.arrow_forward_ios, color: Colors.white),
+                                    iconSize: 40,
+                                    onPressed: _nextPage,
+                                  );
+                                }
                               ),
                             ),
                           ],
@@ -1333,7 +1357,6 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
             color: const Color(0xFFF4ED47),
             fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
             fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
           ),
         ),
         SizedBox(height: isMobile ? 0 : 8.h),

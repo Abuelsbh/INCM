@@ -67,18 +67,36 @@ Future<void> main() async {
 }
 
 
-class EntryPoint extends StatelessWidget {
+class EntryPoint extends StatefulWidget {
   const EntryPoint({super.key});
+
+  @override
+  State<EntryPoint> createState() => _EntryPointState();
+}
+
+class _EntryPointState extends State<EntryPoint> {
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _isInitialized = true;
+      // Initialize providers once
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final appLan = Provider.of<AppLanguage>(context, listen: false);
+        final appTheme = Provider.of<ThemeProvider>(context, listen: false);
+        appLan.fetchLocale();
+        appTheme.fetchTheme();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     // Use Consumer to listen to changes
     return Consumer2<AppLanguage, ThemeProvider>(
       builder: (context, appLan, appTheme, child) {
-        // Fetch locale on first build
-        appLan.fetchLocale();
-        appTheme.fetchTheme();
-        
         return LayoutBuilder(
           builder: (context, constraints) {
             return ScreenUtilInit(
@@ -89,7 +107,7 @@ class EntryPoint extends StatelessWidget {
                 smallSize: const Size(375,812),
               ),
               builder:(_,__)=> MaterialApp.router(
-                scrollBehavior: MyCustomScrollBehavior(),
+                scrollBehavior: const MyCustomScrollBehavior(),
                 routerConfig: GoRouterConfig.router,
                 debugShowCheckedModeBanner: false,
                 title: 'INCOMERCIAL',
@@ -122,6 +140,8 @@ class EntryPoint extends StatelessWidget {
 }
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  const MyCustomScrollBehavior();
+  
   // Override behavior methods and getters like dragDevices
   @override
   Set<PointerDeviceKind> get dragDevices => {
