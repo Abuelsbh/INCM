@@ -58,7 +58,7 @@ class CorporateLeasingScreen extends StatelessWidget {
                         if (decorationImage == null) {
                           decorationImage = DecorationImage(
                             image: AssetImage(Assets.imagesService1),
-                            fit: BoxFit.contain,
+                            fit: BoxFit.fill,
                           );
                         }
 
@@ -67,343 +67,330 @@ class CorporateLeasingScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               image: decorationImage,
                             ),
-                            child: Stack(
-                              children: [
-                                // الصورة الشفافة لحساب الارتفاع (fallback)
-                                Image.asset(
-                                  Assets.imagesService1,
-                                  width: double.infinity,
-                                  fit: BoxFit.none,
-                                  color: Colors.transparent,
-                                ),
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(isMobile ? 20.w : 60.w, isMobile ? 65.h : 220.h, 20.w, isMobile ? 0.h:120.h),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // ترتيب العناوين حسب اللغة
+                                  // بالإنجليزية: CORPORATE ثم LEASING
+                                  // بالعربية: الإيجار ثم الشركات (العكس)
+                                  Builder(
+                                    builder: (context) {
+                                      final isArabic =
+                                          Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                              Languages.ar;
 
-                                // هنا المحتوى اللي انت عايزه فوق الصورة
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(isMobile ? 20.w : 60.w, isMobile ? 65.h : 300.h, 20.w, isMobile ? 0.h:120.h),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // ترتيب العناوين حسب اللغة
-                                      // بالإنجليزية: CORPORATE ثم LEASING
-                                      // بالعربية: الإيجار ثم الشركات (العكس)
-                                      Builder(
-                                        builder: (context) {
-                                          final isArabic =
-                                              Provider.of<AppLanguage>(context, listen: false).appLang ==
-                                                  Languages.ar;
-
-                                          return Align(
-                                            alignment: Alignment.centerLeft, // ثابت على الشمال دايمًا
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start, // مكانه شمال
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: isArabic
-                                                  ? [
-                                                // =======================
-                                                // Arabic (RTL text - Left container)
-                                                // =======================
-                                                Directionality(
-                                                  textDirection: TextDirection.rtl,
-                                                  child: DynamicText(
-                                                    pageId: 'corporate-leasing',
-                                                    sectionId: 'hero-title-2',
-                                                    defaultValue: 'LEASING'.tr(context),
-                                                    textAlign: TextAlign.right,
-                                                    style: TextStyle(
-                                                      fontFamily: 'NotoKufiArabicSemiBold',
-                                                      color: const Color(0xFFF4ED47),
-                                                      fontSize: isMobile ? 17.sp : 90.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Directionality(
-                                                  textDirection: TextDirection.rtl,
-                                                  child: DynamicText(
-                                                    pageId: 'corporate-leasing',
-                                                    sectionId: 'hero-title-1',
-                                                    defaultValue: 'CORPORATE'.tr(context),
-                                                    textAlign: TextAlign.right,
-                                                    style: TextStyle(
-                                                      fontFamily: 'NotoKufiArabicSemiBold',
-                                                      color: Colors.white,
-                                                      fontSize: isMobile ? 17.sp : 80.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ]
-                                                  : [
-                                                // =======================
-                                                // English (LTR)
-                                                // =======================
-                                                Directionality(
-                                                  textDirection: TextDirection.ltr,
-                                                  child: DynamicText(
-                                                    pageId: 'corporate-leasing',
-                                                    sectionId: 'hero-title-1',
-                                                    defaultValue: 'CORPORATE'.tr(context),
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                      color: Colors.white,
-                                                      fontSize: isMobile ? 17.sp : 80.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                      letterSpacing: 2,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Directionality(
-                                                  textDirection: TextDirection.ltr,
-                                                  child: DynamicText(
-                                                    pageId: 'corporate-leasing',
-                                                    sectionId: 'hero-title-2',
-                                                    defaultValue: 'LEASING'.tr(context),
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                      color: const Color(0xFFF4ED47),
-                                                      fontSize: isMobile ? 17.sp : 90.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                      letterSpacing: 2,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      SizedBox(height: isMobile? 18.h: 80.h),
-                                      Builder(
-                                        builder: (context) {
-                                          final isArabic =
-                                              Provider.of<AppLanguage>(context, listen: false).appLang ==
-                                                  Languages.ar;
-
-                                          return Align(
-                                            alignment: Alignment.centerLeft, // مكان ثابت شمال
-                                            child: SizedBox(
-                                              width: isMobile ? 170.w : 800.w,
-                                              child: Directionality(
-                                                textDirection:
-                                                isArabic ? TextDirection.rtl : TextDirection.ltr,
-                                                child: DynamicText(
-                                                  pageId: 'corporate-leasing',
-                                                  sectionId: 'hero-subtitle',
-                                                  defaultValue: 'YOUR_WORKSPACE_SHAPES',
-                                                  textAlign:
-                                                  isArabic ? TextAlign.right : TextAlign.left,
-                                                  style: TextStyle(
-                                                    fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
-                                                    color: Colors.white,
-                                                    fontSize: isMobile ? 9.sp : 40.sp,
-                                                    height: 1.2,
-                                                  ),
+                                      return Align(
+                                        alignment: Alignment.centerLeft, // ثابت على الشمال دايمًا
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start, // مكانه شمال
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: isArabic
+                                              ? [
+                                            // =======================
+                                            // Arabic (RTL text - Left container)
+                                            // =======================
+                                            Directionality(
+                                              textDirection: TextDirection.rtl,
+                                              child: DynamicText(
+                                                pageId: 'corporate-leasing',
+                                                sectionId: 'hero-title-2',
+                                                defaultValue: 'LEASING'.tr(context),
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                  fontFamily: 'NotoKufiArabicSemiBold',
+                                                  color: const Color(0xFFF4ED47),
+                                                  fontSize: isMobile ? 17.sp : 90.sp,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                               ),
                                             ),
-                                          );
-                                        },
-                                      ),
-
-                                      Gap(isMobile? 150.h : 700.h),
-                                      // Experience and Strategic Locations Section
-                                      Container(
-                                        width: double.infinity,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            _buildBulletPoint(
-                                              context,
-                                              isMobile,
-                                              'corporate-leasing',
-                                              'experience-text',
-                                              'WE_HAVE_EXTENSIVE_EXPERIENCE'.tr(context),
+                                            Directionality(
+                                              textDirection: TextDirection.rtl,
+                                              child: DynamicText(
+                                                pageId: 'corporate-leasing',
+                                                sectionId: 'hero-title-1',
+                                                defaultValue: 'CORPORATE'.tr(context),
+                                                textAlign: TextAlign.right,
+                                                style: TextStyle(
+                                                  fontFamily: 'NotoKufiArabicSemiBold',
+                                                  color: Colors.white,
+                                                  fontSize: isMobile ? 17.sp : 80.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ),
-                                            SizedBox(height: 10.h),
-                                            _buildBulletPoint(
-                                              context,
-                                              isMobile,
-                                              'corporate-leasing',
-                                              'locations-text',
-                                              'STRATEGIC_LOCATIONS'.tr(context),
+                                          ]
+                                              : [
+                                            // =======================
+                                            // English (LTR)
+                                            // =======================
+                                            Directionality(
+                                              textDirection: TextDirection.ltr,
+                                              child: DynamicText(
+                                                pageId: 'corporate-leasing',
+                                                sectionId: 'hero-title-1',
+                                                defaultValue: 'CORPORATE'.tr(context),
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: Colors.white,
+                                                  fontSize: isMobile ? 17.sp : 80.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 2,
+                                                ),
+                                              ),
+                                            ),
+                                            Directionality(
+                                              textDirection: TextDirection.ltr,
+                                              child: DynamicText(
+                                                pageId: 'corporate-leasing',
+                                                sectionId: 'hero-title-2',
+                                                defaultValue: 'LEASING'.tr(context),
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: const Color(0xFFF4ED47),
+                                                  fontSize: isMobile ? 17.sp : 90.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 2,
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: isMobile? 18.h: 80.h),
+                                  Builder(
+                                    builder: (context) {
+                                      final isArabic =
+                                          Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                              Languages.ar;
 
-                                      Gap(isMobile? 10.h : 300.h),
-                                      // Our Services Include Section
-                                      Container(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: isMobile ? 0.w : 40.w,
-                                          vertical: isMobile ? 10 : 40.h,
+                                      return Align(
+                                        alignment: Alignment.centerLeft, // مكان ثابت شمال
+                                        child: SizedBox(
+                                          width: isMobile ? 170.w : 800.w,
+                                          child: Directionality(
+                                            textDirection:
+                                            isArabic ? TextDirection.rtl : TextDirection.ltr,
+                                            child: DynamicText(
+                                              pageId: 'corporate-leasing',
+                                              sectionId: 'hero-subtitle',
+                                              defaultValue: 'YOUR_WORKSPACE_SHAPES',
+                                              textAlign:
+                                              isArabic ? TextAlign.right : TextAlign.left,
+                                              style: TextStyle(
+                                                fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
+                                                color: Colors.white,
+                                                fontSize: isMobile ? 9.sp : 40.sp,
+                                                height: 1.2,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            FutureBuilder<String>(
+                                      );
+                                    },
+                                  ),
+
+                                  Gap(isMobile? 150.h : 700.h),
+                                  // Experience and Strategic Locations Section
+                                  Container(
+                                    width: double.infinity,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        _buildBulletPoint(
+                                          context,
+                                          isMobile,
+                                          'corporate-leasing',
+                                          'experience-text',
+                                          'WE_HAVE_EXTENSIVE_EXPERIENCE'.tr(context),
+                                        ),
+                                        SizedBox(height: 10.h),
+                                        _buildBulletPoint(
+                                          context,
+                                          isMobile,
+                                          'corporate-leasing',
+                                          'locations-text',
+                                          'STRATEGIC_LOCATIONS'.tr(context),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  Gap(isMobile? 10.h : 300.h),
+                                  // Our Services Include Section
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isMobile ? 0.w : 40.w,
+                                      vertical: isMobile ? 10 : 40.h,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        FutureBuilder<String>(
+                                          future: ContentHelper.getText(
+                                            context,
+                                            'corporate-leasing',
+                                            'services-title',
+                                            defaultValue: 'OUR_SERVICES',
+                                          ),
+                                          builder: (context, servicesSnapshot) {
+                                            return FutureBuilder<String>(
                                               future: ContentHelper.getText(
                                                 context,
                                                 'corporate-leasing',
-                                                'services-title',
-                                                defaultValue: 'OUR_SERVICES',
+                                                'services-include',
+                                                defaultValue: 'INCLUDE',
                                               ),
-                                              builder: (context, servicesSnapshot) {
-                                                return FutureBuilder<String>(
-                                                  future: ContentHelper.getText(
-                                                    context,
-                                                    'corporate-leasing',
-                                                    'services-include',
-                                                    defaultValue: 'INCLUDE',
-                                                  ),
-                                                  builder: (context, includeSnapshot) {
-                                                    // Translate if the value looks like a translation key
-                                                    String servicesText = servicesSnapshot.data ?? 'OUR_SERVICES';
-                                                    if (servicesText == 'OUR_SERVICES' || (servicesText.contains('_') && servicesText == servicesText.toUpperCase())) {
-                                                      servicesText = servicesText.tr(context);
-                                                    }
+                                              builder: (context, includeSnapshot) {
+                                                // Translate if the value looks like a translation key
+                                                String servicesText = servicesSnapshot.data ?? 'OUR_SERVICES';
+                                                if (servicesText == 'OUR_SERVICES' || (servicesText.contains('_') && servicesText == servicesText.toUpperCase())) {
+                                                  servicesText = servicesText.tr(context);
+                                                }
 
-                                                    String includeText = includeSnapshot.data ?? 'INCLUDE';
-                                                    if (includeText == 'INCLUDE' || (includeText.contains('_') && includeText == includeText.toUpperCase())) {
-                                                      includeText = includeText.tr(context);
-                                                    }
+                                                String includeText = includeSnapshot.data ?? 'INCLUDE';
+                                                if (includeText == 'INCLUDE' || (includeText.contains('_') && includeText == includeText.toUpperCase())) {
+                                                  includeText = includeText.tr(context);
+                                                }
 
-                                                    return RichText(
-                                                      textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
-                                                      text: TextSpan(
-                                                        children: [
-                                                          TextSpan(
-                                                            text: '$servicesText ',
-                                                            style: TextStyle(
-                                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                              color: Colors.white,
-                                                              fontSize: isMobile ? 22.sp : 70.sp,
-                                                              fontWeight: FontWeight.bold,
-                                                            ),
-                                                          ),
-                                                          TextSpan(
-                                                            text: includeText,
-                                                            style: TextStyle(
-                                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                              color: const Color(0xFFF4ED47),
-                                                              fontSize: isMobile ? 22.sp : 70.sp,
-                                                              fontWeight: FontWeight.bold,
-                                                            ),
-                                                          ),
-                                                        ],
+                                                return RichText(
+                                                  textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
+                                                  text: TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: '$servicesText ',
+                                                        style: TextStyle(
+                                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                          color: Colors.white,
+                                                          fontSize: isMobile ? 22.sp : 70.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
                                                       ),
-                                                    );
-                                                  },
+                                                      TextSpan(
+                                                        text: includeText,
+                                                        style: TextStyle(
+                                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                          color: const Color(0xFFF4ED47),
+                                                          fontSize: isMobile ? 22.sp : 70.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 );
                                               },
-                                            ),
-                                            SizedBox(height: isMobile? 10.h:40.h),
-                                            Container(
-                                              width: double.infinity,
-                                              padding: EdgeInsets.symmetric(horizontal: isMobile ? 10.w : 30.w, vertical: isMobile ? 10.h : 40.h),
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey[900]!.withOpacity(1),
-                                                borderRadius: BorderRadius.circular(12.r),
-                                              ),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  _buildServiceItem(
-                                                    context,
-                                                    isMobile,
-                                                    'corporate-leasing',
-                                                    'service-1',
-                                                    'LARGE_INVENTORY'.tr(context),
-                                                  ),
-                                                  SizedBox(height: isMobile ? 8.h:20.h),
-                                                  _buildServiceItem(
-                                                    context,
-                                                    isMobile,
-                                                    'corporate-leasing',
-                                                    'service-2',
-                                                    'FLEXIBLE_PAYMENT'.tr(context),
-                                                  ),
-                                                  SizedBox(height: isMobile ? 8.h:20.h),
-                                                  _buildServiceItem(
-                                                    context,
-                                                    isMobile,
-                                                    'corporate-leasing',
-                                                    'service-3',
-                                                    'SMART_SOLUTIONS'.tr(context),
-                                                  ),
-                                                  SizedBox(height: isMobile ? 8.h:20.h),
-                                                  _buildServiceItem(
-                                                    context,
-                                                    isMobile,
-                                                    'corporate-leasing',
-                                                    'service-4',
-                                                    'FULL_SUPPORT'.tr(context),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Gap(isMobile ? 10.h : 120.h),
-                                            ClientsLogosSection(
-                                              pageId: 'corporate-leasing', // Fetch logos from Firebase for this page
-                                              backgroundColor: Colors.grey[900]!,
-                                              logos: [
-                                                Assets.logosConsultation1,
-                                                Assets.logosConsultation2,
-                                                Assets.logosConsultation3,
-                                                Assets.logosConsultation4,
-                                                Assets.logosConsultation5,
-                                                Assets.logosConsultation6,
-                                                Assets.logosConsultation7,
-                                                Assets.logosConsultation8,
-                                                Assets.logosConsultation9,
-                                                Assets.logosConsultation10,
-                                                Assets.logosConsultation11,
-                                                Assets.logosConsultation12,
-                                                Assets.logosConsultation13,
-                                                Assets.logosConsultation14,
-                                                Assets.logosConsultation15,
-                                                Assets.logosConsultation16,
-                                                Assets.logosConsultation17,
-                                                Assets.logosConsultation18,
-                                                Assets.logosConsultation19,
-                                                Assets.logosConsultation20,
-                                                Assets.logosConsultation21,
-                                                Assets.logosConsultation22,
-                                                Assets.logosConsultation23,
-                                                Assets.logosConsultation24,
-                                                Assets.logosConsultation25,
-                                                Assets.logosConsultation26,
-                                                Assets.logosConsultation27,
-                                                Assets.logosConsultation28,
-                                                Assets.logosConsultation29,
-                                                Assets.logosConsultation30,
-                                                Assets.logosConsultation31,
-                                                Assets.logosConsultation32,
-                                                Assets.logosConsultation33,
-                                                Assets.logosConsultation34,
-                                                Assets.logosConsultation35,
-                                                Assets.logosConsultation36,
-                                                Assets.logosConsultation37,
-                                                Assets.logosConsultation38,
-                                                Assets.logosConsultation39,
-                                                Assets.logosConsultation40,
-                                              ],
-                                              visibleLogosCount: 5,
-                                            ),
-                                          ],
+                                            );
+                                          },
                                         ),
-                                      ),
-
-
-                                      Gap(isMobile? 10.h : 350.h),
-                                    ],
+                                        SizedBox(height: isMobile? 10.h:40.h),
+                                        Container(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.symmetric(horizontal: isMobile ? 10.w : 30.w, vertical: isMobile ? 10.h : 40.h),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[900]!.withOpacity(1),
+                                            borderRadius: BorderRadius.circular(12.r),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              _buildServiceItem(
+                                                context,
+                                                isMobile,
+                                                'corporate-leasing',
+                                                'service-1',
+                                                'LARGE_INVENTORY'.tr(context),
+                                              ),
+                                              SizedBox(height: isMobile ? 8.h:20.h),
+                                              _buildServiceItem(
+                                                context,
+                                                isMobile,
+                                                'corporate-leasing',
+                                                'service-2',
+                                                'FLEXIBLE_PAYMENT'.tr(context),
+                                              ),
+                                              SizedBox(height: isMobile ? 8.h:20.h),
+                                              _buildServiceItem(
+                                                context,
+                                                isMobile,
+                                                'corporate-leasing',
+                                                'service-3',
+                                                'SMART_SOLUTIONS'.tr(context),
+                                              ),
+                                              SizedBox(height: isMobile ? 8.h:20.h),
+                                              _buildServiceItem(
+                                                context,
+                                                isMobile,
+                                                'corporate-leasing',
+                                                'service-4',
+                                                'FULL_SUPPORT'.tr(context),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Gap(isMobile ? 10.h : 140.h),
+                                        ClientsLogosSection(
+                                          pageId: 'corporate-leasing', // Fetch logos from Firebase for this page
+                                          backgroundColor: Colors.grey[900]!,
+                                          logos: [
+                                            Assets.logosConsultation1,
+                                            Assets.logosConsultation2,
+                                            Assets.logosConsultation3,
+                                            Assets.logosConsultation4,
+                                            Assets.logosConsultation5,
+                                            Assets.logosConsultation6,
+                                            Assets.logosConsultation7,
+                                            Assets.logosConsultation8,
+                                            Assets.logosConsultation9,
+                                            Assets.logosConsultation10,
+                                            Assets.logosConsultation11,
+                                            Assets.logosConsultation12,
+                                            Assets.logosConsultation13,
+                                            Assets.logosConsultation14,
+                                            Assets.logosConsultation15,
+                                            Assets.logosConsultation16,
+                                            Assets.logosConsultation17,
+                                            Assets.logosConsultation18,
+                                            Assets.logosConsultation19,
+                                            Assets.logosConsultation20,
+                                            Assets.logosConsultation21,
+                                            Assets.logosConsultation22,
+                                            Assets.logosConsultation23,
+                                            Assets.logosConsultation24,
+                                            Assets.logosConsultation25,
+                                            Assets.logosConsultation26,
+                                            Assets.logosConsultation27,
+                                            Assets.logosConsultation28,
+                                            Assets.logosConsultation29,
+                                            Assets.logosConsultation30,
+                                            Assets.logosConsultation31,
+                                            Assets.logosConsultation32,
+                                            Assets.logosConsultation33,
+                                            Assets.logosConsultation34,
+                                            Assets.logosConsultation35,
+                                            Assets.logosConsultation36,
+                                            Assets.logosConsultation37,
+                                            Assets.logosConsultation38,
+                                            Assets.logosConsultation39,
+                                            Assets.logosConsultation40,
+                                          ],
+                                          visibleLogosCount: 5,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+
+
+                                  //Gap(isMobile? 10.h : 350.h),
+                                ],
+                              ),
                             ));
                       },
                     ),
@@ -461,7 +448,7 @@ class CorporateLeasingScreen extends StatelessWidget {
             ),
             Expanded(
               child: RichText(
-                textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
+                //textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
                 text: TextSpan(
                   style: TextStyle(
                     color: Colors.white,
@@ -583,14 +570,17 @@ class CorporateLeasingScreen extends StatelessWidget {
                 height: 1.6,
               ),
             ),
-            Text(
-              text,
-              textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
-              style: TextStyle(
-                fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
-                color: Colors.white,
-                fontSize: isMobile ? 10.sp : 32.sp,
-                height: 1.6,
+            Expanded(
+              child: Text(
+                text,
+                //textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
+                softWrap: true,
+                style: TextStyle(
+                  fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
+                  color: Colors.white,
+                  fontSize: isMobile ? 10.sp : 32.sp,
+                  height: 1.6,
+                ),
               ),
             ),
           ],

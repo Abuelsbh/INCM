@@ -338,7 +338,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
   Widget _buildContactFormSection(BuildContext context, bool isMobile, bool isTablet) {
     return Container(
       width: double.infinity,
-      height: isMobile ? 786.h : (isTablet ? 1200.h : 1200.h),
+      height: isMobile ? 1000.h : (isTablet ? 1200.h : 1200.h),
       child:  Center(
         child: SingleChildScrollView(
           child: AnimatedBuilder(
@@ -359,7 +359,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Gap(isMobile? 60.h : isTablet ? 70.h : 80.h),
+                  Gap(isMobile? 40.h : isTablet ? 70.h : 80.h),
                   Text(
                     'LEASE_YOUR_UNIT'.tr(context),
                     textAlign: TextAlign.center,

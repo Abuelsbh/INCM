@@ -45,26 +45,26 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
   int _currentPage = 0;
   bool _pageControllerInitialized = false;
 
-  final List<Map<String, String>> items = [
+  List<Map<String, String>> get items => [
     {
-      'title': 'Sorouh Developments',
+      'title': 'SOROUH_DEVELOPMENTS_TITLE'.tr(context),
       'image': Assets.imagesAboutUsBackground,
-      'desc': 'Incomercial × Sorouh Developments A new vision for the future of real estate. Incomercial is leading the real estate consultation and leasing for the Centrada project',
+      'desc': 'SOROUH_DEVELOPMENTS_DESC'.tr(context),
     },
     {
-      'title': 'Menassat Developments',
+      'title': 'MENASSAT_DEVELOPMENTS_TITLE'.tr(context),
       'image': Assets.imagesCareerBackground,
-      'desc': 'Incomercial × Menassat Developments A Continued Collaboration, Incomercial has been proudly leading the real estate consultation and leasing efforts for The Begonia Walk',
+      'desc': 'MENASSAT_DEVELOPMENTS_DESC'.tr(context),
     },
     {
-      'title': 'Annual 2024',
+      'title': 'ANNUAL_2024_TITLE'.tr(context),
       'image': Assets.imagesAboutUsBackground,
-      'desc': 'Our 2024 Annual – A Day to Remember Our Achievements and Hard Work',
+      'desc': 'ANNUAL_2024_DESC'.tr(context),
     },
     {
-      'title': 'Saudi Arabia Expansion',
+      'title': 'SAUDI_ARABIA_EXPANSION_TITLE'.tr(context),
       'image': Assets.imagesAboutUsBackground,
-      'desc': 'Incomercial Moves Forward with Global Expansion, Entering the Saudi Arabian Market',
+      'desc': 'SAUDI_ARABIA_EXPANSION_DESC'.tr(context),
     },
   ];
 
@@ -238,23 +238,54 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                 child: Column(
                   children: [
                     if(MediaQuery.of(context).size.width > 600)
-                      _buildContactFormSection(context),
-                    if(MediaQuery.of(context).size.width > 600)
-                      _buildOurMissionSection(context),
-                    if(MediaQuery.of(context).size.width > 600)
-                    _buildLatestNewsSection(context),
+                      Column(
+                        children: [
+                          _buildContactFormSection(context),
+                          Container(
+                            height: 2400.h,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(Assets.imagesCareerViewWeb),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                _buildOurMissionSection(context),
+                                _buildLatestNewsSection(context),
+                              ],
+                            ),
+                          )
 
-
-
+                        ],
+                      ),
 
 
 
                     if(MediaQuery.of(context).size.width < 600)
-                      _buildContactFormSectionMob(context),
-                    if(MediaQuery.of(context).size.width < 600)
-                    _buildOurMissionSectionMob(context),
-                    if(MediaQuery.of(context).size.width < 600)
-                    _buildLatestNewsSectionMob(context),
+                    Column(
+                      children: [
+                        _buildContactFormSectionMob(context),
+                        Container(
+                          height: 2400.h,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(Assets.imagesCareerViewMob),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              _buildOurMissionSectionMob(context),
+                              _buildLatestNewsSectionMob(context),
+                            ],
+                          ),
+                        )
+
+                      ],
+                    ),
+
+
                     // Footer
                     if(MediaQuery.of(context).size.width >= 600)
                       const FooterSection()
@@ -290,12 +321,12 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
 
   Widget _buildOurMissionSection(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesAboutUsBackground2),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesAboutUsBackground2),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 1200.h,
       child: AnimatedBuilder(
@@ -366,144 +397,166 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
 
 
   Widget _buildContactFormSection(BuildContext context) {
-    final containerColor = _isPrimaryColor ? const Color(0xFFC63424) : const Color(0xFFF4ED47);
-    final textColor = _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424);
-    return Stack(
-      children:[
-
-        Positioned.fill(child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(Assets.imagesAboutUsBacground1),
-              fit: BoxFit.fill,
-            ),
-          ),),),
-
-        Positioned.fill(
-          left: -560,
-          child:Opacity(
-            opacity: 0.2,
-            child: Padding(
-              padding: const EdgeInsets.all(50.0),
-              child: Image.asset(
-                height: double.infinity,
-                width: double.infinity,
-                Assets.imagesLogoINCM,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
 
 
-        Container(
 
-        width: double.infinity,
-        height: 1200.h,
-        child: Center( // ✅ centers the inner content vertically & horizontally
-          child: SingleChildScrollView(
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _fadeAnimation.value,
-                  child: child,
-                );
-              },
-              child: Consumer<AppLanguage>(
-                builder: (context, appLang, child) {
-                  final isRTL = appLang.appLang == Languages.ar;
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 80.w),
-                    child: Align(
-                      alignment: isRTL ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Container(
-                        margin: EdgeInsets.only(right: isRTL ? 200.w : 0),
-                        width: 600,
-                        padding: EdgeInsets.all(40.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center, // ✅ makes sure text is vertically centered inside column
-                      children: [
-                        RichText(
-                          textAlign: TextAlign.left,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'WHO_ARE_WE'.tr(context),
-                                style: TextStyle(
-                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                  color: const Color(0xFFF4ED47),
-                                  fontSize: 80.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'WHO_ARE_WE_QUESTION'.tr(context),
-                                style: TextStyle(
-                                  color: const Color(0xFFF4ED47),
-                                  fontSize: 80.sp,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          'WE_WERE_ESTABLISHED_FULL'.tr(context),
-                          //textAlign: TextAlign.justify,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                            height: 1.8,
-                          ),
-                        ),
-
-                        Gap(40.h),
-                        InkWell(
-                          onTap: isDownloading ? null : downloadFile,
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: _isPrimaryColor ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              "CLICK_TO_DOWNLOAD_PROFILE".tr(context),
-                              style: TextStyle(
-                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
-                                fontSize: 25.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-
-                          ),
-                        )
-                      ],
+    return Consumer<AppLanguage>(
+      builder: (context, appLanguage, _) {
+        final isArabic = appLanguage.appLang == Languages.ar;
+        return Stack(
+            children:[
+              Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()..scale(isArabic ? -1.0 : 1.0, 1.0),
+                child: Container(
+                  width: double.infinity,
+                  height: 1200.h,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(Assets.imagesAboutUsBacground1),
+                      fit: BoxFit.fill,
                     ),
                   ),
-                    ),
-                  );
-                },
+                ),
               ),
-            ),
-          ),
-        ),
-      ),
+              // Positioned.fill(child: Container(
+              //   decoration: BoxDecoration(
+              //     image: DecorationImage(
+              //       image: AssetImage(Assets.imagesAboutUsBacground1),
+              //       fit: BoxFit.fill,
+              //     ),
+              //   ),),),
+
+              Positioned.fill(
+                left: isArabic ? 0 : -560 ,
+                right: !isArabic ? 0 : -560 ,
+                child:Opacity(
+                  opacity: 0.2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(50.0),
+                    child: Image.asset(
+                      height: double.infinity,
+                      width: double.infinity,
+                      Assets.imagesLogoINCM,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+
+
+              Container(
+
+                width: double.infinity,
+                height: 1200.h,
+                child: Center( // ✅ centers the inner content vertically & horizontally
+                  child: SingleChildScrollView(
+                    child: AnimatedBuilder(
+                      animation: _animationController,
+                      builder: (context, child) {
+                        return Opacity(
+                          opacity: _fadeAnimation.value,
+                          child: child,
+                        );
+                      },
+                      child: Consumer<AppLanguage>(
+                        builder: (context, appLang, child) {
+                          final isRTL = appLang.appLang == Languages.ar;
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 80.w),
+                            child: Align(
+                              alignment: isRTL ? Alignment.centerRight : Alignment.centerLeft,
+                              child: Container(
+                                margin: EdgeInsets.only(right: isRTL ? 200.w : 0),
+                                width: 600,
+                                padding: EdgeInsets.all(40.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center, // ✅ makes sure text is vertically centered inside column
+                                  children: [
+                                    RichText(
+                                      textAlign: TextAlign.left,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'WHO_ARE_WE'.tr(context),
+                                            style: TextStyle(
+                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                              color: const Color(0xFFF4ED47),
+                                              fontSize: 80.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: 'WHO_ARE_WE_QUESTION'.tr(context),
+                                            style: TextStyle(
+                                              color: const Color(0xFFF4ED47),
+                                              fontSize: 80.sp,
+                                              fontWeight: FontWeight.w900,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      'WE_WERE_ESTABLISHED_FULL'.tr(context),
+                                      //textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24.sp,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.8,
+                                      ),
+                                    ),
+
+                                    Gap(40.h),
+                                    InkWell(
+                                      onTap: isDownloading ? null : downloadFile,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: _isPrimaryColor ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          "CLICK_TO_DOWNLOAD_PROFILE".tr(context),
+                                          style: TextStyle(
+                                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                            color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
+                                            fontSize: 25.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ]
+        );
+
+      },
     );
+
   }
 
   Widget _buildLatestNewsSection(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesAboutUsBackground2),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesAboutUsBackground2),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 1200.h,
       child: AnimatedBuilder(
@@ -675,12 +728,12 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
 
   Widget _buildOurMissionSectionMob(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesAboutUsBackground2),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesAboutUsBackground2),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 786.h,
       child: AnimatedBuilder(
@@ -865,12 +918,12 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
 
   Widget _buildLatestNewsSectionMob(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.imagesAboutUsBackgroundMob2),
-          fit: BoxFit.fill,
-        ),
-      ),
+      // decoration: BoxDecoration(
+      //   image: DecorationImage(
+      //     image: AssetImage(Assets.imagesAboutUsBackgroundMob2),
+      //     fit: BoxFit.fill,
+      //   ),
+      // ),
       width: double.infinity,
       height: 786.h,
       child: AnimatedBuilder(

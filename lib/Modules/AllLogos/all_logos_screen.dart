@@ -23,16 +23,17 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
   final FirebaseLogosService _logosService = FirebaseLogosService();
   late Future<Map<String, List<LogoModel>>> _logosFuture;
 
-  // Map pageId to Arabic service names
-  final Map<String, String> _serviceNames = {
-    'corporate-leasing': 'إيجار الشركات',
-    'retail-leasing': 'إيجار التجزئة',
-    'medical-leasing': 'إيجار طبي',
-    'facility-management': 'إدارة المرافق',
-    'franchise-investment': 'استثمار الامتياز',
-    'primary-investment': 'الاستثمار الأساسي',
-    'marketing': 'التسويق',
-    'consultation': 'الاستشارة',
+  // Map pageId (from Firebase) to i18n keys.
+  // This keeps headlines localized (AR/EN) instead of hardcoded Arabic.
+  final Map<String, String> _serviceNameKeys = {
+    'corporate-leasing': 'CORPORATE_LEASING',
+    'retail-leasing': 'RETAIL_LEASING',
+    'medical-leasing': 'MEDICAL_LEASING',
+    'facility-management': 'FACILITY_MANAGEMENT',
+    'franchise-investment': 'FRANCHISE_INVESTMENT',
+    'primary-investment': 'PRIMARY_INVESTMENT',
+    'marketing': 'MARKETING',
+    'consultation': 'CONSULTATION',
   };
 
   @override
@@ -112,7 +113,7 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
                           child: Column(
                             children: [
                               Text(
-                                'حدث خطأ أثناء تحميل الشعارات',
+                                'ERROR_LOADING_LOGOS'.tr(context),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: isMobile ? 16.sp : 20.sp,
@@ -125,7 +126,7 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
                                   backgroundColor: const Color(0xFFF4ED47),
                                   foregroundColor: Colors.black,
                                 ),
-                                child: Text('إعادة المحاولة'),
+                                child: Text('RETRY'.tr(context)),
                               ),
                             ],
                           ),
@@ -139,7 +140,7 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
                         return Padding(
                           padding: EdgeInsets.all(40.h),
                           child: Text(
-                            'لا توجد شعارات متاحة',
+                            'NO_LOGOS_AVAILABLE'.tr(context),
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: isMobile ? 16.sp : 20.sp,
@@ -153,7 +154,8 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
                         children: logosByService.entries.map((entry) {
                           final pageId = entry.key;
                           final logos = entry.value;
-                          final serviceName = _serviceNames[pageId] ?? pageId;
+                          final serviceNameKey = _serviceNameKeys[pageId];
+                          final serviceName = serviceNameKey != null ? serviceNameKey.tr(context) : pageId;
                           
                           return Padding(
                             padding: EdgeInsets.only(
@@ -245,7 +247,7 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
 
   Widget _buildLoadingState(bool isMobile) {
     // Create skeleton loading that mimics the actual layout
-    final serviceNames = _serviceNames.values.toList();
+    final serviceNames = _serviceNameKeys.values.map((k) => k.tr(context)).toList();
     
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -265,7 +267,7 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  'جاري تحميل الشعارات...',
+                  'LOADING_LOGOS'.tr(context),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: isMobile ? 14.sp : 18.sp,

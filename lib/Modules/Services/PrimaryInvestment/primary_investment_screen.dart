@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import '../../../Widgets/bottom_navbar_widget.dart';
 import '../../../Widgets/clients_logos_section.dart';
 import '../../../Widgets/content_service_section.dart';
@@ -13,6 +14,7 @@ import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/Language/app_languages.dart';
 import '../../../generated/assets.dart';
 import '../../../Utilities/font_helper.dart';
 
@@ -75,7 +77,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.fromLTRB(
                                     isMobile ? 10.w : 50.w,
-                                    isMobile ? 60.h : 240.h,
+                                    isMobile ? 45.h : 240.h,
                                     isMobile ? 10.w : 50.w,
                                     20.h),
                                 child: Column(
@@ -103,28 +105,70 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              DynamicText(
-                                                pageId: 'primary-investment',
-                                                sectionId: 'hero-title-2',
-                                                defaultValue: 'PRIMARY_HERO_TITLE_2',
-                                                style: TextStyle(
-                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                  color: Colors.white,
-                                                  fontSize: isMobile ? 12.sp : 70.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              DynamicText(
-                                                pageId: 'primary-investment',
-                                                sectionId: 'hero-title-3',
-                                                defaultValue: 'PRIMARY_HERO_TITLE_3',
-                                                style: TextStyle(
-                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                  color: const Color(0xFFF4ED47),
-                                                  fontSize: isMobile ? 12.sp : 75.sp,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
+                                              Builder(
+                                                builder: (context) {
+                                                  final isArabic =
+                                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                                          Languages.ar;
+                                                  return !isArabic ? Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      DynamicText(
+                                                        pageId: 'primary-investment',
+                                                        sectionId: 'hero-title-2',
+                                                        defaultValue: 'PRIMARY_HERO_TITLE_2',
+                                                        style: TextStyle(
+                                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                          color: Colors.white,
+                                                          fontSize: isMobile ? 12.sp : 70.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      DynamicText(
+                                                        pageId: 'primary-investment',
+                                                        sectionId: 'hero-title-3',
+                                                        defaultValue: 'PRIMARY_HERO_TITLE_3',
+                                                        style: TextStyle(
+                                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                          color: const Color(0xFFF4ED47),
+                                                          fontSize: isMobile ? 12.sp : 75.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ): Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      DynamicText(
+                                                        pageId: 'primary-investment',
+                                                        sectionId: 'hero-title-3',
+                                                        defaultValue: 'PRIMARY_HERO_TITLE_3',
+                                                        style: TextStyle(
+                                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                          color: const Color(0xFFF4ED47),
+                                                          fontSize: isMobile ? 12.sp : 75.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      DynamicText(
+                                                        pageId: 'primary-investment',
+                                                        sectionId: 'hero-title-2',
+                                                        defaultValue: 'PRIMARY_HERO_TITLE_2',
+                                                        style: TextStyle(
+                                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                          color: Colors.white,
+                                                          fontSize: isMobile ? 12.sp : 70.sp,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+
+                                                    ],
+                                                  );
+                                                }
+                                              )
+
                                             ],
                                           ),
                                           Gap(isMobile ? 5.w : 20.w),

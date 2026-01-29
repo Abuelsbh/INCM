@@ -140,7 +140,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                   if (kIsWeb) ButtonStyles.getAppButton(
                       context: context,
                       onPressed: () => {},
-                      width: 55.w
+                      width: 100.w
                   ),
                   if (kIsWeb) SizedBox(width: 16.w),
 

@@ -79,7 +79,7 @@ class ConsultationScreen extends StatelessWidget {
                                 Padding(
                                   padding: EdgeInsets.fromLTRB(
                                     isMobile ? 10.w : 50.w,
-                                    isMobile ? 100.h : 170.h,
+                                    isMobile ? 85.h : 170.h,
                                     isMobile ? 10.w : 50.w,
                                     isMobile ? 10.w : 20.w,),
                                   child: Builder(

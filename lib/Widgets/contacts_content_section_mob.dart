@@ -255,7 +255,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                               ),
                             ),
                             TextSpan(
-                              text: '?',
+                              text: 'question_mark'.tr(context),
                               style: TextStyle(
                                 color: const Color(0xFFF4ED47),
                                 fontSize: 22.sp,

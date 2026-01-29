@@ -72,6 +72,15 @@ flutter:
     - assets/
     - assets/icons/
     - assets/images/
+    - assets/images/exclusive-leasing/
+    - assets/images/exclusive-leasing/umc/
+    - assets/images/exclusive-leasing/park mall/
+    - assets/images/exclusive-leasing/terrace/
+    - assets/images/exclusive-leasing/point 90/
+    - assets/images/exclusive-leasing/kernel/
+    - assets/images/exclusive-leasing/city squre/
+    - assets/images/exclusive-leasing/vitali/
+    - assets/images/exclusive-leasing/seashell/
     - assets/logos/
     - assets/fonts/
     - assets/videos/

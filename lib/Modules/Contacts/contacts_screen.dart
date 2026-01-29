@@ -301,11 +301,11 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(isMobile ? Assets.imagesContactPageMob : Assets.imagesContactPage),
-          fit: BoxFit.fill,
+          fit: isMobile ? BoxFit.contain : BoxFit.fill,
         ),
       ),
       width: double.infinity,
-      height: isMobile ? 1280.h : (isTablet ? 2000.h : 2074.h),
+      //height: isMobile ? 1280.h : (isTablet ? 2000.h : 2074.h),
       child: Center(
         child: SingleChildScrollView(
           child: AnimatedBuilder(
@@ -326,20 +326,20 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Gap(isMobile? 60.h : isTablet ? 70.h : 80.h),
+                  Gap(isMobile? 30.h : isTablet ? 70.h : 80.h),
                   Text(
                     'CONTACT_US'.tr(context),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: getLocalizedFont(context, 'OptimalBold'),
                       color: const Color(0xFFF4ED47),
-                      fontSize: isMobile ? 26.sp : (isTablet ? 50.sp : 70.sp),
+                      fontSize: isMobile ? 22.sp : (isTablet ? 50.sp : 70.sp),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: isMobile ? 20.h : (isTablet ? 20.h : 30.h)),
+                  SizedBox(height: isMobile ? 8.h : (isTablet ? 20.h : 30.h)),
                   _buildContactForm(context, isMobile, isTablet),
-                  Gap(isMobile ? 50.h : (isTablet ? 20.h : 60.h)),
+                  Gap(isMobile ? 12.h : (isTablet ? 20.h : 60.h)),
                   _buildGetInTouchSection(context, isMobile, isTablet),
 
                   Gap(isMobile ? 15.h : (isTablet ? 40.h : 120.h)),
@@ -509,15 +509,12 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           isMobile: isMobile,
           isTablet: isTablet,
         ),
-        SizedBox(height: isMobile ? 50.h : (isTablet ? 70.h : 40.h)),
+        SizedBox(height: isMobile ? 10.h : (isTablet ? 70.h : 40.h)),
         if(isMobile)
-          SizedBox(
-            width: double.infinity,
-            child: ButtonStyles.submitButtonMob(
-              context: context,
-              width: double.infinity,
-              onPressed: _handleSubmit,
-            ),
+          ButtonStyles.submitButtonMob(
+            width: 100.w,
+            context: context,
+            onPressed: _handleSubmit,
           ),
         if(!isMobile)
         ButtonStyles.submitButton(
@@ -550,7 +547,6 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           if(isMobile)
             Column(
               children: [
-                Gap(24.h),
                 Text(
                   'WORKING_HOURS'.tr(context),
                   textAlign: TextAlign.center,
@@ -568,7 +564,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                     fontSize: 12.sp,
                   ),
                 ),
-                Gap(24.h),
+
               ],
             ),
           _buildContactInfoColumn(isMobile, isTablet),
@@ -578,7 +574,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Gap(60.w),
         Column(
@@ -741,7 +737,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ),
         SizedBox(height: 1.h),
         SizedBox(
-          height: height ?? (isMobile ? 34.h : (isTablet ? 48.h : 60.h)),
+          height: height ?? (isMobile ? 28.h : (isTablet ? 48.h : 60.h)),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -766,7 +762,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                   hintStyle: TextStyle(
                     fontFamily: 'AloeveraDisplayBold',
                     color: Colors.grey[500],
-                    fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 28.sp),
+                    fontSize: isMobile ? 14.sp : (isTablet ? 18.sp : 28.sp),
                   ),
                 ),
 
@@ -801,13 +797,13 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
-            fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
             fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 1.h),
         SizedBox(
-          height: height ?? (isMobile ? 80.h : (isTablet ? 100.h : 120.h)),
+          height: height ?? (isMobile ? 54.h : (isTablet ? 100.h : 120.h)),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -835,7 +831,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                 hintStyle: TextStyle(
                   fontFamily: 'AloeveraDisplayBold',
                   color: Colors.grey[500],
-                  fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 28.sp),
+                  fontSize: isMobile ? 14.sp : (isTablet ? 18.sp : 28.sp),
                 ),
               ),
               style: TextStyle(
@@ -859,13 +855,13 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
-            fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
             fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 2.h),
         SizedBox(
-          height: isMobile ? 34.h : (isTablet ? 48.h : 60.h),
+          height: isMobile ? 28.h : (isTablet ? 48.h : 60.h),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -950,7 +946,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                         ),
                         hintStyle: TextStyle(
                           color: Colors.grey[500],
-                          fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 22.sp),
+                          fontSize: isMobile ? 14.sp : (isTablet ? 18.sp : 22.sp),
                         ),
                       ),
                       style: TextStyle(
@@ -986,7 +982,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     }
 
     double dropdownHeight() {
-      if (isMobile) return 34.h;
+      if (isMobile) return 28.h;
       if (isTablet) return 48.h;
       return 60.h; // Web
     }
@@ -999,7 +995,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
-            fontSize: isMobile ? 16.sp : (isTablet ? 22.sp : 28.sp),
+            fontSize: isMobile ? 14.sp : (isTablet ? 22.sp : 28.sp),
             fontWeight: FontWeight.bold,
           ),
         ),

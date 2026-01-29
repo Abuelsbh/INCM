@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'dart:async';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
+import '../core/Language/app_languages.dart';
 import '../core/Language/locales.dart';
 import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
@@ -322,10 +324,11 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      //Gap(12.w),
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: Text(
-                          getServiceData(context)[currentIndex]['title']!.tr(context),
+                          getServiceData(context)[currentIndex]['title']!.tr(context).toUpperCase(),
                           style: TextStyle(
                             fontFamily: getLocalizedFont(context, 'OptimalBold'),
                             color: currentIndex % 2 == 0 ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
@@ -334,7 +337,14 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                           ),
                         ),
                       ),
-
+                      Builder(
+                        builder: (context) {
+                          final isArabic =
+                              Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                  Languages.ar;
+                          return Gap(isArabic ? 16.w : 0);
+                        }
+                      ),
 
                       Text(
                         'SERVICE'.tr(context),

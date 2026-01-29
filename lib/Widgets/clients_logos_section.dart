@@ -268,6 +268,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
     final preloadedWidgets = <Widget>[];
     
     for (var base64String in base64List) {
+      if (!mounted) return;
       try {
         String cleanBase64 = base64String.trim();
         
@@ -284,16 +285,19 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
         
         if (cleanBase64.isEmpty) continue;
         
+        if (!mounted) return;
+        
         // Decode and create Image widget with caching
         final bytes = base64Decode(cleanBase64);
         
         if (bytes.isEmpty) continue;
         
-        // Precache the image first
+        // Precache the image first (only if still mounted)
+        if (!mounted) return;
         try {
           await precacheImage(MemoryImage(bytes), context);
         } catch (e) {
-          debugPrint('Warning: Failed to precache image: $e');
+          if (mounted) debugPrint('Warning: Failed to precache image: $e');
         }
         
         // Create preloaded Image widget with cache dimensions
@@ -349,6 +353,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
     debugPrint('=== Loading ${assetPaths.length} asset logos ===');
     
     for (var assetPath in assetPaths) {
+      if (!mounted) return;
       try {
         debugPrint('Loading asset: $assetPath');
         Widget imageWidget;
@@ -370,12 +375,13 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
             ),
           );
         } else {
-          // Precache asset image first
+          // Precache asset image first (only if still mounted)
+          if (!mounted) return;
           try {
             await precacheImage(AssetImage(assetPath), context);
-            debugPrint('Successfully precached: $assetPath');
+            if (mounted) debugPrint('Successfully precached: $assetPath');
           } catch (e) {
-            debugPrint('⚠️ Warning: Failed to precache asset $assetPath: $e');
+            if (mounted) debugPrint('⚠️ Warning: Failed to precache asset $assetPath: $e');
           }
           
           imageWidget = RepaintBoundary(
@@ -449,6 +455,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
   }
 
   void _checkIfArrowsNeeded() {
+    if (!mounted) return;
     if (_scrollController.hasClients) {
       setState(() {
        // _showArrows = _logoBase64List.length > widget.visibleLogosCount;
@@ -458,49 +465,51 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
   }
 
   void _onScroll() {
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void _scrollLeft() {
-    if (_scrollController.hasClients) {
-      final currentPosition = _scrollController.position.pixels;
-      final scrollAmount = MediaQuery.of(context).size.width * 0.3;
-      final newPosition = (currentPosition - scrollAmount).clamp(
-        0.0,
-        _scrollController.position.maxScrollExtent,
-      );
-      _scrollController.animateTo(
-        newPosition,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOutCubic,
-      );
-    }
+    if (!_scrollController.hasClients) return;
+    final pos = _scrollController.position;
+    if (!pos.hasContentDimensions) return;
+    final currentPosition = pos.pixels;
+    final scrollAmount = MediaQuery.of(context).size.width * 0.3;
+    final newPosition = (currentPosition - scrollAmount).clamp(
+      0.0,
+      pos.maxScrollExtent,
+    );
+    _scrollController.animateTo(
+      newPosition,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   void _scrollRight() {
-    if (_scrollController.hasClients) {
-      final currentPosition = _scrollController.position.pixels;
-      final scrollAmount = MediaQuery.of(context).size.width * 0.3;
-      final maxScroll = _scrollController.position.maxScrollExtent;
-      final newPosition = (currentPosition + scrollAmount).clamp(
+    if (!_scrollController.hasClients) return;
+    final pos = _scrollController.position;
+    if (!pos.hasContentDimensions) return;
+    final currentPosition = pos.pixels;
+    final scrollAmount = MediaQuery.of(context).size.width * 0.3;
+    final maxScroll = pos.maxScrollExtent;
+    final newPosition = (currentPosition + scrollAmount).clamp(
+      0.0,
+      maxScroll,
+    );
+    
+    // If we're at or near the end, scroll back to start for infinite loop
+    if (newPosition >= maxScroll - 10) {
+      _scrollController.animateTo(
         0.0,
-        maxScroll,
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.easeOutCubic,
       );
-      
-      // If we're at or near the end, scroll back to start for infinite loop
-      if (newPosition >= maxScroll - 10) {
-        _scrollController.animateTo(
-          0.0,
-          duration: const Duration(milliseconds: 700),
-          curve: Curves.easeOutCubic,
-        );
-      } else {
-        _scrollController.animateTo(
-          newPosition,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
+    } else {
+      _scrollController.animateTo(
+        newPosition,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -511,8 +520,9 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
 
   bool get _canScrollRight {
     if (!_scrollController.hasClients) return false;
-    return _scrollController.position.pixels <
-        _scrollController.position.maxScrollExtent;
+    final pos = _scrollController.position;
+    if (!pos.hasContentDimensions) return false;
+    return pos.pixels < pos.maxScrollExtent;
   }
 
   @override
@@ -527,8 +537,8 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
     final isMobile = MediaQuery.of(context).size.width < 600;
     final titleColor = widget.titleColor ?? const Color(0xFFF4ED47);
     final backgroundColor = widget.backgroundColor ?? Colors.grey[900]!.withOpacity(0.4);
-    final logoWidth = widget.logoWidth ?? (isMobile ? 65.w : 180.w);
-    final logoHeight = widget.logoHeight ?? (isMobile ? 85.h : 80.h);
+    final logoWidth = widget.logoWidth ?? (isMobile ? 100.w : 160.w);
+    final logoHeight = widget.logoHeight ?? (isMobile ? 85.h : 140.h);
 
     return Column(
       children: [
@@ -548,9 +558,9 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
         Gap(12.h),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: isMobile ? 8.h : 20.h,horizontal: isMobile ? 8.h : 20.w),
+          padding: EdgeInsets.symmetric(vertical: isMobile ? 8.h : 8.h,horizontal: isMobile ? 8.h : 20.w),
           decoration: BoxDecoration(
-            color: backgroundColor.withOpacity(widget.opacity??1),
+            color: backgroundColor.withOpacity(widget.opacity??0.8),
             borderRadius: BorderRadius.circular(isMobile ? 24.r : 50.r),
           ),
           child: Column(
@@ -561,7 +571,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
                 children: [
                   // Logos List
                   Container(
-                    height: logoHeight + (isMobile ? 14.h : 40.h),
+                    height: logoHeight + (isMobile ? 4.h : 16.h),
                     margin: EdgeInsets.symmetric(horizontal: _showArrows ? isMobile ? 24.w : 60.w : 0),
                     child: _isLoadingLogos
                         ? Center(

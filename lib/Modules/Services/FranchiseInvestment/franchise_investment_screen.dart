@@ -15,6 +15,8 @@ import '../../../Widgets/content_service_section.dart';
 import '../../../Widgets/custom_app_bar.dart';
 import '../../../Widgets/custom_app_bar_mob.dart';
 import '../../../Widgets/floating_contact_buttons.dart';
+import '../../../Widgets/footer_section.dart';
+import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
@@ -123,21 +125,22 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
     final isMobile = MediaQuery.of(context).size.width < 600;
     final ScrollController scrollController = ScrollController();
 
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.black,
-          bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
-              ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
-              : null,
-          body: Stack(
-            children: [
-              SingleChildScrollView(
-                controller: scrollController,
-                child: Column(
-                  children: [
-                    Container(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+            ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
+            : null,
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                children: [
+                  Directionality(
+                    
+                    textDirection: TextDirection.ltr,
+                    child: Container(
                       width: double.infinity,
                       child: FutureBuilder<DecorationImage?>(
                         future: ContentHelper.getDecorationImage(
@@ -148,7 +151,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                         ),
                         builder: (context, snapshot) {
                           DecorationImage? decorationImage = snapshot.data;
-
+                    
                           // Fallback to asset if Firebase image not available
                           if (decorationImage == null) {
                             decorationImage = DecorationImage(
@@ -156,7 +159,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                               fit: BoxFit.contain,
                             );
                           }
-
+                    
                           return Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -182,44 +185,44 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Builder(
-                                        builder: (context) {
-                                          final isArabic =
-                                              Provider.of<AppLanguage>(context, listen: false).appLang ==
-                                                  Languages.ar;
-
-                                          return SizedBox(
-                                            width: double.infinity,
-                                            child: Column(
-                                              mainAxisAlignment: isArabic ?  MainAxisAlignment.end : MainAxisAlignment.start,
-                                              crossAxisAlignment: isArabic ?  CrossAxisAlignment.end : CrossAxisAlignment.start,
-                                              children: [
-                                                DynamicText(
-                                                  pageId: 'franchise-investment',
-                                                  sectionId: 'hero-title-1',
-                                                  defaultValue: 'FRANCHISE_HERO_TITLE_1',
-                                                  style: TextStyle(
-                                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                    color: Colors.white,
-                                                    fontSize: isMobile ? 16.sp : 70.sp,
-                                                    fontWeight: FontWeight.bold,
+                                          builder: (context) {
+                                            final isArabic =
+                                                Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                                    Languages.ar;
+                    
+                                            return SizedBox(
+                                              width: double.infinity,
+                                              child: Column(
+                                                mainAxisAlignment: isArabic ?  MainAxisAlignment.end : MainAxisAlignment.start,
+                                                crossAxisAlignment: isArabic ?  CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                                children: [
+                                                  DynamicText(
+                                                    pageId: 'franchise-investment',
+                                                    sectionId: 'hero-title-1',
+                                                    defaultValue: 'FRANCHISE_HERO_TITLE_1',
+                                                    style: TextStyle(
+                                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                      color: Colors.white,
+                                                      fontSize: isMobile ? 16.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                                Gap(8.h),
-                                                DynamicText(
-                                                  pageId: 'franchise-investment',
-                                                  sectionId: 'hero-title-2',
-                                                  defaultValue: 'FRANCHISE_HERO_TITLE_2',
-                                                  style: TextStyle(
-                                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                    color: const Color(0xFFF4ED47),
-                                                    fontSize: isMobile ? 16.sp : 75.sp,
-                                                    fontWeight: FontWeight.bold,
+                                                  Gap(8.h),
+                                                  DynamicText(
+                                                    pageId: 'franchise-investment',
+                                                    sectionId: 'hero-title-2',
+                                                    defaultValue: 'FRANCHISE_HERO_TITLE_2',
+                                                    style: TextStyle(
+                                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                      color: const Color(0xFFF4ED47),
+                                                      fontSize: isMobile ? 16.sp : 75.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }
+                                                ],
+                                              ),
+                                            );
+                                          }
                                       ),
                                       Gap(isMobile ? 2.h : 40.h),
                                       SizedBox(
@@ -343,22 +346,27 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                         },
                       ),
                     ),
-                    const ContentServiceSection(
-                      showCategoryField: true,
-                    ),
-                  ],
-                ),
+                  ),
+                  const ContentServiceSection(
+                    showCategoryField: true,
+                  ),
+
+                  if(MediaQuery.of(context).size.width >= 600)
+                    const FooterSection()
+                  else if(kIsWeb)
+                    const FooterSectionMob(),
+                ],
               ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
-              ),
-              const FloatingContactButtons(),
-              ScrollToTopButton(scrollController: scrollController),
-            ],
-          ),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+            ),
+            const FloatingContactButtons(),
+            ScrollToTopButton(scrollController: scrollController),
+          ],
         ),
       ),
     );

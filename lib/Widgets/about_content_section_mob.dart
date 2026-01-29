@@ -3,8 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:provider/provider.dart';
 import '../Modules/About/about_screen.dart';
 import '../core/Language/locales.dart';
+import '../core/Language/app_languages.dart';
 import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
@@ -37,16 +39,32 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
     return VisibilityDetector(
       key: const Key('about-content-section'),
       onVisibilityChanged: _onVisibilityChanged,
-      child: Container(
-        width: double.infinity,
-        height: 786.h,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(Assets.imagesAboutUsBackgroundMob),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Column(
+      child: Consumer<AppLanguage>(
+        builder: (context, appLanguage, _) {
+          final isArabic = appLanguage.appLang == Languages.ar;
+          
+          return Stack(
+            children: [
+              // Background image (flipped only for Arabic)
+              Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()..scale(isArabic ? -1.0 : 1.0, 1.0),
+                child: Container(
+                  width: double.infinity,
+                  height: 786.h,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(Assets.imagesAboutUsBackgroundMob),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              // Content on top
+              Container(
+                width: double.infinity,
+                height: 786.h,
+                child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Gap(20.h),
@@ -141,9 +159,11 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
             ),
             Gap(40.h),
           ],
-        ),
-
-
+            ),
+          ),
+        ],
+          );
+        },
       ),
     );
   }

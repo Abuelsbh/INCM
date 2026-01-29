@@ -80,14 +80,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       // About Us Section
                       const AboutContentSection(),
                       //SizedBox(height: 100.h),
-                      // Exclusive Projects Section
+                      // Exclusive Projects Section — logos from Firebase for this page only
                       Container(
                         height: 380.h,
                         margin: EdgeInsets.all(12.w),
                         child: ClientsLogosSection(
                           title: 'OUR_EXCLUSIVE_PROJECTS',
                           backgroundColor: Colors.grey[900]!,
-                          fetchAllServices: true, // Fetch logos from Firebase from all 8 services
+                          pageId: 'exclusive-leasing-projects',
                           visibleLogosCount: 5,
                           onLearnMorePressed: () {
                             context.go(ExclusiveLeasingProjectsScreen.routeName);
@@ -162,14 +162,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const HomeSearchSectionMob(),
                       const AboutContentSectionMob(),
-                      // Exclusive Projects Section
+                      // Exclusive Projects Section — logos from Firebase for this page only
                       Container(
                         height: 210.h,
                         margin: EdgeInsets.all(12.w),
                         child: ClientsLogosSection(
                           title: 'OUR_EXCLUSIVE_PROJECTS',
                           backgroundColor: Colors.grey[900]!,
-                          fetchAllServices: true, // Fetch logos from Firebase from all 8 services
+                          pageId: 'exclusive-leasing-projects',
                           visibleLogosCount: 5,
                           onLearnMorePressed: () {
                             context.go(ExclusiveLeasingProjectsScreen.routeName);

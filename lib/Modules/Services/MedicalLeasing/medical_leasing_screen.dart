@@ -26,21 +26,21 @@ class MedicalLeasingScreen extends StatelessWidget {
     final isMobile = MediaQuery.of(context).size.width < 600;
     final ScrollController scrollController = ScrollController();
 
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: Colors.black,
-          bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
-              ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
-              : null,
-          body: Stack(
-            children: [
-              SingleChildScrollView(
-                controller: scrollController,
-                child: Column(
-                  children: [
-                    Container(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+            ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
+            : null,
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              controller: scrollController,
+              child: Column(
+                children: [
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Container(
                       width: double.infinity,
                       child: FutureBuilder<DecorationImage?>(
                         future: ContentHelper.getDecorationImage(
@@ -261,25 +261,25 @@ class MedicalLeasingScreen extends StatelessWidget {
                         },
                       ),
                     ),
-                    const ContentServiceSection(),
-                    // Footer
-                    if(MediaQuery.of(context).size.width >= 600)
-                      const FooterSection()
-                    else if(kIsWeb)
-                      const FooterSectionMob(),
-                  ],
-                ),
+                  ),
+                  const ContentServiceSection(),
+                  // Footer
+                  if(MediaQuery.of(context).size.width >= 600)
+                    const FooterSection()
+                  else if(kIsWeb)
+                    const FooterSectionMob(),
+                ],
               ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
-              ),
-              const FloatingContactButtons(),
-              ScrollToTopButton(scrollController: scrollController),
-            ],
-          ),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+            ),
+            const FloatingContactButtons(),
+            ScrollToTopButton(scrollController: scrollController),
+          ],
         ),
       ),
     );

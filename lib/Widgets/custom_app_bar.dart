@@ -251,6 +251,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         _buildMenuItemWithSeparator('BUY'.tr(context), true, () {context.go(BuyScreen.routeName);}),
                         _buildMenuItemWithSeparator('SELL'.tr(context), true, () {context.go(SellScreen.routeName);}),
                         _buildMenuItemWithSeparator('LEASE'.tr(context), true, () {context.go(LeaseScreen.routeName);}),
+                        _buildMenuItemWithSeparator('EXCLUSIVE_LEASING_PROJECTS'.tr(context), true, () {context.go(ExclusiveLeasingProjectsScreen.routeName);}),
                         _buildMenuItemWithSeparator('OUR_CLIENTS'.tr(context), true, () {context.go(AllLogosScreen.routeName);}),
                         _buildMenuItemWithSeparator('CAREERS'.tr(context), false, () {context.go(CareerScreen.routeName);}),
                       ],
@@ -273,6 +274,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                 appLanguage.changeLanguage();
                               },
                               child: Container(
+                                height: 36.sp,
                                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFF4ED47).withOpacity(0.2),
@@ -415,6 +417,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       context.go(AboutScreen.routeName);
                     }),
                     _buildSideMenuItem('SERVICES'.tr(context), Icons.work, 'services', () {}),
+                    _buildSideMenuItem('EXCLUSIVE_LEASING_PROJECTS'.tr(context), Icons.apartment, 'exclusive', () {
+                      setState(() => isMenuOpen = false);
+                      context.go(ExclusiveLeasingProjectsScreen.routeName);
+                    }),
                     _buildSideMenuItem('CONTACTS'.tr(context), Icons.contact_phone, 'contacts',() {}),
                     // Admin Panel (only in debug mode or for development)
                     if (kDebugMode)

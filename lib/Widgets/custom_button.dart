@@ -120,6 +120,7 @@ class ButtonStyles {
     bool enabled = true,
   }) {
     return CustomButton(
+      height: 36.sp,
       text: 'CONTACT_US'.tr(context),
       onPressed: onPressed,
       enabled: enabled,

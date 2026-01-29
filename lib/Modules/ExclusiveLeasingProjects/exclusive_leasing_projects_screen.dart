@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:go_router/go_router.dart';
 import 'package:incm/Utilities/router_config.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import '../../Widgets/bottom_navbar_widget.dart';
 import '../../Widgets/custom_app_bar.dart';
 import '../../Widgets/custom_app_bar_mob.dart';
@@ -12,6 +14,7 @@ import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/footer_section.dart';
 import '../../Widgets/footer_section_mob.dart';
 import '../../Widgets/dynamic_content_widget.dart';
+import '../../core/Language/app_languages.dart';
 import '../../generated/assets.dart';
 import '../../core/Content/content_helper.dart';
 import '../../core/Content/content_provider.dart';
@@ -607,27 +610,19 @@ class _ExclusiveLeasingProjectsScreenState
           return _buildLocalImagesCarousel(localImages, fallbackImage, isMobile, projectId);
         }
 
-        // Multiple images found - show carousel (square shape)
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        // Multiple images - arrows ON image with semi-transparent black bar under them
+        return Stack(
+          alignment: Alignment.topCenter,
           children: [
-            // Left Arrow (outside image)
-            if (existingImageIds.length > 1)
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                iconSize: isMobile ? 30 : 40,
-                onPressed: currentIndex > 0
-                    ? () => _previousImage(projectId)
-                    : null,
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-              ),
-            // Image Container
-            Expanded(
-              child: SizedBox(
-                width: double.infinity,
-                height: double.infinity,
+            // Image full (tap to enlarge)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => _showFullScreenFromSectionIds(
+                  context,
+                  existingImageIds,
+                  fallbackImage,
+                  currentIndex,
+                ),
                 child: PageView.builder(
                   controller: controller,
                   itemCount: existingImageIds.length,
@@ -639,12 +634,6 @@ class _ExclusiveLeasingProjectsScreenState
                   itemBuilder: (context, index) {
                     final sectionId = existingImageIds[index];
                     return Container(
-                      // decoration: BoxDecoration(
-                      //   border: Border.all(
-                      //     color: const Color(0xFFF4ED47),
-                      //     width: 1,
-                      //   ),
-                      // ),
                       child: Consumer<ContentProvider>(
                         builder: (context, contentProvider, child) {
                           return FutureBuilder<Widget>(
@@ -676,17 +665,8 @@ class _ExclusiveLeasingProjectsScreenState
                 ),
               ),
             ),
-            // Right Arrow (outside image)
-            if (existingImageIds.length > 1)
-              IconButton(
-                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                iconSize: isMobile ? 30 : 40,
-                onPressed: currentIndex < existingImageIds.length - 1
-                    ? () => _nextImage(projectId)
-                    : null,
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-              ),
+
+
           ],
         );
           },
@@ -712,27 +692,13 @@ class _ExclusiveLeasingProjectsScreenState
       return _buildSingleImage(imagesToShow[0], isMobile, false);
     }
 
-    // Multiple local images - show carousel
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+    // Multiple local images - arrows ON image with black bar (opacity 0.2) under them
+    return Stack(
+      alignment: Alignment.topCenter,
       children: [
-        // Left Arrow (outside image)
-        if (imagesToShow.length > 1)
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            iconSize: isMobile ? 30 : 40,
-            onPressed: currentIndex > 0
-                ? () => _previousImage(projectId)
-                : null,
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
-          ),
-        // Image Container
-        Expanded(
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
+        Positioned.fill(
+          child: GestureDetector(
+            onTap: () => _showFullScreenImages(context, imagesToShow, currentIndex),
             child: PageView.builder(
               controller: controller,
               itemCount: imagesToShow.length,
@@ -742,35 +708,74 @@ class _ExclusiveLeasingProjectsScreenState
                 });
               },
               itemBuilder: (context, index) {
-                return Container(
-                  // decoration: BoxDecoration(
-                  //   border: Border.all(
-                  //     color: const Color(0xFFF4ED47),
-                  //     width: 1,
-                  //   ),
-                  // ),
-                  child: _buildImageWithErrorHandling(
-                    imagesToShow[index],
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
+                return _buildImageWithErrorHandling(
+                  imagesToShow[index],
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
                 );
               },
             ),
           ),
         ),
-        // Right Arrow (outside image)
-        if (imagesToShow.length > 1)
-          IconButton(
-            icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-            iconSize: isMobile ? 30 : 40,
-            onPressed: currentIndex < imagesToShow.length - 1
-                ? () => _nextImage(projectId)
-                : null,
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
+        if (imagesToShow.length > 1) ...[
+          // Left strip (full height) – black opacity 0.2 + left arrow
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            child: Container(
+              width: isMobile ? 48.w : 56.w,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+              ),
+              child: Center(
+                child: IconButton(
+                  icon: Builder(
+                    builder: (context) {
+                      final isArabic =
+                          Provider.of<AppLanguage>(context, listen: false).appLang ==
+                              Languages.ar;
+                      return Icon(isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios, color: Colors.white);
+                    }
+                  ),
+                  iconSize: isMobile ? 28 : 36,
+                  onPressed: currentIndex > 0
+                      ? () => _previousImage(projectId)
+                      : null,
+                ),
+              ),
+            ),
           ),
+          // Right strip (full height) – black opacity 0.2 + right arrow
+          Positioned(
+            top: 0,
+            bottom: 0,
+            right: 0,
+            child: Container(
+              width: isMobile ? 48.w : 56.w,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.2),
+              ),
+              child: Center(
+                child: IconButton(
+                  icon: Builder(
+                    builder: (context) {
+                      final isArabic =
+                          Provider.of<AppLanguage>(context, listen: false).appLang ==
+                              Languages.ar;
+                      return Icon(isArabic ? Icons.arrow_back_ios : Icons.arrow_forward_ios, color: Colors.white);
+                    }
+                  ),
+                  iconSize: isMobile ? 28 : 36,
+                  onPressed: currentIndex < imagesToShow.length - 1
+                      ? () => _nextImage(projectId)
+                      : null,
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -779,37 +784,14 @@ class _ExclusiveLeasingProjectsScreenState
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            child: _buildImageWithErrorHandling(
-              imagePath,
-              width: 600.sp,
-              height: 600.sp,
-              fit: BoxFit.cover,
-            ),
-          ),
-          // Arrows (hidden if only one image)
-          if (showArrows) ...[
-            Positioned(
-              left: 0,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                iconSize: isMobile ? 30 : 40,
-                onPressed: null,
-              ),
-            ),
-            Positioned(
-              right: 0,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                iconSize: isMobile ? 30 : 40,
-                onPressed: null,
-              ),
-            ),
-          ],
-        ],
+      child: GestureDetector(
+        onTap: () => _showFullScreenImages(context, [imagePath], 0),
+        child: _buildImageWithErrorHandling(
+          imagePath,
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
@@ -855,6 +837,106 @@ class _ExclusiveLeasingProjectsScreenState
           ),
         );
       },
+    );
+  }
+
+  void _showFullScreenImages(
+    BuildContext context,
+    List<String> assetPaths,
+    int initialIndex,
+  ) {
+    if (assetPaths.isEmpty) return;
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            iconTheme: const IconThemeData(color: Colors.white),
+            title: Text(
+              '${initialIndex + 1} / ${assetPaths.length}',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          body: PhotoViewGallery.builder(
+            scrollPhysics: const BouncingScrollPhysics(),
+            itemCount: assetPaths.length,
+            backgroundDecoration: const BoxDecoration(color: Colors.black),
+            pageController: PageController(initialPage: initialIndex),
+            onPageChanged: (index) {},
+            builder: (context, index) {
+              return PhotoViewGalleryPageOptions(
+                imageProvider: AssetImage(assetPaths[index]),
+                initialScale: PhotoViewComputedScale.contained,
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 2,
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showFullScreenFromSectionIds(
+    BuildContext context,
+    List<String> sectionIds,
+    String fallbackAsset,
+    int initialIndex,
+  ) {
+    if (sectionIds.isEmpty) return;
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            iconTheme: const IconThemeData(color: Colors.white),
+            title: Text(
+              '${initialIndex + 1} / ${sectionIds.length}',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          body: PageView.builder(
+            controller: PageController(initialPage: initialIndex),
+            itemCount: sectionIds.length,
+            itemBuilder: (context, index) {
+              final sectionId = sectionIds[index];
+              return Consumer<ContentProvider>(
+                builder: (context, contentProvider, child) {
+                  return FutureBuilder<Widget>(
+                    future: ContentHelper.getImage(
+                      context,
+                      'exclusive-leasing-projects',
+                      sectionId,
+                      fallbackAssetPath: fallbackAsset,
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.contain,
+                    ),
+                    builder: (context, snapshot) {
+                      final size = MediaQuery.of(context).size;
+                      if (snapshot.hasData) {
+                        return PhotoView.customChild(
+                          child: snapshot.data!,
+                          childSize: Size(size.width, size.height),
+                          minScale: PhotoViewComputedScale.contained,
+                          maxScale: PhotoViewComputedScale.covered * 2,
+                        );
+                      }
+                      return PhotoView(
+                        imageProvider: AssetImage(fallbackAsset),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered * 2,
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 

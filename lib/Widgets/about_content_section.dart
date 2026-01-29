@@ -4,7 +4,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incm/Modules/About/about_screen.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:provider/provider.dart';
 import '../core/Language/locales.dart';
+import '../core/Language/app_languages.dart';
 import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
@@ -37,17 +39,33 @@ class _AboutContentSectionState extends State<AboutContentSection> {
     return VisibilityDetector(
       key: const Key('about-content-section'),
       onVisibilityChanged: _onVisibilityChanged,
-      child: Container(
-        width: double.infinity,
-        height: 1200.h,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(Assets.imagesAboutUsBackground),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Stack(
-          children: [
+      child: Consumer<AppLanguage>(
+        builder: (context, appLanguage, _) {
+          final isArabic = appLanguage.appLang == Languages.ar;
+          
+          return Stack(
+            children: [
+              // Background image (flipped only for Arabic)
+              Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()..scale(isArabic ? -1.0 : 1.0, 1.0),
+                child: Container(
+                  width: double.infinity,
+                  height: 1200.h,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(Assets.imagesAboutUsBackground),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              // Content on top
+              Container(
+                width: double.infinity,
+                height: 1200.h,
+                child: Stack(
+                  children: [
             // Content positioned on the left side like in the image
             Positioned(
               //left: 80.w,
@@ -146,7 +164,11 @@ class _AboutContentSectionState extends State<AboutContentSection> {
               ),
           ),
         ],
-      ),
+            ),
+          ),
+        ],
+          );
+        },
       ),
     );
   }

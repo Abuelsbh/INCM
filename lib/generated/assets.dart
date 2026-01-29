@@ -222,17 +222,17 @@ class Assets {
   static const String imagesExclusiveLeasingUmcC0025T01 = 'assets/images/exclusive-leasing/umc/C0025T01.JPG';
   static const String imagesExclusiveLeasingUmcDjiStill002 = 'assets/images/exclusive-leasing/umc/DJI_20240516182911_0051_D.00_00_00_00.Still002.jpg';
   static const String imagesExclusiveLeasingParkMallParkMall = 'assets/images/exclusive-leasing/park mall/park mall.png';
-  static const String imagesExclusiveLeasingTerraceDsc07468 = 'assets/images/exclusive-leasing/terrace/DSC07468.JPG';
-  static const String imagesExclusiveLeasingTerraceDsc07664 = 'assets/images/exclusive-leasing/terrace/DSC07664.JPG';
-  static const String imagesExclusiveLeasingTerraceDsc07812 = 'assets/images/exclusive-leasing/terrace/DSC07812.JPG';
-  static const String imagesExclusiveLeasingTerraceDsc07992 = 'assets/images/exclusive-leasing/terrace/DSC07992.JPG';
+  static const String imagesExclusiveLeasingTerraceDsc07468 = 'assets/images/exclusive-leasing/terrace/DSC07468.jpg';
+  static const String imagesExclusiveLeasingTerraceDsc07664 = 'assets/images/exclusive-leasing/terrace/DSC07664.jpg';
+  static const String imagesExclusiveLeasingTerraceDsc07812 = 'assets/images/exclusive-leasing/terrace/DSC07812.jpg';
+  static const String imagesExclusiveLeasingTerraceDsc07992 = 'assets/images/exclusive-leasing/terrace/DSC07992.jpg';
   static const String imagesExclusiveLeasingPoint90Point90 = 'assets/images/exclusive-leasing/point 90/point90.png';
   static const String imagesExclusiveLeasingKernelKernel = 'assets/images/exclusive-leasing/kernel/kernel.png';
   static const String imagesExclusiveLeasingCitySquareDfv = 'assets/images/exclusive-leasing/city squre/dfv.png';
-  static const String imagesExclusiveLeasingVitaliDjiStill016 = 'assets/images/exclusive-leasing/vitali/DJI_20240516182911_0051_D.00_00_09_14.Still016.JPG';
-  static const String imagesExclusiveLeasingVitaliDjiStill010 = 'assets/images/exclusive-leasing/vitali/DJI_20240516182911_0051_D.00_00_11_42.Still010.JPG';
-  static const String imagesExclusiveLeasingVitaliDjiStill015 = 'assets/images/exclusive-leasing/vitali/DJI_20240516182911_0051_D.00_00_51_13.Still015.JPG';
-  static const String imagesExclusiveLeasingVitaliDjiStill011 = 'assets/images/exclusive-leasing/vitali/DJI_20240516182911_0051_D.00_01_00_13.Still011.JPG';
+  static const String imagesExclusiveLeasingVitaliDjiStill016 = 'assets/images/exclusive-leasing/vitali/DJI_20240516182911_0051_D.00_00_09_14.Still016.jpg';
+  static const String imagesExclusiveLeasingVitaliDjiStill010 = 'assets/images/exclusive-leasing/vitali/DJI_20240516182911_0051_D.00_00_11_42.Still010.jpg';
+  static const String imagesExclusiveLeasingVitaliDjiStill015 = 'assets/images/exclusive-leasing/vitali/DJI_20240516182911_0051_D.00_00_51_13.Still015.jpg';
+  static const String imagesExclusiveLeasingVitaliDjiStill011 = 'assets/images/exclusive-leasing/vitali/DJI_20240516182911_0051_D.00_01_00_13.Still011.jpg';
   static const String imagesExclusiveLeasingSeashellUntitled1521 = 'assets/images/exclusive-leasing/seashell/Untitled-1521.png';
 
   static const String imagesFooterDesktop = 'assets/images/footerDESKTOP.png';

@@ -8,6 +8,8 @@ import '../../../Widgets/content_service_section.dart';
 import '../../../Widgets/custom_app_bar.dart';
 import '../../../Widgets/custom_app_bar_mob.dart';
 import '../../../Widgets/floating_contact_buttons.dart';
+import '../../../Widgets/footer_section.dart';
+import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
@@ -294,6 +296,11 @@ class RetailLeasingScreen extends StatelessWidget {
                     ),
                   ),
                   const ContentServiceSection(),
+
+                  if(MediaQuery.of(context).size.width >= 600)
+                    const FooterSection()
+                  else if(kIsWeb)
+                    const FooterSectionMob(),
                 ],
               ),
             ),
