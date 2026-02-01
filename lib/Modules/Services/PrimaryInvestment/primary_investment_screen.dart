@@ -77,7 +77,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.fromLTRB(
                                     isMobile ? 10.w : 50.w,
-                                    isMobile ? 45.h : 240.h,
+                                    isMobile ? 60.h : 240.h,
                                     isMobile ? 10.w : 50.w,
                                     20.h),
                                 child: Column(
@@ -95,11 +95,13 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Gap(isMobile ? 32.h : 280.h),
+                                    Gap(isMobile ? 8.h : 240.h),
                                     // Description paragraphs section
                                     Padding(
                                       padding: EdgeInsets.symmetric(horizontal: isMobile ? 60.w : 240.w, vertical: isMobile ? 0.h : 80.h),
                                       child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           Column(
                                             mainAxisAlignment: MainAxisAlignment.start,
@@ -199,20 +201,36 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                       ),
                                     ),
                                     SizedBox(height: isMobile ? 100.h : 700.h),
-                                    _buildDescriptionBox(
-                                      context: context,
-                                      isMobile: isMobile,
-                                      pageId: 'primary-investment',
-                                      sectionId: 'description-1',
-                                      defaultValue: 'PRIMARY_DESCRIPTION_1',
+                                    Builder(
+                                      builder: (context) {
+                                        final isArabic =
+                                            Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                                Languages.ar;
+                                        return _buildDescriptionBox(
+                                          context: context,
+                                          isMobile: isMobile,
+                                          pageId: 'primary-investment',
+                                          sectionId: 'description-1',
+                                          defaultValue: 'PRIMARY_DESCRIPTION_1',
+                                          textAlign: isArabic ? TextAlign.center : null
+                                        );
+                                      }
                                     ),
                                     SizedBox(height: isMobile ? 20.h : 100.h),
-                                    _buildDescriptionBox(
-                                      context: context,
-                                      isMobile: isMobile,
-                                      pageId: 'primary-investment',
-                                      sectionId: 'description-2',
-                                      defaultValue: 'PRIMARY_DESCRIPTION_2',
+                                    Builder(
+                                      builder: (context) {
+                                        final isArabic =
+                                            Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                                Languages.ar;
+                                        return _buildDescriptionBox(
+                                          context: context,
+                                          isMobile: isMobile,
+                                          pageId: 'primary-investment',
+                                          sectionId: 'description-2',
+                                          defaultValue: 'PRIMARY_DESCRIPTION_2',
+                                            textAlign: isArabic ? TextAlign.center : null
+                                        );
+                                      }
                                     ),
                                     Gap(isMobile ? 10.h : 240.h),
                                     // Our Services Include Section
@@ -295,6 +313,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
     String? defaultValue,
     Color? textColor,
     double? width,
+    TextAlign? textAlign,
   }) {
     return Container(
       width: width,
@@ -307,6 +326,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
           ? DynamicText(
               pageId: pageId,
               sectionId: sectionId,
+              textAlign: textAlign,
               defaultValue: defaultValue ?? text ?? '',
               style: TextStyle(
                 color: textColor ?? Colors.white,

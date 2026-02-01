@@ -40,10 +40,6 @@ class _ExclusiveLeasingProjectsScreenState
   late Animation<double> _fadeAnimation;
   bool _hasAnimated = false;
 
-  // Page controllers for each project's image carousel
-  final Map<String, PageController> _pageControllers = {};
-  final Map<String, int> _currentImageIndex = {};
-  
   // GlobalKeys for scrolling to specific projects
   final Map<String, GlobalKey> _projectKeys = {};
 
@@ -158,18 +154,24 @@ class _ExclusiveLeasingProjectsScreenState
       ),
     );
 
-    // Initialize page controllers, current indices, and keys for each project
+    // Initialize keys for each project
     for (var project in projects) {
       final projectId = project['id'] as String;
-      _pageControllers[projectId] = PageController();
-      _currentImageIndex[projectId] = 0;
       _projectKeys[projectId] = GlobalKey();
     }
 
-    // Start animation immediately
+    // Precache local images for smoother carousel transitions
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _animationController.forward();
+        for (var project in projects) {
+          final localImages = List<String>.from(
+            project['localImages'] as List<dynamic>? ?? [],
+          );
+          for (var path in localImages) {
+            precacheImage(AssetImage(path), context);
+          }
+        }
       }
     });
   }
@@ -236,9 +238,6 @@ class _ExclusiveLeasingProjectsScreenState
   void dispose() {
     _animationController.dispose();
     _scrollController.dispose();
-    for (var controller in _pageControllers.values) {
-      controller.dispose();
-    }
     super.dispose();
   }
 
@@ -249,27 +248,6 @@ class _ExclusiveLeasingProjectsScreenState
           !_animationController.isCompleted) {
         _animationController.forward();
       }
-    }
-  }
-
-  void _nextImage(String projectId) {
-    final controller = _pageControllers[projectId];
-    if (controller != null && controller.hasClients) {
-      // For now, we'll cycle through images. In the future, this will load from Firebase
-      controller.nextPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _previousImage(String projectId) {
-    final controller = _pageControllers[projectId];
-    if (controller != null && controller.hasClients) {
-      controller.previousPage(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
     }
   }
 
@@ -340,15 +318,24 @@ class _ExclusiveLeasingProjectsScreenState
                               ),
                               SizedBox(height: isMobile ? 40.h : 80.h),
                               // Projects List
-                              ...projects.asMap().entries.map((entry) {
+                              ...projects.asMap().entries.expand((entry) {
                                 final index = entry.key;
                                 final project = entry.value;
-                                return _buildProjectCard(
-                                  context,
-                                  project,
-                                  isMobile,
-                                  index == projects.length - 1, // isLast
-                                );
+                                final isLast = index == projects.length - 1;
+                                return [
+                                  _buildProjectCard(context, project, isMobile),
+                                  if (!isLast)
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: isMobile ? 20.h : 40.h,
+                                      ),
+                                      child: Divider(
+                                        color: Colors.white.withOpacity(0.25),
+                                        thickness: 1,
+                                        height: 1,
+                                      ),
+                                    ),
+                                ];
                               }),
                               SizedBox(height: isMobile ? 40.h : 80.h),
                             ],
@@ -390,7 +377,6 @@ class _ExclusiveLeasingProjectsScreenState
     BuildContext context,
     Map<String, dynamic> project,
     bool isMobile,
-    bool isLast,
   ) {
     final projectId = project['id'] as String;
     final logoFallback = project['logoFallback'] as String;
@@ -400,9 +386,6 @@ class _ExclusiveLeasingProjectsScreenState
 
     return Container(
       key: _projectKeys[projectId],
-      margin: EdgeInsets.only(
-        bottom: isLast ? 0 : (isMobile ? 30.h : 100.h),
-      ),
       child: isMobile
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -567,12 +550,6 @@ class _ExclusiveLeasingProjectsScreenState
     String fallbackImage,
     bool isMobile,
   ) {
-    // Load images for this project (check for image-0, image-1, image-2, etc.)
-    // We'll check up to 20 images to allow more flexibility
-    final controller = _pageControllers[projectId]!;
-    final currentIndex = _currentImageIndex[projectId] ?? 0;
-
-    // Get local images for this project
     final project = projects.firstWhere(
       (p) => p['id'] == projectId,
       orElse: () => {'localImages': []},
@@ -581,10 +558,9 @@ class _ExclusiveLeasingProjectsScreenState
       project['localImages'] as List<dynamic>? ?? [],
     );
 
-    // Build list of image section IDs to check
     final List<String> imageSectionIds = [];
     for (int i = 0; i < 20; i++) {
-      imageSectionIds.add('${projectId}-image-$i');
+      imageSectionIds.add('$projectId-image-$i');
     }
 
     return Consumer<ContentProvider>(
@@ -592,207 +568,33 @@ class _ExclusiveLeasingProjectsScreenState
         return FutureBuilder<List<String?>>(
           future: _loadImageSectionIds(imageSectionIds),
           builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          // Loading state - show local images or fallback
-          return _buildLocalImagesCarousel(localImages, fallbackImage, isMobile, projectId);
-        }
+            if (!snapshot.hasData) {
+              return _ProjectImageCarousel(
+                projectId: projectId,
+                fallbackImage: fallbackImage,
+                isMobile: isMobile,
+                localImages: localImages,
+                firebaseImageIds: null,
+              );
+            }
 
-        // Filter out null values to get only existing images from Firebase
-        final existingImageIds = snapshot.data!
-            .asMap()
-            .entries
-            .where((e) => e.value != null && e.value!.isNotEmpty)
-            .map((e) => imageSectionIds[e.key])
-            .toList();
+            final existingImageIds = snapshot.data!
+                .asMap()
+                .entries
+                .where((e) => e.value != null && e.value!.isNotEmpty)
+                .map((e) => imageSectionIds[e.key])
+                .toList();
 
-        // If no Firebase images found, use local images
-        if (existingImageIds.isEmpty) {
-          return _buildLocalImagesCarousel(localImages, fallbackImage, isMobile, projectId);
-        }
-
-        // Multiple images - arrows ON image with semi-transparent black bar under them
-        return Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            // Image full (tap to enlarge)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: () => _showFullScreenFromSectionIds(
-                  context,
-                  existingImageIds,
-                  fallbackImage,
-                  currentIndex,
-                ),
-                child: PageView.builder(
-                  controller: controller,
-                  itemCount: existingImageIds.length,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentImageIndex[projectId] = index;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    final sectionId = existingImageIds[index];
-                    return Container(
-                      child: Consumer<ContentProvider>(
-                        builder: (context, contentProvider, child) {
-                          return FutureBuilder<Widget>(
-                            future: ContentHelper.getImage(
-                              context,
-                              'exclusive-leasing-projects',
-                              sectionId,
-                              fallbackAssetPath: fallbackImage,
-                              width: double.infinity,
-                              height: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return snapshot.data!;
-                              }
-                              return _buildImageWithErrorHandling(
-                                fallbackImage,
-                                width: 600.sp,
-                                height: 600.sp,
-                                fit: BoxFit.cover,
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-
-
-          ],
-        );
+            return _ProjectImageCarousel(
+              projectId: projectId,
+              fallbackImage: fallbackImage,
+              isMobile: isMobile,
+              localImages: localImages,
+              firebaseImageIds: existingImageIds.isEmpty ? null : existingImageIds,
+            );
           },
         );
       },
-    );
-  }
-
-  Widget _buildLocalImagesCarousel(
-    List<String> localImages,
-    String fallbackImage,
-    bool isMobile,
-    String projectId,
-  ) {
-    final controller = _pageControllers[projectId]!;
-    final currentIndex = _currentImageIndex[projectId] ?? 0;
-    
-    // Use local images if available, otherwise use fallback
-    final imagesToShow = localImages.isNotEmpty ? localImages : [fallbackImage];
-    
-    if (imagesToShow.length == 1) {
-      // Single image - no carousel needed
-      return _buildSingleImage(imagesToShow[0], isMobile, false);
-    }
-
-    // Multiple local images - arrows ON image with black bar (opacity 0.2) under them
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        Positioned.fill(
-          child: GestureDetector(
-            onTap: () => _showFullScreenImages(context, imagesToShow, currentIndex),
-            child: PageView.builder(
-              controller: controller,
-              itemCount: imagesToShow.length,
-              onPageChanged: (index) {
-                setState(() {
-                  _currentImageIndex[projectId] = index;
-                });
-              },
-              itemBuilder: (context, index) {
-                return _buildImageWithErrorHandling(
-                  imagesToShow[index],
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                );
-              },
-            ),
-          ),
-        ),
-        if (imagesToShow.length > 1) ...[
-          // Left strip (full height) – black opacity 0.2 + left arrow
-          Positioned(
-            top: 0,
-            bottom: 0,
-            left: 0,
-            child: Container(
-              width: isMobile ? 48.w : 56.w,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
-              ),
-              child: Center(
-                child: IconButton(
-                  icon: Builder(
-                    builder: (context) {
-                      final isArabic =
-                          Provider.of<AppLanguage>(context, listen: false).appLang ==
-                              Languages.ar;
-                      return Icon(isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios, color: Colors.white);
-                    }
-                  ),
-                  iconSize: isMobile ? 28 : 36,
-                  onPressed: currentIndex > 0
-                      ? () => _previousImage(projectId)
-                      : null,
-                ),
-              ),
-            ),
-          ),
-          // Right strip (full height) – black opacity 0.2 + right arrow
-          Positioned(
-            top: 0,
-            bottom: 0,
-            right: 0,
-            child: Container(
-              width: isMobile ? 48.w : 56.w,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
-              ),
-              child: Center(
-                child: IconButton(
-                  icon: Builder(
-                    builder: (context) {
-                      final isArabic =
-                          Provider.of<AppLanguage>(context, listen: false).appLang ==
-                              Languages.ar;
-                      return Icon(isArabic ? Icons.arrow_back_ios : Icons.arrow_forward_ios, color: Colors.white);
-                    }
-                  ),
-                  iconSize: isMobile ? 28 : 36,
-                  onPressed: currentIndex < imagesToShow.length - 1
-                      ? () => _nextImage(projectId)
-                      : null,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildSingleImage(String imagePath, bool isMobile, bool showArrows) {
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
-      child: GestureDetector(
-        onTap: () => _showFullScreenImages(context, [imagePath], 0),
-        child: _buildImageWithErrorHandling(
-          imagePath,
-          width: double.infinity,
-          height: double.infinity,
-          fit: BoxFit.cover,
-        ),
-      ),
     );
   }
 
@@ -840,6 +642,319 @@ class _ExclusiveLeasingProjectsScreenState
     );
   }
 
+  Future<List<String?>> _loadImageSectionIds(List<String> sectionIds) async {
+    final contentProvider =
+        Provider.of<ContentProvider>(context, listen: false);
+    final List<String?> results = [];
+
+    for (final sectionId in sectionIds) {
+      try {
+        final base64 = await contentProvider.getImageContent(
+          'exclusive-leasing-projects',
+          sectionId,
+        );
+        results.add(base64);
+      } catch (e) {
+        results.add(null);
+      }
+    }
+
+    return results;
+  }
+
+  String _getDefaultDescription(String projectId) {
+    switch (projectId) {
+      case 'umc':
+        return 'EXCLUSIVE_LEASING_UMC_DESCRIPTION';
+      case 'park-mall':
+        return 'EXCLUSIVE_LEASING_PARK_MALL_DESCRIPTION';
+      case 'terrace':
+        return 'EXCLUSIVE_LEASING_TERRACE_DESCRIPTION';
+      case 'point90':
+        return 'EXCLUSIVE_LEASING_POINT90_DESCRIPTION';
+      case 'kernel':
+        return 'EXCLUSIVE_LEASING_KERNEL_DESCRIPTION';
+      case 'city-square':
+        return 'EXCLUSIVE_LEASING_CITY_SQUARE_DESCRIPTION';
+      case 'vitali':
+        return 'EXCLUSIVE_LEASING_VITALI_DESCRIPTION';
+      case 'seashell':
+        return 'EXCLUSIVE_LEASING_SEASHELL_DESCRIPTION';
+      default:
+        return '';
+    }
+  }
+}
+
+/// Isolated carousel widget - setState only rebuilds this widget, not the whole screen
+class _ProjectImageCarousel extends StatefulWidget {
+  final String projectId;
+  final String fallbackImage;
+  final bool isMobile;
+  final List<String> localImages;
+  final List<String>? firebaseImageIds;
+
+  const _ProjectImageCarousel({
+    required this.projectId,
+    required this.fallbackImage,
+    required this.isMobile,
+    required this.localImages,
+    this.firebaseImageIds,
+  });
+
+  @override
+  State<_ProjectImageCarousel> createState() => _ProjectImageCarouselState();
+}
+
+class _ProjectImageCarouselState extends State<_ProjectImageCarousel> {
+  late PageController _pageController;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _nextImage() {
+    if (!_pageController.hasClients) return;
+    final count = widget.firebaseImageIds?.length ??
+        (widget.localImages.isNotEmpty ? widget.localImages.length : 1);
+    if (_currentIndex < count - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    } else {
+      _pageController.animateToPage(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
+  void _previousImage() {
+    if (!_pageController.hasClients) return;
+    final count = widget.firebaseImageIds?.length ??
+        (widget.localImages.isNotEmpty ? widget.localImages.length : 1);
+    if (_currentIndex > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    } else {
+      _pageController.animateToPage(
+        count - 1,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final imagesToShow = widget.localImages.isNotEmpty
+        ? widget.localImages
+        : [widget.fallbackImage];
+    final arrowWidth = widget.isMobile ? 38.w : 56.w;
+
+    // Firebase images path
+    if (widget.firebaseImageIds != null && widget.firebaseImageIds!.isNotEmpty) {
+      final existingImageIds = widget.firebaseImageIds!;
+      return Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: arrowWidth),
+              child: GestureDetector(
+                onTap: () => _showFullScreenFromSectionIds(
+                  context,
+                  existingImageIds,
+                  widget.fallbackImage,
+                  _currentIndex,
+                ),
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: existingImageIds.length,
+                  allowImplicitScrolling: true,
+                  physics: const PageScrollPhysics(parent: ClampingScrollPhysics()),
+                  onPageChanged: (index) {
+                    setState(() => _currentIndex = index);
+                  },
+                  itemBuilder: (context, index) {
+                    final sectionId = existingImageIds[index];
+                    return RepaintBoundary(
+                      child: Consumer<ContentProvider>(
+                        builder: (context, contentProvider, child) {
+                          return FutureBuilder<Widget>(
+                            future: ContentHelper.getImage(
+                              context,
+                              'exclusive-leasing-projects',
+                              sectionId,
+                              fallbackAssetPath: widget.fallbackImage,
+                              width: double.infinity,
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) return snapshot.data!;
+                              return _buildImageWithErrorHandling(
+                                widget.fallbackImage,
+                                width: 600.sp,
+                                height: 600.sp,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          ..._buildArrowButtons(),
+        ],
+      );
+    }
+
+    // Single local image
+    if (imagesToShow.length == 1) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: arrowWidth),
+        child: GestureDetector(
+          onTap: () => _showFullScreenImages(context, imagesToShow, 0),
+          child: _buildImageWithErrorHandling(
+            imagesToShow[0],
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+
+    // Multiple local images
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Positioned.fill(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: arrowWidth),
+            child: GestureDetector(
+              onTap: () => _showFullScreenImages(context, imagesToShow, _currentIndex),
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: imagesToShow.length,
+                allowImplicitScrolling: true,
+                physics: const PageScrollPhysics(parent: ClampingScrollPhysics()),
+                onPageChanged: (index) {
+                  setState(() => _currentIndex = index);
+                },
+                itemBuilder: (context, index) {
+                  return RepaintBoundary(
+                    child: _buildImageWithErrorHandling(
+                      imagesToShow[index],
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        ..._buildArrowButtons(),
+      ],
+    );
+  }
+
+  List<Widget> _buildArrowButtons() {
+    final isArabic = Provider.of<AppLanguage>(context, listen: false).appLang == Languages.ar;
+    return [
+      Positioned(
+        left: 0,
+        top: 0,
+        bottom: 0,
+        child: Center(
+          child: IconButton(
+            icon: Icon(
+              isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
+            iconSize: widget.isMobile ? 28 : 36,
+            onPressed: _previousImage,
+          ),
+        ),
+      ),
+      Positioned(
+        right: 0,
+        top: 0,
+        bottom: 0,
+        child: Center(
+          child: IconButton(
+            icon: Icon(
+              isArabic ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+              color: Colors.white,
+            ),
+            iconSize: widget.isMobile ? 28 : 36,
+            onPressed: _nextImage,
+          ),
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildImageWithErrorHandling(
+    String imagePath, {
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    return Image.asset(
+      imagePath,
+      width: width,
+      height: height,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: width,
+          height: height,
+          color: Colors.grey[800],
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.broken_image,
+                  color: Colors.grey[400],
+                  size: (width != null && height != null)
+                      ? (width < height ? width * 0.2 : height * 0.2)
+                      : 48,
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  'Image not available',
+                  style: TextStyle(color: Colors.grey[400], fontSize: 12.sp),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _showFullScreenImages(
     BuildContext context,
     List<String> assetPaths,
@@ -863,7 +978,7 @@ class _ExclusiveLeasingProjectsScreenState
             itemCount: assetPaths.length,
             backgroundDecoration: const BoxDecoration(color: Colors.black),
             pageController: PageController(initialPage: initialIndex),
-            onPageChanged: (index) {},
+            onPageChanged: (_) {},
             builder: (context, index) {
               return PhotoViewGalleryPageOptions(
                 imageProvider: AssetImage(assetPaths[index]),
@@ -938,49 +1053,6 @@ class _ExclusiveLeasingProjectsScreenState
         ),
       ),
     );
-  }
-
-  Future<List<String?>> _loadImageSectionIds(List<String> sectionIds) async {
-    final contentProvider =
-        Provider.of<ContentProvider>(context, listen: false);
-    final List<String?> results = [];
-
-    for (final sectionId in sectionIds) {
-      try {
-        final base64 = await contentProvider.getImageContent(
-          'exclusive-leasing-projects',
-          sectionId,
-        );
-        results.add(base64);
-      } catch (e) {
-        results.add(null);
-      }
-    }
-
-    return results;
-  }
-
-  String _getDefaultDescription(String projectId) {
-    switch (projectId) {
-      case 'umc':
-        return 'EXCLUSIVE_LEASING_UMC_DESCRIPTION';
-      case 'park-mall':
-        return 'EXCLUSIVE_LEASING_PARK_MALL_DESCRIPTION';
-      case 'terrace':
-        return 'EXCLUSIVE_LEASING_TERRACE_DESCRIPTION';
-      case 'point90':
-        return 'EXCLUSIVE_LEASING_POINT90_DESCRIPTION';
-      case 'kernel':
-        return 'EXCLUSIVE_LEASING_KERNEL_DESCRIPTION';
-      case 'city-square':
-        return 'EXCLUSIVE_LEASING_CITY_SQUARE_DESCRIPTION';
-      case 'vitali':
-        return 'EXCLUSIVE_LEASING_VITALI_DESCRIPTION';
-      case 'seashell':
-        return 'EXCLUSIVE_LEASING_SEASHELL_DESCRIPTION';
-      default:
-        return '';
-    }
   }
 }
 

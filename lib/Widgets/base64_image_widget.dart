@@ -68,9 +68,7 @@ class Base64ImageWidget extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        cacheWidth: width?.toInt(),
-        cacheHeight: height?.toInt(),
-        filterQuality: FilterQuality.medium, // Medium quality for better performance
+        filterQuality: FilterQuality.high,
         errorBuilder: (context, error, stackTrace) {
           if (kDebugMode) {
             debugPrint('Base64ImageWidget: Image.memory failed: $error');
@@ -88,15 +86,13 @@ class Base64ImageWidget extends StatelessWidget {
 
   Widget _buildFallback() {
     if (fallbackAssetPath != null) {
-      try {
-        return Image.asset(
+        try {
+          return Image.asset(
           fallbackAssetPath!,
           width: width,
           height: height,
           fit: fit,
-          cacheWidth: width?.toInt(),
-          cacheHeight: height?.toInt(),
-          filterQuality: FilterQuality.medium, // Medium quality for better performance
+          filterQuality: FilterQuality.high,
           errorBuilder: (context, error, stackTrace) {
             return _buildErrorIcon();
           },

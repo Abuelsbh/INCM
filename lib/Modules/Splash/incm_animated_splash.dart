@@ -24,19 +24,7 @@ class _IncmAnimatedSplashState extends State<IncmAnimatedSplash> {
 
   @override
   Widget build(BuildContext context) {
-    // Return the randomly selected design
-    switch (_selectedDesign) {
-      case 1:
-        return const SplashDesign1();
-      case 2:
-        return const SplashDesign2();
-      case 3:
-        return const SplashDesign3();
-      case 4:
-        return const SplashDesign4();
-      default:
-        return const SplashDesign1();
-    }
+    return const SplashDesign1();
   }
 }
 

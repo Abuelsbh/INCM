@@ -107,6 +107,7 @@ class ConsultationScreen extends StatelessWidget {
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
+                                              Gap(6.w),
                                               DynamicText(
                                                 pageId: 'consultation',
                                                 sectionId: 'hero-title-1',
@@ -118,6 +119,8 @@ class ConsultationScreen extends StatelessWidget {
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
+
+
                                             ],
                                           ) : Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +167,7 @@ class ConsultationScreen extends StatelessWidget {
                                             ),
                                           ),
 
-                                          Gap(isMobile ? 100.h : 70.h),
+                                          Gap(isMobile ? 50.h : 70.h),
                                           // Description paragraphs section
 
                                           if(!isMobile)
@@ -247,7 +250,7 @@ class ConsultationScreen extends StatelessWidget {
                                               ),
                                             ),
 
-                                          Gap(isMobile ? 440.h : 320.h),
+                                          Gap(isMobile ? 430.h : 320.h),
                                           // Our Services Include Section
                                           Container(
                                             width: double.infinity,

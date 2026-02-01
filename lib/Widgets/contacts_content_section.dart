@@ -373,11 +373,12 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
         ),
         SizedBox(height: 8.h),
         SizedBox(
-          height: height ?? 48.h, // 🔹 الارتفاع الثابت لكل الحقول
+          height: height ?? 60.h, // 🔹 الارتفاع الثابت لكل الحقول
           child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.r),
+
             border: Border.all(
               color: Colors.grey[300]!,
               width: 1,
@@ -386,10 +387,11 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
           child: TextField(
               controller: controller,
               keyboardType: keyboardType,
+            textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
                 isDense: true,
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
               ),
               style: TextStyle(
                 fontFamily: 'AloeveraDisplayBold',
@@ -418,7 +420,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
         ),
         SizedBox(height: 8.h),
         SizedBox(
-          height: 48.h, // 🔹 نفس الارتفاع
+          height: 60.h, // 🔹 نفس الارتفاع
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -434,14 +436,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                 Container(
                   constraints: BoxConstraints(minWidth: 80.w, maxWidth: 100.w),
                   padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.grey[300]!,
-                        width: 1,
-                      ),
-                    ),
-                  ),
+
                   child: DropdownButton<String>(
                     value: _selectedCountryCode,
                     underline: const SizedBox(),
@@ -486,18 +481,19 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                     decoration: InputDecoration(
                       isDense: true,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                      // contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                      contentPadding: EdgeInsets.zero,
                       hintText: '01XXXXXXXXX',
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
                         fontSize: 26.sp,
                         fontFamily: 'AloeveraDisplayBold',
-              ),
-            ),
-            style: TextStyle(
-              fontFamily: 'AloeveraDisplayBold',
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontFamily: 'AloeveraDisplayBold',
                       fontSize: 26.sp,
-              color: Colors.black,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -529,7 +525,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
         ),
         SizedBox(height: 8.h),
         SizedBox(
-          height: 48.h,
+          height: 60.h,
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,

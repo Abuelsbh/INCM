@@ -213,5 +213,10 @@ class ContentProvider extends ChangeNotifier {
     _singleContentCache.removeWhere((key, value) => value.pageId == pageId);
     notifyListeners();
   }
+
+  /// Stream content for a page (real-time updates from Firebase)
+  Stream<List<ContentModel>> streamPageContent(String pageId) {
+    return _contentService.streamPageContent(pageId);
+  }
 }
 

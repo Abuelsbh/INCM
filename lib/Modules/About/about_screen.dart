@@ -69,8 +69,16 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
   ];
 
   void _nextPage() {
-    if (_currentPage < items.length - 1 && _pageController != null) {
+    if (_pageController == null) return;
+    if (_currentPage < items.length - 1) {
       _pageController!.nextPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      // Loop: from last image go to first
+      _pageController!.animateToPage(
+        0,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
@@ -78,8 +86,16 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
   }
 
   void _previousPage() {
-    if (_currentPage > 0 && _pageController != null) {
+    if (_pageController == null) return;
+    if (_currentPage > 0) {
       _pageController!.previousPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      // Loop: from first image go to last
+      _pageController!.animateToPage(
+        items.length - 1,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
@@ -267,7 +283,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                       children: [
                         _buildContactFormSectionMob(context),
                         Container(
-                          height: 2400.h,
+                          height: 1600.h,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage(Assets.imagesCareerViewMob),
@@ -960,7 +976,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                               itemBuilder: (context, index) {
                                 final item = items[index];
                                 return Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 30.w),
+                                  padding: EdgeInsets.symmetric(horizontal: 40.w),
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: Colors.transparent,
@@ -1021,8 +1037,8 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                                       Provider.of<AppLanguage>(context, listen: false).appLang ==
                                           Languages.ar;
                                   return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios, color: Colors.white),
-                                    iconSize: 40,
+                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios_new, color: Colors.white),
+                                    iconSize: 28,
                                     onPressed: _previousPage,
                                   );
                                 }
@@ -1032,15 +1048,15 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                             // Right arrow
                             Positioned(
                               top: 135,
-                              right: -10,
+                              right: 0,
                               child: Builder(
                                 builder: (context) {
                                   final isArabic =
                                       Provider.of<AppLanguage>(context, listen: false).appLang ==
                                           Languages.ar;
                                   return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_back_ios: Icons.arrow_forward_ios, color: Colors.white),
-                                    iconSize: 40,
+                                    icon: Icon(isArabic?Icons.arrow_back_ios_new: Icons.arrow_forward_ios, color: Colors.white),
+                                    iconSize: 28,
                                     onPressed: _nextPage,
                                   );
                                 }
@@ -1050,25 +1066,6 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Dots indicator
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: List.generate(
-                      //     items.length,
-                      //         (index) => AnimatedContainer(
-                      //       duration: const Duration(milliseconds: 300),
-                      //       margin: const EdgeInsets.symmetric(horizontal: 4),
-                      //       width: _currentPage == index ? 32 : 8,
-                      //       height: 8,
-                      //       decoration: BoxDecoration(
-                      //         color: _currentPage == index
-                      //             ? const Color(0xFFF4ED47)
-                      //             : Colors.white.withOpacity(0.4),
-                      //         borderRadius: BorderRadius.circular(4),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 )

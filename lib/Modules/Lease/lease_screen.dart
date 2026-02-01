@@ -1005,14 +1005,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                     maxWidth: isMobile ? 90.w : 100.w,
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.grey[300]!,
-                        width: 1,
-                      ),
-                    ),
-                  ),
+
                   child: DropdownButton<String>(
                     value: _selectedCountryCode,
                     underline: const SizedBox(),

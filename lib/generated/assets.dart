@@ -47,7 +47,7 @@ class Assets {
   static const String imagesCareerViewMob = 'assets/images/careerViewMob.png';
   static const String imagesCareerViewWeb = 'assets/images/careerViewWeb.png';
   static const String imagesContactPage = 'assets/images/contactPage.png';
-  static const String imagesContactPageMob = 'assets/images/contactPageMob.png';
+  static const String imagesContactPageMob = 'assets/images/contactPageMob.JPG';
   static const String imagesContactUsBackground = 'assets/images/contactUsBackground.png';
   static const String imagesContactUsBackgroundMob = 'assets/images/contactUsBackgroundMob.png';
   static const String imagesDownloadAppStore = 'assets/images/downloadAppStore.png';

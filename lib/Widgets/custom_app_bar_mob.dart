@@ -130,8 +130,8 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                       child: Image.asset(
                         kIsWeb ? Assets.imagesINCMLogo : Assets.imagesINCMLogoMob,
                         height: double.infinity,
-                        fit: BoxFit.contain,
-                        width: kIsWeb ? 100.w : 50.w,
+                        fit: BoxFit.cover,
+                        width: 100.w,
                       ),
                   ),
                   const Spacer(),
@@ -140,7 +140,6 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                   if (kIsWeb) ButtonStyles.getAppButton(
                       context: context,
                       onPressed: () => {},
-                      width: 100.w
                   ),
                   if (kIsWeb) SizedBox(width: 16.w),
 

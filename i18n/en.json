@@ -153,6 +153,8 @@
   "ABOUT": "ABOUT ",
   "SERVICE": " SERVICE",
   "ITS_A": "IT'S A ",
+  "SERVICE_TITLE_PREFIX": "",
+  "SERVICE_TITLE_SUFFIX": " Service",
   "ADMIN_PANEL": "Control Panel",
   "ADMIN_PANEL_AR": "لوحة التحكم",
   "ERROR_IMAGE_EMPTY": "Error: Image is empty",

@@ -2,14 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import '../core/Content/content_helper.dart';
 import '../core/Content/content_provider.dart';
 import '../Models/content_model.dart';
-import 'base64_image_widget.dart';
 
 // Import File only for non-web platforms
 import 'dart:io' if (dart.library.html) 'dart:html' as html;
@@ -139,34 +136,54 @@ class _HomeMediaSectionState extends State<HomeMediaSection> {
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = MediaQuery.of(context).size.width >= 600;
-    final height = isDesktop ? 1200.0 : 786.0;
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
+    const sectionId = 'home-media-section';
 
-    // Use Consumer to listen to ContentProvider changes
+    // Use Stream so data loads when Firebase has it and updates in real time
     return Consumer<ContentProvider>(
       builder: (context, contentProvider, child) {
-        return FutureBuilder<ContentModel?>(
-          // Clear cache and reload when provider notifies
-          future: contentProvider.getContent('home', 'home-media-section'),
+        return StreamBuilder<List<ContentModel>>(
+          stream: contentProvider.streamPageContent('home'),
           builder: (context, snapshot) {
-            // Show loading while fetching
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting &&
+                !snapshot.hasData) {
               return const SizedBox.shrink();
             }
 
-            // Don't show if no content from admin panel
-            if (!snapshot.hasData || snapshot.data == null) {
+            final list = snapshot.data ?? [];
+            ContentModel? content;
+            for (final c in list) {
+              if (c.sectionId == sectionId) {
+                content = c;
+                break;
+              }
+            }
+            if (content == null) {
               return const SizedBox.shrink();
             }
 
-            final content = snapshot.data!;
             final contentType = content.type;
+
+            // لو الصورة/الفيديو مش هينعرض — ما نعرضش أي حاجة من البداية
+            final hasValidImage = contentType == ContentType.image &&
+                ((content.imageBase64 != null && content.imageBase64!.trim().isNotEmpty) ||
+                    (content.values['link'] != null && content.values['link']!.trim().isNotEmpty));
+            final hasValidVideo = contentType == ContentType.video &&
+                ((content.imageBase64 != null && content.imageBase64!.trim().isNotEmpty) ||
+                    (content.values['link'] != null && content.values['link']!.trim().isNotEmpty));
+            if (contentType == ContentType.image && !hasValidImage) {
+              return const SizedBox.shrink();
+            }
+            if (contentType == ContentType.video && !hasValidVideo) {
+              return const SizedBox.shrink();
+            }
 
             // Check if content has changed
             final contentChanged = _lastContentId != content.id;
             if (contentChanged) {
               _lastContentId = content.id;
-              // Dispose old video controller if content changed
               if (_videoController != null) {
                 _videoController?.dispose();
                 _videoController = null;
@@ -175,18 +192,26 @@ class _HomeMediaSectionState extends State<HomeMediaSection> {
               }
             }
 
-            // Initialize video if needed (using WidgetsBinding to avoid calling in build)
-            if (contentType == ContentType.video && _videoController == null && !_isInitializing) {
+            if (contentType == ContentType.video &&
+                _videoController == null &&
+                !_isInitializing) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                _initializeVideo(content);
+                _initializeVideo(content!);
               });
             }
 
+            // للفيديو: ما نعرضش القسم غير لما الفيديو يكون جاهز (ما نعرضش loading أو خلفية)
+            if (contentType == ContentType.video) {
+              if (_videoController == null || !_isVideoInitialized) {
+                return const SizedBox.shrink();
+              }
+            }
+
             return RepaintBoundary(
-              child: Container(
-                width: double.infinity,
-                height: height.h,
-                child: _buildMedia(contentType),
+              child: SizedBox(
+                width: width,
+                height: height,
+                child: _buildMedia(contentType, content),
               ),
             );
           },
@@ -195,25 +220,19 @@ class _HomeMediaSectionState extends State<HomeMediaSection> {
     );
   }
 
-  Widget _buildMedia(ContentType contentType) {
+  Widget _buildMedia(ContentType contentType, ContentModel content) {
     if (contentType == ContentType.video) {
       return _buildVideo();
     } else if (contentType == ContentType.image) {
-      return _buildImage();
+      return _buildImage(content);
     }
     return const SizedBox.shrink();
   }
 
   Widget _buildVideo() {
     if (_videoController == null || !_isVideoInitialized) {
-      return Container(
-        color: Colors.black,
-        child: const Center(
-          child: CircularProgressIndicator(color: Colors.white),
-        ),
-      );
+      return const SizedBox.shrink();
     }
-
     return FittedBox(
       fit: BoxFit.cover,
       child: SizedBox(
@@ -224,31 +243,48 @@ class _HomeMediaSectionState extends State<HomeMediaSection> {
     );
   }
 
-  Widget _buildImage() {
-    return Consumer<ContentProvider>(
-      builder: (context, contentProvider, child) {
-        return FutureBuilder<Widget>(
-          future: ContentHelper.getImage(
-            context,
-            'home',
-            'home-media-section',
-            width: double.infinity,
-            height: null,
-            fit: BoxFit.cover,
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return snapshot.data!;
-            }
-            return Container(
-              color: Colors.grey[300],
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          },
-        );
-      },
-    );
+  Widget _buildImage(ContentModel content) {
+    final link = content.values['link']?.trim();
+    if (link != null && link.isNotEmpty) {
+      return Image.network(
+        link,
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+        filterQuality: FilterQuality.medium,
+        loadingBuilder: (_, child, progress) {
+          if (progress == null) return child;
+          return const SizedBox.shrink();
+        },
+        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+      );
+    }
+
+    final base64 = content.imageBase64?.trim();
+    if (base64 == null || base64.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    String cleanBase64 = base64;
+    if (cleanBase64.startsWith('data:image')) {
+      final parts = cleanBase64.split(',');
+      if (parts.length == 2) cleanBase64 = parts[1].trim();
+    }
+    cleanBase64 = cleanBase64.replaceAll(RegExp(r'\s'), '');
+    if (cleanBase64.isEmpty) return const SizedBox.shrink();
+
+    try {
+      final bytes = base64Decode(cleanBase64);
+      if (bytes.isEmpty) return const SizedBox.shrink();
+      return Image.memory(
+        bytes,
+        width: double.infinity,
+        height: double.infinity,
+        fit: BoxFit.cover,
+        filterQuality: FilterQuality.medium,
+        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+      );
+    } catch (_) {
+      return const SizedBox.shrink();
+    }
   }
 }

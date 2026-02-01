@@ -173,7 +173,7 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
                                     left: isMobile ? 8.w : 0,
                                   ),
                                   child: Text(
-                                    serviceName,
+                                    serviceName.toUpperCase(),
                                     style: TextStyle(
                                       fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                       color: const Color(0xFFF4ED47),

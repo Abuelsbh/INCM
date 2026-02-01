@@ -19,6 +19,7 @@ import '../../Widgets/footer_section_mob.dart';
 import '../../Widgets/home_search_section_mob.dart';
 import '../../Widgets/home_welcome_section.dart';
 import '../../Widgets/home_search_section.dart';
+import '../../Widgets/home_media_section.dart';
 import '../../Widgets/about_content_section.dart';
 import '../../Widgets/performance_highlights_section.dart';
 import '../../Widgets/performance_highlights_section_mob.dart';
@@ -49,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isDesktop = screenWidth >= 600;
     final isMobile = screenWidth < 600;
-    
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.black,
@@ -75,8 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       // ),
                       //SizedBox(height: 100.h),
                       const HomeSearchSection(),
-                      //SizedBox(height: 100.h),
-
+                      // صورة/فيديو من الداشبورد — يظهر فقط لو تمت إضافته
+                      const HomeMediaSection(),
                       // About Us Section
                       const AboutContentSection(),
                       //SizedBox(height: 100.h),
@@ -161,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     children: [
                       const HomeSearchSectionMob(),
+                      const HomeMediaSection(),
                       const AboutContentSectionMob(),
                       // Exclusive Projects Section — logos from Firebase for this page only
                       Container(

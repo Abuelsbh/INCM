@@ -24,19 +24,29 @@ class ContentModel extends Equatable {
   });
 
   factory ContentModel.fromMap(Map<String, dynamic> map) {
+    final rawValues = map['values'];
+    Map<String, String> valuesMap = {};
+    if (rawValues != null && rawValues is Map) {
+      for (final e in rawValues.entries) {
+        final k = e.key?.toString();
+        if (k != null && k.isNotEmpty) valuesMap[k] = e.value?.toString() ?? '';
+      }
+    }
+    final createdAtRaw = map['createdAt'];
+    final updatedAtRaw = map['updatedAt'];
     return ContentModel(
-      id: map['id'] ?? '',
-      pageId: map['pageId'] ?? '',
-      sectionId: map['sectionId'] ?? '',
+      id: map['id']?.toString() ?? '',
+      pageId: map['pageId']?.toString() ?? '',
+      sectionId: map['sectionId']?.toString() ?? '',
       type: ContentType.fromString(map['type'] ?? 'text'),
-      values: Map<String, String>.from(map['values'] ?? {}),
-      imageBase64: map['imageBase64'],
-      createdAt: map['createdAt'] != null
-          ? (map['createdAt'] as Timestamp).toDate()
-          : DateTime.now(),
-      updatedAt: map['updatedAt'] != null
-          ? (map['updatedAt'] as Timestamp).toDate()
-          : DateTime.now(),
+      values: valuesMap,
+      imageBase64: map['imageBase64']?.toString(),
+      createdAt: createdAtRaw is Timestamp
+          ? createdAtRaw.toDate()
+          : (createdAtRaw is DateTime ? createdAtRaw : DateTime.now()),
+      updatedAt: updatedAtRaw is Timestamp
+          ? updatedAtRaw.toDate()
+          : (updatedAtRaw is DateTime ? updatedAtRaw : DateTime.now()),
     );
   }
 
@@ -45,7 +55,7 @@ class ContentModel extends Equatable {
       'id': id,
       'pageId': pageId,
       'sectionId': sectionId,
-      'type': type.toString(),
+      'type': type.toString().split('.').last,
       'values': values,
       'imageBase64': imageBase64,
       'createdAt': Timestamp.fromDate(createdAt),
@@ -94,9 +104,14 @@ enum ContentType {
   video,
   link;
 
-  static ContentType fromString(String value) {
+  static ContentType fromString(dynamic value) {
+    if (value == null) return ContentType.text;
+    final s = value.toString().trim();
+    if (s.isEmpty) return ContentType.text;
+    // Firebase may store "ContentType.image" or "image"
+    final key = s.contains('.') ? s.split('.').last.toLowerCase() : s.toLowerCase();
     return ContentType.values.firstWhere(
-      (e) => e.toString().split('.').last == value,
+      (e) => e.toString().split('.').last.toLowerCase() == key,
       orElse: () => ContentType.text,
     );
   }

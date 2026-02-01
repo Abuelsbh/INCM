@@ -470,9 +470,9 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                       ButtonStyles.submitButton(
                         context: context,
                         fontSize: isMobile? 18.sp: 32.sp,
-                            width: isMobile? 85.w : 185.w,
-                            onPressed: _handleSubmit,
-                          ),
+                        width: isMobile? 75.w : 130.w,
+                        onPressed: _handleSubmit,
+                      ),
 
                         ],
                       ),
@@ -572,14 +572,6 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                 Container(
                   constraints: BoxConstraints(minWidth: 80.w, maxWidth: 100.w),
                   padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.grey[300]!,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: DropdownButton<String>(
                     value: _selectedCountryCode,
                     underline: const SizedBox(),
@@ -624,7 +616,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                     decoration: InputDecoration(
                       isDense: true,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                      contentPadding: EdgeInsets.zero,
                       hintText: '01XXXXXXXXX',
                       hintStyle: TextStyle(
                         color: Colors.grey[500],

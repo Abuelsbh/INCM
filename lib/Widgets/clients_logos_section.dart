@@ -262,8 +262,8 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
   /// Preload all base64 logos into memory widgets
   Future<void> _preloadLogos(List<String> base64List) async {
     final isMobile = MediaQuery.of(context).size.width < 600;
-    final logoWidth = widget.logoWidth ?? (isMobile ? 65.w : 180.w);
-    final logoHeight = widget.logoHeight ?? (isMobile ? 85.h : 80.h);
+    final logoWidth = widget.logoWidth ?? (isMobile ? 100.w : 160.w);
+    final logoHeight = widget.logoHeight ?? (isMobile ? 85.h : 140.h);
     
     final preloadedWidgets = <Widget>[];
     
@@ -300,17 +300,15 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
           if (mounted) debugPrint('Warning: Failed to precache image: $e');
         }
         
-        // Create preloaded Image widget with cache dimensions
+        // Create preloaded Image widget - no cacheWidth/cacheHeight to preserve aspect ratio
         final imageWidget = RepaintBoundary(
           child: Image.memory(
             bytes,
             width: logoWidth,
             height: logoHeight,
             fit: BoxFit.contain,
-            cacheWidth: logoWidth.toInt(),
-            cacheHeight: logoHeight.toInt(),
-            filterQuality: FilterQuality.medium, // Medium quality for better performance
-            gaplessPlayback: true, // Smooth transitions
+            filterQuality: FilterQuality.high,
+            gaplessPlayback: true,
             errorBuilder: (context, error, stackTrace) {
               return Icon(
                 Icons.broken_image,
@@ -345,8 +343,8 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
   /// Preload asset logos
   Future<void> _preloadAssetLogos(List<String> assetPaths) async {
     final isMobile = MediaQuery.of(context).size.width < 600;
-    final logoWidth = widget.logoWidth ?? (isMobile ? 65.w : 180.w);
-    final logoHeight = widget.logoHeight ?? (isMobile ? 85.h : 80.h);
+    final logoWidth = widget.logoWidth ?? (isMobile ? 100.w : 160.w);
+    final logoHeight = widget.logoHeight ?? (isMobile ? 85.h : 140.h);
     
     final preloadedWidgets = <Widget>[];
     
@@ -572,7 +570,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
                   // Logos List
                   Container(
                     height: logoHeight + (isMobile ? 4.h : 16.h),
-                    margin: EdgeInsets.symmetric(horizontal: _showArrows ? isMobile ? 24.w : 60.w : 0),
+                    margin: EdgeInsets.symmetric(horizontal: _showArrows ? isMobile ? 34.w : 60.w : 0),
                     child: _isLoadingLogos
                         ? Center(
                             child: CircularProgressIndicator(
@@ -641,7 +639,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
                               Provider.of<AppLanguage>(context, listen: false).appLang ==
                                   Languages.ar;
                           return _buildArrowButton(
-                            icon: isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+                            icon: isArabic ?  Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
                             onPressed: _canScrollLeft ? _scrollLeft : null,
                           );
                         }
@@ -658,7 +656,7 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
                               Provider.of<AppLanguage>(context, listen: false).appLang ==
                                   Languages.ar;
                           return _buildArrowButton(
-                            icon: isArabic ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+                            icon: isArabic ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
                             onPressed: _canScrollRight ? _scrollRight : null,
                           );
                         }

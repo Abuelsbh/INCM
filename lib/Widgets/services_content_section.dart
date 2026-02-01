@@ -311,51 +311,62 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                 children: [
                   // Service title with slide animation
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'ITS_A'.tr(context),
-                        style: TextStyle(
-                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                          color: Colors.white,
-                          fontSize: 60.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      //Gap(12.w),
-                      FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: Text(
-                          getServiceData(context)[currentIndex]['title']!.tr(context).toUpperCase(),
-                          style: TextStyle(
-                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                            color: currentIndex % 2 == 0 ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
-                            fontSize: 60.sp,
-                            fontWeight: FontWeight.bold,
+                  Builder(
+                    builder: (context) {
+                      final isArabic =
+                          Provider.of<AppLanguage>(context, listen: false).appLang ==
+                              Languages.ar;
+                      final serviceTitle = getServiceData(context)[currentIndex]['title']!.tr(context);
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (isArabic)
+                            Text(
+                              'SERVICE_TITLE_PREFIX'.tr(context),
+                              style: TextStyle(
+                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                color: Colors.white,
+                                fontSize: 60.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          else
+                            Text(
+                              'ITS_A'.tr(context),
+                              style: TextStyle(
+                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                color: Colors.white,
+                                fontSize: 60.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              serviceTitle.toUpperCase(),
+                              style: TextStyle(
+                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                color: currentIndex % 2 == 0 ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
+                                fontSize: 60.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      Builder(
-                        builder: (context) {
-                          final isArabic =
-                              Provider.of<AppLanguage>(context, listen: false).appLang ==
-                                  Languages.ar;
-                          return Gap(isArabic ? 16.w : 0);
-                        }
-                      ),
-
-                      Text(
-                        'SERVICE'.tr(context),
-                        style: TextStyle(
-                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                          color: Colors.white,
-                          fontSize: 60.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                          if (!isArabic)
+                            Text(
+                              'SERVICE'.tr(context),
+                              style: TextStyle(
+                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                color: Colors.white,
+                                fontSize: 60.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
 
                   Gap(60.h),

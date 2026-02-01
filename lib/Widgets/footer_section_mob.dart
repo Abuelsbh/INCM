@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../core/Language/locales.dart';
 import '../core/Language/app_languages.dart';
+import '../core/Language/locales.dart';
 import '../generated/assets.dart';
 import 'animated_contact_info.dart';
 
@@ -33,158 +33,156 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
     } else {
       print("Running as Mobile App");
     }
-    return Consumer<AppLanguage>(
-      builder: (context, appLang, child) {
-        final isRTL = appLang.appLang == Languages.ar;
-        return Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.identity()..scale(isRTL ? -1.0 : 1.0, 1.0),
-          child: Container(
-            height: 220.h,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(Assets.imagesFooterMOBILE),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.identity()..scale(isRTL ? -1.0 : 1.0, 1.0),
-      child: Stack(
-        children: [
-          // Main content
-          Padding(
-            padding: EdgeInsets.all(10.w),
-            child: Row(
-              children: [
-                // Left side - Contact info and social media
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Follow Us
-                      // Social media icons
-                      Row(
-                        children: [
-                          Text(
-                            'FOLLOW_US'.tr(context),
-                            style: TextStyle(
-                              color: const Color(0xFFFFFFFF),
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          // _buildSocialIcon(Assets.iconsFace),
-                          // SizedBox(width: 10.w),
-                          // _buildSocialIcon(Assets.iconsInsta),
-                          // SizedBox(width: 10.w),
-                          // _buildSocialIcon(Assets.iconsLinked),
-                          // SizedBox(width: 10.w),
-                          // _buildSocialIcon(Assets.iconsTik),
-                          // SizedBox(width: 28.w),
-
-
-                          //
-                          // AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,
-                          //   onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
-                          // SizedBox(width: 8.w),
-                          // AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,
-                          //   onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 24.r,),
-                          // SizedBox(width: 8.w),
-                          // AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,
-                          //   onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 24.r,),
-                          // SizedBox(width: 8.w),
-                          // AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,
-                          //   onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 24.r,),
-
-
-                          AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
-                            onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
-                          SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
-                            onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 24.r,),
-                          SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
-                            onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 24.r,),
-                          SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
-                            onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 24.r,),
-                        ],
-                      ),
-
-
-                      SizedBox(height: 6.h),
-
-
-                      _AnimatedContactInfoMob(
-                        icon: Assets.iconsMail,
-                        text: 'Incomercial@gmail.com',
-                        isClickable: true,
-                        onTap: () => _sendEmail('Incomercial@gmail.com'),
-                      ),
-
-                      SizedBox(height: 4.h),
-
-                      _AnimatedContactInfoMob(
-                        icon: Assets.iconsLocation,
-                        text: '14 A/2 Admin building, New Cairo, Egypt',
-                        isClickable: true,
-                        onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
-                      ),
-
-
-                      SizedBox(height: 4.h),
-
-                      _AnimatedContactInfoMob(
-                        icon: Assets.iconsCall,
-                        text: '0111-032-7777',
-                        isClickable: true,
-                        onTap: () => _makePhoneCall('0111-032-7777'),
-                      ),
-                    ],
-                  ),
-                ),
-
-              ],
-            ),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Container(
+        height: 220.h,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(Assets.imagesFooterMOBILE),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: Stack(
+          children: [
+            // Main content
+            Padding(
+              padding: EdgeInsets.all(10.w),
+              child: Row(
+                children: [
+                  // Left side - Contact info and social media
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Follow Us
+                        // Social media icons
+                        Builder(
+                          builder: (context) {
+                            final isArabic =
+                                Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                    Languages.ar;
+                            return isArabic ? Row(
+                              children: [
+                                AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 24.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 24.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 24.r,),
+                                SizedBox(width: 12.w),
+                                Text(
+                                  'FOLLOW_US'.tr(context),
+                                  style: TextStyle(
+                                    color: const Color(0xFFFFFFFF),
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ],
+                            ) : Row(
+                              children: [
+                                Text(
+                                  'FOLLOW_US'.tr(context),
+                                  style: TextStyle(
+                                    color: const Color(0xFFFFFFFF),
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                                SizedBox(width: 12.w),
 
-          // Copyright
-          Positioned(
-            bottom: 10.h,
-            left: 0,
-            right: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Center(
-                  child: Text(
-                    'INCOMERCIAL_REAL_ESTATE_2025'.tr(context),
-                    style: TextStyle(
-                      color: const Color(0xFFFFFFFF),
-                      fontSize: 9.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1,
+                                AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 24.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 24.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 24.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 24.r,),
+                              ],
+                            );
+                          }
+                        ),
+
+
+                        SizedBox(height: 6.h),
+
+
+                        _AnimatedContactInfoMob(
+                          icon: Assets.iconsMail,
+                          text: 'info@incomercialeg.com',
+                          isClickable: true,
+                          onTap: () => _sendEmail('info@incomercialeg.com'),
+                        ),
+
+                        SizedBox(height: 4.h),
+
+                        _AnimatedContactInfoMob(
+                          icon: Assets.iconsLocation,
+                          text: '14 A/2 Admin building, New Cairo, Egypt',
+                          isClickable: true,
+                          onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
+                        ),
+
+
+                        SizedBox(height: 4.h),
+
+                        _AnimatedContactInfoMob(
+                          icon: Assets.iconsCall,
+                          text: '0111-032-7777',
+                          isClickable: true,
+                          onTap: () => _makePhoneCall('0111-032-7777'),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Gap(2.h),
-                Center(
-                  child: _buildPoweredByTextWhite(),
-                ),
+
+                ],
+              ),
+            ),
+
+            // Copyright
+            Positioned(
+              bottom: 10.h,
+              left: 0,
+              right: 0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Text(
+                      'INCOMERCIAL REAL ESTATE 2026',
+                      style: TextStyle(
+                        color: const Color(0xFFFFFFFF),
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ),
+                  Gap(2.h),
+                  Center(
+                    child: _buildPoweredByTextWhite(),
+                  ),
+                ],
+              ),
+            ),
               ],
             ),
-          ),
-            ],
-          ),
-            ),
-          ),
-        );
-      },
+      ),
     );
   }
 
@@ -233,8 +231,8 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
         fontWeight: FontWeight.w500,
         letterSpacing: 1,
       ),
-      clickableText: 'E_CODE_WAVE'.tr(context),
-      prefixText: 'POWERED_BY_PREFIX'.tr(context),
+      clickableText: 'E-CODE WAVE',
+      prefixText: 'Powered by ',
     );
   }
 
@@ -248,8 +246,8 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
         fontWeight: FontWeight.w600,
         letterSpacing: 1,
       ),
-      clickableText: 'E_CODE_WAVE'.tr(context),
-      prefixText: 'POWERED_BY_PREFIX'.tr(context),
+      clickableText: 'E-CODE WAVE',
+      prefixText: 'Powered by ',
     );
   }
 }

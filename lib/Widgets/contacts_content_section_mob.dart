@@ -368,14 +368,12 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
             child: TextField(
               controller: controller,
               keyboardType: keyboardType,
+              textAlignVertical: TextAlignVertical.center,
               textAlign: TextAlign.start, // 🔹 يبقي النص بمحاذاة اليسار
               decoration: InputDecoration(
                 isDense: true,
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 12.w,
-                  vertical: 6.h, // ✅ يجعل النص في المنتصف عموديًا
-                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 8.w),
                 hintText: hint ?? label.toLowerCase(),
                 hintStyle: TextStyle(
                   fontFamily: 'AloeveraDisplayBold',
@@ -428,14 +426,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                 Container(
                   constraints: BoxConstraints(minWidth: 80.w, maxWidth: 100.w),
                   padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.grey[300]!,
-                        width: 1,
-                      ),
-                    ),
-                  ),
+
                   child: DropdownButton<String>(
                     value: _selectedCountryCode,
                     underline: const SizedBox(),

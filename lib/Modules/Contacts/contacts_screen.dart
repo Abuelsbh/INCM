@@ -301,7 +301,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(isMobile ? Assets.imagesContactPageMob : Assets.imagesContactPage),
-          fit: isMobile ? BoxFit.contain : BoxFit.fill,
+          fit: BoxFit.fill ,
         ),
       ),
       width: double.infinity,
@@ -337,12 +337,12 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: isMobile ? 8.h : (isTablet ? 20.h : 30.h)),
+                  SizedBox(height: isMobile ? 14.h : (isTablet ? 20.h : 30.h)),
                   _buildContactForm(context, isMobile, isTablet),
-                  Gap(isMobile ? 12.h : (isTablet ? 20.h : 60.h)),
+                  Gap(isMobile ? 16.h : (isTablet ? 20.h : 60.h)),
                   _buildGetInTouchSection(context, isMobile, isTablet),
 
-                  Gap(isMobile ? 15.h : (isTablet ? 40.h : 120.h)),
+                  Gap(isMobile ? 32.h : (isTablet ? 40.h : 120.h)),
                   Container(
                     decoration: BoxDecoration(
                       color: const Color(0xFFC63424),
@@ -509,7 +509,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           isMobile: isMobile,
           isTablet: isTablet,
         ),
-        SizedBox(height: isMobile ? 10.h : (isTablet ? 70.h : 40.h)),
+        SizedBox(height: isMobile ? 20.h : (isTablet ? 70.h : 40.h)),
         if(isMobile)
           ButtonStyles.submitButtonMob(
             width: 100.w,
@@ -642,13 +642,13 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
       children: [
         AnimatedContactInfo(
           icon: Assets.iconsMail,
-          text: 'Incomercial@gmail.com',
+          text: 'info@incomercialeg.com',
           iconColor: const Color(0xFFF4ED47),
           textColor: Colors.white,
           iconSize: 24.r,
           textSize: 12.sp,
           isClickable: true,
-          onTap: () => _sendEmail('Incomercial@gmail.com'),
+          onTap: () => _sendEmail('info@incomercialeg.com'),
         ),
         const Spacer(),
         AnimatedContactInfo(
@@ -681,13 +681,13 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         //SizedBox(height: isMobile ? 16.h : 16.h),
         AnimatedContactInfo(
           icon: Assets.iconsMail,
-          text: 'Incomercial@gmail.com',
+          text: 'info@incomercialeg.com',
           iconColor: const Color(0xFFF4ED47),
           textColor: Colors.white,
           iconSize: isMobile ? 36.r : (isTablet ? 44.r : 52.r),
           textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 42.sp),
           isClickable: true,
-          onTap: () => _sendEmail('Incomercial@gmail.com'),
+          onTap: () => _sendEmail('info@incomercialeg.com'),
         ),
 
         Text(
@@ -737,7 +737,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ),
         SizedBox(height: 1.h),
         SizedBox(
-          height: height ?? (isMobile ? 28.h : (isTablet ? 48.h : 60.h)),
+          height: height ?? (isMobile ? 36.h : (isTablet ? 48.h : 60.h)),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -803,7 +803,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ),
         SizedBox(height: 1.h),
         SizedBox(
-          height: height ?? (isMobile ? 54.h : (isTablet ? 100.h : 120.h)),
+          height: height ?? (isMobile ? 70.h : (isTablet ? 100.h : 120.h)),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -861,7 +861,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         ),
         SizedBox(height: 2.h),
         SizedBox(
-          height: isMobile ? 28.h : (isTablet ? 48.h : 60.h),
+          height: isMobile ? 36.h : (isTablet ? 48.h : 60.h),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -879,14 +879,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                     maxWidth: isMobile ? 90.w : 100.w,
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.grey[300]!,
-                        width: 1,
-                      ),
-                    ),
-                  ),
+
                   child: Center(
                     child: DropdownButton<String>(
                       value: _selectedCountryCode,
@@ -982,7 +975,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     }
 
     double dropdownHeight() {
-      if (isMobile) return 28.h;
+      if (isMobile) return 36.h;
       if (isTablet) return 48.h;
       return 60.h; // Web
     }

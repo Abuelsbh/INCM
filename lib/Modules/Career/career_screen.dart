@@ -250,12 +250,26 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
+    } else {
+      // Loop: from last image go to first
+      _pageController.animateToPage(
+        0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
   void _previousPage() {
     if (_currentPage > 0) {
       _pageController.previousPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      // Loop: from first image go to last
+      _pageController.animateToPage(
+        items.length - 1,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
@@ -831,7 +845,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                           Languages.ar;
 
                                   return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios, color: Colors.white),
+                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios_new, color: Colors.white),
                                     iconSize: 40,
                                     onPressed: _previousPage,
                                   );
@@ -849,7 +863,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                       Provider.of<AppLanguage>(context, listen: false).appLang ==
                                           Languages.ar;
                                   return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_back_ios:Icons.arrow_forward_ios, color: Colors.white),
+                                    icon: Icon(isArabic?Icons.arrow_back_ios_new:Icons.arrow_forward_ios, color: Colors.white),
                                     iconSize: 40,
                                     onPressed: _nextPage,
                                   );
@@ -1228,8 +1242,8 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                       Provider.of<AppLanguage>(context, listen: false).appLang ==
                                           Languages.ar;
                                   return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios, color: Colors.white),
-                                    iconSize: 40,
+                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios_new, color: Colors.white),
+                                    iconSize: 28,
                                     onPressed: _previousPage,
                                   );
                                 }
@@ -1246,8 +1260,8 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                       Provider.of<AppLanguage>(context, listen: false).appLang ==
                                           Languages.ar;
                                   return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_back_ios:Icons.arrow_forward_ios, color: Colors.white),
-                                    iconSize: 40,
+                                    icon: Icon(isArabic?Icons.arrow_back_ios_new:Icons.arrow_forward_ios, color: Colors.white),
+                                    iconSize: 28,
                                     onPressed: _nextPage,
                                   );
                                 }
@@ -1521,14 +1535,6 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                     maxWidth: isMobile ? 90.w : 100.w,
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 6.w),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.grey[300]!,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: DropdownButton<String>(
                     value: _selectedCountryCode,
                     underline: const SizedBox(),

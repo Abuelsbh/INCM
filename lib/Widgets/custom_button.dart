@@ -248,7 +248,7 @@ class ButtonStyles {
       hoverBackgroundColor: const Color(0xFFF4ED47),
       hoverTextColor: const Color(0xFFC63424),
       fontSize: fontSize??26.sp,
-      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
     );
   }
 

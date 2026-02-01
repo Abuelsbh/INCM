@@ -50,7 +50,7 @@ class _SplashDesign1State extends State<SplashDesign1>
 
   @override
   Widget build(BuildContext context) {
-    final double logoSize = MediaQuery.of(context).size.width < 600 ? 300.r : 1000.r;
+    final double logoSize = 1000.r;
     
     return Scaffold(
       backgroundColor: const Color(0xFFF4ED47), // Yellow background

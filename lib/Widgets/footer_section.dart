@@ -3,12 +3,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../core/Language/app_languages.dart';
 import '../generated/assets.dart';
 import '../core/Language/locales.dart';
-import '../core/Language/app_languages.dart';
 import 'animated_contact_info.dart';
 
 class FooterSection extends StatefulWidget {
@@ -58,213 +58,237 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppLanguage>(
-      builder: (context, appLang, child) {
-        final isRTL = appLang.appLang == Languages.ar;
-        return Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.identity()..scale(isRTL ? -1.0 : 1.0, 1.0),
-          child: Container(
-            height: 520.h,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(Assets.imagesFooterDesktop),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.identity()..scale(isRTL ? -1.0 : 1.0, 1.0),
-      child: Stack(
-        children: [
-          // Main content
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 60.w, vertical: 50.h,),
-            child: Row(
-              children: [
-                // Left side - Contact info and social media
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Follow Us
-                      // Social media icons
-                      Row(
-                        children: [
-                          Text(
-                            'FOLLOW_US'.tr(context),
-                            style: TextStyle(
-                              fontFamily: 'AloeveraDisplayBold',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 42.sp,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          SizedBox(width: 28.w),
-                          AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
-                            onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 40.r,),
-                          SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
-                            onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 40.r,),
-                          SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
-                            onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 40.r,),
-                          SizedBox(width: 8.w),
-                          AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
-                            onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 40.r,),
-                        ],
-                      ),
-
-
-                      SizedBox(height: 50.h),
-
-                      // Contact information
-                      AnimatedContactInfo(
-                        icon: Assets.iconsMail,
-                        text: 'Incomercial@gmail.com',
-                        textColor: const Color(0xFFFFFFFF),
-                        iconColor: const Color(0xFFF4ED47),
-                        isClickable: true,
-                        textSize: 28.sp,
-                        iconSize: 28.sp,
-                        onTap: () => _sendEmail('Incomercial@gmail.com'),
-                      ),
-
-                      SizedBox(height: 16.h),
-
-                      AnimatedContactInfo(
-                        icon: Assets.iconsLocation,
-                        text: '14 A/2 Admin building, New Cairo, Egypt',
-                        isClickable: true,
-                        textColor: const Color(0xFFFFFFFF),
-                        iconColor: const Color(0xFFF4ED47),
-                        textSize: 28.sp,
-                        iconSize: 28.sp,
-                        onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
-                      ),
-
-                      SizedBox(height: 16.h),
-
-                      AnimatedContactInfo(
-                        icon: Assets.iconsCall,
-                        text: '0111-032-7777',
-                        isClickable: true,
-                        textSize: 28.sp,
-                        iconSize: 28.sp,
-                        textColor: const Color(0xFFFFFFFF),
-                        iconColor: const Color(0xFFF4ED47),
-                        onTap: () => _makePhoneCall('0111-032-7777'),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Right side - App download
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      AnimatedBuilder(
-                        animation: _colorController,
-                        builder: (context, child) {
-                          return Text(
-                            'DOWNLOAD_OUR_APP'.tr(context),
-                            style: TextStyle(
-                              fontFamily: 'AloeveraDisplayBold',
-                              color: _colorAnimation.value ?? const Color(0xFFFFFFFF),
-                              fontSize: 32.sp,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          );
-                        },
-                      ),
-
-                      SizedBox(height: 10.h),
-
-                      // QR Code placeholder
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-
-                          Container(
-                            width: 60.w,
-                            height: 60.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.r),
-
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                Assets.iconsGooglePlay,
-                                width: 60.w,
-                                height: 60.h,
-                              ),
-                            ),
-                          ),
-                          Gap(30.w),
-                          Container(
-                            width: 60.w,
-                            height: 60.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.r),
-
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                Assets.iconsAppStore,
-                                width: 60.w,
-                                height: 60.h,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // Image.asset(Assets.imagesDownloadAppStore,height: 80.h, width: 300.w,),
-                      // Image.asset(Assets.imagesDownloadGooglePlay,height: 120.h, width: 450.w,)
-
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Container(
+        height: 520.h,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(Assets.imagesFooterDesktop),
+            fit: BoxFit.cover,
           ),
+        ),
+        child: Stack(
+          children: [
+            // Main content
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 60.w, vertical: 50.h,),
+              child: Row(
+                children: [
+                  // Left side - Contact info and social media
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Follow Us
+                        // Social media icons
+                        Builder(
+                          builder: (context) {
+                            final isArabic =
+                                Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                    Languages.ar;
+                            return isArabic ? Row(
+                              children: [
 
-          // Copyright
-          Positioned(
-            bottom: 20.h,
-            left: 0,
-            right: 0,
-            child: Column(
-              children: [
-                Center(
-                  child: Text(
-                    'INCOMERCIAL_REAL_ESTATE_2025'.tr(context),
-                    style: TextStyle(
-                      color: const Color(0xFFFFFFFF),
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1,
+
+                                AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 40.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 40.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 40.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 40.r,),
+                                SizedBox(width: 28.w),
+                                Text(
+                                  'FOLLOW_US'.tr(context),
+                                  style: TextStyle(
+                                    fontFamily: 'AloeveraDisplayBold',
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 42.sp,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ],
+                            ) : Row(
+                              children: [
+                                Text(
+                                  'FOLLOW_US'.tr(context),
+                                  style: TextStyle(
+                                    fontFamily: 'AloeveraDisplayBold',
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 42.sp,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                                SizedBox(width: 28.w),
+                                AnimatedContactInfo(icon: Assets.iconsFace, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.facebook.com/Incomercial.egypt'),iconSize: 40.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsInsta, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.instagram.com/incomercial.egypt/'),iconSize: 40.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsLinked, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.linkedin.com/company/incomercial-egypt/'),iconSize: 40.r,),
+                                SizedBox(width: 8.w),
+                                AnimatedContactInfo(icon: Assets.iconsTik, text: '',isClickable: true,iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _openLink('https://www.tiktok.com/@incomercial.egypt'),iconSize: 40.r,),
+                              ],
+                            );
+                          }
+                        ),
+
+
+                        SizedBox(height: 50.h),
+      
+                        // Contact information
+                        AnimatedContactInfo(
+                          icon: Assets.iconsMail,
+                          text: 'info@incomercialeg.com',
+                          textColor: const Color(0xFFFFFFFF),
+                          iconColor: const Color(0xFFF4ED47),
+                          isClickable: true,
+                          textSize: 28.sp,
+                          iconSize: 28.sp,
+                          onTap: () => _sendEmail('info@incomercialeg.com'),
+                        ),
+      
+                        SizedBox(height: 16.h),
+      
+                        AnimatedContactInfo(
+                          icon: Assets.iconsLocation,
+                          text: '14 A/2 Admin building, New Cairo, Egypt',
+                          isClickable: true,
+                          textColor: const Color(0xFFFFFFFF),
+                          iconColor: const Color(0xFFF4ED47),
+                          textSize: 28.sp,
+                          iconSize: 28.sp,
+                          onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
+                        ),
+      
+                        SizedBox(height: 16.h),
+      
+                        AnimatedContactInfo(
+                          icon: Assets.iconsCall,
+                          text: '0111-032-7777',
+                          isClickable: true,
+                          textSize: 28.sp,
+                          iconSize: 28.sp,
+                          textColor: const Color(0xFFFFFFFF),
+                          iconColor: const Color(0xFFF4ED47),
+                          onTap: () => _makePhoneCall('0111-032-7777'),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Gap(10.h),
-                Center(
-                  child: _buildPoweredByText(),
-                ),
-              ],
+      
+                  // Right side - App download
+                  Expanded(
+                    child: Column(
+                      //crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        AnimatedBuilder(
+                          animation: _colorController,
+                          builder: (context, child) {
+                            return Text(
+                              'DOWNLOAD_OUR_APP'.tr(context),
+                              style: TextStyle(
+                                fontFamily: 'AloeveraDisplayBold',
+                                color: _colorAnimation.value ?? const Color(0xFFFFFFFF),
+                                fontSize: 32.sp,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            );
+                          },
+                        ),
+      
+                        SizedBox(height: 10.h),
+      
+                        // QR Code placeholder
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+      
+                            Container(
+                              width: 60.w,
+                              height: 60.h,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+      
+                              ),
+                              child: Center(
+                                child: Image.asset(
+                                  Assets.iconsGooglePlay,
+                                  width: 60.w,
+                                  height: 60.h,
+                                ),
+                              ),
+                            ),
+                            Gap(30.w),
+                            Container(
+                              width: 60.w,
+                              height: 60.h,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+      
+                              ),
+                              child: Center(
+                                child: Image.asset(
+                                  Assets.iconsAppStore,
+                                  width: 60.w,
+                                  height: 60.h,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+      
+                        // Image.asset(Assets.imagesDownloadAppStore,height: 80.h, width: 300.w,),
+                        // Image.asset(Assets.imagesDownloadGooglePlay,height: 120.h, width: 450.w,)
+      
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            ),
-          ],
-        ),
-            ),
+      
+            // Copyright
+            Positioned(
+              bottom: 20.h,
+              left: 0,
+              right: 0,
+              child: Column(
+                children: [
+                  Center(
+                    child: Text(
+                      'INCOMERCIAL REAL ESTATE 2026',
+                      style: TextStyle(
+                        color: const Color(0xFFFFFFFF),
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ),
+                  Gap(10.h),
+                  Center(
+                    child: _buildPoweredByText(),
+                  ),
+                ],
+              ),
+              ),
+            ],
           ),
-        );
-      },
+      ),
     );
   }
 
@@ -300,8 +324,8 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
         fontWeight: FontWeight.w600,
         letterSpacing: 1,
       ),
-      clickableText: 'E_CODE_WAVE'.tr(context),
-      prefixText: 'POWERED_BY_PREFIX'.tr(context),
+      clickableText: 'E-CODE WAVE',
+      prefixText: 'Powered by ',
     );
   }
 }
