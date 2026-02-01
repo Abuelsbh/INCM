@@ -87,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         margin: EdgeInsets.all(12.w),
                         child: ClientsLogosSection(
                           title: 'OUR_EXCLUSIVE_PROJECTS',
+                            fetchAllServices: true,
                           backgroundColor: Colors.grey[900]!,
                           pageId: 'exclusive-leasing-projects',
                           visibleLogosCount: 5,
@@ -171,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: ClientsLogosSection(
                           title: 'OUR_EXCLUSIVE_PROJECTS',
                           backgroundColor: Colors.grey[900]!,
+                            fetchAllServices: true,
                           pageId: 'exclusive-leasing-projects',
                           visibleLogosCount: 5,
                           onLearnMorePressed: () {

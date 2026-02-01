@@ -32,7 +32,7 @@ class DepartmentsGridSection extends StatelessWidget {
         //   ),
         // ),
         width: double.infinity,
-        height:  MediaQuery.of(context).size.width <= 600 ? 750: 1200.h,
+        height:  MediaQuery.of(context).size.width <= 600 ? 630: 1200.h,
         child: Center(
           child: Container(
             padding: EdgeInsets.all(40.w),

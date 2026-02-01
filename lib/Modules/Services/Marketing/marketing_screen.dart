@@ -293,7 +293,7 @@ class MarketingScreen extends StatelessWidget {
                                         if(isMobile)
                                           Column(
                                             children: [
-                                              SizedBox(height: isMobile ? 270.h : 30.h),
+                                              SizedBox(height: isMobile ? 200.h : 30.h),
                                               _buildDescriptionBox(
                                                 context: context,
                                                 isMobile: isMobile,

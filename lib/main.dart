@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'Utilities/fast_http_config.dart';
 import 'Utilities/git_it.dart';
 import 'Utilities/router_config.dart';
+import 'Utilities/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'core/Font/font_provider.dart';
 import 'core/Language/app_languages.dart';
@@ -52,6 +53,7 @@ Future<void> main() async {
 
   FastHttpConfig.init();
 
+  await SharedPref.init();
   await GitIt.initGitIt();
   runApp(
       MultiProvider(

@@ -591,7 +591,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
             style: TextStyle(
               fontFamily: getLocalizedFont(context, 'OptimalBold'),
               color: const Color(0xFFF4ED47),
-              fontSize: isMobile ? 32.sp : (isTablet ? 48.sp : 80.sp),
+              fontSize: isMobile ? 28.sp : (isTablet ? 48.sp : 80.sp),
             ),
           ),
           if (rest.isNotEmpty)
@@ -1089,7 +1089,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
       //   ),
       // ),
       width: double.infinity,
-      height: 700.h,
+      height: 820.h,
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -1114,7 +1114,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       ...benefits.map((text) {
                         return Container(
                           width: double.infinity,
-                          margin: EdgeInsets.symmetric(horizontal: 30.w,vertical: 6.h),
+                          margin: EdgeInsets.symmetric(horizontal: 30.w,vertical: 4.h),
                           padding: EdgeInsets.all(4.w),
                           decoration: BoxDecoration(
                             color: const Color(0xFFF4ED47).withOpacity(0.3),
@@ -1583,10 +1583,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       isDense: true,
                       hintText: '01XXXXXXXXX',
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 12.h,
-                      ),
+                      contentPadding: EdgeInsets.zero,
                       hintStyle: TextStyle(
                         color: Colors.grey[500],
                         fontSize: isMobile ? 16.sp : (isTablet ? 18.sp : 22.sp),

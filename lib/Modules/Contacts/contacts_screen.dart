@@ -512,7 +512,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         SizedBox(height: isMobile ? 20.h : (isTablet ? 70.h : 40.h)),
         if(isMobile)
           ButtonStyles.submitButtonMob(
-            width: 100.w,
+            width: 75.w,
             context: context,
             onPressed: _handleSubmit,
           ),

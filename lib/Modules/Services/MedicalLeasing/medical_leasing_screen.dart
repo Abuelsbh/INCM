@@ -141,7 +141,7 @@ class MedicalLeasingScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      Gap(isMobile ? 20.h : 70.h),
+                                      Gap(isMobile ? 10.h : 70.h),
                                       // Description paragraphs section
                                       Container(
                                         constraints: BoxConstraints(
@@ -199,7 +199,7 @@ class MedicalLeasingScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                            SizedBox(height: 20.h),
+                                            SizedBox(height: isMobile ? 10.h : 20.h),
                                             _buildDescriptionBox(
                                               context: context,
                                               isMobile: isMobile,
@@ -229,7 +229,7 @@ class MedicalLeasingScreen extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                      Gap(isMobile ? 20.h : 40.h),
+                                      Gap(isMobile ? 10.h : 40.h),
 
                                       ClientsLogosSection(
                                         pageId: 'medical-leasing',

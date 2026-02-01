@@ -467,13 +467,20 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
 
                       SizedBox(height: 40.h),
                       // Submit button
-                      ButtonStyles.submitButton(
-                        context: context,
-                        fontSize: isMobile? 18.sp: 32.sp,
-                        width: isMobile? 75.w : 130.w,
-                        onPressed: _handleSubmit,
-                      ),
 
+                      if(isMobile)
+                        ButtonStyles.submitButtonMob(
+                          width: 75.w,
+                          context: context,
+                          onPressed: _handleSubmit,
+                        ),
+                      if(!isMobile)
+                        ButtonStyles.submitButton(
+                          context: context,
+                          fontSize: isMobile? 18.sp: 32.sp,
+                          width: isMobile? 75.w : 130.w,
+                          onPressed: _handleSubmit,
+                        ),
                         ],
                       ),
                     ],

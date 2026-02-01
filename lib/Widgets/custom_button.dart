@@ -87,7 +87,7 @@ class _CustomButtonState extends State<CustomButton> {
                 ? (widget.hoverTextColor ?? const Color(0xFFF4ED47))
                 : (widget.normalTextColor ?? Colors.black),
             padding: widget.padding ??
-                EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.h),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius ?? 4.r),
             ),
@@ -97,13 +97,15 @@ class _CustomButtonState extends State<CustomButton> {
             shadowColor: WidgetStateProperty.all(Colors.transparent), // no shadow color
             overlayColor: WidgetStateProperty.all(Colors.transparent), // remove hover splash
           ),
-          child: Text(
-            widget.text,
-            style: TextStyle(
-              fontFamily: getLocalizedFont(context, 'OptimalBold'),
-              fontSize: widget.fontSize ?? 18.sp,
-              fontWeight: widget.fontWeight ?? FontWeight.w900,
-              //letterSpacing: widget.letterSpacing ?? 0.8,
+          child: Center(
+            child: Text(
+              widget.text,
+              style: TextStyle(
+                fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                fontSize: widget.fontSize ?? 18.sp,
+                fontWeight: widget.fontWeight ?? FontWeight.w900,
+                //letterSpacing: widget.letterSpacing ?? 0.8,
+              ),
             ),
           ),
         ),
@@ -202,6 +204,8 @@ class ButtonStyles {
       onPressed: onPressed,
       borderRadius: 12.r,
       enabled: enabled,
+      width: 160.w,
+      height: 37.h,
       normalBackgroundColor: const Color(0xFFC63424),
       normalTextColor: const Color(0xFFF4ED47),
       hoverBackgroundColor: const Color(0xFFF4ED47),
@@ -220,7 +224,7 @@ class ButtonStyles {
       onPressed: onPressed,
       borderRadius: 8.r,
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
-      width: 100.w,
+      width: 80.w,
       height: 24.h,
       enabled: enabled,
       normalBackgroundColor: const Color(0xFFC63424),
@@ -263,8 +267,9 @@ class ButtonStyles {
       onPressed: onPressed,
       enabled: enabled,
       borderRadius: 2.r,
-      height: 31.h,
-      width: width ?? double.infinity,
+      width: 72.w,
+      height: 37.h,
+     // width: width ?? double.infinity,
       normalBackgroundColor: const Color(0xFFC63424),
       normalTextColor:  const Color(0xFFF4ED47),
       hoverBackgroundColor: const Color(0xFFF4ED47),

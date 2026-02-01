@@ -1,8 +1,9 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../Utilities/shared_preferences.dart';
+import '../../Utilities/refresh_helper.dart';
 
 enum Languages {en,ar}
 
@@ -28,9 +29,17 @@ class AppLanguage extends ChangeNotifier {
         _appLanguage = defaultLanguage;
       }
     }else{
-      _appLanguage = Languages.values.firstWhere((lang) => lang.name == SharedPref.getLanguage());
+      final saved = SharedPref.getLanguage();
+      if (saved == 'ar') {
+        _appLanguage = Languages.ar;
+      } else if (saved == 'en') {
+        _appLanguage = Languages.en;
+      } else {
+        _appLanguage = defaultLanguage;
+      }
     }
     _isInitialized = true;
+    notifyListeners();
   }
 
   Future changeLanguage({Languages? language}) async {
@@ -48,6 +57,11 @@ class AppLanguage extends ChangeNotifier {
     }
     await SharedPref.setLanguage(lang: _appLanguage.name);
     notifyListeners();
+    if (kIsWeb) {
+      // Give storage time to persist (e.g. IndexedDB/localStorage) before reload
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+      refreshApp();
+    }
   }
 }
 

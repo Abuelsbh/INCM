@@ -889,7 +889,7 @@ class _ProjectImageCarouselState extends State<_ProjectImageCarousel> {
         child: Center(
           child: IconButton(
             icon: Icon(
-              isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+              isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
               color: Colors.white,
             ),
             iconSize: widget.isMobile ? 28 : 36,
@@ -904,7 +904,7 @@ class _ProjectImageCarouselState extends State<_ProjectImageCarousel> {
         child: Center(
           child: IconButton(
             icon: Icon(
-              isArabic ? Icons.arrow_back_ios : Icons.arrow_forward_ios,
+              isArabic ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
               color: Colors.white,
             ),
             iconSize: widget.isMobile ? 28 : 36,

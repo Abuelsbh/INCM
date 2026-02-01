@@ -345,7 +345,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.toUpperCase(),
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
@@ -374,7 +374,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                 isDense: true,
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 8.w),
-                hintText: hint ?? label.toLowerCase(),
+                hintText: hint ?? label,
                 hintStyle: TextStyle(
                   fontFamily: 'AloeveraDisplayBold',
                   color: Colors.grey[500],
@@ -471,10 +471,7 @@ class _ContactsContentSectionState extends State<ContactsContentSectionMob>
                     decoration: InputDecoration(
                       isDense: true,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 6.h, // ✅ يجعل النص في المنتصف عموديًا
-                      ),
+                      contentPadding: EdgeInsets.zero,
                       hintText: '01xxxxxxxxx',
                       hintStyle: TextStyle(
                         color: Colors.grey[500],

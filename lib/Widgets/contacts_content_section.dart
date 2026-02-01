@@ -364,7 +364,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
+          label.toUpperCase(),
           style: TextStyle(
             fontFamily: 'AloeveraDisplayBold',
             color: Colors.white,
