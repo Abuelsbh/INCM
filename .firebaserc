@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "adel-ride"
+  },
+  "targets": {
+    "adel-ride": {
+      "hosting": {
+        "incm": [
+          "incm"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

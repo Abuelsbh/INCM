@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../generated/assets.dart';
-import '../Utilities/contact_info.dart';
+import '../core/Contact/contact_info_provider.dart';
 import 'main_contact_button.dart';
 
 class FloatingContactButtons extends StatefulWidget {
@@ -90,101 +92,108 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: 20.w,
-      bottom: 30.h,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // الأيقونات المتوسعة
-          AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // زر البريد الإلكتروني
-                  if (_isExpanded)
-                    Transform.scale(
-                      scale: _scaleAnimation.value,
-                      child: Opacity(
-                        opacity: _fadeAnimation.value,
-                        child: _ContactButton(
-                          icon: Assets.iconsMail,
-                          onTap: () => _sendEmail(ContactInfo.email),
-                          backgroundColor: const Color(0xFFC63424),
-                          useAsset: true,
+    return Consumer<ContactInfoProvider>(
+      builder: (context, contactProvider, _) {
+        final info = contactProvider.contactInfo;
+        return Positioned(
+          left: 20.w,
+          bottom: 30.h,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // الأيقونات المتوسعة
+              AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // زر البريد الإلكتروني
+                      if (_isExpanded)
+                        Transform.scale(
+                          scale: _scaleAnimation.value,
+                          child: Opacity(
+                            opacity: _fadeAnimation.value,
+                            child: _ContactButton(
+                              icon: Assets.iconsMail,
+                              onTap: () => _sendEmail(info.email),
+                              backgroundColor: const Color(0xFFC63424),
+                              useAsset: true,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
 
-                  if (_isExpanded) SizedBox(height: 12.h),
+                      if (_isExpanded) SizedBox(height: 12.h),
 
-                  // زر الواتساب
-                  if (_isExpanded)
-                    Transform.scale(
-                      scale: _scaleAnimation.value,
-                      child: Opacity(
-                        opacity: _fadeAnimation.value,
-                        child: _ContactButton(
-                          icon: Assets.iconsCall,
-                          onTap: () => _openWhatsApp(ContactInfo.whatsappNumber),
-                          backgroundColor: const Color(0xFFF4ED47),
-                          useAsset: true,
-                          iconData: Icons.call,
+                      // زر الواتساب
+                      if (_isExpanded)
+                        Transform.scale(
+                          scale: _scaleAnimation.value,
+                          child: Opacity(
+                            opacity: _fadeAnimation.value,
+                            child: _ContactButton(
+                              icon: Assets.iconsCall,
+                              onTap: () => _makePhoneCall(info.phone),
+                              backgroundColor: const Color(0xFFF4ED47),
+                              useAsset: true,
+                              iconData: Icons.call,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
 
-                  if (_isExpanded) SizedBox(height: 12.h),
+                      if (_isExpanded) SizedBox(height: 12.h),
 
-                  // زر الاتصال
-                  if (_isExpanded)
-                    Transform.scale(
-                      scale: _scaleAnimation.value,
-                      child: Opacity(
-                        opacity: _fadeAnimation.value,
-                        child: _ContactButton(
-                          icon: Assets.iconsCall,
-                          onTap: () => _makePhoneCall(ContactInfo.phoneNumber),
-                          backgroundColor: const Color(0xFF4CAF50),
-                          useAsset: true,
+                      // زر الاتصال
+                      if (_isExpanded)
+                        Transform.scale(
+                          scale: _scaleAnimation.value,
+                          child: Opacity(
+                            opacity: _fadeAnimation.value,
+                            child: _ContactButton(
+
+                              onTap: () => _openWhatsApp(info.whatsapp),
+                              backgroundColor: const Color(0xFF25D366),
+                              useAsset: false,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
 
-                  if (_isExpanded) SizedBox(height: 12.h),
-                ],
-              );
-            },
+                      if (_isExpanded) SizedBox(height: 12.h),
+                    ],
+                  );
+                },
+              ),
+
+              // الزر الرئيسي
+              MainContactButton(
+                onTap: _toggleExpansion,
+                isExpanded: _isExpanded,
+                rotationAnimation: _rotationAnimation,
+              ),
+            ],
           ),
-
-          // الزر الرئيسي
-          MainContactButton(
-            onTap: _toggleExpansion,
-            isExpanded: _isExpanded,
-            rotationAnimation: _rotationAnimation,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
 
 class _ContactButton extends StatefulWidget {
-  final String icon;
+  final String? icon;
   final VoidCallback onTap;
   final Color backgroundColor;
   final bool useAsset;
   final IconData? iconData;
+  final String? icon2;
 
   const _ContactButton({
     Key? key,
-    required this.icon,
+    this.icon,
     required this.onTap,
     required this.backgroundColor,
     this.useAsset = true,
     this.iconData,
+    this.icon2,
   }) : super(key: key);
 
   @override
@@ -250,7 +259,7 @@ class _ContactButtonState extends State<_ContactButton>
                     )
                   : widget.useAsset
                       ? Image.asset(
-                          widget.icon,
+                          widget.icon??Assets.imagesWhatsapp,
                           width: 24.w,
                           height: 24.w,
                           color: Colors.white,
@@ -262,11 +271,12 @@ class _ContactButtonState extends State<_ContactButton>
                             );
                           },
                         )
-                      : Icon(
-                          Icons.phone,
-                          color: Colors.white,
-                          size: 24.w,
-                        ),
+                      : SvgPicture.asset(
+                Assets.imagesWhatsapp,
+                width: 24.w,
+                height: 24.w,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

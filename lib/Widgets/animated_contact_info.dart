@@ -11,13 +11,19 @@ class AnimatedContactInfo extends StatefulWidget {
   final Color? textColor;
   final double? iconSize;
   final double? textSize;
+  final TextDirection? textDirection;
 
   const AnimatedContactInfo({
     Key? key,
     required this.icon,
     required this.text,
     this.isClickable = false,
-    this.onTap, this.iconColor, this.textColor, this.iconSize, this.textSize,
+    this.onTap,
+    this.iconColor,
+    this.textColor,
+    this.iconSize,
+    this.textSize,
+    this.textDirection,
   }) : super(key: key);
 
   @override
@@ -117,6 +123,7 @@ class _AnimatedContactInfoState extends State<AnimatedContactInfo>
                     Flexible(
                       child: Text(
                         widget.text??'',
+                        textDirection: widget.textDirection,
                         style: TextStyle(
                           color: _colorAnimation.value ?? Colors.black,
                           fontSize: widget.textSize ?? 20.sp,

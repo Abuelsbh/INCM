@@ -99,8 +99,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
               onExit: (_) {
                 setState(() {
                   isDropdownHovered = false;
+                  isServicesHovered = false; // Leave Services area → close menu
                 });
-                // Close dropdown after a short delay if mouse is not on services menu
+                // Close dropdown when mouse leaves Services area (trigger or dropdown)
                 _scheduleClose();
               },
               child: Container(
@@ -724,7 +725,7 @@ class _ServicesDropdownItemState extends State<_ServicesDropdownItem> {
                 : null,
           ),
           child: Text(
-            widget.serviceName,
+            widget.serviceName.toUpperCase(),
             style: TextStyle(
               fontFamily: 'AloeveraDisplay',
               color: _isHovered ? const Color(0xFFF4ED47) : Colors.white,

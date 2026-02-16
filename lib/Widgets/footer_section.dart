@@ -6,10 +6,13 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../Utilities/font_helper.dart';
 import '../core/Language/app_languages.dart';
 import '../generated/assets.dart';
 import '../core/Language/locales.dart';
+import '../core/Contact/contact_info_provider.dart';
 import 'animated_contact_info.dart';
+import 'package:provider/provider.dart';
 
 class FooterSection extends StatefulWidget {
   const FooterSection({super.key});
@@ -108,11 +111,10 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                                 Text(
                                   'FOLLOW_US'.tr(context),
                                   style: TextStyle(
-                                    fontFamily: 'AloeveraDisplayBold',
+                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     fontSize: 42.sp,
-                                    letterSpacing: 1,
                                   ),
                                 ),
                               ],
@@ -121,11 +123,10 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                                 Text(
                                   'FOLLOW_US'.tr(context),
                                   style: TextStyle(
-                                    fontFamily: 'AloeveraDisplayBold',
+                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     fontSize: 42.sp,
-                                    letterSpacing: 1,
                                   ),
                                 ),
                                 SizedBox(width: 28.w),
@@ -149,41 +150,48 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                         SizedBox(height: 50.h),
       
                         // Contact information
-                        AnimatedContactInfo(
-                          icon: Assets.iconsMail,
-                          text: 'info@incomercialeg.com',
-                          textColor: const Color(0xFFFFFFFF),
-                          iconColor: const Color(0xFFF4ED47),
-                          isClickable: true,
-                          textSize: 28.sp,
-                          iconSize: 28.sp,
-                          onTap: () => _sendEmail('info@incomercialeg.com'),
-                        ),
-      
-                        SizedBox(height: 16.h),
-      
-                        AnimatedContactInfo(
-                          icon: Assets.iconsLocation,
-                          text: '14 A/2 Admin building, New Cairo, Egypt',
-                          isClickable: true,
-                          textColor: const Color(0xFFFFFFFF),
-                          iconColor: const Color(0xFFF4ED47),
-                          textSize: 28.sp,
-                          iconSize: 28.sp,
-                          onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
-                        ),
-      
-                        SizedBox(height: 16.h),
-      
-                        AnimatedContactInfo(
-                          icon: Assets.iconsCall,
-                          text: '0111-032-7777',
-                          isClickable: true,
-                          textSize: 28.sp,
-                          iconSize: 28.sp,
-                          textColor: const Color(0xFFFFFFFF),
-                          iconColor: const Color(0xFFF4ED47),
-                          onTap: () => _makePhoneCall('0111-032-7777'),
+                        Consumer<ContactInfoProvider>(
+                          builder: (context, contactProvider, _) {
+                            final info = contactProvider.contactInfo;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AnimatedContactInfo(
+                                  icon: Assets.iconsMail,
+                                  text: info.email,
+                                  textColor: const Color(0xFFFFFFFF),
+                                  iconColor: const Color(0xFFF4ED47),
+                                  isClickable: true,
+                                  textSize: 28.sp,
+                                  iconSize: 28.sp,
+                                  onTap: () => _sendEmail(info.email),
+                                ),
+                                SizedBox(height: 16.h),
+                                AnimatedContactInfo(
+                                  icon: Assets.iconsLocation,
+                                  text: info.address,
+                                  textDirection: TextDirection.ltr,
+                                  isClickable: true,
+                                  textColor: const Color(0xFFFFFFFF),
+                                  iconColor: const Color(0xFFF4ED47),
+                                  textSize: 28.sp,
+                                  iconSize: 28.sp,
+                                  onTap: () => _openLink(info.mapLink),
+                                ),
+                                SizedBox(height: 16.h),
+                                AnimatedContactInfo(
+                                  icon: Assets.iconsCall,
+                                  text: info.phone,
+                                  isClickable: true,
+                                  textSize: 28.sp,
+                                  iconSize: 28.sp,
+                                  textColor: const Color(0xFFFFFFFF),
+                                  iconColor: const Color(0xFFF4ED47),
+                                  onTap: () => _makePhoneCall(info.phone),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),

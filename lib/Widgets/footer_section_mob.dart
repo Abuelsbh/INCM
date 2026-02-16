@@ -6,6 +6,8 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../Utilities/font_helper.dart';
+import '../core/Contact/contact_info_provider.dart';
 import '../core/Language/app_languages.dart';
 import '../core/Language/locales.dart';
 import '../generated/assets.dart';
@@ -81,10 +83,10 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                                 Text(
                                   'FOLLOW_US'.tr(context),
                                   style: TextStyle(
+                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                     color: const Color(0xFFFFFFFF),
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
                                   ),
                                 ),
                               ],
@@ -93,10 +95,10 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                                 Text(
                                   'FOLLOW_US'.tr(context),
                                   style: TextStyle(
+                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
                                     color: const Color(0xFFFFFFFF),
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
                                   ),
                                 ),
                                 SizedBox(width: 12.w),
@@ -121,30 +123,36 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                         SizedBox(height: 6.h),
 
 
-                        _AnimatedContactInfoMob(
-                          icon: Assets.iconsMail,
-                          text: 'info@incomercialeg.com',
-                          isClickable: true,
-                          onTap: () => _sendEmail('info@incomercialeg.com'),
-                        ),
-
-                        SizedBox(height: 4.h),
-
-                        _AnimatedContactInfoMob(
-                          icon: Assets.iconsLocation,
-                          text: '14 A/2 Admin building, New Cairo, Egypt',
-                          isClickable: true,
-                          onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
-                        ),
-
-
-                        SizedBox(height: 4.h),
-
-                        _AnimatedContactInfoMob(
-                          icon: Assets.iconsCall,
-                          text: '0111-032-7777',
-                          isClickable: true,
-                          onTap: () => _makePhoneCall('0111-032-7777'),
+                        Consumer<ContactInfoProvider>(
+                          builder: (context, contactProvider, _) {
+                            final info = contactProvider.contactInfo;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _AnimatedContactInfoMob(
+                                  icon: Assets.iconsMail,
+                                  text: info.email,
+                                  isClickable: true,
+                                  onTap: () => _sendEmail(info.email),
+                                ),
+                                SizedBox(height: 4.h),
+                                _AnimatedContactInfoMob(
+                                  icon: Assets.iconsLocation,
+                                  text: info.address,
+                                  textDirection: TextDirection.ltr,
+                                  isClickable: true,
+                                  onTap: () => _openLink(info.mapLink),
+                                ),
+                                SizedBox(height: 4.h),
+                                _AnimatedContactInfoMob(
+                                  icon: Assets.iconsCall,
+                                  text: info.phone,
+                                  isClickable: true,
+                                  onTap: () => _makePhoneCall(info.phone),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -321,6 +329,7 @@ class _AnimatedContactInfoMob extends StatefulWidget {
   final String text;
   final bool isClickable;
   final VoidCallback? onTap;
+  final TextDirection? textDirection;
 
   const _AnimatedContactInfoMob({
     Key? key,
@@ -328,6 +337,7 @@ class _AnimatedContactInfoMob extends StatefulWidget {
     required this.text,
     this.isClickable = false,
     this.onTap,
+    this.textDirection,
   }) : super(key: key);
 
   @override
@@ -410,6 +420,7 @@ class _AnimatedContactInfoMobState extends State<_AnimatedContactInfoMob>
                   builder: (context, child) {
                     return Text(
                       widget.text,
+                      textDirection: widget.textDirection,
                       style: TextStyle(
                         color: _colorAnimation.value ?? const Color(0xFFF4ED47),
                         fontSize: 12.sp,

@@ -95,7 +95,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Gap(isMobile ? 8.h : 240.h),
+                                    Gap(isMobile ? 24.h : 240.h),
                                     // Description paragraphs section
                                     Padding(
                                       padding: EdgeInsets.symmetric(horizontal: isMobile ? 60.w : 240.w, vertical: isMobile ? 0.h : 80.h),
@@ -200,7 +200,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: isMobile ? 100.h : 700.h),
+                                    SizedBox(height: isMobile ? 70.h : 700.h),
                                     Builder(
                                       builder: (context) {
                                         final isArabic =
@@ -238,7 +238,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                                       width: double.infinity,
                                       padding: EdgeInsets.symmetric(
                                         horizontal: isMobile ? 20.w : 40.w,
-                                        vertical: isMobile ? 20.h : 40.h,
+                                        vertical: isMobile ? 8.h : 40.h,
                                       ),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.center,

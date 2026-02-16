@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../../core/Content/content_provider.dart';
+import '../../core/Contact/contact_info_provider.dart';
 import '../../core/Firebase/firebase_logos_service.dart';
 import '../../Models/content_model.dart';
 import '../../Models/page_content_model.dart';
@@ -11,6 +12,7 @@ import '../../Models/logo_model.dart';
 import '../../Widgets/Admin/content_item_editor.dart';
 import '../../Widgets/Admin/logo_editor.dart';
 import '../../Widgets/Admin/batch_logo_editor.dart';
+import '../../Widgets/Admin/contact_info_editor.dart';
 import '../../core/Language/locales.dart';
 
 class AdminPanelScreen extends StatefulWidget {
@@ -67,7 +69,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
         setState(() {});
@@ -596,12 +598,17 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
           tabs: [
             Tab(text: 'TAB_CONTENT'.tr(context), icon: const Icon(Icons.description)),
             Tab(text: 'TAB_LOGOS'.tr(context), icon: const Icon(Icons.business)),
+            Tab(text: 'TAB_CONTACT_INFO'.tr(context), icon: const Icon(Icons.contact_phone)),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh, color: Colors.white),
-            onPressed: _tabController.index == 0 ? _loadPages : _loadLogos,
+            onPressed: _tabController.index == 0
+                ? _loadPages
+                : _tabController.index == 1
+                    ? () => _loadLogos(pageId: _selectedLogoPageId)
+                    : null,
             tooltip: 'REFRESH'.tr(context),
           ),
         ],
@@ -613,6 +620,7 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
               children: [
                 _buildContentTab(),
                 _buildLogosTab(),
+                _buildContactInfoTab(),
               ],
             ),
     );
@@ -873,6 +881,10 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
       case ContentType.link:
         return 'TYPE_LINK'.tr(context);
     }
+  }
+
+  Widget _buildContactInfoTab() {
+    return const ContactInfoEditor();
   }
 
   Widget _buildLogosTab() {

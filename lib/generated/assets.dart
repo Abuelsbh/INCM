@@ -237,4 +237,5 @@ class Assets {
 
   static const String imagesFooterDesktop = 'assets/images/footerDESKTOP.png';
   static const String imagesFooterMOBILE = 'assets/images/footerMOBILE.png';
+  static const String iconsWhatsApp = 'assets/icons/whatsapp.jpg';
 }

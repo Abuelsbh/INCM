@@ -16,6 +16,7 @@ import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/animated_contact_info.dart';
 import '../../core/Language/locales.dart';
 import '../../core/Language/app_languages.dart';
+import '../../core/Contact/contact_info_provider.dart';
 import '../../Utilities/font_helper.dart';
 import '../../generated/assets.dart';
 import 'package:provider/provider.dart';
@@ -365,45 +366,58 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                     cursor: SystemMouseCursors.click,
                     onEnter: (_) => setState(() => _isAddressHovered = true),
                     onExit: (_) => setState(() => _isAddressHovered = false),
-                    child: GestureDetector(
-                      onTap: () => _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
-                      child: TweenAnimationBuilder<double>(
-                        duration: const Duration(milliseconds: 200),
-                        tween: Tween<double>(
-                          begin: 0,
-                          end: _isAddressHovered ? -10 : 0,
-                        ),
-                        builder: (context, dy, child) {
-                          return Transform.translate(
-                            offset: Offset(0, dy),
-                            child: child,
-                          );
-                        },
-                        child: AnimatedDefaultTextStyle(
-                          duration: const Duration(milliseconds: 200),
-                          style: TextStyle(
-                            color: _isAddressHovered
-                                ? const Color(0xFFC63424)
-                                : const Color(0xFFFFFFFF),
-                            fontSize: isMobile ? 14.sp : (isTablet ? 30.sp : 40.sp),
-                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                            fontWeight: FontWeight.w700,
-                            decorationColor: _isAddressHovered
-                                ? const Color(0xFFC63424)
-                                : const Color(0xFFFFFFFF),
+                    child: Consumer<ContactInfoProvider>(
+                      builder: (context, contactProvider, _) {
+                        final info = contactProvider.contactInfo;
+                        return GestureDetector(
+                          onTap: () => _openLink(info.mapLink),
+                          child: TweenAnimationBuilder<double>(
+                            duration: const Duration(milliseconds: 200),
+                            tween: Tween<double>(
+                              begin: 0,
+                              end: _isAddressHovered ? -10 : 0,
+                            ),
+                            builder: (context, dy, child) {
+                              return Transform.translate(
+                                offset: Offset(0, dy),
+                                child: child,
+                              );
+                            },
+                            child: AnimatedDefaultTextStyle(
+                              duration: const Duration(milliseconds: 200),
+                              style: TextStyle(
+                                color: _isAddressHovered
+                                    ? const Color(0xFFC63424)
+                                    : const Color(0xFFFFFFFF),
+                                fontSize: isMobile ? 14.sp : (isTablet ? 30.sp : 40.sp),
+                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                fontWeight: FontWeight.w700,
+                                decorationColor: _isAddressHovered
+                                    ? const Color(0xFFC63424)
+                                    : const Color(0xFFFFFFFF),
+                              ),
+                              child: Text(
+                                info.address,
+                                textDirection: TextDirection.ltr,
+                              ),
+                            ),
                           ),
-                          child: const Text('14 A/2 Admin building. New Cairo, Egypt'),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
                   Gap(isMobile ? 15.h : (isTablet ? 70.h : 20.h)),
 
-                    InkWell(
-                        onTap: ()=> _openLink('https://maps.app.goo.gl/xcCQnFRxJymzVune6'),
-                        child: Container(
-                          height: isMobile ? 225.h : 550.h,
-                        )
+                    Consumer<ContactInfoProvider>(
+                      builder: (context, contactProvider, _) {
+                        final info = contactProvider.contactInfo;
+                        return InkWell(
+                          onTap: () => _openLink(info.mapLink),
+                          child: Container(
+                            height: isMobile ? 225.h : 550.h,
+                          ),
+                        );
+                      },
                     )
                 ],
               ),
@@ -637,60 +651,59 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
   }
 
   Widget _buildContactInfoColumn(bool isMobile, bool isTablet) {
-    return isMobile ? Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        AnimatedContactInfo(
-          icon: Assets.iconsMail,
-          text: 'info@incomercialeg.com',
-          iconColor: const Color(0xFFF4ED47),
-          textColor: Colors.white,
-          iconSize: 24.r,
-          textSize: 12.sp,
-          isClickable: true,
-          onTap: () => _sendEmail('info@incomercialeg.com'),
-        ),
-        const Spacer(),
-        AnimatedContactInfo(
-          icon: Assets.iconsCall,
-          text: '0111-032-7777',
-          iconColor: const Color(0xFFF4ED47),
-          textColor: Colors.white,
-          iconSize: 24.r,
-          textSize: 12.sp,
-          isClickable: true,
-          onTap: () => _makePhoneCall('0111-032-7777'),
-        ),
-        
+    return Consumer<ContactInfoProvider>(
+      builder: (context, contactProvider, _) {
+        final info = contactProvider.contactInfo;
+        return isMobile ? Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AnimatedContactInfo(
+              icon: Assets.iconsMail,
+              text: info.email,
+              iconColor: const Color(0xFFF4ED47),
+              textColor: Colors.white,
+              iconSize: 24.r,
+              textSize: 12.sp,
+              isClickable: true,
+              onTap: () => _sendEmail(info.email),
+            ),
+            const Spacer(),
+            AnimatedContactInfo(
+              icon: Assets.iconsCall,
+              text: info.phone,
+              iconColor: const Color(0xFFF4ED47),
+              textColor: Colors.white,
+              iconSize: 24.r,
+              textSize: 12.sp,
+              isClickable: true,
+              onTap: () => _makePhoneCall(info.phone),
+            ),
+          ],
+        ) : Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AnimatedContactInfo(
+              icon: Assets.iconsCall,
+              text: info.phone,
+              iconColor: const Color(0xFFF4ED47),
+              textColor: Colors.white,
+              iconSize: isMobile ? 36.r : (isTablet ? 44.r : 52.r),
+              textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 42.sp),
+              isClickable: true,
+              onTap: () => _makePhoneCall(info.phone),
+            ),
+            AnimatedContactInfo(
+              icon: Assets.iconsMail,
+              text: info.email,
+              iconColor: const Color(0xFFF4ED47),
+              textColor: Colors.white,
+              iconSize: isMobile ? 36.r : (isTablet ? 44.r : 52.r),
+              textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 42.sp),
+              isClickable: true,
+              onTap: () => _sendEmail(info.email),
+            ),
 
-
-      ],
-    ) : Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AnimatedContactInfo(
-          icon: Assets.iconsCall,
-          text: '0111-032-7777',
-          iconColor: const Color(0xFFF4ED47),
-          textColor: Colors.white,
-          iconSize: isMobile ? 36.r : (isTablet ? 44.r : 52.r),
-          textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 42.sp),
-          isClickable: true,
-          onTap: () => _makePhoneCall('0111-032-7777'),
-        ),
-        //SizedBox(height: isMobile ? 16.h : 16.h),
-        AnimatedContactInfo(
-          icon: Assets.iconsMail,
-          text: 'info@incomercialeg.com',
-          iconColor: const Color(0xFFF4ED47),
-          textColor: Colors.white,
-          iconSize: isMobile ? 36.r : (isTablet ? 44.r : 52.r),
-          textSize: isMobile ? 28.sp : (isTablet ? 38.sp : 42.sp),
-          isClickable: true,
-          onTap: () => _sendEmail('info@incomercialeg.com'),
-        ),
-
-        Text(
+            Text(
           'WORKING_HOURS'.tr(context),
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -708,6 +721,8 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           ),
         ),
       ],
+    );
+      },
     );
   }
 

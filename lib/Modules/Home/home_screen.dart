@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rush/rush.dart';
@@ -31,6 +32,7 @@ import '../../Widgets/floating_contact_buttons.dart';
 import '../../Widgets/scroll_to_top_button.dart';
 import '../../generated/assets.dart';
 import '../../core/Language/locales.dart';
+import '../../core/Contact/contact_info_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -44,6 +46,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ContactInfoProvider>().fetchContactInfo();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

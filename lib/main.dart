@@ -16,6 +16,7 @@ import 'core/Language/app_languages.dart';
 import 'core/Language/locales.dart';
 import 'core/Theme/theme_provider.dart';
 import 'core/Content/content_provider.dart';
+import 'core/Contact/contact_info_provider.dart';
 import 'core/Firebase/firebase_options.dart';
 
 
@@ -62,6 +63,7 @@ Future<void> main() async {
           ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
           ChangeNotifierProvider<FontProvider>(create: (_) => FontProvider()),
           ChangeNotifierProvider<ContentProvider>(create: (_) => ContentProvider()),
+          ChangeNotifierProvider<ContactInfoProvider>(create: (_) => ContactInfoProvider()),
         ],
         child: const EntryPoint(),
       )

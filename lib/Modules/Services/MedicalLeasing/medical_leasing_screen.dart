@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import '../../../Widgets/bottom_navbar_widget.dart';
 import '../../../Widgets/clients_logos_section.dart';
 import '../../../Widgets/content_service_section.dart';
@@ -13,6 +14,7 @@ import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/Language/app_languages.dart';
 import '../../../generated/assets.dart';
 import '../../../Utilities/font_helper.dart';
 
@@ -85,34 +87,69 @@ class MedicalLeasingScreen extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
-                                        crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-                                        children: [
-                                          DynamicText(
-                                            pageId: 'medical-leasing',
-                                            sectionId: 'hero-title-1',
-                                            defaultValue: 'MEDICAL_HERO_TITLE_1',
-                                            style: TextStyle(
-                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                              color: Colors.white,
-                                              fontSize: isMobile ? 20.sp : 70.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Gap(8.w),
-                                          DynamicText(
-                                            pageId: 'medical-leasing',
-                                            sectionId: 'hero-title-2',
-                                            defaultValue: 'MEDICAL_HERO_TITLE_2',
-                                            style: TextStyle(
-                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                              color: const Color(0xFFF4ED47),
-                                              fontSize: isMobile ? 20.sp : 75.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
+                                      Builder(
+                                        builder: (context) {
+                                          final isArabic =
+                                              Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                                  Languages.ar;
+                                          return isArabic ? Row(
+                                            mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+                                            crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                                            children: [
+                                              DynamicText(
+                                                pageId: 'medical-leasing',
+                                                sectionId: 'hero-title-2',
+                                                defaultValue: 'MEDICAL_HERO_TITLE_2',
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: const Color(0xFFF4ED47),
+                                                  fontSize: isMobile ? 20.sp : 75.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Gap(8.w),
+                                              DynamicText(
+                                                pageId: 'medical-leasing',
+                                                sectionId: 'hero-title-1',
+                                                defaultValue: 'MEDICAL_HERO_TITLE_1',
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: Colors.white,
+                                                  fontSize: isMobile ? 20.sp : 70.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ) : Row(
+                                            mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+                                            crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                                            children: [
+                                              DynamicText(
+                                                pageId: 'medical-leasing',
+                                                sectionId: 'hero-title-1',
+                                                defaultValue: 'MEDICAL_HERO_TITLE_1',
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: Colors.white,
+                                                  fontSize: isMobile ? 20.sp : 70.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Gap(8.w),
+                                              DynamicText(
+                                                pageId: 'medical-leasing',
+                                                sectionId: 'hero-title-2',
+                                                defaultValue: 'MEDICAL_HERO_TITLE_2',
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: const Color(0xFFF4ED47),
+                                                  fontSize: isMobile ? 20.sp : 75.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }
                                       ),
 
                                       Gap(isMobile ? 0.h : 40.h),
