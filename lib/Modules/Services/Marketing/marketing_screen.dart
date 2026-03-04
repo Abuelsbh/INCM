@@ -304,7 +304,14 @@ class MarketingScreen extends StatelessWidget {
                                             ],
                                           ),
 
-                                        Gap(isMobile ? 20.h : 180.h),
+                                        Builder(
+                                          builder: (context) {
+                                            final isArabic =
+                                                Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                                    Languages.ar;
+                                            return Gap(isMobile ? 20.h : isArabic ? 240.h : 140.h);
+                                          }
+                                        ),
                                         // Our Services Include Section
                                         Container(
                                           width: double.infinity,

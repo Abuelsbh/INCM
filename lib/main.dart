@@ -103,13 +103,20 @@ class _EntryPointState extends State<EntryPoint> {
       builder: (context, appLan, appTheme, child) {
         return LayoutBuilder(
           builder: (context, constraints) {
+            final baseDesignSize = RushSetup.getSize(
+              maxWidth: constraints.maxWidth,
+              largeSize: const Size(1920,1080),
+              mediumSize: const Size(1000,780),
+              smallSize: const Size(375,812),
+            );
+            // عند تصغير ارتفاع الشاشة: لا نضغط المحتوى، بل نحدّ الارتفاع المرجعي
+            // بحيث يبقى المحتوى بحجمه الطبيعي ويظهر الـ scrolling بدل الضغط
+            final designHeight = constraints.maxHeight < baseDesignSize.height
+                ? constraints.maxHeight
+                : baseDesignSize.height;
+            final designSize = Size(baseDesignSize.width, designHeight * (MediaQuery.of(context).size.width < 600 ? 1 : 1.3));
             return ScreenUtilInit(
-              designSize: RushSetup.getSize(
-                maxWidth: constraints.maxWidth,
-                largeSize: const Size(1920,1080),
-                mediumSize: const Size(1000,780),
-                smallSize: const Size(375,812),
-              ),
+              designSize: designSize,
               builder:(_,__)=> MaterialApp.router(
                 scrollBehavior: const MyCustomScrollBehavior(),
                 routerConfig: GoRouterConfig.router,
@@ -128,8 +135,8 @@ class _EntryPointState extends State<EntryPoint> {
                 ],
                 builder: (context, child) {
                   return Directionality(
-                    textDirection: appLan.appLang == Languages.ar 
-                        ? TextDirection.rtl 
+                    textDirection: appLan.appLang == Languages.ar
+                        ? TextDirection.rtl
                         : TextDirection.ltr,
                     child: child!,
                   );
@@ -145,11 +152,12 @@ class _EntryPointState extends State<EntryPoint> {
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   const MyCustomScrollBehavior();
-  
-  // Override behavior methods and getters like dragDevices
+
+  /// منع التمرير عند السحب بالماوس (الضغط والسحب لأعلى/أسفل)
+  /// السماح بالتمرير باللمس فقط
   @override
   Set<PointerDeviceKind> get dragDevices => {
     PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
+    // PointerDeviceKind.mouse مُستبعد — لا scroll عند السحب بالماوس
   };
 }

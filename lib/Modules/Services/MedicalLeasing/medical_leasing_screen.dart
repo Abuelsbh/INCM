@@ -153,15 +153,6 @@ class MedicalLeasingScreen extends StatelessWidget {
                                       ),
 
                                       Gap(isMobile ? 0.h : 40.h),
-                                      if (!isMobile)
-                                        Container(
-                                          height: 2.h,
-                                          width: 350,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFFF4ED47),
-                                            borderRadius: BorderRadius.circular(32.r),
-                                          ),
-                                        ),
                                       Gap(isMobile ? 10.h : 40.h),
                                       Container(
                                         constraints: BoxConstraints(

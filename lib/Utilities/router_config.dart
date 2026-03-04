@@ -208,7 +208,7 @@ class GoRouterConfig{
   static CustomTransitionPage getCustomTransitionPage({required GoRouterState state, required Widget child}){
     return CustomTransitionPage(
       key: state.pageKey,
-      child: child,
+      child: SelectionArea(child: child),
       transitionDuration: Duration.zero,
       reverseTransitionDuration: Duration.zero,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

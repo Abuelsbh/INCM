@@ -826,7 +826,7 @@ class _AboutScreenState extends State<AboutScreen> with SingleTickerProviderStat
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(Assets.imagesAboutUsBackgroundMob1),
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
           ),),),
 

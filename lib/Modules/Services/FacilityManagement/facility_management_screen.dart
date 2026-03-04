@@ -169,34 +169,44 @@ class FacilityManagementScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        DynamicText(
-                                          pageId: 'facility-management',
-                                          sectionId: 'hero-title-1',
-                                          defaultValue: 'FACILITY_HERO_TITLE_1',
-                                          style: TextStyle(
-                                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                            color: Colors.white,
-                                            fontSize: isMobile ? 18.sp : 70.sp,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Gap(8.w),
-                                        DynamicText(
-                                          pageId: 'facility-management',
-                                          sectionId: 'hero-title-2',
-                                          defaultValue: 'FACILITY_HERO_TITLE_2',
-                                          style: TextStyle(
-                                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                            color: const Color(0xFFF4ED47),
-                                            fontSize: isMobile ? 18.sp : 75.sp,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
+                                    SizedBox(
+                                      width: 1050.w,
+                                      child: Builder(
+                                        builder: (context) {
+                                          final isArabic =
+                                              Provider.of<AppLanguage>(context, listen: false).appLang ==
+                                                  Languages.ar;
+                                          return Row(
+                                            mainAxisAlignment: isMobile ? MainAxisAlignment.center : isArabic ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              DynamicText(
+                                                pageId: 'facility-management',
+                                                sectionId: 'hero-title-1',
+                                                defaultValue: 'FACILITY_HERO_TITLE_1',
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: Colors.white,
+                                                  fontSize: isMobile ? 18.sp : 70.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Gap(8.w),
+                                              DynamicText(
+                                                pageId: 'facility-management',
+                                                sectionId: 'hero-title-2',
+                                                defaultValue: 'FACILITY_HERO_TITLE_2',
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: const Color(0xFFF4ED47),
+                                                  fontSize: isMobile ? 18.sp : 75.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                      ),
                                     ),
                                     Container(
                                       constraints: BoxConstraints(
