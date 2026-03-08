@@ -107,6 +107,7 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
       return;
     }
 
+
     final content = ContentModel(
       id: widget.initialContent?.id ?? '',
       pageId: widget.pageId,
