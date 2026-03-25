@@ -394,7 +394,7 @@ class MarketingScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const ContentServiceSection(),
+                  const ContentServiceSection(sourceTag: 'Marketing'),
 
                   if(MediaQuery.of(context).size.width >= 600)
                     const FooterSection()

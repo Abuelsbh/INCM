@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../core/Content/content_helper.dart';
-import '../core/Content/content_provider.dart';
 import '../core/Language/locales.dart';
 
 /// Widget to display text content from Firebase with fallback
-class DynamicText extends StatelessWidget {
+class DynamicText extends StatefulWidget {
   final String pageId;
   final String sectionId;
   final String defaultValue;
@@ -28,53 +26,74 @@ class DynamicText extends StatelessWidget {
   });
 
   @override
+  State<DynamicText> createState() => _DynamicTextState();
+}
+
+class _DynamicTextState extends State<DynamicText> {
+  late Future<String> _textFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _textFuture = _loadText();
+  }
+
+  @override
+  void didUpdateWidget(covariant DynamicText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.pageId != widget.pageId ||
+        oldWidget.sectionId != widget.sectionId ||
+        oldWidget.defaultValue != widget.defaultValue) {
+      _textFuture = _loadText();
+    }
+  }
+
+  Future<String> _loadText() {
+    return ContentHelper.getText(
+      context,
+      widget.pageId,
+      widget.sectionId,
+      defaultValue: widget.defaultValue,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isArabic =
         Localizations.localeOf(context).languageCode == 'ar';
 
-    return Consumer<ContentProvider>(
-      builder: (context, contentProvider, child) {
-        return FutureBuilder<String>(
-          future: ContentHelper.getText(
-            context,
-            pageId,
-            sectionId,
-            defaultValue: defaultValue,
-          ),
-          builder: (context, snapshot) {
-            String text = snapshot.data ?? defaultValue;
+    return FutureBuilder<String>(
+      future: _textFuture,
+      builder: (context, snapshot) {
+        String text = snapshot.data ?? widget.defaultValue;
 
-            if (text == defaultValue &&
-                defaultValue.contains('_') &&
-                defaultValue == defaultValue.toUpperCase()) {
-              text = defaultValue.tr(context);
-            }
+        if (text == widget.defaultValue &&
+            widget.defaultValue.contains('_') &&
+            widget.defaultValue == widget.defaultValue.toUpperCase()) {
+          text = widget.defaultValue.tr(context);
+        }
 
-            // Convert literal \n (from i18n/Firebase) to actual newlines for display
-            text = text.replaceAll(r'\n', '\n');
+        // Convert literal \n (from i18n/Firebase) to actual newlines for display
+        text = text.replaceAll(r'\n', '\n');
 
-            return Text(
-              text,
-              style: style,
-              maxLines: maxLines,
-              overflow: overflow,
+        return Text(
+          text,
+          style: widget.style,
+          maxLines: widget.maxLines,
+          overflow: widget.overflow,
 
-              // ⭐ المهم هنا
-              textDirection:
-              textDirection ?? (isArabic ? TextDirection.rtl : TextDirection.ltr),
-              textAlign:
-              textAlign ?? (isArabic ? TextAlign.right : TextAlign.left),
-            );
-          },
+          textDirection: widget.textDirection ??
+              (isArabic ? TextDirection.rtl : TextDirection.ltr),
+          textAlign:
+              widget.textAlign ?? (isArabic ? TextAlign.right : TextAlign.left),
         );
       },
     );
   }
 }
 
-
 /// Widget to display image from Firebase with fallback
-class DynamicImage extends StatelessWidget {
+class DynamicImage extends StatefulWidget {
   final String pageId;
   final String sectionId;
   final String? fallbackAssetPath;
@@ -93,36 +112,65 @@ class DynamicImage extends StatelessWidget {
   });
 
   @override
+  State<DynamicImage> createState() => _DynamicImageState();
+}
+
+class _DynamicImageState extends State<DynamicImage> {
+  late Future<Widget> _imageFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _imageFuture = _loadImage();
+  }
+
+  @override
+  void didUpdateWidget(covariant DynamicImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.pageId != widget.pageId ||
+        oldWidget.sectionId != widget.sectionId ||
+        oldWidget.fallbackAssetPath != widget.fallbackAssetPath ||
+        oldWidget.width != widget.width ||
+        oldWidget.height != widget.height ||
+        oldWidget.fit != widget.fit) {
+      _imageFuture = _loadImage();
+    }
+  }
+
+  Future<Widget> _loadImage() {
+    return ContentHelper.getImage(
+      context,
+      widget.pageId,
+      widget.sectionId,
+      fallbackAssetPath: widget.fallbackAssetPath,
+      width: widget.width,
+      height: widget.height,
+      fit: widget.fit,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<Widget>(
-      future: ContentHelper.getImage(
-        context,
-        pageId,
-        sectionId,
-        fallbackAssetPath: fallbackAssetPath,
-        width: width,
-        height: height,
-        fit: fit,
-      ),
+      future: _imageFuture,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return snapshot.data!;
         }
-        // Fallback while loading
-        if (fallbackAssetPath != null) {
+        if (widget.fallbackAssetPath != null) {
           return Image.asset(
-            fallbackAssetPath!,
-            width: width,
-            height: height,
-            fit: fit,
-            cacheWidth: width?.toInt(),
-            cacheHeight: height?.toInt(),
+            widget.fallbackAssetPath!,
+            width: widget.width,
+            height: widget.height,
+            fit: widget.fit,
+            cacheWidth: widget.width?.toInt(),
+            cacheHeight: widget.height?.toInt(),
             filterQuality: FilterQuality.medium,
           );
         }
         return Container(
-          width: width,
-          height: height,
+          width: widget.width,
+          height: widget.height,
           color: Colors.grey[300],
           child: const Center(child: CircularProgressIndicator()),
         );
@@ -132,7 +180,7 @@ class DynamicImage extends StatelessWidget {
 }
 
 /// Widget to display container with background image from Firebase
-class DynamicBackgroundContainer extends StatelessWidget {
+class DynamicBackgroundContainer extends StatefulWidget {
   final String pageId;
   final String sectionId;
   final String? fallbackAssetPath;
@@ -159,35 +207,63 @@ class DynamicBackgroundContainer extends StatelessWidget {
   });
 
   @override
+  State<DynamicBackgroundContainer> createState() =>
+      _DynamicBackgroundContainerState();
+}
+
+class _DynamicBackgroundContainerState extends State<DynamicBackgroundContainer> {
+  late Future<DecorationImage?> _decorationFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _decorationFuture = _loadDecoration();
+  }
+
+  @override
+  void didUpdateWidget(covariant DynamicBackgroundContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.pageId != widget.pageId ||
+        oldWidget.sectionId != widget.sectionId ||
+        oldWidget.fallbackAssetPath != widget.fallbackAssetPath ||
+        oldWidget.fit != widget.fit) {
+      _decorationFuture = _loadDecoration();
+    }
+  }
+
+  Future<DecorationImage?> _loadDecoration() {
+    return ContentHelper.getDecorationImage(
+      context,
+      widget.pageId,
+      widget.sectionId,
+      fit: widget.fit,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<DecorationImage?>(
-      future: ContentHelper.getDecorationImage(
-        context,
-        pageId,
-        sectionId,
-        fit: fit,
-      ),
+      future: _decorationFuture,
       builder: (context, snapshot) {
         DecorationImage? decorationImage = snapshot.data;
-        
-        // Fallback to asset if Firebase image not available
-        if (decorationImage == null && fallbackAssetPath != null) {
+
+        if (decorationImage == null && widget.fallbackAssetPath != null) {
           decorationImage = DecorationImage(
-            image: AssetImage(fallbackAssetPath!),
-            fit: fit,
+            image: AssetImage(widget.fallbackAssetPath!),
+            fit: widget.fit,
           );
         }
 
         return Container(
-          width: width,
-          height: height,
-          padding: padding,
-          margin: margin,
+          width: widget.width,
+          height: widget.height,
+          padding: widget.padding,
+          margin: widget.margin,
           decoration: BoxDecoration(
-            color: color,
+            color: widget.color,
             image: decorationImage,
           ),
-          child: child,
+          child: widget.child,
         );
       },
     );

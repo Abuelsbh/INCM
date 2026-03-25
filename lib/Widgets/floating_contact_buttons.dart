@@ -125,7 +125,7 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
 
                       if (_isExpanded) SizedBox(height: 12.h),
 
-                      // زر الواتساب
+                      // زر الاتصال الهاتفي (tel:)
                       if (_isExpanded)
                         Transform.scale(
                           scale: _scaleAnimation.value,
@@ -143,14 +143,13 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
 
                       if (_isExpanded) SizedBox(height: 12.h),
 
-                      // زر الاتصال
+                      // واتساب (https://wa.me/<رقم بدون +>)
                       if (_isExpanded)
                         Transform.scale(
                           scale: _scaleAnimation.value,
                           child: Opacity(
                             opacity: _fadeAnimation.value,
                             child: _ContactButton(
-
                               onTap: () => _openWhatsApp(info.whatsapp),
                               backgroundColor: const Color(0xFF25D366),
                               useAsset: false,

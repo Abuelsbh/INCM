@@ -10,6 +10,7 @@ import '../core/Language/app_languages.dart';
 import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
+import 'dynamic_content_widget.dart';
 
 class AboutContentSectionMob extends StatefulWidget {
   const AboutContentSectionMob({super.key});
@@ -77,26 +78,15 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                 opacity: _isVisible ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 2000),
                 curve: Curves.easeInOut,
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: ' ${'ABOUT'.tr(context)} ',
-                        style: TextStyle(
-                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                          color: const Color(0xFFF4ED47), // أصفر
-                          fontSize: 32.sp,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'US'.tr(context),
-                        style: TextStyle(
-                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                          color: Colors.white, // أبيض
-                          fontSize: 32.sp,
-                        ),
-                      ),
-                    ],
+                child: DynamicText(
+                  pageId: 'home',
+                  sectionId: 'about-section-title',
+                  defaultValue: 'ABOUT_US',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                    color: const Color(0xFFF4ED47),
+                    fontSize: 32.sp,
                   ),
                 ),
               ),
@@ -121,9 +111,10 @@ class _AboutContentSectionState extends State<AboutContentSectionMob> {
                     color: const Color(0xFFF4ED47).withOpacity(0.3),
                     borderRadius: BorderRadius.circular(8.r),
                   ),
-                  child: Text(
-                    'WE_WERE_ESTABLISHED'.tr(context),
-                    //textAlign: TextAlign.justify,// ✅ يجعل النص في المنتصف
+                  child: DynamicText(
+                    pageId: 'home',
+                    sectionId: 'about-section-text',
+                    defaultValue: 'WE_WERE_ESTABLISHED',
                     style: TextStyle(
                       fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                       color: Colors.white,

@@ -23,6 +23,7 @@ import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
 import '../Modules/Admin/admin_panel_screen.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
+import '../core/Content/services_provider.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -40,16 +41,15 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
   late Animation<Offset> _slideAnimation;
 
   List<Map<String, String>> getServices(BuildContext context) {
-    return [
-      {'name': 'CORPORATE_LEASING'.tr(context), 'route': CorporateLeasingScreen.routeName},
-      {'name': 'CONSULTATION'.tr(context), 'route': ConsultationScreen.routeName},
-      {'name': 'MARKETING'.tr(context), 'route': MarketingScreen.routeName},
-      {'name': 'MEDICAL_LEASING'.tr(context), 'route': MedicalLeasingScreen.routeName},
-      {'name': 'FACILITY_MANAGEMENT'.tr(context), 'route': FacilityManagementScreen.routeName},
-      {'name': 'PRIMARY_INVESTMENT'.tr(context), 'route': PrimaryInvestmentScreen.routeName},
-      {'name': 'RETAIL_LEASING'.tr(context), 'route': RetailLeasingScreen.routeName},
-      {'name': 'FRANCHISE_INVESTMENT'.tr(context), 'route': FranchiseInvestmentScreen.routeName},
-    ];
+    final servicesProvider = Provider.of<ServicesProvider>(context, listen: false);
+    final allServices = servicesProvider.allServices;
+    final isArabic = Provider.of<AppLanguage>(context, listen: false).appLang == Languages.ar;
+    return allServices.map((s) {
+      final name = s.nameKey != null
+          ? s.nameKey!.tr(context)
+          : (isArabic ? s.nameAr : s.nameEn);
+      return {'name': name, 'route': s.route};
+    }).toList();
   }
 
   @override

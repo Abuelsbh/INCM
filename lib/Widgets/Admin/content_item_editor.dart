@@ -32,6 +32,16 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
   bool _useManualInput = false;
   final TextEditingController _manualSectionIdController = TextEditingController();
 
+  bool _isTextOnlySectionId(String? sectionId) {
+    if (sectionId == null || sectionId.isEmpty) return false;
+    return sectionId.contains('service') ||
+        sectionId.contains('text') ||
+        sectionId.contains('title') ||
+        sectionId.contains('subtitle') ||
+        sectionId.contains('description') ||
+        sectionId.contains('benefit');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +77,9 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
     _textControllers['ar'] = TextEditingController(
       text: content?.values['ar'] ?? '',
     );
+    _textControllers['link'] = TextEditingController(
+      text: content?.values['link'] ?? content?.values['en'] ?? content?.values['ar'] ?? '',
+    );
     
     // If editing existing content and section ID not in list, add it
     if (content != null && _selectedSectionId != null) {
@@ -90,6 +103,7 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
   void dispose() {
     _textControllers['en']?.dispose();
     _textControllers['ar']?.dispose();
+    _textControllers['link']?.dispose();
     _manualSectionIdController.dispose();
     super.dispose();
   }
@@ -116,6 +130,7 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
       values: {
         'en': _textControllers['en']?.text ?? '',
         'ar': _textControllers['ar']?.text ?? '',
+        'link': _textControllers['link']?.text.trim() ?? '',
       },
       imageBase64: _imageBase64,
       createdAt: widget.initialContent?.createdAt ?? DateTime.now(),
@@ -257,14 +272,14 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
                               (s) => s.id == value,
                               orElse: () => SectionIdOption('', '', 'text'),
                             );
-                            // Force text type for service items and other text-only sections
-                            if (option.suggestedType == 'image' && 
-                                !option.id.contains('service') &&
-                                !option.id.contains('text') &&
-                                !option.id.contains('title') &&
-                                !option.id.contains('subtitle') &&
-                                !option.id.contains('description')) {
+                            if (_isTextOnlySectionId(option.id)) {
+                              _selectedType = ContentType.text;
+                            } else if (option.suggestedType == 'video') {
+                              _selectedType = ContentType.video;
+                            } else if (option.suggestedType == 'image') {
                               _selectedType = ContentType.image;
+                            } else if (option.suggestedType == 'link') {
+                              _selectedType = ContentType.link;
                             } else {
                               _selectedType = ContentType.text;
                             }
@@ -290,6 +305,16 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
                           setState(() {
                             _selectedType = ContentType.image;
                           });
+                        } else if (value.contains('video') || value.contains('media')) {
+                          setState(() {
+                            _selectedType = ContentType.video;
+                          });
+                        } else if (value.contains('link') ||
+                            value.contains('file') ||
+                            value.contains('url')) {
+                          setState(() {
+                            _selectedType = ContentType.link;
+                          });
                         }
                       },
                     ),
@@ -297,12 +322,7 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
               ),
               SizedBox(height: 16.h),
               // Only show type dropdown if section allows it
-              if (_selectedSectionId != null && 
-                  !_selectedSectionId!.contains('service') &&
-                  !_selectedSectionId!.contains('text') &&
-                  !_selectedSectionId!.contains('title') &&
-                  !_selectedSectionId!.contains('subtitle') &&
-                  !_selectedSectionId!.contains('description'))
+              if (!_isTextOnlySectionId(_selectedSectionId))
                 DropdownButtonFormField<ContentType>(
                   value: _selectedType,
                   decoration: const InputDecoration(
@@ -348,12 +368,7 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
                 ),
               SizedBox(height: 20.h),
               // Force text type for service items and text-only sections
-              if (_selectedSectionId != null && 
-                  (_selectedSectionId!.contains('service') ||
-                   _selectedSectionId!.contains('text') ||
-                   _selectedSectionId!.contains('title') ||
-                   _selectedSectionId!.contains('subtitle') ||
-                   _selectedSectionId!.contains('description')))
+              if (_isTextOnlySectionId(_selectedSectionId))
                 // Text only sections
                 Column(
                   children: [
@@ -404,6 +419,70 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
                   initialValue: _textControllers['ar']?.text,
                   onChanged: (value) => _textControllers['ar']?.text = value,
                   maxLines: 2,
+                ),
+              ] else if (_selectedType == ContentType.link) ...[
+                TextEditorWidget(
+                  label: 'الرابط',
+                  initialValue: _textControllers['link']?.text,
+                  onChanged: (value) => _textControllers['link']?.text = value,
+                  maxLines: 2,
+                  isRequired: true,
+                ),
+              ] else if (_selectedType == ContentType.video) ...[
+                TextEditorWidget(
+                  label: 'رابط الفيديو',
+                  initialValue: _textControllers['link']?.text,
+                  onChanged: (value) => _textControllers['link']?.text = value,
+                  maxLines: 2,
+                ),
+                SizedBox(height: 12.h),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE8F5E9),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFF81C784)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.lightbulb_outline,
+                              size: 18.sp, color: Colors.green[800]),
+                          SizedBox(width: 6.w),
+                          Text(
+                            'للعمل على Safari وجميع المتصفحات:',
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green[900],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        'ارفع الفيديو على استضافة مجانية تعطي رابط .mp4 مباشر، مثل:\n'
+                        '• VidPlay.io • Image2URL.com • Cloudinary',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.green[800],
+                          height: 1.4,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'ثم الصق الرابط المباشر هنا (ينتهي عادة بـ .mp4)',
+                        style: TextStyle(
+                          fontSize: 11.sp,
+                          color: Colors.grey[700],
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
               SizedBox(height: 24.h),

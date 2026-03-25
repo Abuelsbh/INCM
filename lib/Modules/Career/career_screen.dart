@@ -1,9 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:incm/core/Contact/contact_form_phone.dart';
+import 'package:incm/core/Contact/contact_submission_service.dart';
+import 'package:incm/core/Firebase/career_cv_storage_service.dart';
 import 'package:incm/core/Language/locales.dart';
 import 'package:provider/provider.dart';
 import '../../Utilities/font_helper.dart';
@@ -20,6 +25,8 @@ import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/footer_section.dart';
 import '../../Widgets/footer_section_mob.dart';
 import '../../core/Language/app_languages.dart';
+import '../../core/Content/content_provider.dart';
+import '../../Models/content_model.dart';
 import '../../generated/assets.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -32,14 +39,53 @@ class CareerScreen extends StatefulWidget {
   State<CareerScreen> createState() => _CareerScreenState();
 }
 
+class _CareerFamilyFallbackSpec {
+  final String titleKey;
+  final String assetPath;
+
+  const _CareerFamilyFallbackSpec({
+    required this.titleKey,
+    required this.assetPath,
+  });
+
+  String title(BuildContext context) => titleKey.tr(context);
+}
+
+class _CareerFamilyItemData {
+  final String title;
+  final String fallbackAssetPath;
+  final String? imageBase64;
+
+  const _CareerFamilyItemData({
+    required this.title,
+    required this.fallbackAssetPath,
+    this.imageBase64,
+  });
+
+  _CareerFamilyItemData copyWith({
+    String? title,
+    String? fallbackAssetPath,
+    String? imageBase64,
+  }) {
+    return _CareerFamilyItemData(
+      title: title ?? this.title,
+      fallbackAssetPath: fallbackAssetPath ?? this.fallbackAssetPath,
+      imageBase64: imageBase64 ?? this.imageBase64,
+    );
+  }
+}
+
 class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderStateMixin{
+  static const String _careerPageId = 'career';
   final ScrollController _scrollController = ScrollController();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool _hasAnimated = false;
   bool _isAddressHovered = false;
+  bool _isSubmitting = false;
   late PageController _pageController;
   int _currentPage = 0;
+  List<ContentModel> _careerContents = const [];
 
 
 
@@ -48,6 +94,8 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
   final _jobTitleController = TextEditingController();
   final _emailController = TextEditingController();
   final _linkOrFileController = TextEditingController();
+  Uint8List? _cvPickedBytes;
+  String? _cvPickedDisplayName;
   // Country code
   String _selectedCountryCode = '+20'; // Egypt as default
 
@@ -92,20 +140,21 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     "HIGHEST_COMMISSION",
   ];
 
+  List<_CareerFamilyFallbackSpec> get _familyFallbackItems => const [
+    _CareerFamilyFallbackSpec(titleKey: 'FINAL_RAMADAN', assetPath: Assets.imagesPic3),
+    _CareerFamilyFallbackSpec(titleKey: 'INTERNSHIP', assetPath: Assets.imagesPic2),
+    _CareerFamilyFallbackSpec(titleKey: 'FUN_DAY', assetPath: Assets.imagesPic4),
+  ];
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: MediaQuery.of(currentContext_!).size.width > 600 ? 0.33 : 1);
+    _loadCareerContent();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    // تبديل اللون كل 5 ثواني
-    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      setState(() {
-        _isPrimaryColor = !_isPrimaryColor;
-      });
-    });
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -121,6 +170,64 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
         _animationController.forward();
       }
     });
+    _linkOrFileController.addListener(_onCvFieldChanged);
+  }
+
+  void _onCvFieldChanged() {
+    if (!mounted) return;
+    if (_cvPickedBytes != null &&
+        _cvPickedDisplayName != null &&
+        _linkOrFileController.text != _cvPickedDisplayName) {
+      setState(() {
+        _cvPickedBytes = null;
+        _cvPickedDisplayName = null;
+      });
+    }
+  }
+
+  Future<void> _pickCvFile() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx'],
+        withData: true,
+      );
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+        final bytes = file.bytes;
+        if (bytes == null || bytes.isEmpty) {
+          if (!mounted) return;
+          Fluttertoast.showToast(
+            msg: 'Could not read file. Try a smaller file or paste a link.',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.TOP,
+          );
+          return;
+        }
+        if (!mounted) return;
+        setState(() {
+          _cvPickedBytes = bytes;
+          _cvPickedDisplayName = file.name;
+          _linkOrFileController.text = file.name;
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      Fluttertoast.showToast(
+        msg: 'Error picking file: $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> _loadCareerContent() async {
+    final contentProvider = Provider.of<ContentProvider>(context, listen: false);
+    final contents = await contentProvider.getPageContent(_careerPageId);
+    if (!mounted) return;
+    setState(() {
+      _careerContents = contents;
+    });
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
@@ -135,14 +242,13 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
+    _linkOrFileController.removeListener(_onCvFieldChanged);
     _animationController.dispose();
     _fullNameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
     _linkOrFileController.dispose();
     _jobTitleController.dispose();
-    _animationController.dispose();
-    _timer.cancel();
     super.dispose();
   }
 
@@ -167,7 +273,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     return phoneRegex.hasMatch(phone);
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     final context = this.context;
     if (_fullNameController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
@@ -204,17 +310,94 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
       return;
     }
 
-    if (_linkOrFileController.text.trim().isEmpty) {
+    if (selectedDepartment == null || selectedDepartment!.isEmpty) {
+      _showToast('PLEASE_SELECT_DEPARTMENT'.tr(context));
+      return;
+    }
+
+    final cvField = _linkOrFileController.text.trim();
+    if (cvField.isEmpty) {
       _showToast('PLEASE_UPLOAD_CV'.tr(context));
       return;
     }
 
-    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
 
-    _fullNameController.clear();
-    _phoneController.clear();
-    _jobTitleController.clear();
-    _emailController.clear();
+    try {
+      final name = _fullNameController.text.trim();
+      final phone = _phoneController.text.trim();
+      final email = _emailController.text.trim();
+      final fullPhone = contactFullPhone(_selectedCountryCode, phone);
+      final deptLabel = selectedDepartment!.tr(context);
+      final jobTitle = _jobTitleController.text.trim();
+
+      String? cvUrl;
+      if (_cvPickedBytes != null && _cvPickedDisplayName != null) {
+        cvUrl = await CareerCvStorageService.uploadCv(
+          bytes: _cvPickedBytes!,
+          originalFileName: _cvPickedDisplayName!,
+          applicantEmail: email,
+        );
+        if (cvUrl == null) {
+          if (!mounted) return;
+          _showToast('CV_UPLOAD_FAILED'.tr(context));
+          return;
+        }
+      } else if (cvField.startsWith('http://') || cvField.startsWith('https://')) {
+        cvUrl = cvField;
+      } else {
+        if (!mounted) return;
+        _showToast('PLEASE_UPLOAD_CV'.tr(context));
+        return;
+      }
+
+      final buf = StringBuffer();
+      buf.writeln('Department: $deptLabel');
+      buf.writeln('Job title: $jobTitle');
+      buf.writeln('CV (download / link): $cvUrl');
+
+      final result = await ContactSubmissionService.instance.submit(
+        name: name,
+        fullPhone: fullPhone,
+        email: email,
+        message: buf.toString(),
+        emailSubject: 'Career — $deptLabel — $name',
+        formSourceSlug: 'career',
+        formSourceLabel: 'FORM_SOURCE_CAREER'.tr(context),
+        extraTemplateParams: {
+          'department': deptLabel,
+          'cv_link': cvUrl,
+          'job_title': jobTitle,
+        },
+      );
+
+      if (!mounted) return;
+
+      if (!result.firestoreSaved) {
+        _showToast('CONTACT_SUBMISSION_FAILED'.tr(context));
+        return;
+      }
+
+      if (!result.emailSent) {
+        _showToast('CONTACT_SAVED_EMAIL_PENDING'.tr(context), isError: false);
+      } else {
+        _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+      }
+
+      _fullNameController.clear();
+      _phoneController.clear();
+      _jobTitleController.clear();
+      _emailController.clear();
+      _linkOrFileController.clear();
+      setState(() {
+        _cvPickedBytes = null;
+        _cvPickedDisplayName = null;
+        selectedDepartment = null;
+      });
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   // Helper method to determine if screen is mobile
@@ -228,24 +411,182 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     return width >= 600 && width < 1024;
   }
 
-  List<Map<String, String>> get items => [
-    {
-      'title': 'FINAL_RAMADAN',
-      'image': Assets.imagesPic3,
-    },
-    {
-      'title': 'INTERNSHIP',
-      'image': Assets.imagesPic2,
-    },
-    {
-      'title': 'FUN_DAY',
-      'image': Assets.imagesPic4,
-    },
+  String _localizedValue(ContentModel content) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final primaryValue = isArabic ? content.values['ar'] : content.values['en'];
+    final secondaryValue = isArabic ? content.values['en'] : content.values['ar'];
+    return (primaryValue?.isNotEmpty == true ? primaryValue : secondaryValue) ?? '';
+  }
 
-  ];
+  List<_CareerFamilyItemData> _resolveFamilyItems(List<ContentModel> contents) {
+    final itemsByIndex = <int, _CareerFamilyItemData>{};
+    for (var i = 0; i < _familyFallbackItems.length; i++) {
+      final fallback = _familyFallbackItems[i];
+      itemsByIndex[i + 1] = _CareerFamilyItemData(
+        title: fallback.title(context),
+        fallbackAssetPath: fallback.assetPath,
+      );
+    }
+
+    final familyRegex =
+        RegExp(r'^career-family-member-(\d+)-(title|image)$');
+
+    for (final content in contents) {
+      final match = familyRegex.firstMatch(content.sectionId);
+      if (match == null) continue;
+
+      final index = int.tryParse(match.group(1) ?? '');
+      final field = match.group(2);
+      if (index == null || index <= 0 || field == null) continue;
+
+      var item = itemsByIndex[index] ??
+          const _CareerFamilyItemData(
+            title: '',
+            fallbackAssetPath: Assets.imagesPic3,
+          );
+
+      switch (field) {
+        case 'title':
+          final title = _localizedValue(content);
+          if (title.isNotEmpty) {
+            item = item.copyWith(title: title);
+          }
+          break;
+        case 'image':
+          if (content.imageBase64?.isNotEmpty == true) {
+            item = item.copyWith(imageBase64: content.imageBase64);
+          }
+          break;
+      }
+
+      itemsByIndex[index] = item;
+    }
+
+    final sortedIndexes = itemsByIndex.keys.toList()..sort();
+    return sortedIndexes
+        .map((index) => itemsByIndex[index]!)
+        .where(
+          (item) => item.title.isNotEmpty || (item.imageBase64?.isNotEmpty ?? false),
+        )
+        .toList();
+  }
+
+  List<_CareerFamilyItemData> get _currentFamilyItems =>
+      _resolveFamilyItems(_careerContents);
+
+  ContentModel? _findCareerContent(String sectionId) {
+    try {
+      return _careerContents.firstWhere((content) => content.sectionId == sectionId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String _resolveDefaultText(String defaultValue) {
+    if (defaultValue.contains('_') && defaultValue == defaultValue.toUpperCase()) {
+      return defaultValue.tr(context);
+    }
+    return defaultValue;
+  }
+
+  String _getCareerText(String sectionId, String defaultValue) {
+    final content = _findCareerContent(sectionId);
+    if (content != null && content.type == ContentType.text) {
+      final localizedValue = _localizedValue(content);
+      if (localizedValue.isNotEmpty) {
+        return localizedValue.replaceAll(r'\n', '\n');
+      }
+    }
+    return _resolveDefaultText(defaultValue).replaceAll(r'\n', '\n');
+  }
+
+  Widget _buildCareerImage({
+    required String sectionId,
+    required String fallbackAssetPath,
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    final content = _findCareerContent(sectionId);
+    final rawBase64 = content?.imageBase64?.trim();
+    if (rawBase64 != null && rawBase64.isNotEmpty) {
+      try {
+        final normalizedBase64 =
+            rawBase64.contains(',') ? rawBase64.split(',').last.trim() : rawBase64;
+        final bytes = base64Decode(normalizedBase64);
+        return Image.memory(
+          bytes,
+          width: width,
+          height: height,
+          fit: fit,
+        );
+      } catch (_) {
+        // Fall back to bundled asset on invalid base64.
+      }
+    }
+
+    return Image.asset(
+      fallbackAssetPath,
+      width: width,
+      height: height,
+      fit: fit,
+    );
+  }
+
+  ImageProvider _getCareerBackgroundImageProvider({
+    required bool isMobile,
+  }) {
+    final content = _findCareerContent('career-background');
+    final rawBase64 = content?.imageBase64?.trim();
+    if (rawBase64 != null && rawBase64.isNotEmpty) {
+      try {
+        final normalizedBase64 =
+            rawBase64.contains(',') ? rawBase64.split(',').last.trim() : rawBase64;
+        return MemoryImage(base64Decode(normalizedBase64));
+      } catch (_) {
+        // Fall back to bundled asset on invalid base64.
+      }
+    }
+
+    return AssetImage(
+      isMobile ? Assets.imagesCareerViewMob : Assets.imagesCareerViewWeb,
+    );
+  }
+
+  Widget _buildDynamicFamilyImage(
+    _CareerFamilyItemData item, {
+    required double height,
+    double? width,
+  }) {
+    final rawBase64 = item.imageBase64?.trim();
+    if (rawBase64 != null && rawBase64.isNotEmpty) {
+      try {
+        final normalizedBase64 =
+            rawBase64.contains(',') ? rawBase64.split(',').last.trim() : rawBase64;
+        final bytes = base64Decode(normalizedBase64);
+        return Image.memory(
+          bytes,
+          fit: BoxFit.cover,
+          width: width ?? double.infinity,
+          height: height,
+        );
+      } catch (_) {
+        // Fall back to the bundled asset if the saved base64 is invalid.
+      }
+    }
+
+    return Image.asset(
+      item.fallbackAssetPath,
+      fit: BoxFit.cover,
+      width: width ?? double.infinity,
+      height: height,
+    );
+  }
 
   void _nextPage() {
-    if (_currentPage < items.length - 1) {
+    final familyItems = _currentFamilyItems;
+    if (familyItems.isEmpty) return;
+    if (_currentPage < familyItems.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
@@ -261,6 +602,8 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
   }
 
   void _previousPage() {
+    final familyItems = _currentFamilyItems;
+    if (familyItems.isEmpty) return;
     if (_currentPage > 0) {
       _pageController.previousPage(
         duration: const Duration(milliseconds: 500),
@@ -269,21 +612,13 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     } else {
       // Loop: from first image go to last
       _pageController.animateToPage(
-        items.length - 1,
+        familyItems.length - 1,
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     }
   }
-  bool _isPrimaryColor = true;
-  late Timer _timer;
-
-
   bool isDownloading = false;
-  double progress = 0;
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -303,7 +638,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(isMobile ? Assets.imagesCareerViewMob : Assets.imagesCareerViewWeb),
+                      image: _getCareerBackgroundImageProvider(isMobile: isMobile),
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -388,7 +723,10 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('WELCOME_TO_INCM_FAMILY'.tr(context)),
+                _buildDynamicSectionTitle(
+                  sectionId: 'career-title',
+                  defaultValue: 'WELCOME_TO_INCM_FAMILY',
+                ),
                 Gap(120.h),
                 Container(
                   decoration: BoxDecoration(
@@ -397,7 +735,12 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       width: 0.6,            // border width
                     ),
                   ),
-                  child: Image.asset(Assets.imagesPic1, height: 600.h,),
+                  child: _buildCareerImage(
+                    sectionId: 'career-welcome-image',
+                    fallbackAssetPath: Assets.imagesPic1,
+                    height: 600.h,
+                    fit: BoxFit.cover,
+                  ),
                 ),
 
               ],
@@ -438,7 +781,10 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('JOIN_INCM_FAMILY_NOW'.tr(context)),
+                _buildDynamicSectionTitle(
+                  sectionId: 'career-subtitle',
+                  defaultValue: 'JOIN_INCM_FAMILY_NOW',
+                ),
                 Gap(60.h),
                 Column(
                     children: [
@@ -508,40 +854,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                   controller: _linkOrFileController,
                                   isMobile: isMobile,
                                   isTablet: isTablet,
-                                  onUploadTap: () async {
-                                    try {
-                                      FilePickerResult? result;
-
-                                      if (kIsWeb) {
-                                        // Web version - works seamlessly
-                                        result = await FilePicker.platform.pickFiles(
-                                          type: FileType.custom,
-                                          allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx'],
-                                          withData: false,
-                                          withReadStream: false,
-                                        );
-                                      } else {
-                                        // Mobile/Desktop version
-                                        result = await FilePicker.platform.pickFiles(
-                                          type: FileType.custom,
-                                          allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx'],
-                                        );
-                                      }
-
-                                      if (result != null && result.files.isNotEmpty) {
-                                        final file = result.files.first;
-                                        setState(() {
-                                          _linkOrFileController.text = file.name;
-                                        });
-                                      }
-                                    } catch (e) {
-                                      Fluttertoast.showToast(
-                                        msg: "Error picking file: $e",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                      );
-                                    }
-                                  }
+                                  onUploadTap: _pickCvFile,
                               )
                           ),
                         ],
@@ -551,7 +864,8 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                         context: context,
                         fontSize: isMobile ? 24.sp : (isTablet ? 26.sp : 42.sp),
                         width: isMobile ? 120.w : (isTablet ? 120.w : 180.w),
-                        onPressed: _handleSubmit,
+                        enabled: !_isSubmitting,
+                        onPressed: () => _handleSubmit(),
                       ),
                     ]
                 )
@@ -566,22 +880,39 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
   }
 
   Widget _buildSectionTitle(String text) => Text(
-    text,
-    textAlign: TextAlign.center,
-    style: TextStyle(
-      fontFamily: getLocalizedFont(context, 'OptimalBold'),
-      color: const Color(0xFFF4ED47),
-      fontSize: MediaQuery.of(context).size.width > 600 ? 80.sp : 28.sp,
-      fontWeight: FontWeight.bold,
-    ),
-  );
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: getLocalizedFont(context, 'OptimalBold'),
+          color: const Color(0xFFF4ED47),
+          fontSize: MediaQuery.of(context).size.width > 600 ? 80.sp : 28.sp,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+
+  Widget _buildDynamicSectionTitle({
+    required String sectionId,
+    required String defaultValue,
+    bool isMobile = false,
+  }) {
+    return Text(
+      _getCareerText(sectionId, defaultValue),
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: getLocalizedFont(context, 'OptimalBold'),
+        color: const Color(0xFFF4ED47),
+        fontSize: isMobile ? 28.sp : 80.sp,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
 
   Widget _buildCareerBenefitsTitle(BuildContext context, bool isMobile, bool isTablet) {
-    final translated = 'CAREER_BENEFITS'.tr(context);
+    final translated = _getCareerText('career-benefits-title', 'CAREER_BENEFITS');
     final parts = translated.split(' ');
     final firstPart = parts.isNotEmpty ? parts.first : '';
     final rest = parts.length > 1 ? parts.sublist(1).join(' ') : '';
-    
+
     return RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
@@ -605,6 +936,23 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDynamicBenefitText(
+    String sectionId,
+    String defaultKey, {
+    required double fontSize,
+    double? height,
+  }) {
+    return Text(
+      _getCareerText(sectionId, defaultKey),
+      style: TextStyle(
+        fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
+        color: Colors.white,
+        fontSize: fontSize,
+        height: height,
       ),
     );
   }
@@ -656,7 +1004,11 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: benefits
                                 .sublist(0, (benefits.length / 2).toInt())
-                                .map((text) {
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                              final index = entry.key;
+                              final text = entry.value;
                               return Padding(
                                 padding: EdgeInsets.only(bottom: 20.h),
                                 child: Row(
@@ -672,14 +1024,11 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                       ),
                                     ),
                                     Expanded(
-                                      child: Text(
-                                        text.tr(context),
-                                        style: TextStyle(
-                                          fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
-                                          color: Colors.white,
-                                          fontSize: isTablet ? 24.sp : 40.sp,
-                                          height: 1.8,
-                                        ),
+                                      child: _buildDynamicBenefitText(
+                                        'career-benefit-${index + 1}',
+                                        text,
+                                        fontSize: isTablet ? 24.sp : 40.sp,
+                                        height: 1.8,
                                       ),
                                     ),
                                   ],
@@ -701,7 +1050,11 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: benefits
                                 .sublist((benefits.length / 2).toInt(), benefits.length)
-                                .map((text) {
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                              final index = entry.key + (benefits.length / 2).toInt();
+                              final text = entry.value;
                               return Padding(
                                 padding: EdgeInsets.only(bottom: 20.h),
                                 child: Row(
@@ -717,14 +1070,11 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                                       ),
                                     ),
                                     Expanded(
-                                      child: Text(
-                                        text.tr(context),
-                                        style: TextStyle(
-                                          fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
-                                          color: Colors.white,
-                                          fontSize: isTablet ? 24.sp : 40.sp,
-                                          height: 1.8,
-                                        ),
+                                      child: _buildDynamicBenefitText(
+                                        'career-benefit-${index + 1}',
+                                        text,
+                                        fontSize: isTablet ? 24.sp : 40.sp,
+                                        height: 1.8,
                                       ),
                                     ),
                                   ],
@@ -770,130 +1120,17 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('OUR_FAMILY_MEMBERS'.tr(context)),
+                _buildDynamicSectionTitle(
+                  sectionId: 'career-family-members-title',
+                  defaultValue: 'OUR_FAMILY_MEMBERS',
+                ),
                 Gap(40.h),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 60.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 650.h,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 40.w),
-                              child: PageView.builder(
-                                controller: _pageController,
-                                itemCount: items.length,
-                                onPageChanged: (index) {
-                                  setState(() => _currentPage = index);
-                                },
-                                itemBuilder: (context, index) {
-                                  final item = items[index];
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.transparent,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: const Color(0xFFF4ED47),
-                                                width: 0.6,            // border width
-                                              ),
-                                            ),
-                                            child: Image.asset(
-                                              item['image']!,
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                            ),
-                                            height: 500.h,
-                                            width: 800.w,
-                                          ),
-                                          SizedBox(height: 30.h),
-                                          Text(
-                                            item['title']!.tr(context),
-                                            style: TextStyle(
-                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                              color: Colors.white,
-                                              fontSize: 50.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-
-                            // Left arrow
-                            Positioned(
-                              left: 0,
-                              top: 165,
-                              child: Builder(
-                                builder: (context) {
-                                  final isArabic =
-                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
-                                          Languages.ar;
-
-                                  return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios_new, color: Colors.white),
-                                    iconSize: 40,
-                                    onPressed: _previousPage,
-                                  );
-                                }
-                              ),
-                            ),
-
-                            // Right arrow
-                            Positioned(
-                              right: 0,
-                              top: 165,
-                              child: Builder(
-                                builder: (context) {
-                                  final isArabic =
-                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
-                                          Languages.ar;
-                                  return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_back_ios_new:Icons.arrow_forward_ios, color: Colors.white),
-                                    iconSize: 40,
-                                    onPressed: _nextPage,
-                                  );
-                                }
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // Dots indicator
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: List.generate(
-                      //     items.length,
-                      //         (index) => AnimatedContainer(
-                      //       duration: const Duration(milliseconds: 300),
-                      //       margin: const EdgeInsets.symmetric(horizontal: 4),
-                      //       width: _currentPage == index ? 32 : 8,
-                      //       height: 8,
-                      //       decoration: BoxDecoration(
-                      //         color: _currentPage == index
-                      //             ? const Color(0xFFF4ED47)
-                      //             : Colors.white.withOpacity(0.4),
-                      //         borderRadius: BorderRadius.circular(4),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
+                  child: _buildFamilyMembersCarousel(
+                    context,
+                    _currentFamilyItems,
+                    isMobile: false,
                   ),
                 )
               ],
@@ -901,6 +1138,125 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
           ),
         ),
       ),
+    );
+  }
+  Widget _buildFamilyMembersCarousel(
+    BuildContext context,
+    List<_CareerFamilyItemData> familyItems, {
+    required bool isMobile,
+  }) {
+    final imageHeight = isMobile ? 380.h : 500.h;
+    final carouselHeight = isMobile ? 480.h : 650.h;
+    final titleFontSize = isMobile ? 26.sp : 50.sp;
+    final arrowTop = isMobile ? 130.0 : 165.0;
+    final arrowSize = isMobile ? 28.0 : 40.0;
+    final horizontalPadding = isMobile ? 20.w : 40.w;
+    final itemHorizontalPadding = isMobile ? 20.w : 10.w;
+    final imageWidth = isMobile ? 650.w : 800.w;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: carouselHeight,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: familyItems.length,
+                  onPageChanged: (index) {
+                    _currentPage = index;
+                  },
+                  itemBuilder: (context, index) {
+                    final item = familyItems[index];
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: itemHorizontalPadding),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: const Color(0xFFF4ED47),
+                                  width: 0.6,
+                                ),
+                              ),
+                              height: imageHeight,
+                              width: imageWidth,
+                              child: _buildDynamicFamilyImage(
+                                item,
+                                height: imageHeight,
+                                width: imageWidth,
+                              ),
+                            ),
+                            SizedBox(height: isMobile ? 10.h : 30.h),
+                            Text(
+                              item.title,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                color: Colors.white,
+                                fontSize: titleFontSize,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                left: 0,
+                top: arrowTop,
+                child: Builder(
+                  builder: (context) {
+                    final isArabic =
+                        Provider.of<AppLanguage>(context, listen: false).appLang ==
+                            Languages.ar;
+                    return IconButton(
+                      icon: Icon(
+                        isArabic ? Icons.arrow_forward_ios : Icons.arrow_back_ios_new,
+                        color: Colors.white,
+                      ),
+                      iconSize: arrowSize,
+                      onPressed: _previousPage,
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                right: 0,
+                top: arrowTop,
+                child: Builder(
+                  builder: (context) {
+                    final isArabic =
+                        Provider.of<AppLanguage>(context, listen: false).appLang ==
+                            Languages.ar;
+                    return IconButton(
+                      icon: Icon(
+                        isArabic ? Icons.arrow_back_ios_new : Icons.arrow_forward_ios,
+                        color: Colors.white,
+                      ),
+                      iconSize: arrowSize,
+                      onPressed: _nextPage,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: isMobile ? 10 : 20),
+      ],
     );
   }
 
@@ -932,7 +1288,11 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('WELCOME_TO_INCM_FAMILY'.tr(context)),
+                _buildDynamicSectionTitle(
+                  sectionId: 'career-title',
+                  defaultValue: 'WELCOME_TO_INCM_FAMILY',
+                  isMobile: true,
+                ),
                 Gap(40.h),
                 Container(
                   decoration: BoxDecoration(
@@ -941,7 +1301,11 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                       width: 1,            // border width
                     ),
                   ),
-                  child: Image.asset(Assets.imagesPic1),
+                  child: _buildCareerImage(
+                    sectionId: 'career-welcome-image',
+                    fallbackAssetPath: Assets.imagesPic1,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ],
             ),
@@ -979,7 +1343,11 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
               children: [
-                _buildSectionTitle('JOIN_INCM_FAMILY_NOW'.tr(context)),
+                _buildDynamicSectionTitle(
+                  sectionId: 'career-subtitle',
+                  defaultValue: 'JOIN_INCM_FAMILY_NOW',
+                  isMobile: true,
+                ),
                 Gap(30.h),
                 Column(
                     children: [
@@ -1026,47 +1394,15 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                           controller: _linkOrFileController,
                           isMobile: isMobile,
                           isTablet: isTablet,
-                          onUploadTap: () async {
-                            try {
-                              FilePickerResult? result;
-
-                              if (kIsWeb) {
-                                // Web version - works seamlessly
-                                result = await FilePicker.platform.pickFiles(
-                                  type: FileType.custom,
-                                  allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx'],
-                                  withData: false,
-                                  withReadStream: false,
-                                );
-                              } else {
-                                // Mobile/Desktop version
-                                result = await FilePicker.platform.pickFiles(
-                                  type: FileType.custom,
-                                  allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg', 'doc', 'docx'],
-                                );
-                              }
-
-                              if (result != null && result.files.isNotEmpty) {
-                                final file = result.files.first;
-                                setState(() {
-                                  _linkOrFileController.text = file.name;
-                                });
-                              }
-                            } catch (e) {
-                              Fluttertoast.showToast(
-                                msg: "Error picking file: $e",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                              );
-                            }
-                          }
+                          onUploadTap: _pickCvFile,
                       ),
 
                       Gap(28.h),
                       ButtonStyles.submitButtonMob(
                         context: context,
                         width: isMobile ? 80.w : (isTablet ? 120.w : 140.w),
-                        onPressed: _handleSubmit,
+                        enabled: !_isSubmitting,
+                        onPressed: () => _handleSubmit(),
                       ),
                     ]
                 )
@@ -1111,7 +1447,9 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                   Gap(20.h),
                  Column(
                     children: [
-                      ...benefits.map((text) {
+                      ...benefits.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final text = entry.value;
                         return Container(
                           width: double.infinity,
                           margin: EdgeInsets.symmetric(horizontal: 30.w,vertical: 4.h),
@@ -1121,13 +1459,10 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                             //borderRadius: BorderRadius.circular(4.r),
                           ),
                           child: Center(
-                            child: Text(
-                              text.tr(context),
-                              style: TextStyle(
-                                fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
-                                color: Colors.white,
-                                fontSize: 16.sp,
-                              ),
+                            child: _buildDynamicBenefitText(
+                              'career-benefit-${index + 1}',
+                              text,
+                              fontSize: 16.sp,
                             ),
                           ),
                         );
@@ -1145,12 +1480,6 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
 
   Widget _buildLatestNewsSectionMob(BuildContext context) {
     return Container(
-      // decoration: BoxDecoration(
-      //   image: DecorationImage(
-      //     image: AssetImage(Assets.imagesAboutUsBackgroundMob2),
-      //     fit: BoxFit.fill,
-      //   ),
-      // ),
       width: double.infinity,
       height: 650.h,
       child: AnimatedBuilder(
@@ -1161,117 +1490,25 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
             child: child,
           );
         },
-        child: Center( // 👈 centers everything vertically + horizontally
+        child: Center(
           child: Container(
             padding: EdgeInsets.all(0.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center, // 👈 vertical center
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildSectionTitle('OUR_FAMILY_MEMBERS'.tr(context)),
+                _buildDynamicSectionTitle(
+                  sectionId: 'career-family-members-title',
+                  defaultValue: 'OUR_FAMILY_MEMBERS',
+                  isMobile: true,
+                ),
                 Gap(10.h),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 20.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 480.h,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              child: PageView.builder(
-                                controller: _pageController,
-                                itemCount: items.length,
-                                onPageChanged: (index) {
-                                  setState(() => _currentPage = index);
-                                },
-                                itemBuilder: (context, index) {
-                                  final item = items[index];
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.transparent,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: const Color(0xFFF4ED47),
-                                                width: 0.6,            // border width
-                                              ),
-                                            ),
-                                            child: Image.asset(
-                                              item['image']!,
-                                              fit: BoxFit.cover,
-                                              width: double.infinity,
-                                            ),
-                                            height: 380.h,
-                                            width: 650.w,
-                                          ),
-                                          SizedBox(height: 10.h),
-                                          Text(
-                                            item['title']!.tr(context),
-                                            style: TextStyle(
-                                              fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                              color: Colors.white,
-                                              fontSize: 26.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-
-                            // Left arrow
-                            Positioned(
-                              left: 0,
-                              top: 130,
-                              child: Builder(
-                                builder: (context) {
-                                  final isArabic =
-                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
-                                          Languages.ar;
-                                  return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_forward_ios:Icons.arrow_back_ios_new, color: Colors.white),
-                                    iconSize: 28,
-                                    onPressed: _previousPage,
-                                  );
-                                }
-                              ),
-                            ),
-
-                            // Right arrow
-                            Positioned(
-                              right: 0,
-                              top: 130,
-                              child: Builder(
-                                builder: (context) {
-                                  final isArabic =
-                                      Provider.of<AppLanguage>(context, listen: false).appLang ==
-                                          Languages.ar;
-                                  return IconButton(
-                                    icon: Icon(isArabic?Icons.arrow_back_ios_new:Icons.arrow_forward_ios, color: Colors.white),
-                                    iconSize: 28,
-                                    onPressed: _nextPage,
-                                  );
-                                }
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                    ],
+                  child: _buildFamilyMembersCarousel(
+                    context,
+                    _currentFamilyItems,
+                    isMobile: true,
                   ),
                 )
               ],

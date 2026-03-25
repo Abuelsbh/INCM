@@ -1,29 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:state_extended/state_extended.dart';
 import '../splash_controller.dart';
 import '../incm_animated_splash.dart';
 
 class SmallSplashScreen extends StatefulWidget {
-  const SmallSplashScreen({super.key});
+  final String targetRoute;
+
+  const SmallSplashScreen({super.key, required this.targetRoute});
 
   @override
-  State createState() => _SmallSplashScreenState();
+  State<SmallSplashScreen> createState() => _SmallSplashScreenState();
 }
 
-class _SmallSplashScreenState extends StateX<SmallSplashScreen> {
-  _SmallSplashScreenState() : super(controller: SplashController()) {
-    con = SplashController();
-  }
-
-  late SplashController con;
-
-
+class _SmallSplashScreenState extends State<SmallSplashScreen> {
   @override
   void initState() {
-    con.init(context);
     super.initState();
+    loadDataAndNavigate(context, widget.targetRoute);
   }
 
   @override

@@ -16,6 +16,7 @@ import 'core/Language/app_languages.dart';
 import 'core/Language/locales.dart';
 import 'core/Theme/theme_provider.dart';
 import 'core/Content/content_provider.dart';
+import 'core/Content/services_provider.dart';
 import 'core/Contact/contact_info_provider.dart';
 import 'core/Firebase/firebase_options.dart';
 
@@ -63,6 +64,7 @@ Future<void> main() async {
           ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
           ChangeNotifierProvider<FontProvider>(create: (_) => FontProvider()),
           ChangeNotifierProvider<ContentProvider>(create: (_) => ContentProvider()),
+          ChangeNotifierProvider<ServicesProvider>(create: (_) => ServicesProvider()),
           ChangeNotifierProvider<ContactInfoProvider>(create: (_) => ContactInfoProvider()),
         ],
         child: const EntryPoint(),
@@ -90,8 +92,10 @@ class _EntryPointState extends State<EntryPoint> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final appLan = Provider.of<AppLanguage>(context, listen: false);
         final appTheme = Provider.of<ThemeProvider>(context, listen: false);
+        final servicesProvider = Provider.of<ServicesProvider>(context, listen: false);
         appLan.fetchLocale();
         appTheme.fetchTheme();
+        servicesProvider.loadServices();
       });
     }
   }

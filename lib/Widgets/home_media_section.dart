@@ -8,9 +8,6 @@ import 'package:video_player/video_player.dart';
 import '../core/Content/content_provider.dart';
 import '../Models/content_model.dart';
 
-// Import File only for non-web platforms
-import 'dart:io' if (dart.library.html) 'dart:html' as html;
-
 /// Widget to display image or video after HomeSearchSection
 /// Only shows if content is added from admin panel
 class HomeMediaSection extends StatefulWidget {
@@ -26,6 +23,14 @@ class _HomeMediaSectionState extends State<HomeMediaSection> {
   bool _isInitializing = false;
   dynamic _tempVideoFile; // File on mobile, null on web (using dynamic to avoid web issues)
   String? _lastContentId; // Track content ID to detect changes
+  late final Future<List<ContentModel>> _homeContentFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    final contentProvider = Provider.of<ContentProvider>(context, listen: false);
+    _homeContentFuture = contentProvider.getPageContent('home');
+  }
 
   Future<void> _initializeVideo(ContentModel content) async {
     if (_isInitializing || _videoController != null) return;
@@ -141,80 +146,77 @@ class _HomeMediaSectionState extends State<HomeMediaSection> {
     final height = size.height;
     const sectionId = 'home-media-section';
 
-    // Use Stream so data loads when Firebase has it and updates in real time
-    return Consumer<ContentProvider>(
-      builder: (context, contentProvider, child) {
-        return StreamBuilder<List<ContentModel>>(
-          stream: contentProvider.streamPageContent('home'),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting &&
-                !snapshot.hasData) {
-              return const SizedBox.shrink();
-            }
+    return FutureBuilder<List<ContentModel>>(
+      future: _homeContentFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
+          return const SizedBox.shrink();
+        }
 
-            final list = snapshot.data ?? [];
-            ContentModel? content;
-            for (final c in list) {
-              if (c.sectionId == sectionId) {
-                content = c;
-                break;
-              }
-            }
-            if (content == null) {
-              return const SizedBox.shrink();
-            }
+        final list = snapshot.data ?? [];
+        ContentModel? content;
+        for (final c in list) {
+          if (c.sectionId == sectionId) {
+            content = c;
+            break;
+          }
+        }
+        if (content == null) {
+          return const SizedBox.shrink();
+        }
 
-            final contentType = content.type;
+        final contentType = content.type;
 
-            // لو الصورة/الفيديو مش هينعرض — ما نعرضش أي حاجة من البداية
-            final hasValidImage = contentType == ContentType.image &&
-                ((content.imageBase64 != null && content.imageBase64!.trim().isNotEmpty) ||
-                    (content.values['link'] != null && content.values['link']!.trim().isNotEmpty));
-            final hasValidVideo = contentType == ContentType.video &&
-                ((content.imageBase64 != null && content.imageBase64!.trim().isNotEmpty) ||
-                    (content.values['link'] != null && content.values['link']!.trim().isNotEmpty));
-            if (contentType == ContentType.image && !hasValidImage) {
-              return const SizedBox.shrink();
-            }
-            if (contentType == ContentType.video && !hasValidVideo) {
-              return const SizedBox.shrink();
-            }
+        // لو الصورة/الفيديو مش هينعرض — ما نعرضش أي حاجة من البداية
+        final hasValidImage = contentType == ContentType.image &&
+            ((content.imageBase64 != null && content.imageBase64!.trim().isNotEmpty) ||
+                (content.values['link'] != null &&
+                    content.values['link']!.trim().isNotEmpty));
+        final hasValidVideo = contentType == ContentType.video &&
+            ((content.imageBase64 != null && content.imageBase64!.trim().isNotEmpty) ||
+                (content.values['link'] != null &&
+                    content.values['link']!.trim().isNotEmpty));
+        if (contentType == ContentType.image && !hasValidImage) {
+          return const SizedBox.shrink();
+        }
+        if (contentType == ContentType.video && !hasValidVideo) {
+          return const SizedBox.shrink();
+        }
 
-            // Check if content has changed
-            final contentChanged = _lastContentId != content.id;
-            if (contentChanged) {
-              _lastContentId = content.id;
-              if (_videoController != null) {
-                _videoController?.dispose();
-                _videoController = null;
-                _isVideoInitialized = false;
-                _isInitializing = false;
-              }
-            }
+        // Check if content has changed within this page instance only
+        final contentChanged = _lastContentId != content.id;
+        if (contentChanged) {
+          _lastContentId = content.id;
+          if (_videoController != null) {
+            _videoController?.dispose();
+            _videoController = null;
+            _isVideoInitialized = false;
+            _isInitializing = false;
+          }
+        }
 
-            if (contentType == ContentType.video &&
-                _videoController == null &&
-                !_isInitializing) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _initializeVideo(content!);
-              });
-            }
+        if (contentType == ContentType.video &&
+            _videoController == null &&
+            !_isInitializing) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _initializeVideo(content!);
+          });
+        }
 
-            // للفيديو: ما نعرضش القسم غير لما الفيديو يكون جاهز (ما نعرضش loading أو خلفية)
-            if (contentType == ContentType.video) {
-              if (_videoController == null || !_isVideoInitialized) {
-                return const SizedBox.shrink();
-              }
-            }
+        // للفيديو: ما نعرضش القسم غير لما الفيديو يكون جاهز (ما نعرضش loading أو خلفية)
+        if (contentType == ContentType.video) {
+          if (_videoController == null || !_isVideoInitialized) {
+            return const SizedBox.shrink();
+          }
+        }
 
-            return RepaintBoundary(
-              child: SizedBox(
-                width: width,
-                height: height,
-                child: _buildMedia(contentType, content),
-              ),
-            );
-          },
+        return RepaintBoundary(
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: _buildMedia(contentType, content),
+          ),
         );
       },
     );

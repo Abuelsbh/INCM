@@ -1,0 +1,17 @@
+// Deploy: firebase deploy --only storage
+// Allows public uploads only under career_cvs/ with a size cap (tighten for production).
+
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /career_cvs/{fileName} {
+      allow write: if request.resource.size < 15 * 1024 * 1024;
+      allow read: if true;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

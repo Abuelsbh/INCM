@@ -212,8 +212,6 @@ class Assets {
   static const String logosRetail7 = 'assets/logos/retail/7.png';
   static const String logosRetail8 = 'assets/logos/retail/8.png';
   static const String logosRetail9 = 'assets/logos/retail/9.png';
-  static const String videosMobile = 'assets/videos/mobile.mp4';
-  static const String videosWebsite = 'assets/videos/website.mp4';
   static const String videosLandingPage= 'assets/videos/landingPage.gif';
   static const String logosINCM = 'assets/logos/INCM.png';
   static const String logosINCMLogo = 'assets/logos/INCMLogo.png';

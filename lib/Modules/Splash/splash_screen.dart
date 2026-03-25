@@ -8,14 +8,19 @@ import 'package:flutter/material.dart';
 class SplashScreen extends StatelessWidget {
   static const routeName = "/splash";
 
-  const SplashScreen({super.key});
+  /// Target route to navigate after data is loaded (e.g. /about).
+  /// If null, defaults to home (/).
+  final String? targetRoute;
+
+  const SplashScreen({super.key, this.targetRoute});
 
   @override
   Widget build(BuildContext context) {
-    return const RushWidget(
-      smallScreen: SmallSplashScreen(),
-      mediumScreen: MediumSplashScreen(),
-      largeScreen: LargeSplashScreen(),
+    final target = targetRoute ?? '/';
+    return RushWidget(
+      smallScreen: SmallSplashScreen(targetRoute: target),
+      mediumScreen: MediumSplashScreen(targetRoute: target),
+      largeScreen: LargeSplashScreen(targetRoute: target),
     );
   }
 }

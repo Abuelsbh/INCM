@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import '../../Models/logo_model.dart';
+import '../../core/Content/services_provider.dart';
 import 'multi_image_picker_widget.dart';
 import 'text_editor_widget.dart';
 
@@ -29,17 +31,24 @@ class _LogoEditorState extends State<LogoEditor> {
   String? _selectedPageId;
   int _order = 0;
 
-  // Only 8 services pages for logos - English names
-  final Map<String, String> _pageNames = {
-    'corporate-leasing': 'Corporate Leasing',
-    'retail-leasing': 'Retail Leasing',
-    'medical-leasing': 'Medical Leasing',
-    'facility-management': 'Facility Management',
-    'franchise-investment': 'Franchise Investment',
-    'primary-investment': 'Primary Investment',
-    'marketing': 'Marketing',
-    'consultation': 'Consultation',
-  };
+  // Built-in + custom services for logos
+  Map<String, String> _getPageNames(BuildContext context) {
+    final map = <String, String>{
+      'corporate-leasing': 'Corporate Leasing',
+      'retail-leasing': 'Retail Leasing',
+      'medical-leasing': 'Medical Leasing',
+      'facility-management': 'Facility Management',
+      'franchise-investment': 'Franchise Investment',
+      'primary-investment': 'Primary Investment',
+      'marketing': 'Marketing',
+      'consultation': 'Consultation',
+    };
+    final customServices = Provider.of<ServicesProvider>(context, listen: false).customServices;
+    for (final s in customServices) {
+      map[s.pageId] = s.nameEn.isNotEmpty ? s.nameEn : s.nameAr;
+    }
+    return map;
+  }
 
   @override
   void initState() {
@@ -189,7 +198,7 @@ class _LogoEditorState extends State<LogoEditor> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                items: _pageNames.entries.map((entry) {
+                items: _getPageNames(context).entries.map((entry) {
                   return DropdownMenuItem<String>(
                     value: entry.key,
                     child: Text(entry.value),
@@ -233,7 +242,7 @@ class _LogoEditorState extends State<LogoEditor> {
                         SizedBox(width: 8.w),
                         Expanded(
                           child: Text(
-                            'سيتم إضافة ${_selectedImages.length} لوجو إلى صفحة: ${_pageNames[_selectedPageId] ?? _selectedPageId}',
+                            'سيتم إضافة ${_selectedImages.length} لوجو إلى صفحة: ${_getPageNames(context)[_selectedPageId] ?? _selectedPageId}',
                             style: TextStyle(
                               color: Colors.blue[900],
                               fontSize: 14.sp,

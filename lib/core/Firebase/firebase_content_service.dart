@@ -84,7 +84,9 @@ class FirebaseContentService {
     }
   }
 
-  /// Save or update content
+  /// Save or update content.
+  /// If content has no id but a document with same pageId+sectionId exists,
+  /// updates that document instead of creating a duplicate.
   Future<bool> saveContent(ContentModel content) async {
     if (!_isFirebaseInitialized || _firestore == null) {
       print('Firebase not initialized. Cannot save content.');
@@ -94,7 +96,16 @@ class FirebaseContentService {
       final contentMap = content.toMap();
       contentMap.remove('id'); // Remove id from map as it's the document ID
 
-      if (content.id.isEmpty) {
+      String docId = content.id;
+      if (docId.isEmpty) {
+        // Check if section already exists (same pageId + sectionId)
+        final existing = await getContent(content.pageId, content.sectionId);
+        if (existing != null) {
+          docId = existing.id; // Update existing instead of creating duplicate
+        }
+      }
+
+      if (docId.isEmpty) {
         // Create new content
         final docRef = await _firestore!.collection(_collectionName).add({
           ...contentMap,
@@ -104,7 +115,7 @@ class FirebaseContentService {
         return docRef.id.isNotEmpty;
       } else {
         // Update existing content
-        await _firestore!.collection(_collectionName).doc(content.id).update({
+        await _firestore!.collection(_collectionName).doc(docId).update({
           ...contentMap,
           'updatedAt': FieldValue.serverTimestamp(),
         });
@@ -214,17 +225,31 @@ class FirebaseContentService {
     return pageNames[pageId] ?? pageId;
   }
 
-  /// Batch save multiple content items
+  /// Batch save multiple content items.
+  /// For items with no id, updates existing doc with same pageId+sectionId if found.
   Future<bool> batchSaveContent(List<ContentModel> contents) async {
     if (!_isFirebaseInitialized || _firestore == null) {
       print('Firebase not initialized. Cannot batch save content.');
       return false;
     }
     try {
+      // Resolve ids for items with empty id (update existing section if found)
+      final resolvedContents = <ContentModel>[];
+      for (var content in contents) {
+        if (content.id.isEmpty) {
+          final existing = await getContent(content.pageId, content.sectionId);
+          resolvedContents.add(existing != null
+              ? content.copyWith(id: existing.id)
+              : content);
+        } else {
+          resolvedContents.add(content);
+        }
+      }
+
       final batch = _firestore!.batch();
       final now = FieldValue.serverTimestamp();
 
-      for (var content in contents) {
+      for (var content in resolvedContents) {
         final contentMap = content.toMap();
         contentMap.remove('id');
         contentMap['updatedAt'] = now;

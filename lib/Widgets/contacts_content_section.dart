@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../core/Contact/contact_form_phone.dart';
+import '../core/Contact/contact_submission_service.dart';
 import '../core/Language/locales.dart';
 import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
@@ -19,6 +21,7 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool _hasAnimated = false;
+  bool _isSubmitting = false;
 
   // Form controllers
   final _fullNameController = TextEditingController();
@@ -147,63 +150,91 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
     return phoneRegex.hasMatch(phone);
   }
 
-  void _handleSubmit() {
-    // Validate full name
+  Future<void> _handleSubmit() async {
     if (_fullNameController.text.trim().isEmpty) {
-      _showToast('Please enter your full name');
+      _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
       return;
     }
 
     if (_fullNameController.text.trim().length < 3) {
-      _showToast('Full name must be at least 3 characters');
+      _showToast('FULL_NAME_MIN_CHARS'.tr(context));
       return;
     }
 
-    // Validate phone
     if (_phoneController.text.trim().isEmpty) {
-      _showToast('Please enter your phone number');
+      _showToast('PLEASE_ENTER_PHONE'.tr(context));
       return;
     }
 
     if (!_validatePhone(_phoneController.text.trim())) {
-      _showToast('Please enter a valid phone number (9-15 digits)');
+      _showToast('PLEASE_ENTER_VALID_PHONE'.tr(context));
       return;
     }
 
-    // Validate area
     if (_messageController.text.trim().isEmpty) {
-      _showToast('Please enter the message');
+      _showToast('PLEASE_ENTER_MESSAGE'.tr(context));
       return;
     }
 
-    // Validate location
     if (selectedLocation == null || selectedLocation!.isEmpty) {
-      _showToast('Please select a location');
+      _showToast('PLEASE_SELECT_LOCATION'.tr(context));
       return;
     }
 
-    // Validate email
     if (_emailController.text.trim().isEmpty) {
-      _showToast('Please enter your email');
+      _showToast('PLEASE_ENTER_EMAIL'.tr(context));
       return;
     }
 
     if (!_validateEmail(_emailController.text.trim())) {
-      _showToast('Please enter a valid email address');
+      _showToast('PLEASE_ENTER_VALID_EMAIL'.tr(context));
       return;
     }
 
-    // All validations passed
-    _showToast('Form submitted successfully!', isError: false);
-    
-    // Clear form after successful submission
-    _fullNameController.clear();
-    _phoneController.clear();
-    _messageController.clear();
-    setState(() {
-      selectedLocation = null;
-    });
-    _emailController.clear();
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
+
+    final name = _fullNameController.text.trim();
+    final phone = _phoneController.text.trim();
+    final email = _emailController.text.trim();
+    final fullPhone = contactFullPhone(_selectedCountryCode, phone);
+    final buf = StringBuffer(_messageController.text.trim());
+    buf.writeln('\n---\nLocation: ${selectedLocation!}');
+
+    try {
+      final result = await ContactSubmissionService.instance.submit(
+        name: name,
+        fullPhone: fullPhone,
+        email: email,
+        message: buf.toString(),
+        emailSubject: 'Contact — Home — $name',
+        formSourceSlug: 'home',
+        formSourceLabel: 'FORM_SOURCE_HOME'.tr(context),
+      );
+
+      if (!mounted) return;
+
+      if (!result.firestoreSaved) {
+        _showToast('CONTACT_SUBMISSION_FAILED'.tr(context));
+        return;
+      }
+
+      if (!result.emailSent) {
+        _showToast('CONTACT_SAVED_EMAIL_PENDING'.tr(context), isError: false);
+      } else {
+        _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+      }
+
+      _fullNameController.clear();
+      _phoneController.clear();
+      _messageController.clear();
+      setState(() {
+        selectedLocation = null;
+      });
+      _emailController.clear();
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   @override
@@ -337,7 +368,8 @@ class _ContactsContentSectionState extends State<ContactsContentSection>
                       ButtonStyles.submitButton(
                             context: context,
                             width: 120.w,
-                            onPressed: _handleSubmit,
+                            enabled: !_isSubmitting,
+                            onPressed: () => _handleSubmit(),
                           ),
                         ],
                       ),

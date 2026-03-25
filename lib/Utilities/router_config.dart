@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:incm/Modules/Buy/buy_screen.dart';
 import 'package:incm/Modules/Career/career_screen.dart';
 import 'package:incm/Modules/Lease/lease_screen.dart';
@@ -16,9 +17,12 @@ import '../Modules/Services/FacilityManagement/facility_management_screen.dart';
 import '../Modules/Services/FranchiseInvestment/franchise_investment_screen.dart';
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/Marketing/marketing_screen.dart';
+import '../Modules/Services/GenericService/generic_service_screen.dart';
 import '../Modules/AllLogos/all_logos_screen.dart';
 import '../Modules/Admin/admin_panel_screen.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
+import '../core/Content/content_provider.dart';
+import '../core/Content/route_page_mapping.dart';
 
 BuildContext? get currentContext_ =>
     GoRouterConfig.router.routerDelegate.navigatorKey.currentContext;
@@ -31,9 +35,10 @@ class GoRouterConfig{
       GoRoute(
         path: SplashScreen.routeName,
         pageBuilder: (_, GoRouterState state) {
+          final target = state.queryParameters['target'] ?? '/';
           return getCustomTransitionPage(
             state: state,
-            child: const SplashScreen(),
+            child: SplashScreen(targetRoute: target),
           );
         },
       ),
@@ -172,6 +177,17 @@ class GoRouterConfig{
           );
         },
       ),
+      // Dynamic route for custom services (added from dashboard)
+      GoRoute(
+        path: '/services/:pageId',
+        pageBuilder: (_, GoRouterState state) {
+          final pageId = state.pathParameters['pageId'] ?? '';
+          return getCustomTransitionPage(
+            state: state,
+            child: GenericServiceScreen(pageId: pageId),
+          );
+        },
+      ),
       GoRoute(
         path: AllLogosScreen.routeName,
         pageBuilder: (_, GoRouterState state) {
@@ -201,7 +217,25 @@ class GoRouterConfig{
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
-      return null; // No redirects needed for single page app
+      final location = state.location.split('?').first;
+      if (location == SplashScreen.routeName) return null;
+
+      // Admin and non-content routes: no redirect
+      if (!RoutePageMapping.isContentRoute(location)) return null;
+
+      final pageId = RoutePageMapping.getPageIdForRoute(location);
+      if (pageId == null) return null;
+
+      try {
+        final contentProvider = Provider.of<ContentProvider>(context, listen: false);
+        if (contentProvider.isPageCached(pageId)) return null;
+      } catch (_) {
+        return null; // Provider not ready yet
+      }
+
+      // Redirect to splash to load data, then come back
+      final target = state.location;
+      return '${SplashScreen.routeName}?target=${Uri.encodeComponent(target)}';
     },
   );
 

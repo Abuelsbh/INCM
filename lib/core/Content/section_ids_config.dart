@@ -1,5 +1,12 @@
 /// Configuration for Section IDs for each page
 class SectionIdsConfig {
+  static const Set<String> _knownServicePageIds = {
+    'corporate-leasing', 'retail-leasing', 'medical-leasing', 'facility-management',
+    'franchise-investment', 'primary-investment', 'marketing', 'consultation',
+  };
+
+  static bool _isKnownServicePageId(String pageId) => _knownServicePageIds.contains(pageId);
+
   /// Get available section IDs for a specific page
   static List<SectionIdOption> getSectionIdsForPage(String pageId) {
     switch (pageId) {
@@ -123,7 +130,9 @@ class SectionIdsConfig {
           SectionIdOption('search-title', 'عنوان البحث (EXPLORE INCM WORLD)', 'text'),
           SectionIdOption('search-subtitle', 'النص الفرعي للبحث', 'text'),
           SectionIdOption('search-placeholder', 'نص البحث (Search...)', 'text'),
-          SectionIdOption('home-media-section', 'صورة/فيديو تحت قسم البحث', 'image'),
+          SectionIdOption('home-background-video-web', 'فيديو خلفية الصفحة الرئيسية (ويب) - رابط', 'video'),
+          SectionIdOption('home-background-video-mobile', 'فيديو خلفية الصفحة الرئيسية (موبايل) - رابط', 'video'),
+          SectionIdOption('home-media-section', 'صورة/فيديو تحت قسم البحث', 'video'),
           SectionIdOption('about-section-title', 'عنوان قسم "من نحن"', 'text'),
           SectionIdOption('about-section-text', 'نص قسم "من نحن"', 'text'),
           SectionIdOption('services-section-title', 'عنوان قسم "الخدمات"', 'text'),
@@ -133,10 +142,24 @@ class SectionIdsConfig {
         return [
           SectionIdOption('who-are-we-title', 'عنوان "من نحن"', 'text'),
           SectionIdOption('who-are-we-text', 'نص "من نحن"', 'text'),
+          SectionIdOption('company-profile-file', 'رابط ملف الشركة', 'link'),
           SectionIdOption('mission-title', 'عنوان "مهمتنا"', 'text'),
           SectionIdOption('mission-text', 'نص المهمة', 'text'),
           SectionIdOption('vision-title', 'عنوان "رؤيتنا"', 'text'),
           SectionIdOption('vision-text', 'نص الرؤية', 'text'),
+          SectionIdOption('latest-news-title', 'عنوان قسم Latest News & Events', 'text'),
+          SectionIdOption('latest-news-item-1-title', 'خبر 1 - العنوان', 'text'),
+          SectionIdOption('latest-news-item-1-description', 'خبر 1 - الوصف', 'text'),
+          SectionIdOption('latest-news-item-1-image', 'خبر 1 - الصورة', 'image'),
+          SectionIdOption('latest-news-item-2-title', 'خبر 2 - العنوان', 'text'),
+          SectionIdOption('latest-news-item-2-description', 'خبر 2 - الوصف', 'text'),
+          SectionIdOption('latest-news-item-2-image', 'خبر 2 - الصورة', 'image'),
+          SectionIdOption('latest-news-item-3-title', 'خبر 3 - العنوان', 'text'),
+          SectionIdOption('latest-news-item-3-description', 'خبر 3 - الوصف', 'text'),
+          SectionIdOption('latest-news-item-3-image', 'خبر 3 - الصورة', 'image'),
+          SectionIdOption('latest-news-item-4-title', 'خبر 4 - العنوان', 'text'),
+          SectionIdOption('latest-news-item-4-description', 'خبر 4 - الوصف', 'text'),
+          SectionIdOption('latest-news-item-4-image', 'خبر 4 - الصورة', 'image'),
           SectionIdOption('about-background', 'صورة الخلفية', 'image'),
         ];
       
@@ -152,9 +175,30 @@ class SectionIdsConfig {
       
       case 'career':
         return [
-          SectionIdOption('career-title', 'عنوان الصفحة', 'text'),
-          SectionIdOption('career-subtitle', 'النص الفرعي', 'text'),
+          SectionIdOption('career-title', 'عنوان قسم Welcome', 'text'),
+          SectionIdOption('career-subtitle', 'عنوان قسم Join', 'text'),
           SectionIdOption('career-background', 'صورة الخلفية', 'image'),
+          SectionIdOption('career-welcome-image', 'صورة قسم Welcome', 'image'),
+          SectionIdOption('career-benefits-title', 'عنوان قسم المميزات', 'text'),
+          SectionIdOption('career-benefit-1', 'الميزة 1', 'text'),
+          SectionIdOption('career-benefit-2', 'الميزة 2', 'text'),
+          SectionIdOption('career-benefit-3', 'الميزة 3', 'text'),
+          SectionIdOption('career-benefit-4', 'الميزة 4', 'text'),
+          SectionIdOption('career-benefit-5', 'الميزة 5', 'text'),
+          SectionIdOption('career-benefit-6', 'الميزة 6', 'text'),
+          SectionIdOption('career-benefit-7', 'الميزة 7', 'text'),
+          SectionIdOption('career-benefit-8', 'الميزة 8', 'text'),
+          SectionIdOption('career-benefit-9', 'الميزة 9', 'text'),
+          SectionIdOption('career-benefit-10', 'الميزة 10', 'text'),
+          SectionIdOption('career-benefit-11', 'الميزة 11', 'text'),
+          SectionIdOption('career-benefit-12', 'الميزة 12', 'text'),
+          SectionIdOption('career-family-members-title', 'عنوان قسم أفراد العائلة', 'text'),
+          SectionIdOption('career-family-member-1-title', 'عضو العائلة 1 - العنوان', 'text'),
+          SectionIdOption('career-family-member-1-image', 'عضو العائلة 1 - الصورة', 'image'),
+          SectionIdOption('career-family-member-2-title', 'عضو العائلة 2 - العنوان', 'text'),
+          SectionIdOption('career-family-member-2-image', 'عضو العائلة 2 - الصورة', 'image'),
+          SectionIdOption('career-family-member-3-title', 'عضو العائلة 3 - العنوان', 'text'),
+          SectionIdOption('career-family-member-3-image', 'عضو العائلة 3 - الصورة', 'image'),
         ];
       
       case 'buy':
@@ -302,6 +346,21 @@ class SectionIdsConfig {
         ];
       
       default:
+        // Custom services (unknown pageIds) use facility-management template
+        if (!_isKnownServicePageId(pageId)) {
+          return [
+            SectionIdOption('hero-title-1', 'Hero Title 1', 'text'),
+            SectionIdOption('hero-title-2', 'Hero Title 2', 'text'),
+            SectionIdOption('hero-subtitle', 'Hero Subtitle', 'text'),
+            SectionIdOption('background-image', 'Background Image', 'image'),
+            SectionIdOption('description-1', 'Description 1', 'text'),
+            SectionIdOption('description-2', 'Description 2', 'text'),
+            SectionIdOption('services-title', 'Services Title', 'text'),
+            SectionIdOption('service-1', 'Service 1', 'text'),
+            SectionIdOption('service-2', 'Service 2', 'text'),
+            SectionIdOption('service-3', 'Service 3', 'text'),
+          ];
+        }
         return [
           SectionIdOption('title', 'العنوان', 'text'),
           SectionIdOption('subtitle', 'النص الفرعي', 'text'),

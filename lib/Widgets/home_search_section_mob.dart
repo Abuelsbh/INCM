@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import '../core/Content/content_provider.dart';
+import '../core/Content/services_provider.dart';
+import '../Utilities/video_url_helper.dart';
 import '../Modules/About/about_screen.dart';
 import '../Modules/Buy/buy_screen.dart';
 import '../Modules/Career/career_screen.dart';
@@ -19,7 +25,7 @@ import '../Modules/Services/MedicalLeasing/medical_leasing_screen.dart';
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
-import '../generated/assets.dart';
+import '../Widgets/dynamic_content_widget.dart';
 import '../core/Content/content_helper.dart';
 import '../core/Language/locales.dart';
 
@@ -31,31 +37,39 @@ class HomeSearchSectionMob extends StatefulWidget {
 }
 
 class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
-  late VideoPlayerController _videoController;
+  VideoPlayerController? _videoController;
   bool _isVideoInitialized = false;
+  bool _videoLoadAttempted = false;
+  bool _videoLoadFailed = false;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   List<Map<String, String>> _searchResults = [];
   bool _showResults = false;
+  late Future<String> _searchPlaceholderFuture;
+  String? _lastLanguageCode;
 
-  // List of all searchable pages
-  final List<Map<String, String>> _searchableItems = [
-    {'name': 'Home', 'route': HomeScreen.routeName, 'category': 'Main'},
-    {'name': 'About Us', 'route': AboutScreen.routeName, 'category': 'Main'},
-    {'name': 'Contacts', 'route': ContactsScreen.routeName, 'category': 'Main'},
-    {'name': 'Buy', 'route': BuyScreen.routeName, 'category': 'Main'},
-    {'name': 'Sell', 'route': SellScreen.routeName, 'category': 'Main'},
-    {'name': 'Lease', 'route': LeaseScreen.routeName, 'category': 'Main'},
-    {'name': 'Career', 'route': CareerScreen.routeName, 'category': 'Main'},
-    {'name': 'Corporate Leasing', 'route': CorporateLeasingScreen.routeName, 'category': 'Services'},
-    {'name': 'Consultation', 'route': ConsultationScreen.routeName, 'category': 'Services'},
-    {'name': 'Marketing', 'route': MarketingScreen.routeName, 'category': 'Services'},
-    {'name': 'Medical Leasing', 'route': MedicalLeasingScreen.routeName, 'category': 'Services'},
-    {'name': 'Facility Management', 'route': FacilityManagementScreen.routeName, 'category': 'Services'},
-    {'name': 'Primary Investment', 'route': PrimaryInvestmentScreen.routeName, 'category': 'Services'},
-    {'name': 'Retail Leasing', 'route': RetailLeasingScreen.routeName, 'category': 'Services'},
-    {'name': 'Franchise Investment', 'route': FranchiseInvestmentScreen.routeName, 'category': 'Services'},
-    // Exclusive Leasing Projects
+  // List of all searchable pages - built from static + ServicesProvider
+  List<Map<String, String>> _getSearchableItems(BuildContext context) {
+    final servicesProvider = Provider.of<ServicesProvider>(context, listen: false);
+    final allServices = servicesProvider.allServices;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final serviceItems = allServices.map((s) {
+      final name = s.nameKey != null
+          ? s.nameKey!.tr(context)
+          : (isArabic ? s.nameAr : s.nameEn);
+      return {'name': name, 'route': s.route, 'category': 'Services'};
+    }).toList();
+
+    return [
+      {'name': 'Home', 'route': HomeScreen.routeName, 'category': 'Main'},
+      {'name': 'About Us', 'route': AboutScreen.routeName, 'category': 'Main'},
+      {'name': 'Contacts', 'route': ContactsScreen.routeName, 'category': 'Main'},
+      {'name': 'Buy', 'route': BuyScreen.routeName, 'category': 'Main'},
+      {'name': 'Sell', 'route': SellScreen.routeName, 'category': 'Main'},
+      {'name': 'Lease', 'route': LeaseScreen.routeName, 'category': 'Main'},
+      {'name': 'Career', 'route': CareerScreen.routeName, 'category': 'Main'},
+      ...serviceItems,
+      // Exclusive Leasing Projects
     {'name': 'UMC', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'umc'},
     {'name': 'PARK MALL', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'park-mall'},
     {'name': 'TERRACE MALL', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'terrace'},
@@ -64,14 +78,90 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
     {'name': 'CITY SQUARE', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'city-square'},
     {'name': 'VITALI', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'vitali'},
     {'name': 'SEASHELL', 'route': ExclusiveLeasingProjectsScreen.routeName, 'category': 'Projects', 'projectId': 'seashell'},
-  ];
+    ];
+  }
 
   @override
   void initState() {
     super.initState();
-    _initializeVideo();
     _searchController.addListener(_onSearchChanged);
     _searchFocusNode.addListener(_onFocusChanged);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_videoLoadAttempted) {
+      _videoLoadAttempted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _loadVideoFromDashboard();
+      });
+    }
+    final languageCode = Localizations.localeOf(context).languageCode;
+    if (_lastLanguageCode != languageCode) {
+      _lastLanguageCode = languageCode;
+      _searchPlaceholderFuture = ContentHelper.getText(
+        context,
+        'home',
+        'search-placeholder',
+        defaultValue: 'SEARCH_BY_SERVICE_OR_LOCATION',
+      );
+    }
+  }
+
+  Future<void> _loadVideoFromDashboard() async {
+    try {
+      final contentProvider = Provider.of<ContentProvider>(context, listen: false);
+      final content = await contentProvider.getContent('home', 'home-background-video-mobile');
+      final link = content?.values['link']?.trim() ??
+          content?.values['en']?.trim() ??
+          content?.values['ar']?.trim();
+      final videoUrl = toDirectVideoUrl(link);
+      await _initializeVideo(videoUrl);
+    } catch (e) {
+      if (mounted) await _initializeVideo(null);
+    }
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _initializeVideo(String? networkUrl) async {
+    if (networkUrl == null || networkUrl.isEmpty) {
+      if (mounted) setState(() {
+        _isVideoInitialized = false;
+        _videoLoadFailed = true;
+      });
+      return;
+    }
+    VideoPlayerController? controller;
+    try {
+      controller = VideoPlayerController.networkUrl(Uri.parse(networkUrl));
+      await controller.initialize().timeout(
+        const Duration(seconds: 15),
+        onTimeout: () => throw TimeoutException('Video load timeout'),
+      );
+      controller.setLooping(true);
+      controller.setVolume(0.0);
+      await controller.play();
+      if (mounted) {
+        setState(() {
+          _videoController = controller;
+          _isVideoInitialized = true;
+          _videoLoadFailed = false;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error initializing home background video (mobile): $e');
+      }
+      await controller?.dispose();
+      if (mounted) {
+        setState(() {
+          _videoController = null;
+          _isVideoInitialized = false;
+          _videoLoadFailed = true;
+        });
+      }
+    }
   }
 
   void _onSearchChanged() {
@@ -83,7 +173,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
       });
     } else {
       setState(() {
-        _searchResults = _searchableItems
+        _searchResults = _getSearchableItems(context)
             .where((item) => item['name']!.toLowerCase().contains(query))
             .toList();
         _showResults = _searchResults.isNotEmpty && _searchFocusNode.hasFocus;
@@ -125,29 +215,6 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
     });
   }
 
-  void _initializeVideo() async {
-    try {
-      _videoController = VideoPlayerController.asset(Assets.videosMobile);
-      await _videoController.initialize();
-      _videoController.setLooping(true);
-      _videoController.setVolume(0.0); // Mute the video for background
-      await _videoController.play();
-      if (mounted) {
-        setState(() {
-          _isVideoInitialized = true;
-        });
-      }
-    } catch (e) {
-      print('Error initializing video: $e');
-      if (mounted) {
-        setState(() {
-          _isVideoInitialized = false;
-        });
-      }
-    }
-  }
-
-
   String _translateSearchItemName(String name) {
     final translations = {
       'Home': 'HOME',
@@ -166,8 +233,8 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
       'Retail Leasing': 'RETAIL_LEASING',
       'Franchise Investment': 'FRANCHISE_INVESTMENT',
     };
-    final key = translations[name] ?? name;
-    return key.tr(context);
+    final key = translations[name];
+    return key != null ? key.tr(context) : name; // Custom services: name is already display text
   }
 
   String _translateCategory(String category) {
@@ -182,7 +249,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
 
   @override
   void dispose() {
-    _videoController.dispose();
+    _videoController?.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
@@ -197,23 +264,23 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
         children: [
           // Video Background
           Positioned.fill(
-            child: _isVideoInitialized
+            child: _isVideoInitialized && _videoController != null
                 ? FittedBox(
                     fit: BoxFit.cover,
                     child: SizedBox(
-                      width: _videoController.value.size.width,
-                      height: _videoController.value.size.height,
-                      child: VideoPlayer(_videoController),
+                      width: _videoController!.value.size.width,
+                      height: _videoController!.value.size.height,
+                      child: VideoPlayer(_videoController!),
                     ),
                   )
-                : Container(
-
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
+                : _videoLoadFailed
+                    ? Container(color: Colors.black)
+                    : Container(
+                        color: Colors.black,
+                        child: const Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        ),
                       ),
-                    ),
-                  ),
           ),
           // Background INCM text/logo
 
@@ -225,8 +292,10 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'EXPLORE_INCM_WORLD'.tr(context),
+                  DynamicText(
+                    pageId: 'home',
+                    sectionId: 'search-title',
+                    defaultValue: 'EXPLORE_INCM_WORLD',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'AloeveraDisplayBold',
@@ -235,8 +304,10 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                       height: 1,
                     ),
                   ),
-                  Text(
-                    'STEP_INTO_WORLD'.tr(context),
+                  DynamicText(
+                    pageId: 'home',
+                    sectionId: 'search-subtitle',
+                    defaultValue: 'STEP_INTO_WORLD',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'AloeveraDisplayRegular',
@@ -278,23 +349,30 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
                                 ),
                                 SizedBox(width: 5.w),
                                 Expanded(
-                                  child: TextField(
-                                    controller: _searchController,
-                                    focusNode: _searchFocusNode,
-                                    decoration: InputDecoration(
-                                      hintText: 'SEARCH_BY_SERVICE_OR_LOCATION'.tr(context),
-                                      hintStyle: TextStyle(
-                                        color: Colors.grey[500],
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                      border: InputBorder.none,
-                                    ),
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  child: FutureBuilder<String>(
+                                    future: _searchPlaceholderFuture,
+                                    builder: (context, snapshot) {
+                                      final placeholder = snapshot.data ??
+                                          'SEARCH_BY_SERVICE_OR_LOCATION'.tr(context);
+                                      return TextField(
+                                        controller: _searchController,
+                                        focusNode: _searchFocusNode,
+                                        decoration: InputDecoration(
+                                          hintText: placeholder,
+                                          hintStyle: TextStyle(
+                                            color: Colors.grey[500],
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          border: InputBorder.none,
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                               ],

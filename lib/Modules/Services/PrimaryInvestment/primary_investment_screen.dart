@@ -281,7 +281,7 @@ class PrimaryInvestmentScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  const ContentServiceSection(),
+                  const ContentServiceSection(sourceTag: 'Primary investment'),
                   // Footer
                   if(MediaQuery.of(context).size.width >= 600)
                     const FooterSection()

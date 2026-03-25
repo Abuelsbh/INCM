@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import '../../../generated/assets.dart';
-import '../../Home/home_screen.dart';
 
 /// Design 3: Pulse and ripple wave animation
+/// Navigation is handled by splash_controller (loadDataAndNavigate)
 class SplashDesign3 extends StatefulWidget {
   const SplashDesign3({super.key});
 
@@ -73,16 +72,6 @@ class _SplashDesign3State extends State<SplashDesign3>
     );
 
     _mainController.forward();
-
-    _mainController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (mounted) {
-            GoRouter.of(context).go(HomeScreen.routeName);
-          }
-        });
-      }
-    });
   }
 
   @override

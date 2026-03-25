@@ -395,7 +395,7 @@ class CorporateLeasingScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  const ContentServiceSection(),
+                  const ContentServiceSection(sourceTag: 'Corporate leasing'),
                   // Footer
                   if(MediaQuery.of(context).size.width >= 600)
                     const FooterSection()

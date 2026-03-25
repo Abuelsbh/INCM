@@ -10,6 +10,7 @@ import '../core/Language/app_languages.dart';
 import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
+import 'dynamic_content_widget.dart';
 
 class AboutContentSection extends StatefulWidget {
   const AboutContentSection({super.key});
@@ -84,27 +85,16 @@ class _AboutContentSectionState extends State<AboutContentSection> {
                         opacity: _isVisible ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 2000),
                         curve: Curves.easeInOut,
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: ' ${'ABOUT'.tr(context)} ',
-                                style: TextStyle(
-                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                  color: const Color(0xFFF4ED47), // أصفر
-                                  fontSize: 60.sp,
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'US'.tr(context),
-                                style: TextStyle(
-                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                  color: Colors.white, // أبيض
-                                  fontSize: 60.sp,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ],
+                        child: DynamicText(
+                          pageId: 'home',
+                          sectionId: 'about-section-title',
+                          defaultValue: 'ABOUT_US',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                            color: const Color(0xFFF4ED47),
+                            fontSize: 60.sp,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
@@ -128,9 +118,10 @@ class _AboutContentSectionState extends State<AboutContentSection> {
                           color: const Color(0xFFF4ED47).withOpacity(0.3),
                           borderRadius: BorderRadius.circular(8.r),
                         ),
-                        child: Text(
-                          'WE_WERE_ESTABLISHED'.tr(context),
-                          //textAlign: TextAlign.justify,  // ✅ يجعل النص في المنتصف
+                        child: DynamicText(
+                          pageId: 'home',
+                          sectionId: 'about-section-text',
+                          defaultValue: 'WE_WERE_ESTABLISHED',
                           style: TextStyle(
                             fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),
                             color: Colors.white,

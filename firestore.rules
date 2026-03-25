@@ -1,0 +1,32 @@
+// MERGE ONLY the `contact_messages` block below into your existing Firestore rules
+// (Firebase Console → Firestore → Rules). Deploying this file as the full ruleset
+// without your other `match` blocks will block app_content, app_settings, etc.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /contact_messages/{id} {
+      allow create: if request.resource.data.keys().hasAll([
+            'name',
+            'phone',
+            'email',
+            'message',
+            'createdAt',
+            'emailSent'
+          ])
+          && request.resource.data.emailSent == false
+          && request.resource.data.name is string
+          && request.resource.data.phone is string
+          && request.resource.data.email is string
+          && request.resource.data.message is string
+          && request.resource.data.message.size() <= 20000;
+
+      allow update: if resource.data.emailSent == false
+          && request.resource.data.emailSent == true
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['emailSent', 'emailSentAt']);
+
+      allow read, delete: if false;
+    }
+  }
+}

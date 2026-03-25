@@ -349,6 +349,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                   ),
                   const ContentServiceSection(
                     showCategoryField: true,
+                    sourceTag: 'Franchise investment',
                   ),
 
                   if(MediaQuery.of(context).size.width >= 600)

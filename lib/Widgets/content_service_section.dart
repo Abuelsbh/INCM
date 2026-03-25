@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../core/Contact/contact_form_phone.dart';
+import '../core/Contact/contact_submission_service.dart';
 import '../core/Language/locales.dart';
 import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
@@ -17,6 +19,9 @@ class ContentServiceSection extends StatefulWidget {
   final VoidCallback? onSubmit;
   final bool showCategoryField;
 
+  /// Shown in email subject and stored inside the message body (e.g. service name).
+  final String? sourceTag;
+
   const ContentServiceSection({
     super.key,
     this.fullNameController,
@@ -26,6 +31,7 @@ class ContentServiceSection extends StatefulWidget {
     this.emailController,
     this.onSubmit,
     this.showCategoryField = false,
+    this.sourceTag,
   });
 
   @override
@@ -37,6 +43,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool _hasAnimated = false;
+  bool _isSubmitting = false;
 
   // Form controllers - use provided or create new ones
   late final TextEditingController _fullNameController;
@@ -202,15 +209,12 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
     return phoneRegex.hasMatch(phone);
   }
 
-  void _handleSubmit() {
-    // If custom submit handler is provided, use it
+  Future<void> _handleSubmit() async {
     if (widget.onSubmit != null) {
       widget.onSubmit!();
       return;
     }
 
-    // Default validation and submission logic
-    // Validate full name
     if (_fullNameController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
       return;
@@ -221,7 +225,6 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
       return;
     }
 
-    // Validate phone
     if (_phoneController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_PHONE'.tr(context));
       return;
@@ -232,13 +235,11 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
       return;
     }
 
-    // Validate area
     if (_messageController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_MESSAGE'.tr(context));
       return;
     }
 
-    // Validate category (if category field is shown)
     if (widget.showCategoryField) {
       if (selectedCategory == null || selectedCategory!.isEmpty) {
         _showToast('PLEASE_SELECT_CATEGORY'.tr(context));
@@ -246,13 +247,11 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
       }
     }
 
-    // Validate location
     if (selectedLocation == null || selectedLocation!.isEmpty) {
       _showToast('PLEASE_SELECT_LOCATION'.tr(context));
       return;
     }
 
-    // Validate email
     if (_emailController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_EMAIL'.tr(context));
       return;
@@ -263,20 +262,67 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
       return;
     }
 
-    // All validations passed
-    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
-    
-    // Clear form after successful submission
-    _fullNameController.clear();
-    _phoneController.clear();
-    _messageController.clear();
-    setState(() {
-      selectedLocation = null;
-      if (widget.showCategoryField) {
-        selectedCategory = null;
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
+
+    final name = _fullNameController.text.trim();
+    final phone = _phoneController.text.trim();
+    final email = _emailController.text.trim();
+    final fullPhone = contactFullPhone(_selectedCountryCode, phone);
+    final buf = StringBuffer(_messageController.text.trim());
+    buf.writeln('\n---\nLocation: ${selectedLocation!}');
+    if (widget.showCategoryField && selectedCategory != null) {
+      buf.writeln('Category: ${selectedCategory!}');
+    }
+    if (widget.sourceTag != null && widget.sourceTag!.trim().isNotEmpty) {
+      buf.writeln('Form: ${widget.sourceTag!.trim()}');
+    }
+
+    final tag = widget.sourceTag?.trim();
+    final serviceLabel = (tag != null && tag.isNotEmpty)
+        ? '${'FORM_SOURCE_SERVICE'.tr(context)} — $tag'
+        : 'FORM_SOURCE_SERVICE'.tr(context);
+    final subject = (tag != null && tag.isNotEmpty)
+        ? 'Contact — $tag — $name'
+        : 'Contact — $name';
+
+    try {
+      final result = await ContactSubmissionService.instance.submit(
+        name: name,
+        fullPhone: fullPhone,
+        email: email,
+        message: buf.toString(),
+        emailSubject: subject,
+        formSourceSlug: 'service',
+        formSourceLabel: serviceLabel,
+      );
+
+      if (!mounted) return;
+
+      if (!result.firestoreSaved) {
+        _showToast('CONTACT_SUBMISSION_FAILED'.tr(context));
+        return;
       }
-    });
-    _emailController.clear();
+
+      if (!result.emailSent) {
+        _showToast('CONTACT_SAVED_EMAIL_PENDING'.tr(context), isError: false);
+      } else {
+        _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+      }
+
+      _fullNameController.clear();
+      _phoneController.clear();
+      _messageController.clear();
+      setState(() {
+        selectedLocation = null;
+        if (widget.showCategoryField) {
+          selectedCategory = null;
+        }
+      });
+      _emailController.clear();
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   @override
@@ -472,14 +518,16 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                         ButtonStyles.submitButtonMob(
                           width: 75.w,
                           context: context,
-                          onPressed: _handleSubmit,
+                          enabled: !_isSubmitting,
+                          onPressed: () => _handleSubmit(),
                         ),
                       if(!isMobile)
                         ButtonStyles.submitButton(
                           context: context,
                           fontSize: isMobile? 18.sp: 32.sp,
                           width: isMobile? 75.w : 130.w,
-                          onPressed: _handleSubmit,
+                          enabled: !_isSubmitting,
+                          onPressed: () => _handleSubmit(),
                         ),
                         ],
                       ),

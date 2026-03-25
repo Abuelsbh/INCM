@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'content_provider.dart';
@@ -81,6 +80,17 @@ class ContentHelper {
   ) async {
     final contentProvider = Provider.of<ContentProvider>(context, listen: false);
     return await contentProvider.getVideoContent(pageId, sectionId);
+  }
+
+  /// Get link content
+  static Future<String?> getLink(
+    BuildContext context,
+    String pageId,
+    String sectionId, {
+    String? defaultValue,
+  }) async {
+    final contentProvider = Provider.of<ContentProvider>(context, listen: false);
+    return await contentProvider.getLinkContent(pageId, sectionId) ?? defaultValue;
   }
 }
 

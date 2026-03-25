@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:incm/core/Contact/contact_form_phone.dart';
+import 'package:incm/core/Contact/contact_submission_service.dart';
 import 'package:incm/core/Language/locales.dart';
 import '../../Utilities/font_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,10 +37,12 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
   bool _hasAnimated = false;
   final ScrollController _scrollController = ScrollController();
   bool _isAddressHovered = false;
+  bool _isSubmitting = false;
 
   // Form controllers
   final _fullNameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _areaController = TextEditingController();
   final _locationController = TextEditingController();
   final _sizeController = TextEditingController();
@@ -188,6 +192,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
     _animationController.dispose();
     _fullNameController.dispose();
     _phoneController.dispose();
+    _emailController.dispose();
     _areaController.dispose();
     _locationController.dispose();
     _sizeController.dispose();
@@ -218,7 +223,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
     return phoneRegex.hasMatch(phone);
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     final context = this.context;
     if (_fullNameController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
@@ -250,29 +255,90 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
       return;
     }
 
+    if (_budgetController.text.trim().isEmpty) {
+      _showToast('PLEASE_ENTER_UNIT_SIZE'.tr(context));
+      return;
+    }
+
     if (_sizeController.text.trim().isEmpty) {
+      _showToast('PLEASE_ENTER_RENTAL_BUDGET'.tr(context));
+      return;
+    }
+
+    if (_emailController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_EMAIL'.tr(context));
       return;
     }
 
-    if (!_validateEmail(_sizeController.text.trim())) {
+    if (!_validateEmail(_emailController.text.trim())) {
       _showToast('PLEASE_ENTER_VALID_EMAIL'.tr(context));
       return;
     }
 
-    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
 
-    _fullNameController.clear();
-    _phoneController.clear();
-    _areaController.clear();
-    _sizeController.clear();
-    _budgetController.clear();
-    _purposeController.clear();
-    _otherRoleController.clear();
-    setState(() {
-      selectedRole = null;
-      selectedLocation = null;
-    });
+    final name = _fullNameController.text.trim();
+    final phone = _phoneController.text.trim();
+    final email = _emailController.text.trim();
+    final fullPhone = contactFullPhone(_selectedCountryCode, phone);
+    final buf = StringBuffer();
+    buf.writeln('Details / area: ${_areaController.text.trim()}');
+    buf.writeln('Location: ${selectedLocation!.tr(context)}');
+    if (selectedPreferredPropertyType != null) {
+      buf.writeln(
+        'Property type: ${selectedPreferredPropertyType!.tr(context)}',
+      );
+    }
+    buf.writeln('Unit size (SQM): ${_budgetController.text.trim()}');
+    buf.writeln('Budget / rental price (EGP): ${_sizeController.text.trim()}');
+    buf.writeln('Notes / purpose: ${_purposeController.text.trim()}');
+    if (selectedRole != null) {
+      buf.writeln('Role: $selectedRole');
+    } else if (_otherRoleController.text.trim().isNotEmpty) {
+      buf.writeln('Role (other): ${_otherRoleController.text.trim()}');
+    }
+
+    try {
+      final result = await ContactSubmissionService.instance.submit(
+        name: name,
+        fullPhone: fullPhone,
+        email: email,
+        message: buf.toString(),
+        emailSubject: 'Lease — $name',
+        formSourceSlug: 'lease',
+        formSourceLabel: 'FORM_SOURCE_LEASE'.tr(context),
+      );
+
+      if (!mounted) return;
+
+      if (!result.firestoreSaved) {
+        _showToast('CONTACT_SUBMISSION_FAILED'.tr(context));
+        return;
+      }
+
+      if (!result.emailSent) {
+        _showToast('CONTACT_SAVED_EMAIL_PENDING'.tr(context), isError: false);
+      } else {
+        _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+      }
+
+      _fullNameController.clear();
+      _phoneController.clear();
+      _emailController.clear();
+      _areaController.clear();
+      _sizeController.clear();
+      _budgetController.clear();
+      _purposeController.clear();
+      _otherRoleController.clear();
+      setState(() {
+        selectedRole = null;
+        selectedLocation = null;
+        selectedPreferredPropertyType = null;
+      });
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   // Helper method to determine if screen is mobile
@@ -377,14 +443,16 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                     ButtonStyles.submitButtonMob(
                       context: context,
                       width: isMobile ? 80.w : (isTablet ? 120.w : 180.w),
-                      onPressed: _handleSubmit,
+                      enabled: !_isSubmitting,
+                      onPressed: () => _handleSubmit(),
                     ),
                   if(!isMobile)
                     ButtonStyles.submitButton(
                       context: context,
                       fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 43.sp),
                       width: isMobile ? 100.w : (isTablet ? 120.w : 180.w),
-                      onPressed: _handleSubmit,
+                      enabled: !_isSubmitting,
+                      onPressed: () => _handleSubmit(),
                     ),
                 ],
               ),
@@ -537,6 +605,14 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
             SizedBox(height: 15.h),
             _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
             SizedBox(height: 15.h),
+            _buildFormField(
+              'E_MAIL'.tr(context),
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              isMobile: isMobile,
+              isTablet: isTablet,
+            ),
+            SizedBox(height: 15.h),
             _buildDropdownField("PREFERRED_PROPERTY_TYPE".tr(context),"CHOOSE".tr(context),
               value: selectedPreferredPropertyType,
               items: preferredPropertyTypeKeys,
@@ -564,7 +640,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
             _buildFormField(
               'UNIT_SIZE_SQM'.tr(context),
               controller: _budgetController,
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.number,
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -572,7 +648,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
             _buildFormField(
               'BUDGET_RENTAL_PRICE_EGP'.tr(context),
               controller: _sizeController,
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.number,
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -600,6 +676,20 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                 SizedBox(width: isTablet ? 50.w : 100.w),
                 Expanded(
                   child: _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
+                ),
+              ],
+            ),
+            SizedBox(height: isTablet ? 20.h : 30.h),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildFormField(
+                    'E_MAIL'.tr(context),
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    isMobile: isMobile,
+                    isTablet: isTablet,
+                  ),
                 ),
               ],
             ),
@@ -644,7 +734,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                   child: _buildFormField(
                     'BUDGET_RENTAL_PRICE_EGP'.tr(context),
                     controller: _sizeController,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
@@ -654,7 +744,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                   child: _buildFormField(
                     'UNIT_SIZE_SQM'.tr(context),
                     controller: _budgetController,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),

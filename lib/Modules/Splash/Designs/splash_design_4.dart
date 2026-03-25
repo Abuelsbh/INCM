@@ -1,11 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import '../../../generated/assets.dart';
-import '../../Home/home_screen.dart';
 
 /// Design 4: Morphing geometric shapes with logo reveal
+/// Navigation is handled by splash_controller (loadDataAndNavigate)
 class SplashDesign4 extends StatefulWidget {
   const SplashDesign4({super.key});
 
@@ -69,16 +68,6 @@ class _SplashDesign4State extends State<SplashDesign4>
 
     _shapeController.forward();
     _mainController.forward();
-
-    _mainController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (mounted) {
-            GoRouter.of(context).go(HomeScreen.routeName);
-          }
-        });
-      }
-    });
   }
 
   @override

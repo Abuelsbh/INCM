@@ -18,6 +18,8 @@ import '../Modules/Services/FacilityManagement/facility_management_screen.dart';
 import '../Modules/Services/FranchiseInvestment/franchise_investment_screen.dart';
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/Marketing/marketing_screen.dart';
+import '../core/Content/services_provider.dart';
+import 'dynamic_content_widget.dart';
 
 class ServicesContentSection extends StatefulWidget {
   const ServicesContentSection({super.key});
@@ -38,49 +40,23 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
   late Animation<Offset> _slideAnimation;
   late Animation<double> _scaleAnimation;
 
-  // Service content data
-  List<Map<String, String>> getServiceData(BuildContext context) => [
-    {
-      'title': 'CONSULTATION',
-      'description': 'CONSULTATION_DESCRIPTION'.tr(context),
-      'route': ConsultationScreen.routeName,
-    },
-    {
-      'title': 'RETAIL_LEASING',
-      'description': 'RETAIL_LEASING_DESCRIPTION'.tr(context),
-      'route': RetailLeasingScreen.routeName,
-    },
-    {
-      'title': 'MEDICAL_LEASING',
-      'description': 'MEDICAL_LEASING_DESCRIPTION'.tr(context),
-      'route': MedicalLeasingScreen.routeName,
-    },
-    {
-      'title': 'CORPORATE_LEASING',
-      'description': 'CORPORATE_LEASING_DESCRIPTION'.tr(context),
-      'route': CorporateLeasingScreen.routeName,
-    },
-    {
-      'title': 'FACILITY_MANAGEMENT',
-      'description': 'FACILITY_MANAGEMENT_DESCRIPTION'.tr(context),
-      'route': FacilityManagementScreen.routeName,
-    },
-    {
-      'title': 'FRANCHISE_INVESTMENT',
-      'description': 'FRANCHISE_INVESTMENT_DESCRIPTION'.tr(context),
-      'route': FranchiseInvestmentScreen.routeName,
-    },
-    {
-      'title': 'PRIMARY_INVESTMENT',
-      'description': 'PRIMARY_INVESTMENT_DESCRIPTION'.tr(context),
-      'route': PrimaryInvestmentScreen.routeName,
-    },
-    {
-      'title': 'MARKETING',
-      'description': 'MARKETING_DESCRIPTION'.tr(context),
-      'route': MarketingScreen.routeName,
-    },
-  ];
+  // Service content data - from ServicesProvider (built-in + custom)
+  List<Map<String, String>> getServiceData(BuildContext context) {
+    final servicesProvider = Provider.of<ServicesProvider>(context, listen: false);
+    final allServices = servicesProvider.allServices;
+    final isArabic = Provider.of<AppLanguage>(context, listen: false).appLang == Languages.ar;
+    return allServices.map((s) {
+      final title = s.nameKey != null ? s.nameKey!.tr(context) : (isArabic ? s.nameAr : s.nameEn);
+      final description = s.descriptionKey != null
+          ? s.descriptionKey!.tr(context)
+          : (isArabic ? s.descriptionAr : s.descriptionEn);
+      return {
+        'title': title,
+        'description': description,
+        'route': s.route,
+      };
+    }).toList();
+  }
 
   @override
   void initState() {
@@ -216,8 +192,11 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Title
-            Text(
-              'EXPLORE_OUR_SERVICES'.tr(context),
+            DynamicText(
+              pageId: 'home',
+              sectionId: 'services-section-title',
+              defaultValue: 'EXPLORE_OUR_SERVICES',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: getLocalizedFont(context, 'OptimalBold'),
                 color: Colors.white,
@@ -316,7 +295,7 @@ class _ServicesContentSectionState extends State<ServicesContentSection>
                       final isArabic =
                           Provider.of<AppLanguage>(context, listen: false).appLang ==
                               Languages.ar;
-                      final serviceTitle = getServiceData(context)[currentIndex]['title']!.tr(context);
+                      final serviceTitle = getServiceData(context)[currentIndex]['title']!;
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,

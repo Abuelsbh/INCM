@@ -16,7 +16,9 @@ import '../../Widgets/scroll_to_top_button.dart';
 import '../../Widgets/animated_contact_info.dart';
 import '../../core/Language/locales.dart';
 import '../../core/Language/app_languages.dart';
+import '../../core/Contact/contact_form_phone.dart';
 import '../../core/Contact/contact_info_provider.dart';
+import '../../core/Contact/contact_submission_service.dart';
 import '../../Utilities/font_helper.dart';
 import '../../generated/assets.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
   bool _hasAnimated = false;
   final ScrollController _scrollController = ScrollController();
   bool _isAddressHovered = false;
+  bool _isSubmitting = false;
 
   // Form controllers
   final _fullNameController = TextEditingController();
@@ -190,7 +193,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     return phoneRegex.hasMatch(phone);
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     if (_fullNameController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
       return;
@@ -231,15 +234,50 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
       return;
     }
 
-    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
 
-    _fullNameController.clear();
-    _phoneController.clear();
-    _areaController.clear();
-    setState(() {
-      selectedLocation = null;
-    });
-    _emailController.clear();
+    final name = _fullNameController.text.trim();
+    final phone = _phoneController.text.trim();
+    final email = _emailController.text.trim();
+    final fullPhone = contactFullPhone(_selectedCountryCode, phone);
+    final buf = StringBuffer(_areaController.text.trim());
+    buf.writeln('\n---\nLocation: ${selectedLocation!}');
+
+    try {
+      final result = await ContactSubmissionService.instance.submit(
+        name: name,
+        fullPhone: fullPhone,
+        email: email,
+        message: buf.toString(),
+        emailSubject: 'Contact — Contact page — $name',
+        formSourceSlug: 'contact_page',
+        formSourceLabel: 'FORM_SOURCE_CONTACT_PAGE'.tr(context),
+      );
+
+      if (!mounted) return;
+
+      if (!result.firestoreSaved) {
+        _showToast('CONTACT_SUBMISSION_FAILED'.tr(context));
+        return;
+      }
+
+      if (!result.emailSent) {
+        _showToast('CONTACT_SAVED_EMAIL_PENDING'.tr(context), isError: false);
+      } else {
+        _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+      }
+
+      _fullNameController.clear();
+      _phoneController.clear();
+      _areaController.clear();
+      setState(() {
+        selectedLocation = null;
+      });
+      _emailController.clear();
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   // Helper method to determine if screen is mobile
@@ -528,14 +566,16 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
           ButtonStyles.submitButtonMob(
             width: 75.w,
             context: context,
-            onPressed: _handleSubmit,
+            enabled: !_isSubmitting,
+            onPressed: () => _handleSubmit(),
           ),
         if(!isMobile)
         ButtonStyles.submitButton(
           context: context,
           fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 43.sp),
           width: isMobile ? 100.w : (isTablet ? 120.w : 180.w),
-          onPressed: _handleSubmit,
+          enabled: !_isSubmitting,
+          onPressed: () => _handleSubmit(),
         ),
       ],
     );

@@ -295,7 +295,7 @@ class RetailLeasingScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  const ContentServiceSection(),
+                  const ContentServiceSection(sourceTag: 'Retail leasing'),
 
                   if(MediaQuery.of(context).size.width >= 600)
                     const FooterSection()

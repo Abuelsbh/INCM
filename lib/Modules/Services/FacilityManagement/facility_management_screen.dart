@@ -304,7 +304,7 @@ class FacilityManagementScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  const ContentServiceSection(),
+                  const ContentServiceSection(sourceTag: 'Facility management'),
                   // Footer
                   if(MediaQuery.of(context).size.width >= 600)
                     const FooterSection()

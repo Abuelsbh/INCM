@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import '../../../generated/assets.dart';
-import '../../Home/home_screen.dart';
 
 /// Design 1: Typewriter animation - logo reveals letter by letter
+/// Navigation is handled by splash_controller (loadDataAndNavigate)
 class SplashDesign1 extends StatefulWidget {
   const SplashDesign1({super.key});
 
@@ -20,7 +19,7 @@ class _SplashDesign1State extends State<SplashDesign1>
   @override
   void initState() {
     super.initState();
-    
+
     // Typewriter animation: 2 seconds to reveal the logo letter by letter
     _typewriterController = AnimationController(
       vsync: this,
@@ -29,17 +28,10 @@ class _SplashDesign1State extends State<SplashDesign1>
 
     _typewriterAnimation = CurvedAnimation(
       parent: _typewriterController,
-        curve: Curves.easeInOut,
+      curve: Curves.easeInOut,
     );
 
     _typewriterController.forward();
-
-    // Navigate to home after animation completes
-    _typewriterController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        GoRouter.of(context).go(HomeScreen.routeName);
-      }
-    });
   }
 
   @override

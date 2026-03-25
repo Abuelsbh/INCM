@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:incm/core/Font/font_provider.dart';
+import 'package:incm/core/Contact/contact_form_phone.dart';
+import 'package:incm/core/Contact/contact_submission_service.dart';
 import 'package:incm/core/Language/locales.dart';
 import '../../Utilities/font_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -36,12 +38,13 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
   bool _hasAnimated = false;
   final ScrollController _scrollController = ScrollController();
   bool _isAddressHovered = false;
+  bool _isSubmitting = false;
 
   // Form controllers
   final _fullNameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _areaController = TextEditingController();
-  final _locationController = TextEditingController();
   final _sizeController = TextEditingController();
   final _budgetController = TextEditingController();
   final _purposeController = TextEditingController();
@@ -184,8 +187,8 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
     _animationController.dispose();
     _fullNameController.dispose();
     _phoneController.dispose();
+    _emailController.dispose();
     _areaController.dispose();
-    _locationController.dispose();
     _sizeController.dispose();
     _budgetController.dispose();
     _purposeController.dispose();
@@ -213,7 +216,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
     return phoneRegex.hasMatch(phone);
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     final context = this.context;
     if (_fullNameController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_FULL_NAME'.tr(context));
@@ -240,30 +243,86 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
       return;
     }
 
-    if (_locationController.text.trim().isEmpty) {
-      _showToast('PLEASE_ENTER_LOCATION'.tr(context));
+    if (selectedLocation == null || selectedLocation!.isEmpty) {
+      _showToast('PLEASE_SELECT_LOCATION'.tr(context));
       return;
     }
 
     if (_sizeController.text.trim().isEmpty) {
+      _showToast('PLEASE_ENTER_UNIT_SIZE'.tr(context));
+      return;
+    }
+
+    if (_emailController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_EMAIL'.tr(context));
       return;
     }
 
-    if (!_validateEmail(_sizeController.text.trim())) {
+    if (!_validateEmail(_emailController.text.trim())) {
       _showToast('PLEASE_ENTER_VALID_EMAIL'.tr(context));
       return;
     }
 
-    _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+    if (_isSubmitting) return;
+    setState(() => _isSubmitting = true);
 
-    _fullNameController.clear();
-    _phoneController.clear();
-    _areaController.clear();
-    _locationController.clear();
-    _sizeController.clear();
-    _budgetController.clear();
-    _purposeController.clear();
+    final name = _fullNameController.text.trim();
+    final phone = _phoneController.text.trim();
+    final email = _emailController.text.trim();
+    final fullPhone = contactFullPhone(_selectedCountryCode, phone);
+    final buf = StringBuffer();
+    buf.writeln('Details / area: ${_areaController.text.trim()}');
+    buf.writeln('Location: ${selectedLocation!.tr(context)}');
+    if (selectedPreferredPropertyType != null) {
+      buf.writeln(
+        'Preferred property: ${selectedPreferredPropertyType!.tr(context)}',
+      );
+    }
+    buf.writeln('Unit size (SQM): ${_sizeController.text.trim()}');
+    buf.writeln('Budget (EGP): ${_budgetController.text.trim()}');
+    if (selectedPurposeOfPurchase != null) {
+      buf.writeln('Purpose: ${selectedPurposeOfPurchase!.tr(context)}');
+    }
+
+    try {
+      final result = await ContactSubmissionService.instance.submit(
+        name: name,
+        fullPhone: fullPhone,
+        email: email,
+        message: buf.toString(),
+        emailSubject: 'Buy — $name',
+        formSourceSlug: 'buy',
+        formSourceLabel: 'FORM_SOURCE_BUY'.tr(context),
+      );
+
+      if (!mounted) return;
+
+      if (!result.firestoreSaved) {
+        _showToast('CONTACT_SUBMISSION_FAILED'.tr(context));
+        return;
+      }
+
+      if (!result.emailSent) {
+        _showToast('CONTACT_SAVED_EMAIL_PENDING'.tr(context), isError: false);
+      } else {
+        _showToast('FORM_SUBMITTED_SUCCESS'.tr(context), isError: false);
+      }
+
+      _fullNameController.clear();
+      _phoneController.clear();
+      _emailController.clear();
+      _areaController.clear();
+      _sizeController.clear();
+      _budgetController.clear();
+      _purposeController.clear();
+      setState(() {
+        selectedPreferredPropertyType = null;
+        selectedPurposeOfPurchase = null;
+        selectedLocation = null;
+      });
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
   }
 
   // Helper method to determine if screen is mobile
@@ -373,14 +432,16 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                         ButtonStyles.submitButtonMob(
                           context: context,
                           width: isMobile ? 80.w : (isTablet ? 120.w : 180.w),
-                          onPressed: _handleSubmit,
+                          enabled: !_isSubmitting,
+                          onPressed: () => _handleSubmit(),
                         ),
                       if(!isMobile)
                         ButtonStyles.submitButton(
                           context: context,
                           fontSize: isMobile ? 20.sp : (isTablet ? 26.sp : 43.sp),
                           width: isMobile ? 100.w : (isTablet ? 120.w : 180.w),
-                          onPressed: _handleSubmit,
+                          enabled: !_isSubmitting,
+                          onPressed: () => _handleSubmit(),
                         ),
                     ],
                   ),
@@ -413,6 +474,14 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             SizedBox(height: 15.h),
             _buildPhoneField(isMobile: isMobile, isTablet: isTablet),
             SizedBox(height: 15.h),
+            _buildFormField(
+              'E_MAIL'.tr(context),
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              isMobile: isMobile,
+              isTablet: isTablet,
+            ),
+            SizedBox(height: 15.h),
             _buildDropdownField("PREFERRED_PROPERTY_TYPE".tr(context),"CHOOSE".tr(context),
               value: selectedPreferredPropertyType,
               items: preferredPropertyTypeKeys,
@@ -429,7 +498,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             _buildFormField(
               'BUDGET_EGP'.tr(context),
               controller: _budgetController,
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.number,
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -451,7 +520,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             _buildFormField(
               'UNIT_SIZE_SQM'.tr(context),
               controller: _sizeController,
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.number,
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -503,6 +572,20 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
             Row(
               children: [
                 Expanded(
+                  child: _buildFormField(
+                    'E_MAIL'.tr(context),
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    isMobile: isMobile,
+                    isTablet: isTablet,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: isTablet ? 20.h : 30.h),
+            Row(
+              children: [
+                Expanded(
                     child: _buildDropdownField("PREFERRED_PROPERTY_TYPE".tr(context),"CHOOSE".tr(context),
                       value: selectedPreferredPropertyType,
                       items: preferredPropertyTypeKeys,
@@ -520,7 +603,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                   child: _buildFormField(
                     'BUDGET_EGP'.tr(context),
                     controller: _budgetController,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
@@ -549,7 +632,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                   child: _buildFormField(
                     'UNIT_SIZE_SQM'.tr(context),
                     controller: _sizeController,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
