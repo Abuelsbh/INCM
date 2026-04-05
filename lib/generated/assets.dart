@@ -236,4 +236,6 @@ class Assets {
   static const String imagesFooterDesktop = 'assets/images/footerDESKTOP.png';
   static const String imagesFooterMOBILE = 'assets/images/footerMOBILE.png';
   static const String iconsWhatsApp = 'assets/icons/whatsapp.jpg';
+  static const String videosWeb = 'assets/videos/web.mp4';
+  static const String videosMobile = 'assets/videos/mobile.mp4';
 }

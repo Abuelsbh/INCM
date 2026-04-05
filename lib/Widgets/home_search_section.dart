@@ -38,6 +38,8 @@ class HomeSearchSection extends StatefulWidget {
 }
 
 class _HomeSearchSectionState extends State<HomeSearchSection> {
+  static const String _fallbackVideoAsset = 'assets/videos/web.mp4';
+
   VideoPlayerController? _videoController;
   bool _isVideoInitialized = false;
   bool _videoLoadAttempted = false;
@@ -123,6 +125,7 @@ class _HomeSearchSectionState extends State<HomeSearchSection> {
       // على الويب: رابط مباشر أو Google Drive — استخدم HTML5/iframe (أفضل مع Safari)
       if (kIsWeb &&
           link != null &&
+          link.isNotEmpty &&
           (isDirectVideoUrl(link) || link.contains('drive.google.com'))) {
         if (mounted) {
           setState(() {
@@ -134,9 +137,13 @@ class _HomeSearchSectionState extends State<HomeSearchSection> {
         return;
       }
       final videoUrl = toDirectVideoUrl(link);
-      await _initializeVideo(videoUrl);
+      if (videoUrl != null && videoUrl.isNotEmpty) {
+        await _initializeVideo(videoUrl);
+      } else {
+        await _initializeFallbackAssetVideo();
+      }
     } catch (e) {
-      if (mounted) await _initializeVideo(null);
+      if (mounted) await _initializeFallbackAssetVideo();
     }
     if (mounted) setState(() {});
   }
@@ -169,6 +176,39 @@ class _HomeSearchSectionState extends State<HomeSearchSection> {
     } catch (e) {
       if (kDebugMode) {
         print('Error initializing home background video (web): $e');
+      }
+      await controller?.dispose();
+      if (mounted) {
+        setState(() {
+          _videoController = null;
+          _isVideoInitialized = false;
+          _videoLoadFailed = true;
+        });
+      }
+    }
+  }
+
+  Future<void> _initializeFallbackAssetVideo() async {
+    VideoPlayerController? controller;
+    try {
+      controller = VideoPlayerController.asset(_fallbackVideoAsset);
+      await controller.initialize().timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeoutException('Video load timeout'),
+      );
+      controller.setLooping(true);
+      controller.setVolume(0.0);
+      await controller.play();
+      if (mounted) {
+        setState(() {
+          _videoController = controller;
+          _isVideoInitialized = true;
+          _videoLoadFailed = false;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error initializing fallback home background video (web asset): $e');
       }
       await controller?.dispose();
       if (mounted) {

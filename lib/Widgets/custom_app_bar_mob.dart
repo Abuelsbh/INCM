@@ -24,6 +24,7 @@ import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
 import '../Modules/Admin/admin_panel_screen.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../core/Content/services_provider.dart';
+import '../core/app_build_config.dart';
 import '../generated/assets.dart';
 import 'custom_button.dart';
 
@@ -246,8 +247,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                                   _toggleMenu();
                                   context.go(AboutScreen.routeName);
                                 }),
-                                // Admin Panel (only in debug mode)
-                                if (kDebugMode)
+                                if (kDebugMode || AppBuildConfig.isAdminApp)
                                   _buildMenuItem('ADMIN_PANEL'.tr(context), () {
                                     _toggleMenu();
                                     context.go(AdminPanelScreen.routeName);

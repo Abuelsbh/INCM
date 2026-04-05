@@ -16,6 +16,11 @@ class ContactInfoEditor extends StatefulWidget {
 
 class _ContactInfoEditorState extends State<ContactInfoEditor> {
   late TextEditingController _emailController;
+  late TextEditingController _formRecipientEmailController;
+  late TextEditingController _formRecipientNameController;
+  late TextEditingController _emailJsPublicKeyController;
+  late TextEditingController _emailJsServiceIdController;
+  late TextEditingController _emailJsTemplateIdController;
   late TextEditingController _phoneController;
   late TextEditingController _whatsappController;
   late TextEditingController _addressController;
@@ -26,6 +31,11 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
   void initState() {
     super.initState();
     _emailController = TextEditingController();
+    _formRecipientEmailController = TextEditingController();
+    _formRecipientNameController = TextEditingController();
+    _emailJsPublicKeyController = TextEditingController();
+    _emailJsServiceIdController = TextEditingController();
+    _emailJsTemplateIdController = TextEditingController();
     _phoneController = TextEditingController();
     _whatsappController = TextEditingController();
     _addressController = TextEditingController();
@@ -38,6 +48,11 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
     await provider.fetchContactInfo();
     if (mounted) {
         _emailController.text = provider.email;
+        _formRecipientEmailController.text = provider.contactInfo.formRecipientEmail;
+        _formRecipientNameController.text = provider.contactInfo.formRecipientName;
+        _emailJsPublicKeyController.text = provider.contactInfo.emailJsPublicKey;
+        _emailJsServiceIdController.text = provider.contactInfo.emailJsServiceId;
+        _emailJsTemplateIdController.text = provider.contactInfo.emailJsTemplateId;
       _phoneController.text = provider.phone;
       _whatsappController.text = provider.whatsapp;
       _addressController.text = provider.address;
@@ -48,6 +63,11 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
   @override
   void dispose() {
     _emailController.dispose();
+    _formRecipientEmailController.dispose();
+    _formRecipientNameController.dispose();
+    _emailJsPublicKeyController.dispose();
+    _emailJsServiceIdController.dispose();
+    _emailJsTemplateIdController.dispose();
     _phoneController.dispose();
     _whatsappController.dispose();
     _addressController.dispose();
@@ -70,6 +90,11 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
       whatsapp: whatsapp,
       address: _addressController.text.trim(),
       mapLink: _mapLinkController.text.trim(),
+      formRecipientEmail: _formRecipientEmailController.text.trim(),
+      formRecipientName: _formRecipientNameController.text.trim(),
+      emailJsPublicKey: _emailJsPublicKeyController.text.trim(),
+      emailJsServiceId: _emailJsServiceIdController.text.trim(),
+      emailJsTemplateId: _emailJsTemplateIdController.text.trim(),
     );
 
     final provider = context.read<ContactInfoProvider>();
@@ -119,6 +144,64 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
           SizedBox(height: 32.h),
           _buildField('E_MAIL'.tr(context), _emailController, TextInputType.emailAddress),
           SizedBox(height: 16.h),
+          Text(
+            'FORM_RECIPIENT_SECTION_TITLE'.tr(context),
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white70,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            'FORM_RECIPIENT_SECTION_HINT'.tr(context),
+            style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
+          ),
+          SizedBox(height: 12.h),
+          _buildField(
+            'FORM_RECIPIENT_EMAIL'.tr(context),
+            _formRecipientEmailController,
+            TextInputType.emailAddress,
+          ),
+          SizedBox(height: 16.h),
+          _buildField(
+            'FORM_RECIPIENT_NAME'.tr(context),
+            _formRecipientNameController,
+            TextInputType.text,
+          ),
+          SizedBox(height: 28.h),
+          Text(
+            'EMAILJS_API_SECTION_TITLE'.tr(context),
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.white70,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            'EMAILJS_API_SECTION_HINT'.tr(context),
+            style: TextStyle(fontSize: 12.sp, color: Colors.grey[500]),
+          ),
+          SizedBox(height: 12.h),
+          _buildField(
+            'EMAILJS_PUBLIC_KEY'.tr(context),
+            _emailJsPublicKeyController,
+            TextInputType.text,
+          ),
+          SizedBox(height: 16.h),
+          _buildField(
+            'EMAILJS_SERVICE_ID'.tr(context),
+            _emailJsServiceIdController,
+            TextInputType.text,
+          ),
+          SizedBox(height: 16.h),
+          _buildField(
+            'EMAILJS_TEMPLATE_ID'.tr(context),
+            _emailJsTemplateIdController,
+            TextInputType.text,
+          ),
+          SizedBox(height: 24.h),
           _buildField('PHONE_CALL'.tr(context), _phoneController, TextInputType.phone),
           SizedBox(height: 16.h),
           _buildField('WHATSAPP_NUMBER'.tr(context), _whatsappController, TextInputType.phone),

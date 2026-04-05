@@ -39,7 +39,8 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
         sectionId.contains('title') ||
         sectionId.contains('subtitle') ||
         sectionId.contains('description') ||
-        sectionId.contains('benefit');
+        sectionId.contains('benefit') ||
+        sectionId.contains('performance-highlight');
   }
 
   @override

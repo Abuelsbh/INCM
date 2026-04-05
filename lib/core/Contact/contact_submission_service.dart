@@ -5,6 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 
 import 'contact_email_config.dart';
+import '../Firebase/firebase_contact_info_service.dart';
+
+String _emailJsPick(String fromFirestore, String fromEnvironment) {
+  final t = fromFirestore.trim();
+  return t.isNotEmpty ? t : fromEnvironment.trim();
+}
 
 /// Outcome of persisting a contact message and attempting EmailJS delivery.
 class ContactSubmissionResult {
@@ -86,7 +92,36 @@ class ContactSubmissionService {
       );
     }
 
-    if (!ContactEmailConfig.hasEmailJsCredentials) {
+    final contactSettings = await FirebaseContactInfoService().getContactInfo();
+
+    final publicKey = _emailJsPick(
+      contactSettings.emailJsPublicKey,
+      ContactEmailConfig.emailJsPublicKey,
+    );
+    final serviceId = _emailJsPick(
+      contactSettings.emailJsServiceId,
+      ContactEmailConfig.emailJsServiceId,
+    );
+    final templateId = _emailJsPick(
+      contactSettings.emailJsTemplateId,
+      ContactEmailConfig.emailJsTemplateId,
+    );
+
+    if (publicKey.isEmpty || serviceId.isEmpty || templateId.isEmpty) {
+      return const ContactSubmissionResult(
+        firestoreSaved: true,
+        emailSent: false,
+      );
+    }
+
+    final toEmail = contactSettings.formRecipientEmail.trim().isNotEmpty
+        ? contactSettings.formRecipientEmail.trim()
+        : ContactEmailConfig.recipientEmail.trim();
+    final toName = contactSettings.formRecipientName.trim().isNotEmpty
+        ? contactSettings.formRecipientName.trim()
+        : ContactEmailConfig.recipientDisplayName.trim();
+
+    if (toEmail.isEmpty) {
       return const ContactSubmissionResult(
         firestoreSaved: true,
         emailSent: false,
@@ -102,8 +137,8 @@ class ContactSubmissionService {
       'phone': fullPhone,
       'message': storedMessage,
       'subject': emailSubject,
-      'to_email': ContactEmailConfig.recipientEmail,
-      'to_name': ContactEmailConfig.recipientDisplayName,
+      'to_email': toEmail,
+      'to_name': toName,
       'time': DateTime.now().toLocal().toString(),
       'form_source_slug': formSourceSlug,
       'form_source_label': formSourceLabel,
@@ -111,9 +146,9 @@ class ContactSubmissionService {
     };
 
     final body = jsonEncode({
-      'service_id': ContactEmailConfig.emailJsServiceId,
-      'template_id': ContactEmailConfig.emailJsTemplateId,
-      'user_id': ContactEmailConfig.emailJsPublicKey,
+      'service_id': serviceId,
+      'template_id': templateId,
+      'user_id': publicKey,
       'template_params': templateParams,
     });
 

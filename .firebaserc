@@ -7,6 +7,9 @@
       "hosting": {
         "incm": [
           "incm"
+        ],
+        "incm-admin": [
+          "incm-admin"
         ]
       }
     }

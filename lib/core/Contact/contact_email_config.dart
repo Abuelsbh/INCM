@@ -1,4 +1,5 @@
-/// EmailJS + recipient settings from build-time environment.
+/// EmailJS + recipient settings من البناء (`dart-define`)، مع إمكانية التجاوز من Firestore
+/// (`app_settings/contact_info`) عبر لوحة الأدمن.
 ///
 /// Flutter: pass at build/run, e.g.
 /// `--dart-define=EMAILJS_PUBLIC_KEY=xxx --dart-define=EMAILJS_SERVICE_ID=xxx \
@@ -34,9 +35,11 @@ class ContactEmailConfig {
     defaultValue: 'INCM',
   );
 
-  static bool get hasEmailJsCredentials =>
+  /// حقول البناء فقط؛ عند الإرسال تُدمج مع قيم لوحة التحكم إن وُجدت.
+  static bool get hasEmailJsClientConfig =>
       emailJsPublicKey.isNotEmpty &&
       emailJsServiceId.isNotEmpty &&
-      emailJsTemplateId.isNotEmpty &&
-      recipientEmail.isNotEmpty;
+      emailJsTemplateId.isNotEmpty;
+
+  static bool get hasEmailJsCredentials => hasEmailJsClientConfig;
 }

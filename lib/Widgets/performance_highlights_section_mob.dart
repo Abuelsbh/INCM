@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../core/Content/content_provider.dart';
+import '../core/Language/app_languages.dart';
 import '../core/Language/locales.dart';
+import '../Models/content_model.dart';
 import '../Utilities/font_helper.dart';
 import '../generated/assets.dart';
-import 'animated_logos_footer.dart';
+import 'performance_highlights_content.dart';
 
 class PerformanceHighlightsSectionMob extends StatefulWidget {
   const PerformanceHighlightsSectionMob({super.key});
@@ -17,6 +20,14 @@ class PerformanceHighlightsSectionMob extends StatefulWidget {
 
 class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSectionMob> {
   bool _isVisible = false;
+  late final Future<List<ContentModel>> _homeContentFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    final contentProvider = Provider.of<ContentProvider>(context, listen: false);
+    _homeContentFuture = contentProvider.getPageContent('home');
+  }
 
   void _onVisibilityChanged(VisibilityInfo info) {
     // Show animation when at least 30% visible, hide when less than 10%
@@ -47,12 +58,38 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
           ),
         ),
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 20.h),
-        child: _buildPerformanceSection(),
+        child: _resolveMetricsAndBuild(),
       ),
     );
   }
 
-  Widget _buildPerformanceSection() {
+  List<(String, String)> _defaultMetrics(BuildContext context) {
+    return List<(String, String)>.generate(4, (i) {
+      return (
+        performanceHighlightDefaultValues[i],
+        performanceHighlightDefaultDescKeys[i].tr(context),
+      );
+    });
+  }
+
+  Widget _resolveMetricsAndBuild() {
+    return FutureBuilder<List<ContentModel>>(
+      future: _homeContentFuture,
+      builder: (context, snapshot) {
+        final home = snapshot.data;
+        return Consumer<AppLanguage>(
+          builder: (context, _, __) {
+            final metrics = (home != null)
+                ? resolvePerformanceHighlightMetrics(context, home)
+                : _defaultMetrics(context);
+            return _buildPerformanceSection(metrics);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildPerformanceSection(List<(String, String)> metrics) {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Column(
@@ -105,23 +142,23 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildMetricCard(
-                '+84,321',
-                'SQM_RETAIL_SPACE_LEASED'.tr(context),
+                metrics[0].$1,
+                metrics[0].$2,
               ),
               SizedBox(height: 18.h),
               _buildMetricCard(
-                '+32',
-                'ASSETS_FACILITY_MANAGEMENT'.tr(context),
+                metrics[1].$1,
+                metrics[1].$2,
               ),
               SizedBox(height: 18.h),
               _buildMetricCard(
-                '+100',
-                'FRANCHISE_AGREEMENTS_ESTABLISHED'.tr(context),
+                metrics[2].$1,
+                metrics[2].$2,
               ),
               SizedBox(height: 18.h),
               _buildMetricCard(
-                '+45',
-                'REAL_ESTATE_CONSULTING_COMPLETED'.tr(context),
+                metrics[3].$1,
+                metrics[3].$2,
               ),
             ],
           ),

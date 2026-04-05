@@ -404,7 +404,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
   Widget _buildContactFormSection(BuildContext context, bool isMobile, bool isTablet) {
     return Container(
       width: double.infinity,
-      height: isMobile ? 1000.h : (isTablet ? 1200.h : 1200.h),
+      height: isMobile ? 1100.h : (isTablet ? 1200.h : 1200.h),
       child:  Center(
         child: SingleChildScrollView(
           child: AnimatedBuilder(

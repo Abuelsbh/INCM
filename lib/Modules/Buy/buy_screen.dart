@@ -390,7 +390,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
 
       ),
       width: double.infinity,
-      height: isMobile ? 900.h : (isTablet ? 1200.h : 1200.h),
+      height: isMobile ? 1050.h : (isTablet ? 1200.h : 1200.h),
       child: Stack(
         children: [
 

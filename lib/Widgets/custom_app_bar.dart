@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import '../core/app_build_config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:incm/Modules/AllLogos/all_logos_screen.dart';
@@ -423,8 +424,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       context.go(ExclusiveLeasingProjectsScreen.routeName);
                     }),
                     _buildSideMenuItem('CONTACTS'.tr(context), Icons.contact_phone, 'contacts',() {}),
-                    // Admin Panel (only in debug mode or for development)
-                    if (kDebugMode)
+                    // Admin panel: debug builds or dedicated admin app flavor
+                    if (kDebugMode || AppBuildConfig.isAdminApp)
                       _buildSideMenuItem('ADMIN_PANEL'.tr(context), Icons.admin_panel_settings, 'admin', () {
                         setState(() => isMenuOpen = false);
                         context.go(AdminPanelScreen.routeName);

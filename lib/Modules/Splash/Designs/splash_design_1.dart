@@ -1,70 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../generated/assets.dart';
+import '../splash_session.dart';
 
-/// Design 1: Typewriter animation - logo reveals letter by letter
-/// Navigation is handled by splash_controller (loadDataAndNavigate)
+/// Design 1: Typewriter animation on first splash per session; full logo (no
+/// animation) on later splashes while Firebase loads.
+/// Navigation is handled by splash_controller (loadDataAndNavigate).
 class SplashDesign1 extends StatefulWidget {
-  const SplashDesign1({super.key});
+  final bool showTypewriter;
+
+  const SplashDesign1({super.key, required this.showTypewriter});
 
   @override
   State<SplashDesign1> createState() => _SplashDesign1State();
 }
 
 class _SplashDesign1State extends State<SplashDesign1>
-    with TickerProviderStateMixin {
-  late final AnimationController _typewriterController;
-  late final Animation<double> _typewriterAnimation;
+    with SingleTickerProviderStateMixin {
+  AnimationController? _typewriterController;
+  Animation<double>? _typewriterAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    // Typewriter animation: 2 seconds to reveal the logo letter by letter
+    if (!widget.showTypewriter) {
+      return;
+    }
+
     _typewriterController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2500),
     );
 
     _typewriterAnimation = CurvedAnimation(
-      parent: _typewriterController,
+      parent: _typewriterController!,
       curve: Curves.easeInOut,
     );
 
-    _typewriterController.forward();
+    _typewriterController!.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        SplashSession.completeAnimation();
+      }
+    });
+
+    _typewriterController!.forward();
   }
 
   @override
   void dispose() {
-    _typewriterController.dispose();
+    _typewriterController?.dispose();
     super.dispose();
+  }
+
+  Widget _logo(double logoSize, double clipProgress) {
+    return ClipRect(
+      clipper: TypewriterClipper(clipProgress),
+      child: Image.asset(
+        Assets.logosINCMLogo,
+        width: logoSize,
+        height: logoSize,
+        fit: BoxFit.contain,
+        cacheWidth: logoSize.toInt(),
+        cacheHeight: logoSize.toInt(),
+        filterQuality: FilterQuality.medium,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final double logoSize = 1000.r;
-    
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF4ED47), // Yellow background
+      backgroundColor: const Color(0xFFF4ED47),
       body: Center(
         child: RepaintBoundary(
-          child: AnimatedBuilder(
-            animation: _typewriterAnimation,
-            builder: (context, _) {
-              return ClipRect(
-                clipper: TypewriterClipper(_typewriterAnimation.value),
-                child: Image.asset(
-                  Assets.logosINCMLogo,
-                  width: logoSize,
-                  height: logoSize,
-                  fit: BoxFit.contain,
-                  cacheWidth: logoSize.toInt(),
-                  cacheHeight: logoSize.toInt(),
-                  filterQuality: FilterQuality.medium,
-                ),
-              );
-            },
-          ),
+          child: widget.showTypewriter && _typewriterAnimation != null
+              ? AnimatedBuilder(
+                  animation: _typewriterAnimation!,
+                  builder: (context, _) =>
+                      _logo(logoSize, _typewriterAnimation!.value),
+                )
+              : _logo(logoSize, 1.0),
         ),
       ),
     );
@@ -87,13 +105,3 @@ class TypewriterClipper extends CustomClipper<Rect> {
     return oldClipper.progress != progress;
   }
 }
-
-
-
-
-
-
-
-
-
-

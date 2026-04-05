@@ -7,6 +7,11 @@
       "target": "incm",
       "public": "build/web",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    },
+    {
+      "target": "incm-admin",
+      "public": "build/web_admin",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
     }
   ]
 }

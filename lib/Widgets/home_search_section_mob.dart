@@ -37,6 +37,8 @@ class HomeSearchSectionMob extends StatefulWidget {
 }
 
 class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
+  static const String _fallbackVideoAsset = 'assets/videos/mobile.mp4';
+
   VideoPlayerController? _videoController;
   bool _isVideoInitialized = false;
   bool _videoLoadAttempted = false;
@@ -117,9 +119,13 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
           content?.values['en']?.trim() ??
           content?.values['ar']?.trim();
       final videoUrl = toDirectVideoUrl(link);
-      await _initializeVideo(videoUrl);
+      if (videoUrl != null && videoUrl.isNotEmpty) {
+        await _initializeVideo(videoUrl);
+      } else {
+        await _initializeFallbackAssetVideo();
+      }
     } catch (e) {
-      if (mounted) await _initializeVideo(null);
+      if (mounted) await _initializeFallbackAssetVideo();
     }
     if (mounted) setState(() {});
   }
@@ -152,6 +158,39 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
     } catch (e) {
       if (kDebugMode) {
         print('Error initializing home background video (mobile): $e');
+      }
+      await controller?.dispose();
+      if (mounted) {
+        setState(() {
+          _videoController = null;
+          _isVideoInitialized = false;
+          _videoLoadFailed = true;
+        });
+      }
+    }
+  }
+
+  Future<void> _initializeFallbackAssetVideo() async {
+    VideoPlayerController? controller;
+    try {
+      controller = VideoPlayerController.asset(_fallbackVideoAsset);
+      await controller.initialize().timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeoutException('Video load timeout'),
+      );
+      controller.setLooping(true);
+      controller.setVolume(0.0);
+      await controller.play();
+      if (mounted) {
+        setState(() {
+          _videoController = controller;
+          _isVideoInitialized = true;
+          _videoLoadFailed = false;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error initializing fallback home background video (mobile asset): $e');
       }
       await controller?.dispose();
       if (mounted) {

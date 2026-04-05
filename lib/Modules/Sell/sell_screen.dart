@@ -395,7 +395,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
     return Container(
 
         width: double.infinity,
-        height: isMobile ? 786.h : (isTablet ? 1200.h : 1200.h),
+        height: isMobile ? 950.h : (isTablet ? 1200.h : 1200.h),
         child: Stack(
           children: [
 

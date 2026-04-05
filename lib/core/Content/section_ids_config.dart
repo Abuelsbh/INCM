@@ -136,6 +136,15 @@ class SectionIdsConfig {
           SectionIdOption('about-section-title', 'عنوان قسم "من نحن"', 'text'),
           SectionIdOption('about-section-text', 'نص قسم "من نحن"', 'text'),
           SectionIdOption('services-section-title', 'عنوان قسم "الخدمات"', 'text'),
+          // إنجازات الأرقام (قسم Performance Highlights) — قيمة + وصف لكل مؤشر
+          SectionIdOption('performance-highlight-1-value', 'إنجاز 1 — الرقم (مثال: +84,321)', 'text'),
+          SectionIdOption('performance-highlight-1-description', 'إنجاز 1 — الوصف (EN/AR)', 'text'),
+          SectionIdOption('performance-highlight-2-value', 'إنجاز 2 — الرقم (مثال: +32)', 'text'),
+          SectionIdOption('performance-highlight-2-description', 'إنجاز 2 — الوصف (EN/AR)', 'text'),
+          SectionIdOption('performance-highlight-3-value', 'إنجاز 3 — الرقم (مثال: +100)', 'text'),
+          SectionIdOption('performance-highlight-3-description', 'إنجاز 3 — الوصف (EN/AR)', 'text'),
+          SectionIdOption('performance-highlight-4-value', 'إنجاز 4 — الرقم (مثال: +45)', 'text'),
+          SectionIdOption('performance-highlight-4-description', 'إنجاز 4 — الوصف (EN/AR)', 'text'),
         ];
       
       case 'about':

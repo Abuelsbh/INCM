@@ -23,6 +23,7 @@ import '../Modules/Admin/admin_panel_screen.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../core/Content/content_provider.dart';
 import '../core/Content/route_page_mapping.dart';
+import '../core/app_build_config.dart';
 
 BuildContext? get currentContext_ =>
     GoRouterConfig.router.routerDelegate.navigatorKey.currentContext;
@@ -30,7 +31,9 @@ BuildContext? get currentContext_ =>
 class GoRouterConfig{
   static GoRouter get router => _router;
   static final GoRouter _router = GoRouter(
-    initialLocation: SplashScreen.routeName,
+    initialLocation: AppBuildConfig.isAdminApp
+        ? AdminPanelScreen.routeName
+        : SplashScreen.routeName,
     routes: <RouteBase>[
       GoRoute(
         path: SplashScreen.routeName,
