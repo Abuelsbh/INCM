@@ -5,8 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:incm/core/Font/font_provider.dart';
 import 'package:incm/core/Contact/contact_form_phone.dart';
+import 'package:incm/core/Contact/contact_info_provider.dart';
 import 'package:incm/core/Contact/contact_submission_service.dart';
 import 'package:incm/core/Language/locales.dart';
+import 'package:provider/provider.dart';
 import '../../Utilities/font_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -293,6 +295,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
         emailSubject: 'Buy — $name',
         formSourceSlug: 'buy',
         formSourceLabel: 'FORM_SOURCE_BUY'.tr(context),
+        contactSettingsHint: context.read<ContactInfoProvider>().contactInfo,
       );
 
       if (!mounted) return;

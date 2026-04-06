@@ -22,8 +22,7 @@ class ContactInfoProvider extends ChangeNotifier {
   String get address => _contactInfo.address;
   String get mapLink => _contactInfo.mapLink;
 
-  /// جلب معلومات الاتصال من Firebase
-  /// يُستدعى فقط من الصفحة الرئيسية
+  /// جلب معلومات الاتصال Firebase (يُستدعى من الـ splash لكل المسارات، والهوم للتحديث).
   /// إذا كانت البيانات محملة مسبقاً، لا يتم جلبها مرة أخرى
   Future<void> fetchContactInfo() async {
     if (_isLoaded && !_isLoading) return;

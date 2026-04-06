@@ -19,9 +19,9 @@ Future<void> loadDataAndNavigate(BuildContext context, String targetRoute) async
       await contentProvider.ensurePageLoaded(pageId);
     }
 
-    if (targetRoute == '/' || targetRoute.isEmpty) {
-      await contactProvider.fetchContactInfo();
-    }
+    // دائماً: إعدادات الاتصال وEmailJS من لوحة الأدمن (Firestore) — الموبايل يعتمد عليها
+    // وليس على --dart-define كالويب.
+    await contactProvider.fetchContactInfo();
   }
 
   await Future.wait<void>([

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import '../core/Contact/contact_form_phone.dart';
+import '../core/Contact/contact_info_provider.dart';
 import '../core/Contact/contact_submission_service.dart';
 import '../core/Language/locales.dart';
 import '../Utilities/font_helper.dart';
@@ -295,6 +297,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
         emailSubject: subject,
         formSourceSlug: 'service',
         formSourceLabel: serviceLabel,
+        contactSettingsHint: context.read<ContactInfoProvider>().contactInfo,
       );
 
       if (!mounted) return;

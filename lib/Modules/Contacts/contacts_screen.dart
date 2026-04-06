@@ -253,6 +253,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
         emailSubject: 'Contact — Contact page — $name',
         formSourceSlug: 'contact_page',
         formSourceLabel: 'FORM_SOURCE_CONTACT_PAGE'.tr(context),
+        contactSettingsHint: context.read<ContactInfoProvider>().contactInfo,
       );
 
       if (!mounted) return;

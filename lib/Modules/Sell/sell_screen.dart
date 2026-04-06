@@ -4,8 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:incm/core/Contact/contact_form_phone.dart';
+import 'package:incm/core/Contact/contact_info_provider.dart';
 import 'package:incm/core/Contact/contact_submission_service.dart';
 import 'package:incm/core/Language/locales.dart';
+import 'package:provider/provider.dart';
 import '../../Utilities/font_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -299,6 +301,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
         emailSubject: 'Sell — $name',
         formSourceSlug: 'sell',
         formSourceLabel: 'FORM_SOURCE_SELL'.tr(context),
+        contactSettingsHint: context.read<ContactInfoProvider>().contactInfo,
       );
 
       if (!mounted) return;

@@ -24,6 +24,12 @@ class ContactEmailConfig {
     defaultValue: '',
   );
 
+  /// Private Key من لوحة EmailJS — يُرسَل كـ `accessToken` في جسم الطلب (مطلوب غالباً لتطبيقات الموبايل).
+  static const String emailJsAccessToken = String.fromEnvironment(
+    'EMAILJS_ACCESS_TOKEN',
+    defaultValue: '',
+  );
+
   static const String recipientEmail = String.fromEnvironment(
     'RECIPIENT_EMAIL',
     defaultValue: '',

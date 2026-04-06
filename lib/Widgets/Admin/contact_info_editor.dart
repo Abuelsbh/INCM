@@ -21,6 +21,7 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
   late TextEditingController _emailJsPublicKeyController;
   late TextEditingController _emailJsServiceIdController;
   late TextEditingController _emailJsTemplateIdController;
+  late TextEditingController _emailJsAccessTokenController;
   late TextEditingController _phoneController;
   late TextEditingController _whatsappController;
   late TextEditingController _addressController;
@@ -36,6 +37,7 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
     _emailJsPublicKeyController = TextEditingController();
     _emailJsServiceIdController = TextEditingController();
     _emailJsTemplateIdController = TextEditingController();
+    _emailJsAccessTokenController = TextEditingController();
     _phoneController = TextEditingController();
     _whatsappController = TextEditingController();
     _addressController = TextEditingController();
@@ -53,6 +55,7 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
         _emailJsPublicKeyController.text = provider.contactInfo.emailJsPublicKey;
         _emailJsServiceIdController.text = provider.contactInfo.emailJsServiceId;
         _emailJsTemplateIdController.text = provider.contactInfo.emailJsTemplateId;
+        _emailJsAccessTokenController.text = provider.contactInfo.emailJsAccessToken;
       _phoneController.text = provider.phone;
       _whatsappController.text = provider.whatsapp;
       _addressController.text = provider.address;
@@ -68,6 +71,7 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
     _emailJsPublicKeyController.dispose();
     _emailJsServiceIdController.dispose();
     _emailJsTemplateIdController.dispose();
+    _emailJsAccessTokenController.dispose();
     _phoneController.dispose();
     _whatsappController.dispose();
     _addressController.dispose();
@@ -95,6 +99,7 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
       emailJsPublicKey: _emailJsPublicKeyController.text.trim(),
       emailJsServiceId: _emailJsServiceIdController.text.trim(),
       emailJsTemplateId: _emailJsTemplateIdController.text.trim(),
+      emailJsAccessToken: _emailJsAccessTokenController.text.trim(),
     );
 
     final provider = context.read<ContactInfoProvider>();
@@ -199,6 +204,12 @@ class _ContactInfoEditorState extends State<ContactInfoEditor> {
           _buildField(
             'EMAILJS_TEMPLATE_ID'.tr(context),
             _emailJsTemplateIdController,
+            TextInputType.text,
+          ),
+          SizedBox(height: 16.h),
+          _buildField(
+            'EMAILJS_ACCESS_TOKEN'.tr(context),
+            _emailJsAccessTokenController,
             TextInputType.text,
           ),
           SizedBox(height: 24.h),

@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:incm/core/Contact/contact_form_phone.dart';
+import 'package:incm/core/Contact/contact_info_provider.dart';
 import 'package:incm/core/Contact/contact_submission_service.dart';
 import 'package:incm/core/Firebase/career_cv_storage_service.dart';
 import 'package:incm/core/Language/locales.dart';
@@ -365,6 +366,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
         emailSubject: 'Career — $deptLabel — $name',
         formSourceSlug: 'career',
         formSourceLabel: 'FORM_SOURCE_CAREER'.tr(context),
+        contactSettingsHint: context.read<ContactInfoProvider>().contactInfo,
         extraTemplateParams: {
           'department': deptLabel,
           'cv_link': cvUrl,
