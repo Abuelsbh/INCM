@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.incm.realestate</string>
+	<string>com.incomercial.realestate</string>
 	<key>PROJECT_ID</key>
 	<string>incm-c87aa</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:75851289116:ios:5ab863f054c8dfcf2bc5d9</string>
+	<string>1:75851289116:ios:b38ad64b1156a86b2bc5d9</string>
 </dict>
 </plist>
