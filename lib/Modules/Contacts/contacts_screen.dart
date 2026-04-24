@@ -19,6 +19,7 @@ import '../../core/Language/app_languages.dart';
 import '../../core/Contact/contact_form_phone.dart';
 import '../../core/Contact/contact_info_provider.dart';
 import '../../core/Contact/contact_submission_service.dart';
+import '../../core/responsive/native_layout.dart';
 import '../../Utilities/font_helper.dart';
 import '../../generated/assets.dart';
 import 'package:provider/provider.dart';
@@ -306,7 +307,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.contacts) : null,
+        bottomNavigationBar: useNativeBottomNavigationBar(context) ? const BottomNavBarWidget(selected: SelectedBottomNavBar.contacts) : null,
 
         body: Stack(
           children: [
@@ -326,7 +327,9 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               top: 0,
               left: 0,
               right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              child: useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
             ),
             const FloatingContactButtons(),
             ScrollToTopButton(scrollController: _scrollController),

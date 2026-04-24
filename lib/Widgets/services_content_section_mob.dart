@@ -19,7 +19,9 @@ import '../Modules/Services/FranchiseInvestment/franchise_investment_screen.dart
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/Marketing/marketing_screen.dart';
 import '../core/Content/services_provider.dart';
+import '../core/Content/content_helper.dart';
 import 'dynamic_content_widget.dart';
+import 'home_service_carousel_image.dart';
 
 class ServicesContentSectionMob extends StatefulWidget {
   const ServicesContentSectionMob({super.key});
@@ -178,18 +180,18 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
 
   @override
   Widget build(BuildContext context) {
-    return
-      Container(
+    return FutureBuilder<DecorationImage?>(
+      future: ContentHelper.getServicesCarouselBackground(context, fit: BoxFit.cover),
+      builder: (context, snapshot) {
+        return Container(
           height: 786.h,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: const AssetImage(Assets.imagesLearnServicesBackground), // your background image asset
-            fit: BoxFit.cover,
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            image: snapshot.data,
           ),
-        ),
-        child: Column(
+          child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             DynamicText(
@@ -396,10 +398,23 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(2), // Same radius to clip image corners
-                                    child: Image.asset(
-                                      Assets.imagesLearnServices,
-                                      fit: BoxFit.cover,
-                                      key: ValueKey(currentIndex), // Force rebuild on index change
+                                    child: Consumer<ServicesProvider>(
+                                      builder: (context, servicesProvider, _) {
+                                        final services = servicesProvider.allServices;
+                                        if (services.isEmpty ||
+                                            currentIndex >= services.length) {
+                                          return Image.asset(
+                                            Assets.imagesLearnServices,
+                                            fit: BoxFit.cover,
+                                          );
+                                        }
+                                        final pageId = services[currentIndex].pageId;
+                                        return HomeServiceCarouselImage(
+                                          key: ValueKey(pageId),
+                                          pageId: pageId,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
                                     ),
                                   ),
                                 )
@@ -426,8 +441,9 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
               ),
             ),
           ],
-        )
-      );
-
+        ),
+        );
+      },
+    );
   }
 }

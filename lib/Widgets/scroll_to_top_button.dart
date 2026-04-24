@@ -165,13 +165,6 @@ class _AnimatedArrowButtonState extends State<_AnimatedArrowButton>
                   decoration: BoxDecoration(
                     color: const Color(0xFFF4ED47),
                     borderRadius: BorderRadius.circular(10), // 🔹 هنا الكيرف
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0x66C63424),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
                   ),
                   child: Center(
                     child: Icon(

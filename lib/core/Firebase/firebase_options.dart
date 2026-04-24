@@ -86,7 +86,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '75851289116',
     projectId: 'incm-c87aa',
     storageBucket: 'incm-c87aa.firebasestorage.app',
-    iosBundleId: 'com.incm.realestate',
+    iosBundleId: 'com.incomercial.realestate',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -95,6 +95,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '75851289116',
     projectId: 'incm-c87aa',
     storageBucket: 'incm-c87aa.firebasestorage.app',
-    iosBundleId: 'com.incm.realestate',
+    iosBundleId: 'com.incomercial.realestate',
   );
 }

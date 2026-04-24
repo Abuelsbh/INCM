@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:go_router/go_router.dart';
-import 'package:incm/Utilities/router_config.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -15,12 +14,53 @@ import '../../Widgets/footer_section.dart';
 import '../../Widgets/footer_section_mob.dart';
 import '../../Widgets/dynamic_content_widget.dart';
 import '../../core/Language/app_languages.dart';
-import '../../generated/assets.dart';
 import '../../core/Content/content_helper.dart';
 import '../../core/Content/content_provider.dart';
+import '../../core/Content/exclusive_leasing_projects_data.dart';
 import '../../Utilities/font_helper.dart';
 import '../../core/Language/locales.dart';
+import '../../core/responsive/native_layout.dart';
 import 'package:provider/provider.dart';
+
+const Color _kExclusiveLeasingAccent = Color(0xFFF4ED47);
+
+/// Download-style loading state while remote images resolve (logo / gallery / section list).
+Widget _exclusiveLeasingLoadingBox({
+  double? width,
+  double? height,
+  bool expand = false,
+}) {
+  final indicator = Column(
+    mainAxisSize: MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Icon(
+        Icons.download_rounded,
+        color: _kExclusiveLeasingAccent,
+        size: 40.sp,
+      ),
+      SizedBox(height: 12.h),
+      SizedBox(
+        width: 26.w,
+        height: 26.w,
+        child: const CircularProgressIndicator(
+          strokeWidth: 2.5,
+          color: _kExclusiveLeasingAccent,
+        ),
+      ),
+    ],
+  );
+
+  final box = ColoredBox(
+    color: const Color(0xFF1A1A1A),
+    child: Center(child: indicator),
+  );
+
+  if (expand) {
+    return SizedBox.expand(child: box);
+  }
+  return SizedBox(width: width, height: height, child: box);
+}
 
 class ExclusiveLeasingProjectsScreen extends StatefulWidget {
   static const String routeName = '/exclusive-leasing-projects';
@@ -43,99 +83,25 @@ class _ExclusiveLeasingProjectsScreenState
   // GlobalKeys for scrolling to specific projects
   final Map<String, GlobalKey> _projectKeys = {};
 
-  // List of 8 projects with local images
-  final List<Map<String, dynamic>> projects = [
-    {
-      'id': 'umc',
-      'logoFallback': Assets.logosFacilityUmc,
-      'imageFallback': Assets.imagesExclusiveLeasingUmcC0020T01,
-      'localImages': [
-        Assets.imagesExclusiveLeasingUmcC0020T01,
-        Assets.imagesExclusiveLeasingUmcC0025T01,
-        Assets.imagesExclusiveLeasingUmcDjiStill002,
-      ],
-      'titleEn': 'UMC',
-      'titleAr': 'UMC',
-    },
-    {
-      'id': 'park-mall',
-      'logoFallback': Assets.logosConsultation25,
-      'imageFallback': Assets.imagesExclusiveLeasingParkMallParkMall,
-      'localImages': [
-        Assets.imagesExclusiveLeasingParkMallParkMall,
-      ],
-      'titleEn': 'PARK MALL',
-      'titleAr': 'PARK MALL',
-    },
-    {
-      'id': 'terrace',
-      'logoFallback': Assets.logosFacilityTerrace,
-      'imageFallback': Assets.imagesExclusiveLeasingTerraceDsc07468,
-      'localImages': [
-        Assets.imagesExclusiveLeasingTerraceDsc07468,
-        Assets.imagesExclusiveLeasingTerraceDsc07664,
-        Assets.imagesExclusiveLeasingTerraceDsc07812,
-        Assets.imagesExclusiveLeasingTerraceDsc07992,
-      ],
-      'titleEn': 'TERRACE MALL',
-      'titleAr': 'TERRACE MALL',
-    },
-    {
-      'id': 'point90',
-      'logoFallback': Assets.logosConsultation21,
-      'imageFallback': Assets.imagesExclusiveLeasingPoint90Point90,
-      'localImages': [
-        Assets.imagesExclusiveLeasingPoint90Point90,
-      ],
-      'titleEn': 'POINT 90',
-      'titleAr': 'POINT 90',
-    },
-    {
-      'id': 'kernel',
-      'logoFallback': Assets.logosFacilityKernel,
-      'imageFallback': Assets.imagesExclusiveLeasingKernelKernel,
-      'localImages': [
-        Assets.imagesExclusiveLeasingKernelKernel,
-      ],
-      'titleEn': 'KERNEL',
-      'titleAr': 'KERNEL',
-    },
-    {
-      'id': 'city-square',
-      'logoFallback': Assets.logosRetail1,
-      'imageFallback': Assets.imagesExclusiveLeasingCitySquareDfv,
-      'localImages': [
-        Assets.imagesExclusiveLeasingCitySquareDfv,
-      ],
-      'titleEn': 'CITY SQUARE',
-      'titleAr': 'CITY SQUARE',
-    },
-    {
-      'id': 'vitali',
-      'logoFallback': Assets.logosFacilityVitali,
-      'imageFallback': Assets.imagesExclusiveLeasingVitaliDjiStill016,
-      'localImages': [
-        Assets.imagesExclusiveLeasingVitaliDjiStill016,
-        Assets.imagesExclusiveLeasingVitaliDjiStill010,
-        Assets.imagesExclusiveLeasingVitaliDjiStill015,
-        Assets.imagesExclusiveLeasingVitaliDjiStill011,
-      ],
-      'titleEn': 'VITALI',
-      'titleAr': 'VITALI',
-    },
-    {
-      'id': 'seashell',
-      'logoFallback': Assets.logosPrimary1,
-      'imageFallback': Assets.imagesExclusiveLeasingSeashellUntitled1521,
-      'localImages': [
-        Assets.imagesExclusiveLeasingSeashellUntitled1521,
-      ],
-      'titleEn': 'SEASHELL',
-      'titleAr': 'SEASHELL',
-    },
-  ];
+  String _precacheSlugSig = '';
 
   String? _targetProjectId;
+
+  List<String> _orderedSlugs(ContentProvider cp) {
+    final cached = cp.peekCachedPageContent(ExclusiveLeasingProjectsData.pageId);
+    if (cached == null) {
+      return ExclusiveLeasingProjectsData.orderedSlugs;
+    }
+    return ExclusiveLeasingProjectsData.displayOrderSlugs(
+      ExclusiveLeasingProjectsData.discoverSlugsFromContents(cached),
+    );
+  }
+
+  List<Map<String, dynamic>> _projectRowsForSlugs(List<String> slugs) {
+    return slugs
+        .map((id) => ExclusiveLeasingProjectsData.seedForSlug(id).toProjectRowMap(id))
+        .toList();
+  }
 
   @override
   void initState() {
@@ -154,25 +120,10 @@ class _ExclusiveLeasingProjectsScreenState
       ),
     );
 
-    // Initialize keys for each project
-    for (var project in projects) {
-      final projectId = project['id'] as String;
-      _projectKeys[projectId] = GlobalKey();
-    }
-
-    // Precache local images for smoother carousel transitions
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _animationController.forward();
-        for (var project in projects) {
-          final localImages = List<String>.from(
-            project['localImages'] as List<dynamic>? ?? [],
-          );
-          for (var path in localImages) {
-            precacheImage(AssetImage(path), context);
-          }
-        }
-      }
+      if (!mounted) return;
+      _animationController.forward();
+      context.read<ContentProvider>().ensurePageLoaded(ExclusiveLeasingProjectsData.pageId);
     });
   }
 
@@ -271,105 +222,127 @@ class _ExclusiveLeasingProjectsScreenState
   @override
   Widget build(BuildContext context) {
     final isMobile = _isMobile(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        bottomNavigationBar: isMobile && !kIsWeb
-            ? const BottomNavBarWidget(selected: SelectedBottomNavBar.contacts)
-            : null,
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              controller: _scrollController,
-              child: VisibilityDetector(
-                key: const Key('exclusive-leasing-projects-content'),
-                onVisibilityChanged: _onVisibilityChanged,
-                child: AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    return Opacity(
-                      opacity: _fadeAnimation.value,
-                      child: child,
-                    );
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: isMobile ? 20.w : 40.w,
-                            vertical: isMobile ? 40.h : 80.h,
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(height: isMobile ? 60.h : 100.h),
-                              // Title
-                              Text(
-                                'EXCLUSIVE_LEASING_PROJECTS'.tr(context),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                  color: const Color(0xFFF4ED47),
-                                  fontSize: isMobile ? 32.sp : 60.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
+    return Consumer<ContentProvider>(
+      builder: (context, cp, _) {
+        final slugs = _orderedSlugs(cp);
+        for (final id in slugs) {
+          _projectKeys.putIfAbsent(id, () => GlobalKey());
+        }
+        final projects = _projectRowsForSlugs(slugs);
+        final sig = slugs.join(',');
+        if (sig != _precacheSlugSig) {
+          _precacheSlugSig = sig;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            for (final project in projects) {
+              final localImages = List<String>.from(
+                project['localImages'] as List<dynamic>? ?? [],
+              );
+              for (final path in localImages) {
+                precacheImage(AssetImage(path), context);
+              }
+            }
+          });
+        }
+
+        return SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.black,
+            bottomNavigationBar: useNativeBottomNavigationBar(context)
+                ? const BottomNavBarWidget(selected: SelectedBottomNavBar.contacts)
+                : null,
+            body: Stack(
+              children: [
+                SingleChildScrollView(
+                  controller: _scrollController,
+                  child: VisibilityDetector(
+                    key: const Key('exclusive-leasing-projects-content'),
+                    onVisibilityChanged: _onVisibilityChanged,
+                    child: AnimatedBuilder(
+                      animation: _animationController,
+                      builder: (context, child) {
+                        return Opacity(
+                          opacity: _fadeAnimation.value,
+                          child: child,
+                        );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isMobile ? 20.w : 40.w,
+                                vertical: isMobile ? 40.h : 80.h,
                               ),
-                              SizedBox(height: isMobile ? 40.h : 80.h),
-                              // Projects List
-                              ...projects.asMap().entries.expand((entry) {
-                                final index = entry.key;
-                                final project = entry.value;
-                                final isLast = index == projects.length - 1;
-                                return [
-                                  _buildProjectCard(context, project, isMobile),
-                                  if (!isLast)
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: isMobile ? 20.h : 40.h,
-                                      ),
-                                      child: Divider(
-                                        color: Colors.white.withOpacity(0.25),
-                                        thickness: 1,
-                                        height: 1,
-                                      ),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: isMobile ? 60.h : 100.h),
+                                  Text(
+                                    'EXCLUSIVE_LEASING_PROJECTS'.tr(context),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                      color: const Color(0xFFF4ED47),
+                                      fontSize: isMobile ? 32.sp : 60.sp,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                ];
-                              }),
-                              SizedBox(height: isMobile ? 40.h : 80.h),
-                            ],
-                          ),
+                                  ),
+                                  SizedBox(height: isMobile ? 40.h : 80.h),
+                                  ...projects.asMap().entries.expand((entry) {
+                                    final index = entry.key;
+                                    final project = entry.value;
+                                    final isLast = index == projects.length - 1;
+                                    return [
+                                      _buildProjectCard(context, project, isMobile),
+                                      if (!isLast)
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: isMobile ? 20.h : 40.h,
+                                          ),
+                                          child: Divider(
+                                            color: Colors.white.withOpacity(0.25),
+                                            thickness: 1,
+                                            height: 1,
+                                          ),
+                                        ),
+                                    ];
+                                  }),
+                                  SizedBox(height: isMobile ? 40.h : 80.h),
+                                ],
+                              ),
+                            ),
+                            if (kIsWeb)
+                              (MediaQuery.sizeOf(context).width >= 600
+                                  ? const FooterSection()
+                                  : const FooterSectionMob()),
+                          ],
                         ),
-                        // Footer
-                        if(MediaQuery.of(context).size.width >= 600)
-                          const FooterSection()
-                        else if(kIsWeb)
-                          const FooterSectionMob(),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+                useWebDesktopAppBar(context)
+                    ? const Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        child: CustomAppBar(),
+                      )
+                    : const Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        child: CustomAppBarMob(),
+                      ),
+                const FloatingContactButtons(),
+                ScrollToTopButton(scrollController: _scrollController),
+              ],
             ),
-            isMobile
-                ? const Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: CustomAppBarMob(),
-                  )
-                : const Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: CustomAppBar(),
-                  ),
-            const FloatingContactButtons(),
-            ScrollToTopButton(scrollController: _scrollController),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -381,7 +354,6 @@ class _ExclusiveLeasingProjectsScreenState
     final projectId = project['id'] as String;
     final logoFallback = project['logoFallback'] as String;
     final imageFallback = project['imageFallback'] as String;
-    final titleEn = project['titleEn'] as String;
     final localImages = List<String>.from(project['localImages'] as List<dynamic>? ?? []);
 
     return Container(
@@ -408,6 +380,14 @@ class _ExclusiveLeasingProjectsScreenState
                             fit: BoxFit.contain,
                           ),
                           builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                    ConnectionState.waiting &&
+                                !snapshot.hasData) {
+                              return _exclusiveLeasingLoadingBox(
+                                width: 140.w,
+                                height: 140.h,
+                              );
+                            }
                             if (snapshot.hasData) {
                               return snapshot.data!;
                             }
@@ -454,7 +434,12 @@ class _ExclusiveLeasingProjectsScreenState
                 SizedBox(
                   width: double.infinity,
                   height: MediaQuery.of(context).size.width * 0.8, // Square-ish on mobile
-                  child: _buildImageCarousel(projectId, imageFallback, isMobile),
+                  child: _buildImageCarousel(
+                    projectId,
+                    imageFallback,
+                    isMobile,
+                    localImages,
+                  ),
                 ),
 
 
@@ -487,6 +472,14 @@ class _ExclusiveLeasingProjectsScreenState
                                   fit: BoxFit.contain,
                                 ),
                                 builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                          ConnectionState.waiting &&
+                                      !snapshot.hasData) {
+                                    return _exclusiveLeasingLoadingBox(
+                                      width: 150.w,
+                                      height: 150.h,
+                                    );
+                                  }
                                   if (snapshot.hasData) {
                                     return snapshot.data!;
                                   }
@@ -538,7 +531,12 @@ class _ExclusiveLeasingProjectsScreenState
                 SizedBox(
                   width: isMobile ? double.infinity : 700.w,
                   height: isMobile ? MediaQuery.of(context).size.width * 0.8 : 600.h,
-                  child: _buildImageCarousel(projectId, imageFallback, isMobile),
+                  child: _buildImageCarousel(
+                    projectId,
+                    imageFallback,
+                    isMobile,
+                    localImages,
+                  ),
                 ),
               ],
             ),
@@ -549,15 +547,8 @@ class _ExclusiveLeasingProjectsScreenState
     String projectId,
     String fallbackImage,
     bool isMobile,
+    List<String> localImages,
   ) {
-    final project = projects.firstWhere(
-      (p) => p['id'] == projectId,
-      orElse: () => {'localImages': []},
-    );
-    final List<String> localImages = List<String>.from(
-      project['localImages'] as List<dynamic>? ?? [],
-    );
-
     final List<String> imageSectionIds = [];
     for (int i = 0; i < 20; i++) {
       imageSectionIds.add('$projectId-image-$i');
@@ -568,29 +559,33 @@ class _ExclusiveLeasingProjectsScreenState
         return FutureBuilder<List<String?>>(
           future: _loadImageSectionIds(imageSectionIds),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _exclusiveLeasingLoadingBox(expand: true);
+            }
+
+            if (snapshot.hasData) {
+              final existingImageIds = snapshot.data!
+                  .asMap()
+                  .entries
+                  .where((e) => e.value != null && e.value!.isNotEmpty)
+                  .map((e) => imageSectionIds[e.key])
+                  .toList();
+
               return _ProjectImageCarousel(
                 projectId: projectId,
                 fallbackImage: fallbackImage,
                 isMobile: isMobile,
                 localImages: localImages,
-                firebaseImageIds: null,
+                firebaseImageIds: existingImageIds.isEmpty ? null : existingImageIds,
               );
             }
-
-            final existingImageIds = snapshot.data!
-                .asMap()
-                .entries
-                .where((e) => e.value != null && e.value!.isNotEmpty)
-                .map((e) => imageSectionIds[e.key])
-                .toList();
 
             return _ProjectImageCarousel(
               projectId: projectId,
               fallbackImage: fallbackImage,
               isMobile: isMobile,
               localImages: localImages,
-              firebaseImageIds: existingImageIds.isEmpty ? null : existingImageIds,
+              firebaseImageIds: null,
             );
           },
         );
@@ -663,26 +658,7 @@ class _ExclusiveLeasingProjectsScreenState
   }
 
   String _getDefaultDescription(String projectId) {
-    switch (projectId) {
-      case 'umc':
-        return 'EXCLUSIVE_LEASING_UMC_DESCRIPTION';
-      case 'park-mall':
-        return 'EXCLUSIVE_LEASING_PARK_MALL_DESCRIPTION';
-      case 'terrace':
-        return 'EXCLUSIVE_LEASING_TERRACE_DESCRIPTION';
-      case 'point90':
-        return 'EXCLUSIVE_LEASING_POINT90_DESCRIPTION';
-      case 'kernel':
-        return 'EXCLUSIVE_LEASING_KERNEL_DESCRIPTION';
-      case 'city-square':
-        return 'EXCLUSIVE_LEASING_CITY_SQUARE_DESCRIPTION';
-      case 'vitali':
-        return 'EXCLUSIVE_LEASING_VITALI_DESCRIPTION';
-      case 'seashell':
-        return 'EXCLUSIVE_LEASING_SEASHELL_DESCRIPTION';
-      default:
-        return '';
-    }
+    return ExclusiveLeasingProjectsData.defaultDescriptionTrKeyForSlug(projectId);
   }
 }
 
@@ -805,7 +781,14 @@ class _ProjectImageCarouselState extends State<_ProjectImageCarousel> {
                               fit: BoxFit.cover,
                             ),
                             builder: (context, snapshot) {
-                              if (snapshot.hasData) return snapshot.data!;
+                              if (snapshot.connectionState ==
+                                      ConnectionState.waiting &&
+                                  !snapshot.hasData) {
+                                return _exclusiveLeasingLoadingBox(expand: true);
+                              }
+                              if (snapshot.hasData) {
+                                return snapshot.data!;
+                              }
                               return _buildImageWithErrorHandling(
                                 widget.fallbackImage,
                                 width: 600.sp,

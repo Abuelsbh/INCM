@@ -5,6 +5,7 @@ import '../../Widgets/bottom_navbar_widget.dart';
 import '../../Widgets/custom_app_bar.dart';
 import '../../Widgets/custom_app_bar_mob.dart';
 import '../../core/Language/locales.dart';
+import '../../core/responsive/native_layout.dart';
 import '../../Utilities/font_helper.dart';
 import '../../core/Firebase/firebase_logos_service.dart';
 import '../../Models/logo_model.dart';
@@ -77,7 +78,7 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.sellYourUnit) : null,
+        bottomNavigationBar: useNativeBottomNavigationBar(context) ? const BottomNavBarWidget(selected: SelectedBottomNavBar.sellYourUnit) : null,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -217,9 +218,9 @@ class _AllLogosScreenState extends State<AllLogosScreen> {
               top: 0,
               left: 0,
               right: 0,
-              child: isMobile
-                  ? const CustomAppBarMob()
-                  : const CustomAppBar(),
+              child: useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
             ),
           ],
         ),

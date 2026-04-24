@@ -13,6 +13,7 @@ import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/locales.dart';
 import '../../../Utilities/font_helper.dart';
 import '../../../generated/assets.dart';
@@ -30,7 +31,7 @@ class RetailLeasingScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+        bottomNavigationBar: useNativeBottomNavigationBar(context)
             ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
             : null,
         body: Stack(
@@ -42,10 +43,10 @@ class RetailLeasingScreen extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getDecorationImage(
+                      future: ContentHelper.getHeroDecorationImage(
                         context,
                         'retail-leasing',
-                        'background-image',
+                        isMobile: isMobile,
                         fit: BoxFit.contain,
                       ),
                       builder: (context, snapshot) {
@@ -54,8 +55,8 @@ class RetailLeasingScreen extends StatelessWidget {
                         // Fallback to asset if Firebase image not available
                         if (decorationImage == null) {
                           decorationImage = DecorationImage(
-                            image: AssetImage(isMobile ? Assets.imagesService7Mob : Assets.imagesService7),
-                            fit: BoxFit.contain,
+                            image: AssetImage(Assets.imagesLearnServices),
+                            fit: BoxFit.fill,
                           );
                         }
 
@@ -68,7 +69,7 @@ class RetailLeasingScreen extends StatelessWidget {
                             children: [
                               // Fallback image for height calculation
                               Image.asset(
-                                isMobile ? Assets.imagesService7Mob : Assets.imagesService7,
+                                Assets.imagesLearnServices,
                                 width: double.infinity,
                                 fit: BoxFit.none,
                                 color: Colors.transparent,
@@ -274,17 +275,7 @@ class RetailLeasingScreen extends StatelessWidget {
                               ClientsLogosSection(
                                 backgroundColor: Colors.grey[900]!,
                                 pageId: 'retail-leasing', // Fetch logos from Firebase for this page
-                                logos: [
-                                  Assets.logosRetail1,
-                                  Assets.logosRetail2,
-                                  Assets.logosRetail3,
-                                  Assets.logosRetail4,
-                                  Assets.logosRetail5,
-                                  Assets.logosRetail6,
-                                  Assets.logosRetail7,
-                                  Assets.logosRetail8,
-                                  Assets.logosRetail9,
-                                ], // Fallback logos if Firebase is not available
+                                logos: const [Assets.logosINCM],
                                 visibleLogosCount: 5,
                               ),
                             ],
@@ -297,10 +288,10 @@ class RetailLeasingScreen extends StatelessWidget {
                   ),
                   const ContentServiceSection(sourceTag: 'Retail leasing'),
 
-                  if(MediaQuery.of(context).size.width >= 600)
-                    const FooterSection()
-                  else if(kIsWeb)
-                    const FooterSectionMob(),
+                  if (kIsWeb)
+                    (MediaQuery.sizeOf(context).width >= 600
+                        ? const FooterSection()
+                        : const FooterSectionMob()),
                 ],
               ),
             ),
@@ -308,7 +299,9 @@ class RetailLeasingScreen extends StatelessWidget {
               top: 0,
               left: 0,
               right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              child: useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
             ),
             const FloatingContactButtons(),
             ScrollToTopButton(scrollController: scrollController),

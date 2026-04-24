@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../Modules/Buy/buy_screen.dart';
+import '../Modules/Lease/lease_screen.dart';
 import '../core/Language/locales.dart';
 import 'package:incm/Modules/About/about_screen.dart';
 import 'package:incm/Modules/Career/career_screen.dart';
@@ -149,7 +151,7 @@ class _BottomNavBarItemModel {
   });
 
   static _BottomNavBarItemModel sellYourUnit(BuildContext context) => _BottomNavBarItemModel(
-    title: 'SELL_YOUR_UNIT'.tr(context),
+    title: 'SELL'.tr(context),
     iconPath: Assets.iconsSellYourUnit,
     type: SelectedBottomNavBar.sellYourUnit,
     routeName: SellScreen.routeName,
@@ -159,7 +161,7 @@ class _BottomNavBarItemModel {
     title: 'BUY'.tr(context),
     iconPath: Assets.iconsServices,
     type: SelectedBottomNavBar.services,
-    routeName: CareerScreen.routeName,
+    routeName: BuyScreen.routeName,
     //routeName: AiScreen.routeName,
   );
 
@@ -174,7 +176,7 @@ class _BottomNavBarItemModel {
     title: 'LEASE'.tr(context),
     iconPath: Assets.iconsLease,
     type: SelectedBottomNavBar.aboutUs,
-    routeName: AboutScreen.routeName,
+    routeName: LeaseScreen.routeName,
     //routeName: OutboxScreen.routeName,
   );
 

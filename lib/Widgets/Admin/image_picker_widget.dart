@@ -7,14 +7,17 @@ import '../../core/Language/locales.dart';
 
 class ImagePickerWidget extends StatefulWidget {
   final String? initialBase64;
-  final Function(String base64) onImageSelected;
+  final void Function(String base64) onImageSelected;
   final String label;
+  /// When false, taps are ignored (e.g. while parent dialog is saving).
+  final bool enabled;
 
   const ImagePickerWidget({
     super.key,
     this.initialBase64,
     required this.onImageSelected,
     required this.label,
+    this.enabled = true,
   });
 
   @override
@@ -29,6 +32,14 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   void initState() {
     super.initState();
     _currentBase64 = widget.initialBase64;
+  }
+
+  @override
+  void didUpdateWidget(ImagePickerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialBase64 != oldWidget.initialBase64) {
+      _currentBase64 = widget.initialBase64;
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -83,6 +94,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   }
 
   void _showImageSourceDialog() {
+    if (!widget.enabled) return;
     if (kIsWeb) {
       // On web, directly open file selector
       _pickImage(ImageSource.gallery);
@@ -120,6 +132,106 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final canTap = widget.enabled;
+    final hasImage = _currentBase64 != null && _currentBase64!.trim().isNotEmpty;
+
+    Widget previewChild;
+    if (hasImage) {
+      previewChild = Stack(
+        fit: StackFit.expand,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Builder(
+              builder: (context) {
+                try {
+                  String base64String = _currentBase64!.trim();
+                  if (base64String.contains(',')) {
+                    base64String = base64String.split(',').last.trim();
+                  }
+                  final bytes = base64Decode(base64String);
+                  return Image.memory(
+                    bytes,
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: double.infinity,
+                        height: 200,
+                        color: Colors.grey[300],
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.broken_image, size: 48, color: Colors.grey),
+                            SizedBox(height: 8),
+                            Text('خطأ في تحميل الصورة'),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } catch (e) {
+                  return Container(
+                    width: double.infinity,
+                    height: 200,
+                    color: Colors.grey[300],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.broken_image, size: 48, color: Colors.grey),
+                        const SizedBox(height: 8),
+                        Text('خطأ: $e'),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Material(
+              color: Colors.black54,
+              shape: const CircleBorder(),
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: canTap
+                    ? () {
+                        setState(() {
+                          _currentBase64 = null;
+                        });
+                        widget.onImageSelected('');
+                      }
+                    : null,
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      previewChild = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.touch_app, size: 40, color: Colors.grey[600]),
+          const SizedBox(height: 8),
+          Text(
+            'اضغط هنا أو على الزر لاختيار صورة',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+          ),
+          const SizedBox(height: 12),
+          ElevatedButton.icon(
+            onPressed: canTap ? _showImageSourceDialog : null,
+            icon: const Icon(Icons.add_photo_alternate),
+            label: const Text('اختر صورة'),
+          ),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -131,96 +243,23 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           ),
         ),
         const SizedBox(height: 8),
-        Container(
-          width: double.infinity,
-          height: 200,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8),
+        Material(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(8),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: canTap ? _showImageSourceDialog : null,
+            child: Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              alignment: Alignment.center,
+              child: previewChild,
+            ),
           ),
-          child: _currentBase64 != null && _currentBase64!.isNotEmpty
-              ? Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Builder(
-                        builder: (context) {
-                          try {
-                            String base64String = _currentBase64!.trim();
-                            // Remove data URL prefix if present
-                            if (base64String.contains(',')) {
-                              base64String = base64String.split(',').last.trim();
-                            }
-                            final bytes = base64Decode(base64String);
-                            return Image.memory(
-                              bytes,
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                              filterQuality: FilterQuality.high, // High quality preview
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  width: double.infinity,
-                                  height: 200,
-                                  color: Colors.grey[300],
-                                  child: const Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.broken_image, size: 48, color: Colors.grey),
-                                      SizedBox(height: 8),
-                                      Text('خطأ في تحميل الصورة'),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          } catch (e) {
-                            return Container(
-                              width: double.infinity,
-                              height: 200,
-                              color: Colors.grey[300],
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.broken_image, size: 48, color: Colors.grey),
-                                  const SizedBox(height: 8),
-                                  Text('خطأ: $e'),
-                                ],
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.white),
-                        onPressed: () {
-                          setState(() {
-                            _currentBase64 = null;
-                          });
-                          widget.onImageSelected('');
-                        },
-                      ),
-                    ),
-                  ],
-                )
-              : Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.image, size: 48, color: Colors.grey),
-                      const SizedBox(height: 8),
-                      ElevatedButton.icon(
-                        onPressed: _showImageSourceDialog,
-                        icon: const Icon(Icons.add_photo_alternate),
-                        label: const Text('اختر صورة'),
-                      ),
-                    ],
-                  ),
-                ),
         ),
       ],
     );

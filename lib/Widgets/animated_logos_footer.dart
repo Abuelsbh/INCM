@@ -19,12 +19,12 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
   final ScrollController _scrollController = ScrollController();
 
   final List<String> companyLogos = [
-    Assets.logosLogo2,
-    Assets.logosLogo3,
-    Assets.logosLogo4,
-    Assets.logosLogo4,
-    Assets.logosLogo2,
-    Assets.logosLogo6,
+    Assets.logosINCM,
+    Assets.logosINCMLogo,
+    Assets.logosINCM,
+    Assets.logosINCMLogo,
+    Assets.logosINCM,
+    Assets.logosINCMLogo,
   ];
 
   double scrollPosition = 0;
@@ -66,7 +66,7 @@ class _AnimatedLogosFooterV2State extends State<AnimatedLogosFooterV2>
       width: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(Assets.imagesLogosBackground),
+          image: AssetImage(Assets.imagesPerformanceBackground),
           fit: BoxFit.cover,
         ),
       ),

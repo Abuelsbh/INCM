@@ -14,6 +14,7 @@ import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/app_languages.dart';
 import '../../../core/Language/locales.dart';
 import '../../../generated/assets.dart';
@@ -32,7 +33,7 @@ class ConsultationScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+        bottomNavigationBar: useNativeBottomNavigationBar(context)
             ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
             : null,
         body: Stack(
@@ -44,11 +45,11 @@ class ConsultationScreen extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getDecorationImage(
+                      future: ContentHelper.getHeroDecorationImage(
                         context,
                         'consultation',
-                        'background-image',
-                        fit: BoxFit.contain,
+                        isMobile: isMobile,
+                        fit: BoxFit.fill,
                       ),
                       builder: (context, snapshot) {
                         DecorationImage? decorationImage = snapshot.data;
@@ -56,7 +57,7 @@ class ConsultationScreen extends StatelessWidget {
                         // Fallback to asset if Firebase image not available
                         if (decorationImage == null) {
                           decorationImage = DecorationImage(
-                            image: AssetImage(isMobile ? Assets.imagesServices2Mob : Assets.imagesService2Web),
+                            image: AssetImage(Assets.imagesLearnServices),
                             fit: BoxFit.contain,
                           );
                         }
@@ -70,7 +71,7 @@ class ConsultationScreen extends StatelessWidget {
                               children: [
                                 // Fallback image for height calculation
                                 Image.asset(
-                                  isMobile ? Assets.imagesServices2Mob : Assets.imagesService2Web,
+                                  Assets.imagesLearnServices,
                                   width: double.infinity,
                                   fit: BoxFit.none,
                                   color: Colors.transparent,
@@ -401,46 +402,7 @@ class ConsultationScreen extends StatelessWidget {
                                           ClientsLogosSection(
                                             backgroundColor: Colors.grey[900]!,
                                             pageId: 'consultation',
-                                            logos: [
-                                              Assets.logosConsultation1,
-                                              Assets.logosConsultation2,
-                                              Assets.logosConsultation3,
-                                              Assets.logosConsultation4,
-                                              Assets.logosConsultation5,
-                                              Assets.logosConsultation6,
-                                              Assets.logosConsultation7,
-                                              Assets.logosConsultation9,
-                                              Assets.logosConsultation10,
-                                              Assets.logosConsultation11,
-                                              Assets.logosConsultation12,
-                                              Assets.logosConsultation13,
-                                              Assets.logosConsultation14,
-                                              Assets.logosConsultation15,
-                                              Assets.logosConsultation16,
-                                              Assets.logosConsultation17,
-                                              Assets.logosConsultation18,
-                                              Assets.logosConsultation20,
-                                              Assets.logosConsultation21,
-                                              Assets.logosConsultation22,
-                                              Assets.logosConsultation23,
-                                              Assets.logosConsultation24,
-                                              Assets.logosConsultation25,
-                                              Assets.logosConsultation26,
-                                              Assets.logosConsultation27,
-                                              Assets.logosConsultation28,
-                                              Assets.logosConsultation29,
-                                              Assets.logosConsultation30,
-                                              Assets.logosConsultation31,
-                                              Assets.logosConsultation32,
-                                              Assets.logosConsultation33,
-                                              Assets.logosConsultation34,
-                                              Assets.logosConsultation35,
-                                              Assets.logosConsultation36,
-                                              Assets.logosConsultation37,
-                                              Assets.logosConsultation38,
-                                              Assets.logosConsultation39,
-                                              Assets.logosConsultation40,
-                                            ],
+                                            logos: const [Assets.logosINCM],
                                             visibleLogosCount: 5,
                                           ),
                                         ],
@@ -455,10 +417,10 @@ class ConsultationScreen extends StatelessWidget {
                   ),
                   const ContentServiceSection(sourceTag: 'Consultation'),
                   // Footer
-                  if(MediaQuery.of(context).size.width >= 600)
-                    const FooterSection()
-                  else if(kIsWeb)
-                    const FooterSectionMob(),
+                  if (kIsWeb)
+                    (MediaQuery.sizeOf(context).width >= 600
+                        ? const FooterSection()
+                        : const FooterSectionMob()),
                 ],
               ),
             ),
@@ -466,7 +428,9 @@ class ConsultationScreen extends StatelessWidget {
               top: 0,
               left: 0,
               right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              child: useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
             ),
             const FloatingContactButtons(),
             ScrollToTopButton(scrollController: scrollController),

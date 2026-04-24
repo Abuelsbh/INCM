@@ -130,9 +130,9 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                     onTap: () => context.go(HomeScreen.routeName),
                       child: Image.asset(
                         kIsWeb ? Assets.imagesINCMLogo : Assets.imagesINCMLogoMob,
-                        height: 100.w,
+                        height: kIsWeb ? 100.w : 60.w,
                         fit: BoxFit.cover,
-                        width: 100.w,
+                        width: kIsWeb ? 100.w : 60.w,
                       ),
                   ),
                   const Spacer(),

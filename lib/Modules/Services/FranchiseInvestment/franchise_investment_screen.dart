@@ -20,6 +20,7 @@ import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/app_languages.dart';
 import '../../../core/Language/locales.dart';
 import '../../../Utilities/font_helper.dart';
@@ -128,7 +129,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+        bottomNavigationBar: useNativeBottomNavigationBar(context)
             ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
             : null,
         body: Stack(
@@ -143,11 +144,11 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                     child: Container(
                       width: double.infinity,
                       child: FutureBuilder<DecorationImage?>(
-                        future: ContentHelper.getDecorationImage(
+                        future: ContentHelper.getHeroDecorationImage(
                           context,
                           'franchise-investment',
-                          'background-image',
-                          fit: BoxFit.contain,
+                          isMobile: isMobile,
+                          fit: BoxFit.fill,
                         ),
                         builder: (context, snapshot) {
                           DecorationImage? decorationImage = snapshot.data;
@@ -155,7 +156,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                           // Fallback to asset if Firebase image not available
                           if (decorationImage == null) {
                             decorationImage = DecorationImage(
-                              image: AssetImage(Assets.imagesService8),
+                              image: AssetImage(Assets.imagesLearnServices),
                               fit: BoxFit.contain,
                             );
                           }
@@ -169,7 +170,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                               children: [
                                 // Fallback image for height calculation
                                 Image.asset(
-                                  Assets.imagesService8,
+                                  Assets.imagesLearnServices,
                                   width: double.infinity,
                                   fit: BoxFit.none,
                                   color: Colors.transparent,
@@ -352,10 +353,10 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                     sourceTag: 'Franchise investment',
                   ),
 
-                  if(MediaQuery.of(context).size.width >= 600)
-                    const FooterSection()
-                  else if(kIsWeb)
-                    const FooterSectionMob(),
+                  if (kIsWeb)
+                    (MediaQuery.sizeOf(context).width >= 600
+                        ? const FooterSection()
+                        : const FooterSectionMob()),
                 ],
               ),
             ),
@@ -363,7 +364,9 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
               top: 0,
               left: 0,
               right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              child: useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
             ),
             const FloatingContactButtons(),
             ScrollToTopButton(scrollController: scrollController),

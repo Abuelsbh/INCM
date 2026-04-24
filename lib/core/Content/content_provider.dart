@@ -19,6 +19,11 @@ class ContentProvider extends ChangeNotifier {
   /// Check if page content is already cached
   bool isPageCached(String pageId) => _contentCache.containsKey(pageId);
 
+  /// Synchronous read of cached page content (null if not loaded yet).
+  List<ContentModel>? peekCachedPageContent(String pageId) {
+    return _contentCache[pageId];
+  }
+
   /// Ensure page content is loaded (load from Firebase if not cached)
   /// Returns when data is ready - use before showing a page to avoid default→Firebase flash
   Future<void> ensurePageLoaded(String pageId) async {
@@ -233,8 +238,23 @@ class ContentProvider extends ChangeNotifier {
     if (base64 == null || base64.isEmpty) return content;
     if (base64.length <= kMaxImageBase64Bytes) return content;
 
-    final compressed = await compressBase64ImageIfNeeded(base64);
+    final hero = _isHeroBackgroundSection(content.sectionId);
+    final compressed = await compressBase64ImageIfNeeded(
+      base64,
+      maxSide: hero ? kHeroBackgroundCompressMaxSide : 1200,
+      startQuality: hero ? kHeroBackgroundCompressStartQuality : 85,
+    );
     return content.copyWith(imageBase64: compressed);
+  }
+
+  static bool _isHeroBackgroundSection(String sectionId) {
+    if (sectionId == 'background-image' ||
+        sectionId == 'background-image-mobile' ||
+        sectionId == 'services-background' ||
+        sectionId == 'services-background-mobile') {
+      return true;
+    }
+    return sectionId.endsWith('-background');
   }
 
   /// Delete content

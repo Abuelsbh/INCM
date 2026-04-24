@@ -26,6 +26,7 @@ import '../../Widgets/footer_section.dart';
 import '../../Widgets/footer_section_mob.dart';
 import '../../generated/assets.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import '../../core/responsive/native_layout.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -62,7 +63,7 @@ class _AboutScreenState extends State<AboutScreen>
         _AboutNewsFallbackSpec(
           titleKey: 'MENASSAT_DEVELOPMENTS_TITLE',
           descriptionKey: 'MENASSAT_DEVELOPMENTS_DESC',
-          assetPath: Assets.imagesCareerBackground,
+          assetPath: Assets.imagesLearnServicesBackground,
         ),
         _AboutNewsFallbackSpec(
           titleKey: 'ANNUAL_2024_TITLE',
@@ -368,7 +369,7 @@ class _AboutScreenState extends State<AboutScreen>
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs) : null,
+        bottomNavigationBar: useNativeBottomNavigationBar(context) ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs) : null,
 
         body: Stack(
           children: [
@@ -428,21 +429,19 @@ class _AboutScreenState extends State<AboutScreen>
                     ),
 
 
-                    // Footer
-                    if(MediaQuery.of(context).size.width >= 600)
-                      const FooterSection()
-                    else if(kIsWeb)
-                      const FooterSectionMob(),
-                    // Add padding at bottom for mobile when bottomNavigationBar is present
-                    if(MediaQuery.of(context).size.width < 600 && !kIsWeb)
-                      SizedBox(height: 100.h),
+                    // Footer (web only; native uses bottom bar)
+                    if (kIsWeb)
+                      (MediaQuery.sizeOf(context).width >= 600
+                          ? const FooterSection()
+                          : const FooterSectionMob()),
+                    if (useNativeBottomNavigationBar(context)) SizedBox(height: 100.h),
                     // _buildLocationSection(context, isMobile, isTablet),
                   ],
                 ),
               ),
             ),
-            MediaQuery.of(context).size.width >= 600 ?
-            const Positioned(
+            useWebDesktopAppBar(context)
+            ? const Positioned(
               top: 0,
               left: 0,
               right: 0,

@@ -8,7 +8,7 @@
 PRODUCT_NAME = INCM
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.incm.realestate
+PRODUCT_BUNDLE_IDENTIFIER = com.incomercial.realestate
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2024 com.incm. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2024 com.incomercial. All rights reserved.

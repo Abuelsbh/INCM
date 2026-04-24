@@ -3,7 +3,7 @@ description: "INCM Real Estate Application"
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.5.3
@@ -61,6 +61,11 @@ dev_dependencies:
 
   flutter_lints: ^4.0.0
 
+# objective_c 9.2+ can omit iOS dSYMs (Xcode "Upload Symbols Failed").
+# https://github.com/dart-lang/native/issues/3004
+dependency_overrides:
+  objective_c: 9.1.0
+
 # The following section is specific to Flutter packages.
 flutter:
   # Matches android product flavor `user` so `flutter run` / `flutter build apk`
@@ -77,15 +82,6 @@ flutter:
     - assets/
     - assets/icons/
     - assets/images/
-    - assets/images/exclusive-leasing/
-    - assets/images/exclusive-leasing/umc/
-    - assets/images/exclusive-leasing/park mall/
-    - assets/images/exclusive-leasing/terrace/
-    - assets/images/exclusive-leasing/point 90/
-    - assets/images/exclusive-leasing/kernel/
-    - assets/images/exclusive-leasing/city squre/
-    - assets/images/exclusive-leasing/vitali/
-    - assets/images/exclusive-leasing/seashell/
     - assets/logos/
     - assets/fonts/
     - assets/videos/
@@ -136,5 +132,7 @@ flutter_launcher_icons:
   image_path: "assets/icons/app_icon.png"
   adaptive_icon_background: "#F4ED47"
   adaptive_icon_foreground: "assets/icons/app_icon.png"
+  # Smaller inset = larger foreground on Android adaptive icons (default 16)
+  adaptive_icon_foreground_inset: 8
   remove_alpha_ios: true
   min_sdk_android: 21

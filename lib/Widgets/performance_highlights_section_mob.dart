@@ -52,7 +52,7 @@ class _PerformanceHighlightsSectionState extends State<PerformanceHighlightsSect
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(Assets.imagesImagee), // your background image asset
+            image: AssetImage(Assets.imagesPerformanceBackgroundMob), // your background image asset
             fit: BoxFit.cover,
 
           ),

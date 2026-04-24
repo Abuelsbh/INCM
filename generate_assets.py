@@ -63,7 +63,7 @@ def find_assets(base_dir):
     base_path = Path(base_dir)
     
     # Supported extensions
-    extensions = {'.png', '.jpg', '.jpeg', '.svg', '.webp', '.ttf', '.json', '.mp4'}
+    extensions = {'.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ttf', '.json', '.mp4'}
     
     for root, dirs, files in os.walk(base_dir):
         # Skip hidden directories

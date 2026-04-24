@@ -34,6 +34,8 @@ import '../../Widgets/Admin/logo_editor.dart';
 import '../../Widgets/Admin/service_editor.dart';
 import '../../Widgets/Admin/batch_logo_editor.dart';
 import '../../Widgets/Admin/contact_info_editor.dart';
+import '../../Widgets/Admin/exclusive_leasing_project_editor.dart';
+import '../../core/Content/exclusive_leasing_projects_data.dart';
 import '../../Widgets/content_service_section.dart';
 import '../../Widgets/footer_section.dart';
 import '../../core/Language/locales.dart';
@@ -414,68 +416,80 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
   }
 
   Future<void> _saveContent(ContentModel content) async {
+    final successText = 'CONTENT_SAVED_SUCCESS'.tr(context);
+    final errorText = 'ERROR_SAVING_CONTENT'.tr(context);
+
     final contentProvider = Provider.of<ContentProvider>(context, listen: false);
     final success = await contentProvider.saveContent(content);
 
-    if (mounted) {
-      if (success) {
-        // Clear cache for the page to ensure fresh data is loaded
-        contentProvider.clearPageCache(content.pageId);
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('CONTENT_SAVED_SUCCESS'.tr(context)),
-            backgroundColor: Colors.green,
-          ),
-        );
-        if (_selectedPageId != null) {
-          await _loadPageContent(_selectedPageId!);
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('ERROR_SAVING_CONTENT'.tr(context)),
-            backgroundColor: Colors.red,
-          ),
-        );
+    if (!mounted) return;
+
+    if (success) {
+      contentProvider.clearPageCache(content.pageId);
+      if (_selectedPageId != null) {
+        await _loadPageContent(_selectedPageId!);
       }
+      _scheduleAdminSnackBar(
+        SnackBar(
+          content: Text(successText),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      _scheduleAdminSnackBar(
+        SnackBar(
+          content: Text(errorText),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  Future<void> _saveContentsBatch(List<ContentModel> contents) async {
+  /// After async gaps, [ScaffoldMessenger.of] can throw if [notifyListeners] rebuilt the tree.
+  /// Schedule snackbars for the next frame and use [maybeOf] so Save still completes and lists refresh.
+  void _scheduleAdminSnackBar(SnackBar snackBar) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(snackBar);
+    });
+  }
+
+  Future<bool> _saveContentsBatch(List<ContentModel> contents) async {
     if (contents.isEmpty) {
-      return;
+      return true;
     }
+
+    final successText = 'CONTENT_SAVED_SUCCESS'.tr(context);
+    final errorText = 'ERROR_SAVING_CONTENT'.tr(context);
 
     final contentProvider = Provider.of<ContentProvider>(context, listen: false);
     final success = await contentProvider.batchSaveContent(contents);
 
     if (!mounted) {
-      return;
+      return success;
     }
 
     if (success) {
-      for (final pageId in contents.map((e) => e.pageId).toSet()) {
-        contentProvider.clearPageCache(pageId);
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('CONTENT_SAVED_SUCCESS'.tr(context)),
-          backgroundColor: Colors.green,
-        ),
-      );
+      // [batchSaveContent] already refreshed the provider cache — reload admin list first
+      // so UI matches Firebase even if SnackBar fails.
       if (_selectedPageId != null) {
         await _loadPageContent(_selectedPageId!);
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      _scheduleAdminSnackBar(
         SnackBar(
-          content: Text('ERROR_SAVING_CONTENT'.tr(context)),
+          content: Text(successText),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      _scheduleAdminSnackBar(
+        SnackBar(
+          content: Text(errorText),
           backgroundColor: Colors.red,
         ),
       );
     }
+    return success;
   }
 
   Future<void> _deleteContent(ContentModel content) async {
@@ -647,12 +661,200 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
         _careerFamilySectionPattern.hasMatch(content.sectionId);
   }
 
+  bool _isExclusiveLeasingProjectContent(ContentModel content) {
+    return content.pageId == ExclusiveLeasingProjectsData.pageId &&
+        ExclusiveLeasingProjectsData.slugFromSectionId(content.sectionId) != null;
+  }
+
+  List<_AdminExclusiveLeasingProjectGroup> _getExclusiveLeasingProjects() {
+    if (_selectedPageId != ExclusiveLeasingProjectsData.pageId) {
+      return [];
+    }
+    final discovered =
+        ExclusiveLeasingProjectsData.discoverSlugsFromContents(_currentPageContents);
+    final ordered = ExclusiveLeasingProjectsData.displayOrderSlugs(discovered);
+    final bySlug = <String, _AdminExclusiveLeasingProjectGroup>{
+      for (final s in ordered) s: _AdminExclusiveLeasingProjectGroup(slug: s),
+    };
+
+    for (final content in _currentPageContents) {
+      if (content.pageId != ExclusiveLeasingProjectsData.pageId) continue;
+      final slug = ExclusiveLeasingProjectsData.slugFromSectionId(content.sectionId);
+      if (slug == null || !bySlug.containsKey(slug)) continue;
+
+      if (content.sectionId == '$slug-title') {
+        final g = bySlug[slug]!;
+        bySlug[slug] = g.copyWith(titleContent: content);
+      } else if (content.sectionId == '$slug-description') {
+        final g = bySlug[slug]!;
+        bySlug[slug] = g.copyWith(descriptionContent: content);
+      } else if (content.sectionId == '$slug-logo') {
+        final g = bySlug[slug]!;
+        bySlug[slug] = g.copyWith(logoContent: content);
+      } else {
+        final m = RegExp(r'^(.+)-image-(\d+)$').firstMatch(content.sectionId);
+        if (m != null && m.group(1) == slug) {
+          final idx = int.tryParse(m.group(2) ?? '');
+          if (idx != null) {
+            final g0 = bySlug[slug]!;
+            final next = Map<int, ContentModel>.from(g0.galleryByIndex)..[idx] = content;
+            bySlug[slug] = g0.copyWith(galleryByIndex: next);
+          }
+        }
+      }
+    }
+
+    return ordered.map((s) => bySlug[s]!).toList();
+  }
+
+  List<String?> _galleryDraftForEditor(_AdminExclusiveLeasingProjectGroup g) {
+    final keys = g.galleryByIndex.keys.toList()..sort();
+    if (keys.isEmpty) return [null];
+    final hi = keys.last;
+    final list = <String?>[];
+    for (var i = 0; i <= hi; i++) {
+      list.add(g.galleryByIndex[i]?.imageBase64);
+    }
+    while (list.length > 1 && (list.last == null || list.last!.trim().isEmpty)) {
+      list.removeLast();
+    }
+    if (list.isEmpty) return [null];
+    return list;
+  }
+
+  void _showAddExclusiveLeasingProjectDialog() {
+    final reserved = _getExclusiveLeasingProjects().map((e) => e.slug).toSet();
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => ExclusiveLeasingProjectEditor(
+        reservedSlugs: reserved,
+        onSave: (slug, draft) => _saveExclusiveLeasingProject(slug, draft, null),
+      ),
+    );
+  }
+
+  void _showEditExclusiveLeasingProjectDialog(_AdminExclusiveLeasingProjectGroup g) {
+    final seed = ExclusiveLeasingProjectsData.seedForSlug(g.slug);
+    final initial = ExclusiveLeasingProjectDraft(
+      titleEn: g.titleContent?.values['en'] ?? seed.defaultTitleEn,
+      titleAr: g.titleContent?.values['ar'] ?? seed.defaultTitleEn,
+      descriptionEn: g.descriptionContent?.values['en'] ?? '',
+      descriptionAr: g.descriptionContent?.values['ar'] ?? '',
+      logoBase64: g.logoContent?.imageBase64,
+      galleryBase64: _galleryDraftForEditor(g),
+    );
+    final reserved = _getExclusiveLeasingProjects().map((e) => e.slug).toSet();
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => ExclusiveLeasingProjectEditor(
+        fixedSlug: g.slug,
+        initialDraft: initial,
+        reservedSlugs: reserved,
+        onSave: (slug, draft) => _saveExclusiveLeasingProject(slug, draft, g),
+      ),
+    );
+  }
+
+  Future<bool> _saveExclusiveLeasingProject(
+    String slug,
+    ExclusiveLeasingProjectDraft draft,
+    _AdminExclusiveLeasingProjectGroup? existing,
+  ) async {
+    final pageId = ExclusiveLeasingProjectsData.pageId;
+    final now = DateTime.now();
+    final images = draft.nonEmptyGallery;
+
+    final contents = <ContentModel>[
+      ContentModel(
+        id: existing?.titleContent?.id ?? '',
+        pageId: pageId,
+        sectionId: '$slug-title',
+        type: ContentType.text,
+        values: {'en': draft.titleEn, 'ar': draft.titleAr},
+        imageBase64: null,
+        createdAt: existing?.titleContent?.createdAt ?? now,
+        updatedAt: now,
+      ),
+      ContentModel(
+        id: existing?.descriptionContent?.id ?? '',
+        pageId: pageId,
+        sectionId: '$slug-description',
+        type: ContentType.text,
+        values: {'en': draft.descriptionEn, 'ar': draft.descriptionAr},
+        imageBase64: null,
+        createdAt: existing?.descriptionContent?.createdAt ?? now,
+        updatedAt: now,
+      ),
+    ];
+
+    final hasLogo =
+        draft.logoBase64 != null && draft.logoBase64!.trim().isNotEmpty;
+    if (hasLogo || (existing?.logoContent?.id.isNotEmpty == true)) {
+      contents.add(
+        ContentModel(
+          id: existing?.logoContent?.id ?? '',
+          pageId: pageId,
+          sectionId: '$slug-logo',
+          type: ContentType.image,
+          values: const {'en': '', 'ar': ''},
+          imageBase64: hasLogo ? draft.logoBase64 : null,
+          createdAt: existing?.logoContent?.createdAt ?? now,
+          updatedAt: now,
+        ),
+      );
+    }
+
+    for (var i = 0; i < 10; i++) {
+      if (i < images.length) {
+        contents.add(
+          ContentModel(
+            id: existing?.galleryByIndex[i]?.id ?? '',
+            pageId: pageId,
+            sectionId: '$slug-image-$i',
+            type: ContentType.image,
+            values: const {'en': '', 'ar': ''},
+            imageBase64: images[i],
+            createdAt: existing?.galleryByIndex[i]?.createdAt ?? now,
+            updatedAt: now,
+          ),
+        );
+      } else if (existing?.galleryByIndex[i]?.id.isNotEmpty == true) {
+        final old = existing!.galleryByIndex[i]!;
+        contents.add(
+          ContentModel(
+            id: old.id,
+            pageId: pageId,
+            sectionId: '$slug-image-$i',
+            type: ContentType.image,
+            values: const {'en': '', 'ar': ''},
+            imageBase64: null,
+            createdAt: old.createdAt,
+            updatedAt: now,
+          ),
+        );
+      }
+    }
+
+    return _saveContentsBatch(contents);
+  }
+
+  Future<void> _deleteExclusiveLeasingProject(_AdminExclusiveLeasingProjectGroup g) async {
+    await _deleteContentsBatch(
+      g.allContents,
+      confirmationMessage:
+          'EXCLUSIVE_LEASING_DELETE_PROJECT_CONFIRM'.tr(context).replaceAll('{slug}', g.slug),
+    );
+  }
+
   List<ContentModel> _getVisibleContents() {
     return _currentPageContents
         .where(
           (content) =>
               !_isAboutLatestNewsContent(content) &&
-              !_isCareerFamilyMemberContent(content),
+              !_isCareerFamilyMemberContent(content) &&
+              !_isExclusiveLeasingProjectContent(content),
         )
         .toList();
   }
@@ -1084,9 +1286,19 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                       Padding(
                         padding: EdgeInsets.all(16.w),
                         child: ElevatedButton.icon(
-                          onPressed: _showAddContentDialog,
-                          icon: const Icon(Icons.add),
-                          label: Text('ADD_CONTENT'.tr(context)),
+                          onPressed: _selectedPageId == ExclusiveLeasingProjectsData.pageId
+                              ? _showAddExclusiveLeasingProjectDialog
+                              : _showAddContentDialog,
+                          icon: Icon(
+                            _selectedPageId == ExclusiveLeasingProjectsData.pageId
+                                ? Icons.add_business
+                                : Icons.add,
+                          ),
+                          label: Text(
+                            _selectedPageId == ExclusiveLeasingProjectsData.pageId
+                                ? 'EXCLUSIVE_LEASING_ADD_PROJECT'.tr(context)
+                                : 'ADD_CONTENT'.tr(context),
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFF4ED47),
                             foregroundColor: Colors.black,
@@ -1204,15 +1416,26 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                         foregroundColor: Colors.white,
                       ),
                     ),
-                  ElevatedButton.icon(
-                    onPressed: _showAddContentDialog,
-                    icon: const Icon(Icons.add),
-                    label: Text('ADD_CONTENT'.tr(context)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF4ED47),
-                      foregroundColor: Colors.black,
+                  if (_selectedPageId == ExclusiveLeasingProjectsData.pageId)
+                    ElevatedButton.icon(
+                      onPressed: _showAddExclusiveLeasingProjectDialog,
+                      icon: const Icon(Icons.add_business),
+                      label: Text('EXCLUSIVE_LEASING_ADD_PROJECT'.tr(context)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF4ED47),
+                        foregroundColor: Colors.black,
+                      ),
                     ),
-                  ),
+                  if (_selectedPageId != ExclusiveLeasingProjectsData.pageId)
+                    ElevatedButton.icon(
+                      onPressed: _showAddContentDialog,
+                      icon: const Icon(Icons.add),
+                      label: Text('ADD_CONTENT'.tr(context)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF4ED47),
+                        foregroundColor: Colors.black,
+                      ),
+                    ),
                 ],
               ),
             ],
@@ -1345,9 +1568,13 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
     final careerFamilyMembers = _selectedPageId == 'career'
         ? _getCareerFamilyMembers()
         : <_AdminCareerFamilyMemberGroup>[];
+    final exclusiveLeasingProjects = _selectedPageId == ExclusiveLeasingProjectsData.pageId
+        ? _getExclusiveLeasingProjects()
+        : <_AdminExclusiveLeasingProjectGroup>[];
     final hasAnyContent = visibleContents.isNotEmpty ||
         aboutNewsEvents.isNotEmpty ||
-        careerFamilyMembers.isNotEmpty;
+        careerFamilyMembers.isNotEmpty ||
+        exclusiveLeasingProjects.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
@@ -1405,32 +1632,38 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                                 ? _showAddAboutNewsEventDialog
                                 : _selectedPageId == 'career'
                                     ? _showAddCareerFamilyMemberDialog
-                                    : _showAddContentDialog,
+                                    : _selectedPageId == ExclusiveLeasingProjectsData.pageId
+                                        ? _showAddExclusiveLeasingProjectDialog
+                                        : _showAddContentDialog,
                             icon: Icon(
                               _selectedPageId == 'about'
                                   ? Icons.event
                                   : _selectedPageId == 'career'
                                       ? Icons.people
-                                      : Icons.add,
+                                      : _selectedPageId == ExclusiveLeasingProjectsData.pageId
+                                          ? Icons.add_business
+                                          : Icons.add,
                             ),
                             label: Text(
                               _selectedPageId == 'about'
                                   ? 'Add Event'
                                   : _selectedPageId == 'career'
                                       ? 'Add Family Member'
-                                  : 'ADD_NEW_CONTENT'.tr(context),
+                                      : _selectedPageId == ExclusiveLeasingProjectsData.pageId
+                                          ? 'EXCLUSIVE_LEASING_ADD_PROJECT'.tr(context)
+                                          : 'ADD_NEW_CONTENT'.tr(context),
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: _selectedPageId == 'about'
                                   ? Colors.blue
                                   : _selectedPageId == 'career'
                                       ? Colors.deepPurple
-                                  : const Color(0xFFF4ED47),
+                                      : const Color(0xFFF4ED47),
                               foregroundColor: _selectedPageId == 'about'
                                   ? Colors.white
                                   : _selectedPageId == 'career'
                                       ? Colors.white
-                                  : Colors.black,
+                                      : Colors.black,
                             ),
                           ),
                         ],
@@ -1446,6 +1679,10 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                       ],
                       if (_selectedPageId == 'career') ...[
                         _buildCareerFamilyMembersSection(careerFamilyMembers),
+                        SizedBox(height: 16.h),
+                      ],
+                      if (_selectedPageId == ExclusiveLeasingProjectsData.pageId) ...[
+                        _buildExclusiveLeasingProjectsSection(exclusiveLeasingProjects),
                         SizedBox(height: 16.h),
                       ],
                       ...visibleContents.map(_buildContentCard),
@@ -1708,6 +1945,154 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => _deleteCareerFamilyMember(member),
+                  tooltip: 'DELETE'.tr(context),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExclusiveLeasingProjectsSection(
+    List<_AdminExclusiveLeasingProjectGroup> projects,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: Colors.black26,
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.business, color: const Color(0xFFF4ED47), size: 20.sp),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  'EXCLUSIVE_LEASING_ADMIN_SECTION_TITLE'.tr(context),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: _showAddExclusiveLeasingProjectDialog,
+                icon: const Icon(Icons.add),
+                label: Text('EXCLUSIVE_LEASING_ADD_PROJECT'.tr(context)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFF4ED47),
+                  foregroundColor: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'EXCLUSIVE_LEASING_ADMIN_SECTION_HINT'.tr(context),
+            style: TextStyle(fontSize: 13.sp, color: Colors.grey[400]),
+          ),
+          SizedBox(height: 12.h),
+          ...projects.map(_buildExclusiveLeasingProjectCard),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExclusiveLeasingProjectCard(_AdminExclusiveLeasingProjectGroup g) {
+    final title = g.titleContent?.values['en']?.trim().isNotEmpty == true
+        ? g.titleContent!.values['en']!
+        : g.titleContent?.values['ar']?.trim().isNotEmpty == true
+            ? g.titleContent!.values['ar']!
+            : g.slug;
+    final sortedGallery = g.galleryByIndex.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+    String? firstB64;
+    for (final e in sortedGallery) {
+      final b = e.value.imageBase64;
+      if (b != null && b.isNotEmpty) {
+        firstB64 = b;
+        break;
+      }
+    }
+    firstB64 ??= g.logoContent?.imageBase64;
+
+    return Card(
+      color: Colors.grey[800],
+      margin: EdgeInsets.only(bottom: 12.h),
+      child: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 110.w,
+              height: 90.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.white24),
+              ),
+              child: firstB64 != null && firstB64.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.memory(
+                        base64Decode(firstB64),
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Icon(Icons.business, color: Colors.grey[600]),
+            ),
+            SizedBox(width: 16.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFFF4ED47),
+                    ),
+                  ),
+                  SizedBox(height: 6.h),
+                  Text(
+                    'ID: ${g.slug}',
+                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[400]),
+                  ),
+                  if (g.descriptionContent?.values['en']?.isNotEmpty == true)
+                    Text(
+                      g.descriptionContent!.values['en']!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 13.sp, color: Colors.grey[300]),
+                    )
+                  else if (g.descriptionContent?.values['ar']?.isNotEmpty == true)
+                    Text(
+                      g.descriptionContent!.values['ar']!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 13.sp, color: Colors.grey[300]),
+                    ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit, color: Colors.blue),
+                  onPressed: () => _showEditExclusiveLeasingProjectDialog(g),
+                  tooltip: 'EDIT'.tr(context),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => _deleteExclusiveLeasingProject(g),
                   tooltip: 'DELETE'.tr(context),
                 ),
               ],
@@ -2342,6 +2727,48 @@ class _AdminPanelScreenState extends State<AdminPanelScreen> with SingleTickerPr
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AdminExclusiveLeasingProjectGroup {
+  final String slug;
+  final ContentModel? titleContent;
+  final ContentModel? descriptionContent;
+  final ContentModel? logoContent;
+  final Map<int, ContentModel> galleryByIndex;
+
+  const _AdminExclusiveLeasingProjectGroup({
+    required this.slug,
+    this.titleContent,
+    this.descriptionContent,
+    this.logoContent,
+    this.galleryByIndex = const {},
+  });
+
+  List<ContentModel> get allContents => [
+        if (titleContent != null) titleContent!,
+        if (descriptionContent != null) descriptionContent!,
+        if (logoContent != null) logoContent!,
+        ...(() {
+          final entries = galleryByIndex.entries.toList()
+            ..sort((a, b) => a.key.compareTo(b.key));
+          return entries.map((e) => e.value);
+        })(),
+      ];
+
+  _AdminExclusiveLeasingProjectGroup copyWith({
+    ContentModel? titleContent,
+    ContentModel? descriptionContent,
+    ContentModel? logoContent,
+    Map<int, ContentModel>? galleryByIndex,
+  }) {
+    return _AdminExclusiveLeasingProjectGroup(
+      slug: slug,
+      titleContent: titleContent ?? this.titleContent,
+      descriptionContent: descriptionContent ?? this.descriptionContent,
+      logoContent: logoContent ?? this.logoContent,
+      galleryByIndex: galleryByIndex ?? this.galleryByIndex,
     );
   }
 }

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import '../../Widgets/custom_app_bar.dart';
+import '../../Widgets/custom_app_bar_mob.dart';
 import '../../Widgets/footer_section.dart';
 import '../../Widgets/footer_section_mob.dart';
 import '../../core/Language/app_languages.dart';
 import '../../core/Language/locales.dart';
+import '../../core/responsive/native_layout.dart';
 import '../../generated/assets.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -131,7 +133,7 @@ class _SearchScreenState extends State<SearchScreen>
             height: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(Assets.imagesSearchBackground),
+                image: AssetImage(Assets.imagesLearnServicesBackground),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
                   Colors.black.withOpacity(0.7),
@@ -144,8 +146,9 @@ class _SearchScreenState extends State<SearchScreen>
           // Content
           Column(
             children: [
-              // Custom App Bar
-              const CustomAppBar(),
+              useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
 
               // Search Content
               Expanded(
@@ -203,10 +206,10 @@ class _SearchScreenState extends State<SearchScreen>
                 ),
               ),
               // Footer
-              if(MediaQuery.of(context).size.width >= 600)
-                const FooterSection()
-              else if(kIsWeb)
-                const FooterSectionMob(),
+              if (kIsWeb)
+                (MediaQuery.sizeOf(context).width >= 600
+                    ? const FooterSection()
+                    : const FooterSectionMob()),
             ],
           ),
         ],

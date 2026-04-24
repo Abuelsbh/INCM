@@ -14,6 +14,7 @@ import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/app_languages.dart';
 import '../../../generated/assets.dart';
 import '../../../Utilities/font_helper.dart';
@@ -36,7 +37,7 @@ class GenericServiceScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+        bottomNavigationBar: useNativeBottomNavigationBar(context)
             ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
             : null,
         body: Stack(
@@ -48,17 +49,17 @@ class GenericServiceScreen extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getDecorationImage(
+                      future: ContentHelper.getHeroDecorationImage(
                         context,
                         pageId,
-                        'background-image',
+                        isMobile: isMobile,
                         fit: BoxFit.contain,
                       ),
                       builder: (context, snapshot) {
                         DecorationImage? decorationImage = snapshot.data;
                         if (decorationImage == null) {
                           decorationImage = DecorationImage(
-                            image: AssetImage(isMobile ? Assets.imagesService5Mob : Assets.imagesService5Web),
+                            image: AssetImage(Assets.imagesLearnServices),
                             fit: BoxFit.fill,
                           );
                         }
@@ -301,10 +302,10 @@ class GenericServiceScreen extends StatelessWidget {
                     ),
                   ),
                   ContentServiceSection(sourceTag: pageId),
-                  if (MediaQuery.of(context).size.width >= 600)
-                    const FooterSection()
-                  else if (kIsWeb)
-                    const FooterSectionMob(),
+                  if (kIsWeb)
+                    (MediaQuery.sizeOf(context).width >= 600
+                        ? const FooterSection()
+                        : const FooterSectionMob()),
                 ],
               ),
             ),
@@ -312,7 +313,9 @@ class GenericServiceScreen extends StatelessWidget {
               top: 0,
               left: 0,
               right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              child: useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
             ),
             const FloatingContactButtons(),
             ScrollToTopButton(scrollController: scrollController),

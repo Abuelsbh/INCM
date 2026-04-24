@@ -72,6 +72,39 @@ class ContentHelper {
     return null;
   }
 
+  /// Hero background: optional [mobileSectionId] for narrow layouts; falls back to [webSectionId].
+  static Future<DecorationImage?> getHeroDecorationImage(
+    BuildContext context,
+    String pageId, {
+    String webSectionId = 'background-image',
+    String mobileSectionId = 'background-image-mobile',
+    required bool isMobile,
+    BoxFit fit = BoxFit.cover,
+  }) async {
+    if (isMobile) {
+      final mobile = await getDecorationImage(context, pageId, mobileSectionId, fit: fit);
+      if (mobile != null) return mobile;
+    }
+    if (!context.mounted) return null;
+    return getDecorationImage(context, pageId, webSectionId, fit: fit);
+  }
+
+  /// Home + `/services` carousel strip: `services-background` (web) and optional `services-background-mobile`.
+  static Future<DecorationImage?> getServicesCarouselBackground(
+    BuildContext context, {
+    BoxFit fit = BoxFit.cover,
+  }) async {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    return getHeroDecorationImage(
+      context,
+      'services',
+      webSectionId: 'services-background',
+      mobileSectionId: 'services-background-mobile',
+      isMobile: isMobile,
+      fit: fit,
+    );
+  }
+
   /// Get video content (returns base64 string or link URL)
   static Future<Map<String, String?>?> getVideo(
     BuildContext context,

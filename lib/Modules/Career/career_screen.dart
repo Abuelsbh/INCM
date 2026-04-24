@@ -11,6 +11,7 @@ import 'package:incm/core/Contact/contact_info_provider.dart';
 import 'package:incm/core/Contact/contact_submission_service.dart';
 import 'package:incm/core/Firebase/career_cv_storage_service.dart';
 import 'package:incm/core/Language/locales.dart';
+import 'package:incm/core/responsive/native_layout.dart';
 import 'package:provider/provider.dart';
 import '../../Utilities/font_helper.dart';
 import 'package:incm/Utilities/router_config.dart';
@@ -629,7 +630,7 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.contacts) : null,
+        bottomNavigationBar: useNativeBottomNavigationBar(context) ? const BottomNavBarWidget(selected: SelectedBottomNavBar.contacts) : null,
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -670,18 +671,17 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                         _buildCareerBenefitsSectionMob(context),
                       if(MediaQuery.of(context).size.width < 600)
                         _buildLatestNewsSectionMob(context),
-                      // Footer
-                      if(MediaQuery.of(context).size.width >= 600)
-                        const FooterSection()
-                      else if(kIsWeb)
-                        const FooterSectionMob(),
+                      if (kIsWeb)
+                        (MediaQuery.sizeOf(context).width >= 600
+                            ? const FooterSection()
+                            : const FooterSectionMob()),
                     ],
                   ),
                 ),
               ),
             ),
-            MediaQuery.of(context).size.width >= 600 ?
-            const Positioned(
+            useWebDesktopAppBar(context)
+            ? const Positioned(
               top: 0,
               left: 0,
               right: 0,

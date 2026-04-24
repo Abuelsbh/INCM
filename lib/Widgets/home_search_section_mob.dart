@@ -106,7 +106,7 @@ class _HomeSearchSectionMobState extends State<HomeSearchSectionMob> {
         context,
         'home',
         'search-placeholder',
-        defaultValue: 'SEARCH_BY_SERVICE_OR_LOCATION',
+        defaultValue: 'SEARCH_BY_SERVICE_OR_LOCATION'.tr(context),
       );
     }
   }

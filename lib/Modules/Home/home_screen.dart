@@ -33,6 +33,7 @@ import '../../Widgets/scroll_to_top_button.dart';
 import '../../generated/assets.dart';
 import '../../core/Language/locales.dart';
 import '../../core/Contact/contact_info_provider.dart';
+import '../../core/responsive/native_layout.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/';
@@ -59,12 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isDesktop = screenWidth >= 600;
-    final isMobile = screenWidth < 600;
 
     return SafeArea(
       child: Scaffold(
           backgroundColor: Colors.black,
-          bottomNavigationBar: isMobile && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
+          bottomNavigationBar: useNativeBottomNavigationBar(context) ? const BottomNavBarWidget(selected: SelectedBottomNavBar.home) : null,
           body: isDesktop ? Stack(
             children: [
               // المحتوى القابل للتمرير
@@ -97,9 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         margin: EdgeInsets.all(12.w),
                         child: ClientsLogosSection(
                           title: 'OUR_EXCLUSIVE_PROJECTS',
-                            fetchAllServices: true,
+                          exclusiveLeasingProjectLogosFromContent: true,
+                          fetchAllServices: false,
                           backgroundColor: Colors.grey[900]!,
-                          pageId: 'exclusive-leasing-projects',
                           visibleLogosCount: 5,
                           onLearnMorePressed: () {
                             context.go(ExclusiveLeasingProjectsScreen.routeName);
@@ -132,14 +132,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // Animated Logos Footer
                       //const AnimatedLogosFooterV2(),
-                      const FooterSection()
+                      if (kIsWeb) const FooterSection()
                     ],
                   ),
                 ),
               ),
 
-              // ✅ الـAppBar الشفاف فوق الكل
-              isDesktop
+              // ✅ الـAppBar: ويب واسع = شريط الموقع، تطبيق أصلي/موبايل ويب = شريط التطبيق
+              useWebDesktopAppBar(context)
               ? const Positioned(
                 top: 0,
                 left: 0,
@@ -181,9 +181,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         margin: EdgeInsets.all(12.w),
                         child: ClientsLogosSection(
                           title: 'OUR_EXCLUSIVE_PROJECTS',
+                          exclusiveLeasingProjectLogosFromContent: true,
+                          fetchAllServices: false,
                           backgroundColor: Colors.grey[900]!,
-                            fetchAllServices: true,
-                          pageId: 'exclusive-leasing-projects',
                           visibleLogosCount: 5,
                           onLearnMorePressed: () {
                             context.go(ExclusiveLeasingProjectsScreen.routeName);
@@ -213,8 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              // ✅ الـAppBar الشفاف فوق الكل
-              isDesktop
+              // ✅ الـAppBar: ويب واسع = شريط الموقع، تطبيق أصلي/موبايل ويب = شريط التطبيق
+              useWebDesktopAppBar(context)
               ? const Positioned(
                 top: 0,
                 left: 0,

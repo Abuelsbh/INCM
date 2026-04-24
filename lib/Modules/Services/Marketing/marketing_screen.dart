@@ -14,6 +14,7 @@ import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
 import '../../../core/Content/content_helper.dart';
+import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/app_languages.dart';
 import '../../../generated/assets.dart';
 import '../../../Utilities/font_helper.dart';
@@ -31,7 +32,7 @@ class MarketingScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb
+        bottomNavigationBar: useNativeBottomNavigationBar(context)
             ? const BottomNavBarWidget(selected: SelectedBottomNavBar.aboutUs)
             : null,
         body: Stack(
@@ -45,11 +46,11 @@ class MarketingScreen extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       child: FutureBuilder<DecorationImage?>(
-                        future: ContentHelper.getDecorationImage(
+                        future: ContentHelper.getHeroDecorationImage(
                           context,
                           'marketing',
-                          'background-image',
-                          fit: BoxFit.contain,
+                          isMobile: isMobile,
+                          fit: BoxFit.fill,
                         ),
                         builder: (context, snapshot) {
                           DecorationImage? decorationImage = snapshot.data;
@@ -57,7 +58,7 @@ class MarketingScreen extends StatelessWidget {
                           // Fallback to asset if Firebase image not available
                           if (decorationImage == null) {
                             decorationImage = DecorationImage(
-                              image: AssetImage(isMobile ? Assets.imagesService3Mob : Assets.imagesService3Web),
+                              image: AssetImage(Assets.imagesLearnServices),
                               fit: BoxFit.contain,
                             );
                           }
@@ -71,7 +72,7 @@ class MarketingScreen extends StatelessWidget {
                                 children: [
                                   // Fallback image for height calculation
                                   Image.asset(
-                                    isMobile ? Assets.imagesService3Mob : Assets.imagesService3Web,
+                                    Assets.imagesLearnServices,
                                     width: double.infinity,
                                     fit: BoxFit.none,
                                     color: Colors.transparent,
@@ -374,14 +375,7 @@ class MarketingScreen extends StatelessWidget {
                                         ClientsLogosSection(
                                           backgroundColor: Colors.grey[900]!,
                                           pageId: 'marketing',
-                                          logos: [
-                                            Assets.logosMarketing1,
-                                            Assets.logosMarketing2,
-                                            Assets.logosMarketing3,
-                                            Assets.logosMarketing4,
-                                            Assets.logosMarketing5,
-                                            Assets.logosMarketing6,
-                                          ],
+                                          logos: const [Assets.logosINCM],
                                           visibleLogosCount: 5,
                                         ),
                                       ],
@@ -396,10 +390,10 @@ class MarketingScreen extends StatelessWidget {
                   ),
                   const ContentServiceSection(sourceTag: 'Marketing'),
 
-                  if(MediaQuery.of(context).size.width >= 600)
-                    const FooterSection()
-                  else if(kIsWeb)
-                    const FooterSectionMob(),
+                  if (kIsWeb)
+                    (MediaQuery.sizeOf(context).width >= 600
+                        ? const FooterSection()
+                        : const FooterSectionMob()),
                 ],
               ),
             ),
@@ -407,7 +401,9 @@ class MarketingScreen extends StatelessWidget {
               top: 0,
               left: 0,
               right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              child: useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
             ),
             const FloatingContactButtons(),
             ScrollToTopButton(scrollController: scrollController),

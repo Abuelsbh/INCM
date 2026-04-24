@@ -26,38 +26,14 @@ class ExclusiveProjectsImagesSection extends StatelessWidget {
   });
 
   static const List<Map<String, dynamic>> _projects = [
-    {
-      'id': 'umc',
-      'imageFallback': Assets.imagesExclusiveLeasingUmcC0020T01,
-    },
-    {
-      'id': 'park-mall',
-      'imageFallback': Assets.imagesExclusiveLeasingParkMallParkMall,
-    },
-    {
-      'id': 'terrace',
-      'imageFallback': Assets.imagesExclusiveLeasingTerraceDsc07468,
-    },
-    {
-      'id': 'point90',
-      'imageFallback': Assets.imagesExclusiveLeasingPoint90Point90,
-    },
-    {
-      'id': 'kernel',
-      'imageFallback': Assets.imagesExclusiveLeasingKernelKernel,
-    },
-    {
-      'id': 'city-square',
-      'imageFallback': Assets.imagesExclusiveLeasingCitySquareDfv,
-    },
-    {
-      'id': 'vitali',
-      'imageFallback': Assets.imagesExclusiveLeasingVitaliDjiStill016,
-    },
-    {
-      'id': 'seashell',
-      'imageFallback': Assets.imagesExclusiveLeasingSeashellUntitled1521,
-    },
+    {'id': 'umc', 'imageFallback': Assets.imagesLearnServices},
+    {'id': 'park-mall', 'imageFallback': Assets.imagesLearnServices},
+    {'id': 'terrace', 'imageFallback': Assets.imagesLearnServices},
+    {'id': 'point90', 'imageFallback': Assets.imagesLearnServices},
+    {'id': 'kernel', 'imageFallback': Assets.imagesLearnServices},
+    {'id': 'city-square', 'imageFallback': Assets.imagesLearnServices},
+    {'id': 'vitali', 'imageFallback': Assets.imagesLearnServices},
+    {'id': 'seashell', 'imageFallback': Assets.imagesLearnServices},
   ];
 
   @override

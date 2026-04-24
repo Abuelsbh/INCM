@@ -7,6 +7,7 @@ import 'package:incm/core/Contact/contact_form_phone.dart';
 import 'package:incm/core/Contact/contact_info_provider.dart';
 import 'package:incm/core/Contact/contact_submission_service.dart';
 import 'package:incm/core/Language/locales.dart';
+import 'package:incm/core/responsive/native_layout.dart';
 import 'package:provider/provider.dart';
 import '../../Utilities/font_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -359,7 +360,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.black,
-        bottomNavigationBar: MediaQuery.of(context).size.width < 600 && !kIsWeb ? const BottomNavBarWidget(selected: SelectedBottomNavBar.contacts) : null,
+        bottomNavigationBar: useNativeBottomNavigationBar(context) ? const BottomNavBarWidget(selected: SelectedBottomNavBar.contacts) : null,
 
         body: Stack(
           children: [
@@ -372,10 +373,10 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                   children: [
                     _buildContactFormSection(context, isMobile, isTablet),
                     // Footer
-                    if(MediaQuery.of(context).size.width >= 600)
-                      const FooterSection()
-                    else if(kIsWeb)
-                      const FooterSectionMob(),
+                    if (kIsWeb)
+                      (MediaQuery.sizeOf(context).width >= 600
+                          ? const FooterSection()
+                          : const FooterSectionMob()),
                   ],
                 ),
               ),
@@ -384,7 +385,9 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
               top: 0,
               left: 0,
               right: 0,
-              child: isMobile ? const CustomAppBarMob() : const CustomAppBar(),
+              child: useWebDesktopAppBar(context)
+                  ? const CustomAppBar()
+                  : const CustomAppBarMob(),
             ),
             const FloatingContactButtons(),
             ScrollToTopButton(scrollController: _scrollController),

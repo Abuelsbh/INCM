@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:incm/generated/assets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../core/Content/content_provider.dart';
+import '../core/Content/exclusive_leasing_projects_data.dart';
 import '../core/Firebase/firebase_logos_service.dart';
+import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../core/Language/app_languages.dart';
 import '../core/Language/locales.dart';
 import '../Utilities/font_helper.dart';
@@ -17,8 +18,11 @@ import 'custom_button.dart';
 
 class ClientsLogosSection extends StatefulWidget {
   final List<String>? logos; // Fallback logos from assets
-  final String? pageId; // Page ID to fetch logos from Firebase
+  final String? pageId; // Page ID to fetch logos from Firebase (`logos` collection)
   final String? title;
+  /// When true, loads project logos from CMS content on [ExclusiveLeasingProjectsData.pageId]
+  /// (`{slug}-logo` sections), same source as the Exclusive Leasing Projects page — not the `logos` collection.
+  final bool exclusiveLeasingProjectLogosFromContent;
   final bool fetchAllServices; // If true, fetch logos from all 8 services
   final Color? titleColor;
   final Color? backgroundColor;
@@ -32,6 +36,7 @@ class ClientsLogosSection extends StatefulWidget {
     super.key,
     this.logos,
     this.pageId,
+    this.exclusiveLeasingProjectLogosFromContent = false,
     this.fetchAllServices = false, // Default to false
     this.titleColor,
     this.backgroundColor,
@@ -72,7 +77,9 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
   void didUpdateWidget(ClientsLogosSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Reload logos if pageId or fetchAllServices changed
-    if (oldWidget.pageId != widget.pageId || 
+    if (oldWidget.pageId != widget.pageId ||
+        oldWidget.exclusiveLeasingProjectLogosFromContent !=
+            widget.exclusiveLeasingProjectLogosFromContent ||
         oldWidget.fetchAllServices != widget.fetchAllServices ||
         oldWidget.logos != widget.logos) {
       _loadLogos();
@@ -85,6 +92,11 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
       _logoBase64List = [];
       _preloadedLogoWidgets = [];
     });
+
+    if (widget.exclusiveLeasingProjectLogosFromContent) {
+      await _loadExclusiveLeasingProjectLogosFromContent();
+      return;
+    }
 
     // If fetchAllServices is true, load all logos from all 8 services
     if (widget.fetchAllServices) {
@@ -257,6 +269,164 @@ class _ClientsLogosSectionState extends State<ClientsLogosSection> {
         });
       }
     }
+  }
+
+  List<String> _orderedExclusiveLeasingSlugs(ContentProvider cp) {
+    final cached = cp.peekCachedPageContent(ExclusiveLeasingProjectsData.pageId);
+    if (cached == null) {
+      return ExclusiveLeasingProjectsData.orderedSlugs;
+    }
+    return ExclusiveLeasingProjectsData.displayOrderSlugs(
+      ExclusiveLeasingProjectsData.discoverSlugsFromContents(cached),
+    );
+  }
+
+  Future<void> _loadExclusiveLeasingProjectLogosFromContent() async {
+    try {
+      final cp = Provider.of<ContentProvider>(context, listen: false);
+      await cp.ensurePageLoaded(ExclusiveLeasingProjectsData.pageId);
+      if (!mounted) return;
+
+      final slugs = _orderedExclusiveLeasingSlugs(cp);
+      if (slugs.isEmpty) {
+        if (mounted) {
+          setState(() {
+            _isLoadingLogos = false;
+          });
+        }
+        return;
+      }
+
+      final isMobile = MediaQuery.of(context).size.width < 600;
+      final logoWidth = widget.logoWidth ?? (isMobile ? 100.w : 160.w);
+      final logoHeight = widget.logoHeight ?? (isMobile ? 85.h : 140.h);
+
+      final preloadedWidgets = <Widget>[];
+
+      for (final slug in slugs) {
+        if (!mounted) return;
+        final base64 = await cp.getImageContent(
+          ExclusiveLeasingProjectsData.pageId,
+          '$slug-logo',
+        );
+        if (!mounted) return;
+
+        Widget imageWidget;
+        if (base64 != null && base64.trim().isNotEmpty) {
+          try {
+            var cleanBase64 = base64.trim();
+            if (cleanBase64.startsWith('data:image')) {
+              final parts = cleanBase64.split(',');
+              if (parts.length == 2) {
+                cleanBase64 = parts[1].trim();
+              }
+            }
+            cleanBase64 = cleanBase64.replaceAll(RegExp(r'\s'), '');
+            final bytes = base64Decode(cleanBase64);
+            if (bytes.isNotEmpty) {
+              try {
+                if (!mounted) return;
+                await precacheImage(MemoryImage(bytes), context);
+              } catch (e) {
+                if (mounted) debugPrint('Warning: Failed to precache exclusive leasing logo: $e');
+              }
+              imageWidget = Image.memory(
+                bytes,
+                width: logoWidth,
+                height: logoHeight,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.high,
+                gaplessPlayback: true,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.broken_image,
+                    color: Colors.white.withOpacity(0.5),
+                    size: logoWidth * 0.5,
+                  );
+                },
+              );
+            } else {
+              imageWidget = _exclusiveLeasingFallbackLogo(slug, logoWidth, logoHeight);
+            }
+          } catch (e) {
+            debugPrint('Error decoding exclusive leasing logo for $slug: $e');
+            imageWidget = _exclusiveLeasingFallbackLogo(slug, logoWidth, logoHeight);
+          }
+        } else {
+          imageWidget = _exclusiveLeasingFallbackLogo(slug, logoWidth, logoHeight);
+        }
+
+        preloadedWidgets.add(
+          RepaintBoundary(
+            child: GestureDetector(
+              onTap: () {
+                if (!context.mounted) return;
+                context.go(
+                  '${ExclusiveLeasingProjectsScreen.routeName}?projectId=$slug',
+                );
+              },
+              child: imageWidget,
+            ),
+          ),
+        );
+      }
+
+      if (mounted) {
+        setState(() {
+          _preloadedLogoWidgets = preloadedWidgets;
+          _logoBase64List = [];
+          _isLoadingLogos = false;
+        });
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _checkIfArrowsNeeded();
+        });
+      }
+    } catch (e, stackTrace) {
+      debugPrint('Error loading exclusive leasing logos from content: $e');
+      debugPrint('Stack trace: $stackTrace');
+      if (mounted) {
+        setState(() {
+          _isLoadingLogos = false;
+        });
+      }
+    }
+  }
+
+  Widget _exclusiveLeasingFallbackLogo(String slug, double logoWidth, double logoHeight) {
+    final path = ExclusiveLeasingProjectsData.seedForSlug(slug).logoFallback;
+    final lower = path.toLowerCase();
+    if (lower.endsWith('.svg')) {
+      return SvgPicture.asset(
+        path,
+        width: logoWidth,
+        height: logoHeight,
+        fit: BoxFit.contain,
+        colorFilter: const ColorFilter.mode(
+          Colors.white,
+          BlendMode.srcIn,
+        ),
+        placeholderBuilder: (context) => Icon(
+          Icons.image,
+          color: Colors.white.withOpacity(0.3),
+          size: logoWidth * 0.5,
+        ),
+      );
+    }
+    return Image.asset(
+      path,
+      width: logoWidth,
+      height: logoHeight,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.high,
+      gaplessPlayback: true,
+      errorBuilder: (context, error, stackTrace) {
+        return Icon(
+          Icons.broken_image,
+          color: Colors.white.withOpacity(0.5),
+          size: logoWidth * 0.5,
+        );
+      },
+    );
   }
 
   /// Preload all base64 logos into memory widgets

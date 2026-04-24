@@ -110,7 +110,7 @@ class _HomeSearchSectionState extends State<HomeSearchSection> {
         context,
         'home',
         'search-placeholder',
-        defaultValue: 'SEARCH_BY_SERVICE_OR_LOCATION',
+        defaultValue:'SEARCH_BY_SERVICE_OR_LOCATION'.tr(context),
       );
     }
   }
