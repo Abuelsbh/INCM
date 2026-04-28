@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../Models/content_model.dart';
 import '../../core/Content/section_ids_config.dart';
+import 'admin_cms_pdf_link_upload.dart';
 import 'image_picker_widget.dart';
 import 'text_editor_widget.dart';
 
@@ -230,6 +231,24 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
                   const SizedBox(height: 8),
                   if (!_useManualInput)
                     DropdownButtonFormField<String>(
+                      isExpanded: true,
+                      // Closed field shows one line; menu items can be two lines.
+                      selectedItemBuilder: (BuildContext context) {
+                        return _availableSectionIds.map((option) {
+                          return Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              option.id,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          );
+                        }).toList();
+                      },
                       value: _selectedSectionId,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -239,6 +258,8 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
                         fillColor: Colors.grey[100],
                         hintText: 'اختر معرف القسم',
                       ),
+                      // Tall enough for id + label in the open menu
+                      itemHeight: 80,
                       items: _availableSectionIds.map((option) {
                         return DropdownMenuItem<String>(
                           value: option.id,
@@ -422,13 +443,28 @@ class _ContentItemEditorState extends State<ContentItemEditor> {
                   maxLines: 2,
                 ),
               ] else if (_selectedType == ContentType.link) ...[
-                TextEditorWidget(
-                  label: 'الرابط',
-                  initialValue: _textControllers['link']?.text,
-                  onChanged: (value) => _textControllers['link']?.text = value,
-                  maxLines: 2,
-                  isRequired: true,
-                ),
+                if (_selectedSectionId == 'franchising-brochure-url')
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8.h),
+                    child: AdminCmsPdfLinkUpload.franchise(
+                      linkController: _textControllers['link']!,
+                    ),
+                  )
+                else if (_selectedSectionId == 'company-profile-file')
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8.h),
+                    child: AdminCmsPdfLinkUpload.companyProfile(
+                      linkController: _textControllers['link']!,
+                    ),
+                  )
+                else
+                  TextEditorWidget(
+                    label: 'الرابط',
+                    initialValue: _textControllers['link']?.text,
+                    onChanged: (value) => _textControllers['link']?.text = value,
+                    maxLines: 2,
+                    isRequired: true,
+                  ),
               ] else if (_selectedType == ContentType.video) ...[
                 TextEditorWidget(
                   label: 'رابط الفيديو',

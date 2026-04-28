@@ -90,6 +90,7 @@ class SectionIdsConfig {
           SectionIdOption('description-3', 'Description 3', 'text'),
           SectionIdOption('services-title', 'Services Title', 'text'),
           SectionIdOption('service-1', 'Service 1', 'text'),
+          SectionIdOption('franchising-brochure-url', 'ملف كتيب الامتياز (PDF — رفع من الجهاز)', 'link'),
         ];
       
       case 'primary-investment':
@@ -167,7 +168,7 @@ class SectionIdsConfig {
         return [
           SectionIdOption('who-are-we-title', 'عنوان "من نحن"', 'text'),
           SectionIdOption('who-are-we-text', 'نص "من نحن"', 'text'),
-          SectionIdOption('company-profile-file', 'رابط ملف الشركة', 'link'),
+          SectionIdOption('company-profile-file', 'ملف الشركة (PDF — رفع من الجهاز)', 'link'),
           SectionIdOption('mission-title', 'عنوان "مهمتنا"', 'text'),
           SectionIdOption('mission-text', 'نص المهمة', 'text'),
           SectionIdOption('vision-title', 'عنوان "رؤيتنا"', 'text'),

@@ -12,8 +12,8 @@ import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
+import '../../../Widgets/cached_cms_futures.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
-import '../../../core/Content/content_helper.dart';
 import '../../../core/responsive/native_layout.dart';
 import '../../../generated/assets.dart';
 import '../../../core/Language/locales.dart';
@@ -45,24 +45,11 @@ class CorporateLeasingScreen extends StatelessWidget {
                 children: [
                   Container(
                     width: double.infinity,
-                    child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getHeroDecorationImage(
-                        context,
-                        'corporate-leasing',
-                        isMobile: isMobile,
-                        fit: BoxFit.fill,
-                      ),
-                      builder: (context, snapshot) {
-                        DecorationImage? decorationImage = snapshot.data;
-
-                        // Fallback to asset if Firebase image not available
-                        if (decorationImage == null) {
-                          decorationImage = DecorationImage(
-                            image: AssetImage(Assets.imagesLearnServices),
-                            fit: BoxFit.fill,
-                          );
-                        }
-
+                    child: CachedHeroDecorationScope(
+                      pageId: 'corporate-leasing',
+                      isMobile: isMobile,
+                      fit: BoxFit.fill,
+                      builder: (context, decorationImage) {
                         return Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -235,59 +222,47 @@ class CorporateLeasingScreen extends StatelessWidget {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        FutureBuilder<String>(
-                                          future: ContentHelper.getText(
-                                            context,
-                                            'corporate-leasing',
-                                            'services-title',
-                                            defaultValue: 'OUR_SERVICES',
-                                          ),
-                                          builder: (context, servicesSnapshot) {
-                                            return FutureBuilder<String>(
-                                              future: ContentHelper.getText(
-                                                context,
-                                                'corporate-leasing',
-                                                'services-include',
-                                                defaultValue: 'INCLUDE',
-                                              ),
-                                              builder: (context, includeSnapshot) {
-                                                // Translate if the value looks like a translation key
-                                                String servicesText = servicesSnapshot.data ?? 'OUR_SERVICES';
-                                                if (servicesText == 'OUR_SERVICES' || (servicesText.contains('_') && servicesText == servicesText.toUpperCase())) {
-                                                  servicesText = servicesText.tr(context);
-                                                }
-
-                                                String includeText = includeSnapshot.data ?? 'INCLUDE';
-                                                if (includeText == 'INCLUDE' || (includeText.contains('_') && includeText == includeText.toUpperCase())) {
-                                                  includeText = includeText.tr(context);
-                                                }
-
-                                                return RichText(
-                                                  textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
-                                                  text: TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: '$servicesText ',
-                                                        style: TextStyle(
-                                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                          color: Colors.white,
-                                                          fontSize: isMobile ? 22.sp : 70.sp,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      TextSpan(
-                                                        text: includeText,
-                                                        style: TextStyle(
-                                                          fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                          color: const Color(0xFFF4ED47),
-                                                          fontSize: isMobile ? 22.sp : 70.sp,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ],
+                                        CachedDualCmsStrings(
+                                          pageId: 'corporate-leasing',
+                                          builder: (context, servicesTextRaw, includeTextRaw) {
+                                            String servicesText = servicesTextRaw;
+                                            String includeText = includeTextRaw;
+                                            if (servicesText == 'OUR_SERVICES' ||
+                                                (servicesText.contains('_') &&
+                                                    servicesText == servicesText.toUpperCase())) {
+                                              servicesText = servicesText.tr(context);
+                                            }
+                                            if (includeText == 'INCLUDE' ||
+                                                (includeText.contains('_') &&
+                                                    includeText == includeText.toUpperCase())) {
+                                              includeText = includeText.tr(context);
+                                            }
+                                            return RichText(
+                                              textDirection: TextDirection.ltr,
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: '$servicesText ',
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          getLocalizedFont(context, 'OptimalBold'),
+                                                      color: Colors.white,
+                                                      fontSize: isMobile ? 22.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
                                                   ),
-                                                );
-                                              },
+                                                  TextSpan(
+                                                    text: includeText,
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          getLocalizedFont(context, 'OptimalBold'),
+                                                      color: const Color(0xFFF4ED47),
+                                                      fontSize: isMobile ? 22.sp : 70.sp,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             );
                                           },
                                         ),
@@ -388,15 +363,11 @@ class CorporateLeasingScreen extends StatelessWidget {
     String sectionId,
     String defaultText,
   ) {
-    return FutureBuilder<String>(
-      future: ContentHelper.getText(
-        context,
-        pageId,
-        sectionId,
-        defaultValue: defaultText,
-      ),
-      builder: (context, snapshot) {
-        final text = snapshot.data ?? defaultText;
+    return CachedCmsString(
+      pageId: pageId,
+      sectionId: sectionId,
+      defaultValue: defaultText,
+      builder: (context, text) {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -410,7 +381,6 @@ class CorporateLeasingScreen extends StatelessWidget {
             ),
             Expanded(
               child: RichText(
-                //textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
                 text: TextSpan(
                   style: TextStyle(
                     color: Colors.white,
@@ -511,15 +481,11 @@ class CorporateLeasingScreen extends StatelessWidget {
     String sectionId,
     String defaultText,
   ) {
-    return FutureBuilder<String>(
-      future: ContentHelper.getText(
-        context,
-        pageId,
-        sectionId,
-        defaultValue: defaultText,
-      ),
-      builder: (context, snapshot) {
-        final text = snapshot.data ?? defaultText;
+    return CachedCmsString(
+      pageId: pageId,
+      sectionId: sectionId,
+      defaultValue: defaultText,
+      builder: (context, text) {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -535,7 +501,6 @@ class CorporateLeasingScreen extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                //textDirection: TextDirection.ltr, // Force LTR to keep alignment consistent
                 softWrap: true,
                 style: TextStyle(
                   fontFamily: getLocalizedFont(context, 'AloeveraDisplaySemiBold'),

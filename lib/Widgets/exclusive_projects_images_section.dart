@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import '../core/Content/content_helper.dart';
-import '../core/Content/content_provider.dart';
 import '../core/Language/locales.dart';
+import 'dynamic_content_widget.dart';
 import '../generated/assets.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
 import '../Utilities/font_helper.dart';
@@ -85,66 +83,39 @@ class ExclusiveProjectsImagesSection extends StatelessWidget {
                     final fallbackImage = project['imageFallback'] as String;
                     final sectionId = '$projectId-image-0';
 
-                    return Consumer<ContentProvider>(
-                      builder: (context, contentProvider, _) {
-                        return FutureBuilder<Widget>(
-                          future: ContentHelper.getImage(
-                            context,
-                            'exclusive-leasing-projects',
-                            sectionId,
-                            fallbackAssetPath: fallbackImage,
-                            width: imageWidth,
-                            height: imageHeight,
-                            fit: BoxFit.cover,
-                          ),
-                          builder: (context, snapshot) {
-                            final imageWidget = snapshot.hasData
-                                ? snapshot.data!
-                                : ClipRRect(
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    child: Image.asset(
-                                      fallbackImage,
-                                      width: imageWidth,
-                                      height: imageHeight,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) =>
-                                          _buildPlaceholder(
-                                        imageWidth,
-                                        imageHeight,
-                                      ),
-                                    ),
-                                  );
-
-                            return GestureDetector(
-                              onTap: () {
-                                context.go(
-                                  '${ExclusiveLeasingProjectsScreen.routeName}?projectId=$projectId',
-                                );
-                              },
-                              child: RepaintBoundary(
-                                child: Container(
-                                  width: imageWidth,
-                                  height: imageHeight,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.3),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(12.r),
-                                    child: imageWidget,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
+                    return GestureDetector(
+                      onTap: () {
+                        context.go(
+                          '${ExclusiveLeasingProjectsScreen.routeName}?projectId=$projectId',
                         );
                       },
+                      child: RepaintBoundary(
+                        child: Container(
+                          width: imageWidth,
+                          height: imageHeight,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.r),
+                            child: DynamicImage(
+                              pageId: 'exclusive-leasing-projects',
+                              sectionId: sectionId,
+                              fallbackAssetPath: fallbackImage,
+                              width: imageWidth,
+                              height: imageHeight,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -167,21 +138,6 @@ class ExclusiveProjectsImagesSection extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-
-  Widget _buildPlaceholder(double width, double height) {
-    return Container(
-      width: width,
-      height: height,
-      color: Colors.grey[800],
-      child: Center(
-        child: Icon(
-          Icons.image_outlined,
-          color: Colors.white.withOpacity(0.5),
-          size: width * 0.3,
-        ),
-      ),
     );
   }
 }

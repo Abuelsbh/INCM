@@ -12,8 +12,8 @@ import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
+import '../../../Widgets/cached_cms_futures.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
-import '../../../core/Content/content_helper.dart';
 import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/app_languages.dart';
 import '../../../generated/assets.dart';
@@ -45,24 +45,11 @@ class MedicalLeasingScreen extends StatelessWidget {
                     textDirection: TextDirection.ltr,
                     child: Container(
                       width: double.infinity,
-                      child: FutureBuilder<DecorationImage?>(
-                        future: ContentHelper.getHeroDecorationImage(
-                          context,
-                          'medical-leasing',
-                          isMobile: isMobile,
-                          fit: BoxFit.fill,
-                        ),
-                        builder: (context, snapshot) {
-                          DecorationImage? decorationImage = snapshot.data;
-
-                          // Fallback to asset if Firebase image not available
-                          if (decorationImage == null) {
-                            decorationImage = DecorationImage(
-                              image: AssetImage(Assets.imagesLearnServices),
-                              fit: BoxFit.contain,
-                            );
-                          }
-
+                      child: CachedHeroDecorationScope(
+                        pageId: 'medical-leasing',
+                        isMobile: isMobile,
+                        fit: BoxFit.fill,
+                        builder: (context, decorationImage) {
                           return Container(
                             width: double.infinity,
                             decoration: BoxDecoration(

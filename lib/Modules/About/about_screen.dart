@@ -56,24 +56,19 @@ class _AboutScreenState extends State<AboutScreen>
 
   List<_AboutNewsFallbackSpec> get _fallbackNewsItems => const [
         _AboutNewsFallbackSpec(
-          titleKey: 'SOROUH_DEVELOPMENTS_TITLE',
-          descriptionKey: 'SOROUH_DEVELOPMENTS_DESC',
-          assetPath: Assets.imagesAboutUsBackground,
+          titleKey: 'ABOUT_LATEST_NEWS_ANNUAL_TITLE',
+          descriptionKey: 'ABOUT_LATEST_NEWS_EVENTS_BODY',
+          assetPath: Assets.imagesPic1,
         ),
         _AboutNewsFallbackSpec(
-          titleKey: 'MENASSAT_DEVELOPMENTS_TITLE',
-          descriptionKey: 'MENASSAT_DEVELOPMENTS_DESC',
-          assetPath: Assets.imagesLearnServicesBackground,
+          titleKey: 'ABOUT_LATEST_NEWS_SIGNING_TITLE',
+          descriptionKey: 'ABOUT_LATEST_NEWS_EVENTS_BODY',
+          assetPath: Assets.imagesPic2,
         ),
         _AboutNewsFallbackSpec(
-          titleKey: 'ANNUAL_2024_TITLE',
-          descriptionKey: 'ANNUAL_2024_DESC',
-          assetPath: Assets.imagesAboutUsBackground,
-        ),
-        _AboutNewsFallbackSpec(
-          titleKey: 'SAUDI_ARABIA_EXPANSION_TITLE',
-          descriptionKey: 'SAUDI_ARABIA_EXPANSION_DESC',
-          assetPath: Assets.imagesAboutUsBackground,
+          titleKey: 'ABOUT_LATEST_NEWS_LIMITED_TITLE',
+          descriptionKey: 'ABOUT_LATEST_NEWS_EVENTS_BODY',
+          assetPath: Assets.imagesPic3,
         ),
       ];
 
@@ -260,7 +255,7 @@ class _AboutScreenState extends State<AboutScreen>
     }
 
     final sortedIndexes = itemsByIndex.keys.toList()..sort();
-    return sortedIndexes
+    final resolved = sortedIndexes
         .map((index) => itemsByIndex[index]!)
         .where(
           (item) =>
@@ -269,6 +264,10 @@ class _AboutScreenState extends State<AboutScreen>
               (item.imageBase64?.isNotEmpty ?? false),
         )
         .toList();
+    if (resolved.length > 3) {
+      return resolved.sublist(0, 3);
+    }
+    return resolved;
   }
 
   Widget _buildDynamicNewsImage(
@@ -789,6 +788,8 @@ class _AboutScreenState extends State<AboutScreen>
                   left: 0,
                   child: Builder(
                     builder: (context) {
+                      final isRtl =
+                          Directionality.of(context) == TextDirection.rtl;
                       final isArabic =
                           Provider.of<AppLanguage>(context, listen: false)
                                   .appLang ==
@@ -803,7 +804,15 @@ class _AboutScreenState extends State<AboutScreen>
                           color: Colors.white,
                         ),
                         iconSize: arrowSize,
-                        onPressed: () => _previousPage(newsItems.length),
+                        onPressed: () {
+                          // PageView scroll direction follows Directionality; swap
+                          // prev/next so motion matches the physical arrow side in RTL.
+                          if (isRtl) {
+                            _nextPage(newsItems.length);
+                          } else {
+                            _previousPage(newsItems.length);
+                          }
+                        },
                       );
                     },
                   ),
@@ -813,6 +822,8 @@ class _AboutScreenState extends State<AboutScreen>
                   right: 0,
                   child: Builder(
                     builder: (context) {
+                      final isRtl =
+                          Directionality.of(context) == TextDirection.rtl;
                       final isArabic =
                           Provider.of<AppLanguage>(context, listen: false)
                                   .appLang ==
@@ -825,7 +836,13 @@ class _AboutScreenState extends State<AboutScreen>
                           color: Colors.white,
                         ),
                         iconSize: arrowSize,
-                        onPressed: () => _nextPage(newsItems.length),
+                        onPressed: () {
+                          if (isRtl) {
+                            _previousPage(newsItems.length);
+                          } else {
+                            _nextPage(newsItems.length);
+                          }
+                        },
                       );
                     },
                   ),
@@ -855,7 +872,9 @@ class _AboutScreenState extends State<AboutScreen>
       controller: _pageController!,
       itemCount: newsItems.length,
       onPageChanged: (index) {
-        setState(() => _currentPage = index);
+        // Avoid setState here: it rebuilds the whole screen and replays image
+        // decoding on web, which looks like a flash/refresh on each arrow tap.
+        _currentPage = index;
       },
       itemBuilder: (context, index) {
         final item = newsItems[index];

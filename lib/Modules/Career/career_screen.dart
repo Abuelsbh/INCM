@@ -1221,6 +1221,8 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                 top: arrowTop,
                 child: Builder(
                   builder: (context) {
+                    final isRtl =
+                        Directionality.of(context) == TextDirection.rtl;
                     final isArabic =
                         Provider.of<AppLanguage>(context, listen: false).appLang ==
                             Languages.ar;
@@ -1230,7 +1232,13 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                         color: Colors.white,
                       ),
                       iconSize: arrowSize,
-                      onPressed: _previousPage,
+                      onPressed: () {
+                        if (isRtl) {
+                          _nextPage();
+                        } else {
+                          _previousPage();
+                        }
+                      },
                     );
                   },
                 ),
@@ -1240,6 +1248,8 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                 top: arrowTop,
                 child: Builder(
                   builder: (context) {
+                    final isRtl =
+                        Directionality.of(context) == TextDirection.rtl;
                     final isArabic =
                         Provider.of<AppLanguage>(context, listen: false).appLang ==
                             Languages.ar;
@@ -1249,7 +1259,13 @@ class _CareerScreenState extends State<CareerScreen> with SingleTickerProviderSt
                         color: Colors.white,
                       ),
                       iconSize: arrowSize,
-                      onPressed: _nextPage,
+                      onPressed: () {
+                        if (isRtl) {
+                          _previousPage();
+                        } else {
+                          _nextPage();
+                        }
+                      },
                     );
                   },
                 ),

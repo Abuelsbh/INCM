@@ -14,7 +14,6 @@ import '../../Widgets/footer_section.dart';
 import '../../Widgets/footer_section_mob.dart';
 import '../../Widgets/dynamic_content_widget.dart';
 import '../../core/Language/app_languages.dart';
-import '../../core/Content/content_helper.dart';
 import '../../core/Content/content_provider.dart';
 import '../../core/Content/exclusive_leasing_projects_data.dart';
 import '../../Utilities/font_helper.dart';
@@ -84,6 +83,10 @@ class _ExclusiveLeasingProjectsScreenState
   final Map<String, GlobalKey> _projectKeys = {};
 
   String _precacheSlugSig = '';
+
+  /// One probe future per project — avoids re-running [_loadImageSectionIds] on every
+  /// [ContentProvider] rebuild while [Consumer] updates the subtree.
+  final Map<String, Future<List<String?>>> _gallerySectionProbeFutures = {};
 
   String? _targetProjectId;
 
@@ -367,39 +370,13 @@ class _ExclusiveLeasingProjectsScreenState
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Consumer<ContentProvider>(
-                      builder: (context, contentProvider, child) {
-                        return FutureBuilder<Widget>(
-                          future: ContentHelper.getImage(
-                            context,
-                            'exclusive-leasing-projects',
-                            '${projectId}-logo',
-                            fallbackAssetPath: logoFallback,
-                            width: 140.w,
-                            height: 140.h,
-                            fit: BoxFit.contain,
-                          ),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                    ConnectionState.waiting &&
-                                !snapshot.hasData) {
-                              return _exclusiveLeasingLoadingBox(
-                                width: 140.w,
-                                height: 140.h,
-                              );
-                            }
-                            if (snapshot.hasData) {
-                              return snapshot.data!;
-                            }
-                            return _buildImageWithErrorHandling(
-                              logoFallback,
-                              width: 140.w,
-                              height: 140.h,
-                              fit: BoxFit.contain,
-                            );
-                          },
-                        );
-                      },
+                    DynamicImage(
+                      pageId: 'exclusive-leasing-projects',
+                      sectionId: '${projectId}-logo',
+                      fallbackAssetPath: logoFallback,
+                      width: 140.w,
+                      height: 140.h,
+                      fit: BoxFit.contain,
                     ),
                     // Expanded(
                     //   child: DynamicText(
@@ -459,39 +436,13 @@ class _ExclusiveLeasingProjectsScreenState
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Consumer<ContentProvider>(
-                            builder: (context, contentProvider, child) {
-                              return FutureBuilder<Widget>(
-                                future: ContentHelper.getImage(
-                                  context,
-                                  'exclusive-leasing-projects',
-                                  '${projectId}-logo',
-                                  fallbackAssetPath: logoFallback,
-                                  width: 150.w,
-                                  height: 150.h,
-                                  fit: BoxFit.contain,
-                                ),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                          ConnectionState.waiting &&
-                                      !snapshot.hasData) {
-                                    return _exclusiveLeasingLoadingBox(
-                                      width: 150.w,
-                                      height: 150.h,
-                                    );
-                                  }
-                                  if (snapshot.hasData) {
-                                    return snapshot.data!;
-                                  }
-                                  return _buildImageWithErrorHandling(
-                                    logoFallback,
-                                    width: 150.w,
-                                    height: 150.h,
-                                    fit: BoxFit.contain,
-                                  );
-                                },
-                              );
-                            },
+                          DynamicImage(
+                            pageId: 'exclusive-leasing-projects',
+                            sectionId: '${projectId}-logo',
+                            fallbackAssetPath: logoFallback,
+                            width: 150.w,
+                            height: 150.h,
+                            fit: BoxFit.contain,
                           ),
                           SizedBox(width: 30.w),
                           // Expanded(
@@ -554,84 +505,39 @@ class _ExclusiveLeasingProjectsScreenState
       imageSectionIds.add('$projectId-image-$i');
     }
 
-    return Consumer<ContentProvider>(
-      builder: (context, contentProvider, child) {
-        return FutureBuilder<List<String?>>(
-          future: _loadImageSectionIds(imageSectionIds),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return _exclusiveLeasingLoadingBox(expand: true);
-            }
+    return FutureBuilder<List<String?>>(
+      future: _gallerySectionProbeFutures.putIfAbsent(
+        projectId,
+        () => _loadImageSectionIds(imageSectionIds),
+      ),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _exclusiveLeasingLoadingBox(expand: true);
+        }
 
-            if (snapshot.hasData) {
-              final existingImageIds = snapshot.data!
-                  .asMap()
-                  .entries
-                  .where((e) => e.value != null && e.value!.isNotEmpty)
-                  .map((e) => imageSectionIds[e.key])
-                  .toList();
+        if (snapshot.hasData) {
+          final existingImageIds = snapshot.data!
+              .asMap()
+              .entries
+              .where((e) => e.value != null && e.value!.isNotEmpty)
+              .map((e) => imageSectionIds[e.key])
+              .toList();
 
-              return _ProjectImageCarousel(
-                projectId: projectId,
-                fallbackImage: fallbackImage,
-                isMobile: isMobile,
-                localImages: localImages,
-                firebaseImageIds: existingImageIds.isEmpty ? null : existingImageIds,
-              );
-            }
+          return _ProjectImageCarousel(
+            projectId: projectId,
+            fallbackImage: fallbackImage,
+            isMobile: isMobile,
+            localImages: localImages,
+            firebaseImageIds: existingImageIds.isEmpty ? null : existingImageIds,
+          );
+        }
 
-            return _ProjectImageCarousel(
-              projectId: projectId,
-              fallbackImage: fallbackImage,
-              isMobile: isMobile,
-              localImages: localImages,
-              firebaseImageIds: null,
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildImageWithErrorHandling(
-    String imagePath, {
-    double? width,
-    double? height,
-    BoxFit fit = BoxFit.cover,
-  }) {
-    return Image.asset(
-      imagePath,
-      width: width,
-      height: height,
-      fit: fit,
-      errorBuilder: (context, error, stackTrace) {
-        // Return a placeholder when image fails to load
-        return Container(
-          width: width,
-          height: height,
-          color: Colors.grey[800],
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.broken_image,
-                  color: Colors.grey[400],
-                  size: (width != null && height != null) 
-                      ? (width < height ? width * 0.2 : height * 0.2)
-                      : 48,
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  'Image not available',
-                  style: TextStyle(
-                    color: Colors.grey[400],
-                    fontSize: 12.sp,
-                  ),
-                ),
-              ],
-            ),
-          ),
+        return _ProjectImageCarousel(
+          projectId: projectId,
+          fallbackImage: fallbackImage,
+          isMobile: isMobile,
+          localImages: localImages,
+          firebaseImageIds: null,
         );
       },
     );
@@ -744,6 +650,30 @@ class _ProjectImageCarouselState extends State<_ProjectImageCarousel> {
     // Firebase images path
     if (widget.firebaseImageIds != null && widget.firebaseImageIds!.isNotEmpty) {
       final existingImageIds = widget.firebaseImageIds!;
+      if (existingImageIds.length == 1) {
+        final sectionId = existingImageIds.single;
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: arrowWidth),
+          child: GestureDetector(
+            onTap: () => _showFullScreenFromSectionIds(
+              context,
+              existingImageIds,
+              widget.fallbackImage,
+              0,
+            ),
+            child: RepaintBoundary(
+              child: DynamicImage(
+                pageId: 'exclusive-leasing-projects',
+                sectionId: sectionId,
+                fallbackAssetPath: widget.fallbackImage,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        );
+      }
       return Stack(
         alignment: Alignment.center,
         children: [
@@ -768,36 +698,13 @@ class _ProjectImageCarouselState extends State<_ProjectImageCarousel> {
                   itemBuilder: (context, index) {
                     final sectionId = existingImageIds[index];
                     return RepaintBoundary(
-                      child: Consumer<ContentProvider>(
-                        builder: (context, contentProvider, child) {
-                          return FutureBuilder<Widget>(
-                            future: ContentHelper.getImage(
-                              context,
-                              'exclusive-leasing-projects',
-                              sectionId,
-                              fallbackAssetPath: widget.fallbackImage,
-                              width: double.infinity,
-                              height: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                      ConnectionState.waiting &&
-                                  !snapshot.hasData) {
-                                return _exclusiveLeasingLoadingBox(expand: true);
-                              }
-                              if (snapshot.hasData) {
-                                return snapshot.data!;
-                              }
-                              return _buildImageWithErrorHandling(
-                                widget.fallbackImage,
-                                width: 600.sp,
-                                height: 600.sp,
-                                fit: BoxFit.cover,
-                              );
-                            },
-                          );
-                        },
+                      child: DynamicImage(
+                        pageId: 'exclusive-leasing-projects',
+                        sectionId: sectionId,
+                        fallbackAssetPath: widget.fallbackImage,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
                       ),
                     );
                   },
@@ -1000,36 +907,19 @@ class _ProjectImageCarouselState extends State<_ProjectImageCarousel> {
             itemCount: sectionIds.length,
             itemBuilder: (context, index) {
               final sectionId = sectionIds[index];
-              return Consumer<ContentProvider>(
-                builder: (context, contentProvider, child) {
-                  return FutureBuilder<Widget>(
-                    future: ContentHelper.getImage(
-                      context,
-                      'exclusive-leasing-projects',
-                      sectionId,
-                      fallbackAssetPath: fallbackAsset,
-                      width: double.infinity,
-                      height: double.infinity,
-                      fit: BoxFit.contain,
-                    ),
-                    builder: (context, snapshot) {
-                      final size = MediaQuery.of(context).size;
-                      if (snapshot.hasData) {
-                        return PhotoView.customChild(
-                          child: snapshot.data!,
-                          childSize: Size(size.width, size.height),
-                          minScale: PhotoViewComputedScale.contained,
-                          maxScale: PhotoViewComputedScale.covered * 2,
-                        );
-                      }
-                      return PhotoView(
-                        imageProvider: AssetImage(fallbackAsset),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered * 2,
-                      );
-                    },
-                  );
-                },
+              final size = MediaQuery.of(context).size;
+              return PhotoView.customChild(
+                childSize: Size(size.width, size.height),
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 2,
+                child: DynamicImage(
+                  pageId: 'exclusive-leasing-projects',
+                  sectionId: sectionId,
+                  fallbackAssetPath: fallbackAsset,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.contain,
+                ),
               );
             },
           ),

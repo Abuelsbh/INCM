@@ -19,7 +19,7 @@ import '../Modules/Services/FranchiseInvestment/franchise_investment_screen.dart
 import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/Marketing/marketing_screen.dart';
 import '../core/Content/services_provider.dart';
-import '../core/Content/content_helper.dart';
+import 'cached_cms_futures.dart';
 import 'dynamic_content_widget.dart';
 import 'home_service_carousel_image.dart';
 
@@ -180,16 +180,15 @@ class _ServicesContentSectionState extends State<ServicesContentSectionMob>
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DecorationImage?>(
-      future: ContentHelper.getServicesCarouselBackground(context, fit: BoxFit.cover),
-      builder: (context, snapshot) {
+    return CachedServicesCarouselDecorationScope(
+      builder: (context, decorationImage) {
         return Container(
           height: 786.h,
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
           decoration: BoxDecoration(
             color: Colors.black,
-            image: snapshot.data,
+            image: decorationImage,
           ),
           child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

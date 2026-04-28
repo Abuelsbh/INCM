@@ -9,6 +9,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/Content/content_helper.dart';
+import '../../../core/Content/content_provider.dart';
 import '../../../Widgets/bottom_navbar_widget.dart';
 import '../../../Widgets/clients_logos_section.dart';
 import '../../../Widgets/content_service_section.dart';
@@ -18,8 +20,8 @@ import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
+import '../../../Widgets/cached_cms_futures.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
-import '../../../core/Content/content_helper.dart';
 import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/app_languages.dart';
 import '../../../core/Language/locales.dart';
@@ -36,15 +38,42 @@ class FranchiseInvestmentScreen extends StatefulWidget {
 }
 
 class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
-  bool _isPrimaryColor = true;
-  late Timer _timer;
+  static const String _pageId = 'franchise-investment';
+  static const String _brochureUrlSectionId = 'franchising-brochure-url';
+  static const String _defaultBrochureUrl =
+      'https://drive.google.com/uc?export=download&id=1iFzkiZYpEI0mfZMsEqkweFlNN4cXBCqw';
+
+  final ScrollController _scrollController = ScrollController();
   bool isDownloading = false;
   double progress = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<ContentProvider>().ensurePageLoaded(_pageId);
+    });
+  }
+
   Future<void> downloadFile() async {
-    const url =
-        'https://drive.google.com/uc?export=download&id=1iFzkiZYpEI0mfZMsEqkweFlNN4cXBCqw';
+    final url = await ContentHelper.getLink(
+          context,
+          _pageId,
+          _brochureUrlSectionId,
+          defaultValue: _defaultBrochureUrl,
+        ) ??
+        _defaultBrochureUrl;
+    if (!mounted) return;
     const filename = 'franchising_brochure.pdf';
+
+    if (url.trim().isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('DOWNLOAD_FAILED'.tr(context))),
+      );
+      return;
+    }
 
     // ✅ Web version — use url_launcher
     if (kIsWeb) {
@@ -58,12 +87,14 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
     // ✅ Mobile / Desktop version
     if (Platform.isAndroid || Platform.isIOS) {
       if (await Permission.storage.request().isDenied) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('STORAGE_PERMISSION_DENIED'.tr(context))),
         );
         return;
       }
     }
+    if (!mounted) return;
 
     setState(() {
       isDownloading = true;
@@ -91,6 +122,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
         isDownloading = false;
       });
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${'DOWNLOADED_TO'.tr(context)} $savePath')),
       );
@@ -98,6 +130,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
       setState(() {
         isDownloading = false;
       });
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${'DOWNLOAD_FAILED'.tr(context)} $e')),
       );
@@ -105,26 +138,14 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    // تبديل اللون كل ثانيتين
-    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      setState(() {
-        _isPrimaryColor = !_isPrimaryColor;
-      });
-    });
-  }
-
-  @override
   void dispose() {
-    _timer.cancel();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
-    final ScrollController scrollController = ScrollController();
 
     return SafeArea(
       child: Scaffold(
@@ -135,7 +156,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
         body: Stack(
           children: [
             SingleChildScrollView(
-              controller: scrollController,
+              controller: _scrollController,
               child: Column(
                 children: [
                   Directionality(
@@ -143,24 +164,11 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                     textDirection: TextDirection.ltr,
                     child: Container(
                       width: double.infinity,
-                      child: FutureBuilder<DecorationImage?>(
-                        future: ContentHelper.getHeroDecorationImage(
-                          context,
-                          'franchise-investment',
-                          isMobile: isMobile,
-                          fit: BoxFit.fill,
-                        ),
-                        builder: (context, snapshot) {
-                          DecorationImage? decorationImage = snapshot.data;
-                    
-                          // Fallback to asset if Firebase image not available
-                          if (decorationImage == null) {
-                            decorationImage = DecorationImage(
-                              image: AssetImage(Assets.imagesLearnServices),
-                              fit: BoxFit.contain,
-                            );
-                          }
-                    
+                      child: CachedHeroDecorationScope(
+                        pageId: 'franchise-investment',
+                        isMobile: isMobile,
+                        fit: BoxFit.fill,
+                        builder: (context, decorationImage) {
                           return Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -310,24 +318,10 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                                               width: 1200.w,
                                             ),
                                             Gap(isMobile ? 20.h : 40.h),
-                                            InkWell(
-                                              onTap: isDownloading ? null : downloadFile,
-                                              child: Container(
-                                                padding: EdgeInsets.all(isMobile ? 8 : 4),
-                                                decoration: BoxDecoration(
-                                                  color: _isPrimaryColor ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: Text(
-                                                  "DOWNLOAD_FRANCHISING_BROCHURE".tr(context),
-                                                  style: TextStyle(
-                                                    fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                    color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
-                                                    fontSize: isMobile ? 12.sp : 25.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
+                                            _FranchisingBrochureButton(
+                                              isMobile: isMobile,
+                                              isDownloading: isDownloading,
+                                              onTap: downloadFile,
                                             ),
                                           ],
                                         ),
@@ -369,7 +363,7 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
                   : const CustomAppBarMob(),
             ),
             const FloatingContactButtons(),
-            ScrollToTopButton(scrollController: scrollController),
+            ScrollToTopButton(scrollController: _scrollController),
           ],
         ),
       ),
@@ -468,6 +462,67 @@ class _FranchiseInvestmentScreenState extends State<FranchiseInvestmentScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Toggles brochure CTA colors locally so the whole page does not rebuild
+/// (avoids scroll jank / "refresh" feeling on web).
+class _FranchisingBrochureButton extends StatefulWidget {
+  const _FranchisingBrochureButton({
+    required this.isMobile,
+    required this.isDownloading,
+    required this.onTap,
+  });
+
+  final bool isMobile;
+  final bool isDownloading;
+  final Future<void> Function() onTap;
+
+  @override
+  State<_FranchisingBrochureButton> createState() => _FranchisingBrochureButtonState();
+}
+
+class _FranchisingBrochureButtonState extends State<_FranchisingBrochureButton> {
+  bool _isPrimaryColor = true;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (mounted) {
+        setState(() => _isPrimaryColor = !_isPrimaryColor);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: widget.isDownloading ? null : () => widget.onTap(),
+      child: Container(
+        padding: EdgeInsets.all(widget.isMobile ? 8 : 4),
+        decoration: BoxDecoration(
+          color: _isPrimaryColor ? const Color(0xFFC63424) : const Color(0xFFF4ED47),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          "DOWNLOAD_FRANCHISING_BROCHURE".tr(context),
+          style: TextStyle(
+            fontFamily: getLocalizedFont(context, 'OptimalBold'),
+            color: _isPrimaryColor ? const Color(0xFFF4ED47) : const Color(0xFFC63424),
+            fontSize: widget.isMobile ? 12.sp : 25.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

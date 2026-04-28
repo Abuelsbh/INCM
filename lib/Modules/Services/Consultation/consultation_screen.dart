@@ -12,8 +12,8 @@ import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
 import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
+import '../../../Widgets/cached_cms_futures.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
-import '../../../core/Content/content_helper.dart';
 import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/app_languages.dart';
 import '../../../core/Language/locales.dart';
@@ -44,24 +44,11 @@ class ConsultationScreen extends StatelessWidget {
                 children: [
                   Container(
                     width: double.infinity,
-                    child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getHeroDecorationImage(
-                        context,
-                        'consultation',
-                        isMobile: isMobile,
-                        fit: BoxFit.fill,
-                      ),
-                      builder: (context, snapshot) {
-                        DecorationImage? decorationImage = snapshot.data;
-
-                        // Fallback to asset if Firebase image not available
-                        if (decorationImage == null) {
-                          decorationImage = DecorationImage(
-                            image: AssetImage(Assets.imagesLearnServices),
-                            fit: BoxFit.contain,
-                          );
-                        }
-
+                    child: CachedHeroDecorationScope(
+                      pageId: 'consultation',
+                      isMobile: isMobile,
+                      fit: BoxFit.fill,
+                      builder: (context, decorationImage) {
                         return Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -262,66 +249,54 @@ class ConsultationScreen extends StatelessWidget {
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
-                                                FutureBuilder<String>(
-                                                  future: ContentHelper.getText(
-                                                    context,
-                                                    'consultation',
-                                                    'services-title',
-                                                    defaultValue: 'OUR_SERVICES',
-                                                  ),
-                                                  builder: (context, servicesSnapshot) {
-                                                    return FutureBuilder<String>(
-                                                      future: ContentHelper.getText(
-                                                        context,
-                                                        'consultation',
-                                                        'services-include',
-                                                        defaultValue: 'INCLUDE',
-                                                      ),
-                                                      builder: (context, includeSnapshot) {
-                                                        // Check if data is null, empty, or looks like a translation key/default value, then use translation
-                                                        final String? servicesData = servicesSnapshot.data;
-                                                        final String servicesText = (servicesData == null || 
-                                                          servicesData.isEmpty || 
-                                                          servicesData == 'OUR_SERVICES' || 
-                                                          servicesData == 'OUR SERVICE' ||
-                                                          (servicesData.contains('_') && servicesData == servicesData.toUpperCase()))
+                                                CachedDualCmsStrings(
+                                                  pageId: 'consultation',
+                                                  builder: (context, servicesTextRaw, includeTextRaw) {
+                                                    final String servicesText =
+                                                        (servicesTextRaw.isEmpty ||
+                                                                servicesTextRaw == 'OUR_SERVICES' ||
+                                                                servicesTextRaw == 'OUR SERVICE' ||
+                                                                (servicesTextRaw.contains('_') &&
+                                                                    servicesTextRaw ==
+                                                                        servicesTextRaw.toUpperCase()))
                                                             ? 'OUR_SERVICES'.tr(context)
-                                                            : servicesData;
-                                                        
-                                                        final String? includeData = includeSnapshot.data;
-                                                        final String includeText = (includeData == null || 
-                                                          includeData.isEmpty || 
-                                                          includeData == 'INCLUDE' || 
-                                                          includeData == 'INCLUDES' ||
-                                                          (includeData.contains('_') && includeData == includeData.toUpperCase()))
+                                                            : servicesTextRaw;
+
+                                                    final String includeText =
+                                                        (includeTextRaw.isEmpty ||
+                                                                includeTextRaw == 'INCLUDE' ||
+                                                                includeTextRaw == 'INCLUDES' ||
+                                                                (includeTextRaw.contains('_') &&
+                                                                    includeTextRaw ==
+                                                                        includeTextRaw.toUpperCase()))
                                                             ? 'INCLUDE'.tr(context)
-                                                            : includeData;
-                                                        
-                                                        return RichText(
-                                                          text: TextSpan(
-                                                            children: [
-                                                              TextSpan(
-                                                                text: '$servicesText ',
-                                                                style: TextStyle(
-                                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                                  color: Colors.white,
-                                                                  fontSize: isMobile ? 18.sp : 70.sp,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                              TextSpan(
-                                                                text: includeText,
-                                                                style: TextStyle(
-                                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                                  color: const Color(0xFFF4ED47),
-                                                                  fontSize: isMobile ? 18.sp : 70.sp,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                            : includeTextRaw;
+
+                                                    return RichText(
+                                                      text: TextSpan(
+                                                        children: [
+                                                          TextSpan(
+                                                            text: '$servicesText ',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  getLocalizedFont(context, 'OptimalBold'),
+                                                              color: Colors.white,
+                                                              fontSize: isMobile ? 18.sp : 70.sp,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
                                                           ),
-                                                        );
-                                                      },
+                                                          TextSpan(
+                                                            text: includeText,
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  getLocalizedFont(context, 'OptimalBold'),
+                                                              color: const Color(0xFFF4ED47),
+                                                              fontSize: isMobile ? 18.sp : 70.sp,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     );
                                                   },
                                                 ),

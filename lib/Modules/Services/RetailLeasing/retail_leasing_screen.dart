@@ -11,8 +11,8 @@ import '../../../Widgets/floating_contact_buttons.dart';
 import '../../../Widgets/footer_section.dart';
 import '../../../Widgets/footer_section_mob.dart';
 import '../../../Widgets/scroll_to_top_button.dart';
+import '../../../Widgets/cached_cms_futures.dart';
 import '../../../Widgets/dynamic_content_widget.dart';
-import '../../../core/Content/content_helper.dart';
 import '../../../core/responsive/native_layout.dart';
 import '../../../core/Language/locales.dart';
 import '../../../Utilities/font_helper.dart';
@@ -42,24 +42,11 @@ class RetailLeasingScreen extends StatelessWidget {
                 children: [
                   Container(
                     width: double.infinity,
-                    child: FutureBuilder<DecorationImage?>(
-                      future: ContentHelper.getHeroDecorationImage(
-                        context,
-                        'retail-leasing',
-                        isMobile: isMobile,
-                        fit: BoxFit.contain,
-                      ),
-                      builder: (context, snapshot) {
-                        DecorationImage? decorationImage = snapshot.data;
-                        
-                        // Fallback to asset if Firebase image not available
-                        if (decorationImage == null) {
-                          decorationImage = DecorationImage(
-                            image: AssetImage(Assets.imagesLearnServices),
-                            fit: BoxFit.fill,
-                          );
-                        }
-
+                    child: CachedHeroDecorationScope(
+                      pageId: 'retail-leasing',
+                      isMobile: isMobile,
+                      fit: BoxFit.contain,
+                      builder: (context, decorationImage) {
                         return Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
@@ -168,58 +155,44 @@ class RetailLeasingScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    FutureBuilder<String>(
-                                      future: ContentHelper.getText(
-                                        context,
-                                        'retail-leasing',
-                                        'services-title',
-                                        defaultValue: 'OUR_SERVICES',
-                                      ),
-                                      builder: (context, servicesSnapshot) {
-                                        return FutureBuilder<String>(
-                                          future: ContentHelper.getText(
-                                            context,
-                                            'retail-leasing',
-                                            'services-include',
-                                            defaultValue: 'INCLUDE',
-                                          ),
-                                          builder: (context, includeSnapshot) {
-                                            String servicesText = servicesSnapshot.data ?? 'OUR_SERVICES';
-                                            String includeText = includeSnapshot.data ?? 'INCLUDE';
-                                            
-                                            // Translate if the value is a translation key
-                                            if (servicesText == 'OUR_SERVICES' || (servicesText.contains('_') && servicesText == servicesText.toUpperCase())) {
-                                              servicesText = servicesText.tr(context);
-                                            }
-                                            if (includeText == 'INCLUDE' || (includeText.contains('_') && includeText == includeText.toUpperCase())) {
-                                              includeText = includeText.tr(context);
-                                            }
-                                            
-                                            return RichText(
-                                              text: TextSpan(
-                                                children: [
-                                                  TextSpan(
-                                                    text: '$servicesText ',
-                                                    style: TextStyle(
-                                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                      color: Colors.white,
-                                                      fontSize: isMobile ? 12.sp : 70.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  TextSpan(
-                                                    text: includeText,
-                                                    style: TextStyle(
-                                                      fontFamily: getLocalizedFont(context, 'OptimalBold'),
-                                                      color: const Color(0xFFF4ED47),
-                                                      fontSize: isMobile ? 12.sp : 70.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
+                                    CachedDualCmsStrings(
+                                      pageId: 'retail-leasing',
+                                      builder: (context, servicesTextRaw, includeTextRaw) {
+                                        String servicesText = servicesTextRaw;
+                                        String includeText = includeTextRaw;
+                                        if (servicesText == 'OUR_SERVICES' ||
+                                            (servicesText.contains('_') &&
+                                                servicesText == servicesText.toUpperCase())) {
+                                          servicesText = servicesText.tr(context);
+                                        }
+                                        if (includeText == 'INCLUDE' ||
+                                            (includeText.contains('_') &&
+                                                includeText == includeText.toUpperCase())) {
+                                          includeText = includeText.tr(context);
+                                        }
+                                        return RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: '$servicesText ',
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: Colors.white,
+                                                  fontSize: isMobile ? 12.sp : 70.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                            );
-                                          },
+                                              TextSpan(
+                                                text: includeText,
+                                                style: TextStyle(
+                                                  fontFamily: getLocalizedFont(context, 'OptimalBold'),
+                                                  color: const Color(0xFFF4ED47),
+                                                  fontSize: isMobile ? 12.sp : 70.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         );
                                       },
                                     ),
