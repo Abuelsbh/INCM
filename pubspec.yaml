@@ -3,7 +3,7 @@ description: "INCM Real Estate Application"
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+2
+version: 1.0.2+7
 
 environment:
   sdk: ^3.5.3
@@ -49,6 +49,8 @@ dependencies:
   file_selector: ^1.0.0
   image_picker: ^1.0.4
   image: ^4.5.4
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
 
   # Firebase
   firebase_core: ^3.10.1
@@ -68,10 +70,6 @@ dependency_overrides:
 
 # The following section is specific to Flutter packages.
 flutter:
-  # Matches android product flavor `user` so `flutter run` / `flutter build apk`
-  # find the correct output without passing `--flavor` every time.
-  default-flavor: user
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../Utilities/font_helper.dart';
 import '../core/Contact/contact_info_provider.dart';
+import '../core/Contact/contact_launch.dart';
 import '../core/Language/app_languages.dart';
 import '../core/Language/locales.dart';
 import '../generated/assets.dart';
@@ -148,7 +149,7 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
                                   icon: Assets.iconsCall,
                                   text: info.phone,
                                   isClickable: true,
-                                  onTap: () => _makePhoneCall(info.phone),
+                                  onTap: () => _makePhoneCall(context, info.phone),
                                 ),
                               ],
                             );
@@ -196,24 +197,11 @@ class _FooterSectionMobState extends State<FooterSectionMob> {
 
   // دالة لفتح البريد الإلكتروني
   Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(
-      scheme: 'mailto',
-      path: email,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+    await launchContactEmail(email);
   }
 
-  // دالة لفتح رابط الاتصال
-  Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+  Future<void> _makePhoneCall(BuildContext context, String phoneNumber) async {
+    await launchContactPhone(context, phoneNumber);
   }
 
   Widget _buildSocialIcon(String icon) {

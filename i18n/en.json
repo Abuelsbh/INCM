@@ -102,6 +102,7 @@
   "PLEASE_ENTER_PHONE": "Please enter your phone number",
   "PLEASE_ENTER_VALID_PHONE": "Please enter a valid phone number (9-15 digits)",
   "PLEASE_ENTER_AREA": "Please enter the area",
+  "PLEASE_ENTER_DESCRIPTION_DETAILS": "Please enter a description or additional details",
   "PLEASE_ENTER_LOCATION": "Please enter the location",
   "PLEASE_SELECT_LOCATION": "Please select a location",
   "PLEASE_ENTER_MESSAGE": "Please enter the message",
@@ -443,5 +444,15 @@
   "ABOUT_LATEST_NEWS_ANNUAL_TITLE": "ANNUAL EVENT",
   "ABOUT_LATEST_NEWS_SIGNING_TITLE": "SIGNING CERMONY",
   "ABOUT_LATEST_NEWS_LIMITED_TITLE": "LIMMITED UNITS",
-  "ABOUT_LATEST_NEWS_EVENTS_BODY": "We provide solutions based on experience, with professional support and specialized of the"
+  "ABOUT_LATEST_NEWS_EVENTS_BODY": "We provide solutions based on experience, with professional support and specialized of the",
+  "NATIVE_MAP_OFFICE_ADDRESS": "Office location",
+  "NATIVE_MAP_OPEN_IN_SYSTEM_MAPS": "Open in Maps",
+  "NATIVE_SAVED_SCREEN_TITLE": "Saved projects",
+  "NATIVE_SAVED_SCREEN_SUBTITLE": "Bookmarks stored on this device",
+  "NATIVE_SAVED_EMPTY_TITLE": "No saved projects yet",
+  "NATIVE_SAVED_EMPTY_HINT": "Tap the bookmark icon on any exclusive leasing project to save it here.",
+  "NATIVE_SAVED_GO_PROJECTS": "Browse exclusive leasing projects",
+  "NATIVE_MENU_MAP": "Office map",
+  "NATIVE_MENU_SAVED": "Saved projects",
+  "NATIVE_BOOKMARK_PROJECT": "Save project"
 }

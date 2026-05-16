@@ -21,6 +21,7 @@ import 'core/Content/services_provider.dart';
 import 'core/Contact/contact_info_provider.dart';
 import 'core/Firebase/firebase_options.dart';
 import 'core/app_build_config.dart';
+import 'core/NativeApp/saved_bookmarks_provider.dart';
 
 Future<void> bootstrap({required bool adminApp}) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +65,7 @@ Future<void> bootstrap({required bool adminApp}) async {
       ChangeNotifierProvider<ContentProvider>(create: (_) => ContentProvider()),
       ChangeNotifierProvider<ServicesProvider>(create: (_) => ServicesProvider()),
       ChangeNotifierProvider<ContactInfoProvider>(create: (_) => ContactInfoProvider()),
+      ChangeNotifierProvider<SavedBookmarksProvider>(create: (_) => SavedBookmarksProvider()),
       if (AppBuildConfig.isAdminApp)
         ChangeNotifierProvider<AdminModeProvider>(create: (_) => AdminModeProvider()),
     ],

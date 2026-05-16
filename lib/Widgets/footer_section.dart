@@ -11,6 +11,7 @@ import '../core/Language/app_languages.dart';
 import '../generated/assets.dart';
 import '../core/Language/locales.dart';
 import '../core/Contact/contact_info_provider.dart';
+import '../core/Contact/contact_launch.dart';
 import 'animated_contact_info.dart';
 import 'package:provider/provider.dart';
 
@@ -187,7 +188,7 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
                                   iconSize: 28.sp,
                                   textColor: const Color(0xFFFFFFFF),
                                   iconColor: const Color(0xFFF4ED47),
-                                  onTap: () => _makePhoneCall(info.phone),
+                                  onTap: () => _makePhoneCall(context, info.phone),
                                 ),
                               ],
                             );
@@ -302,24 +303,11 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
 
   // دالة لفتح البريد الإلكتروني
   Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(
-      scheme: 'mailto',
-      path: email,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+    await launchContactEmail(email);
   }
 
-  // دالة لفتح رابط الاتصال
-  Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+  Future<void> _makePhoneCall(BuildContext context, String phoneNumber) async {
+    await launchContactPhone(context, phoneNumber);
   }
 
   // Widget لبناء نص "Powered by E-CODE WAVE" مع تأثير hover

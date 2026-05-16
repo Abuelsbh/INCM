@@ -1,8 +1,6 @@
 import 'bootstrap.dart';
 
-/// Admin app entrypoint. Use with Android flavor `admin`, e.g.:
-/// `flutter run --flavor admin -t lib/main_admin.dart`
-///
-/// User (store) build:
-/// `flutter run --flavor user -t lib/main.dart`
+/// Admin app entrypoint. The Android `admin` product flavor was removed; the Play
+/// Store build is `lib/main.dart` only. Reintroduce Gradle flavors here if you
+/// split admin into a separate APK again.
 Future<void> main() => bootstrap(adminApp: true);

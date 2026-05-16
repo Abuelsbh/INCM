@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -23,6 +23,8 @@ import '../Modules/Services/PrimaryInvestment/primary_investment_screen.dart';
 import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
 import '../Modules/Admin/admin_panel_screen.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
+import '../Modules/NativeApp/office_map_screen.dart';
+import '../Modules/NativeApp/saved_bookmarks_screen.dart';
 import '../core/Content/services_provider.dart';
 import '../core/app_build_config.dart';
 import '../generated/assets.dart';
@@ -137,6 +139,31 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                   ),
                   const Spacer(),
 
+                  if (!kIsWeb) ...[
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
+                      tooltip: 'NATIVE_MENU_MAP'.tr(context),
+                      onPressed: () => context.push(OfficeMapScreen.routeName),
+                      icon: Icon(
+                        Icons.map_outlined,
+                        color: Colors.white,
+                        size: 22.sp,
+                      ),
+                    ),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
+                      tooltip: 'NATIVE_MENU_SAVED'.tr(context),
+                      onPressed: () => context.push(SavedBookmarksScreen.routeName),
+                      icon: Icon(
+                        Icons.bookmarks_outlined,
+                        color: Colors.white,
+                        size: 22.sp,
+                      ),
+                    ),
+                  ],
+
                   // Explore Us Button (Web only)
                   if (kIsWeb) ButtonStyles.getAppButton(
                       context: context,
@@ -238,7 +265,7 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                                     ],
                                   ),
                                 ),
-                                // Menu Items
+                                // Menu Items (map & saved: AppBar icons only, not duplicated here)
                                 _buildMenuItem('HOME'.tr(context), () {
                                   _toggleMenu();
                                   context.go(HomeScreen.routeName);

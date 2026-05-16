@@ -49,6 +49,7 @@ class _HomeSearchSectionState extends State<HomeSearchSection> {
   String? _webVideoUrl;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
+  Timer? _hideResultsAfterUnfocusTimer;
   List<Map<String, String>> _searchResults = [];
   bool _showResults = false;
   late Future<String> _searchPlaceholderFuture;
@@ -239,10 +240,17 @@ class _HomeSearchSectionState extends State<HomeSearchSection> {
   }
 
   void _onFocusChanged() {
+    _hideResultsAfterUnfocusTimer?.cancel();
     if (!_searchFocusNode.hasFocus) {
-      // Always hide results when focus is lost
-      setState(() {
-        _showResults = false;
+      // Defer hiding: on web, losing focus fires before InkWell(onTap); immediate
+      // hide removes the dropdown and consumes the gesture.
+      _hideResultsAfterUnfocusTimer =
+          Timer(const Duration(milliseconds: 200), () {
+        _hideResultsAfterUnfocusTimer = null;
+        if (!mounted || _searchFocusNode.hasFocus) return;
+        setState(() {
+          _showResults = false;
+        });
       });
     } else {
       // Show results only if there's text and focus
@@ -255,6 +263,8 @@ class _HomeSearchSectionState extends State<HomeSearchSection> {
   }
 
   void _navigateToPage(String route, {String? projectId}) {
+    _hideResultsAfterUnfocusTimer?.cancel();
+    _hideResultsAfterUnfocusTimer = null;
     // Always hide results and unfocus first
     setState(() {
       _showResults = false;
@@ -307,6 +317,7 @@ class _HomeSearchSectionState extends State<HomeSearchSection> {
   @override
   void dispose() {
     _videoController?.dispose();
+    _hideResultsAfterUnfocusTimer?.cancel();
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();

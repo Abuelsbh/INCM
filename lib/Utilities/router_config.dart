@@ -21,6 +21,8 @@ import '../Modules/Services/GenericService/generic_service_screen.dart';
 import '../Modules/AllLogos/all_logos_screen.dart';
 import '../Modules/Admin/admin_panel_screen.dart';
 import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.dart';
+import '../Modules/NativeApp/office_map_screen.dart';
+import '../Modules/NativeApp/saved_bookmarks_screen.dart';
 import '../core/Content/content_provider.dart';
 import '../core/Content/route_page_mapping.dart';
 import '../core/app_build_config.dart';
@@ -215,6 +217,24 @@ class GoRouterConfig{
           return getCustomTransitionPage(
             state: state,
             child: const ExclusiveLeasingProjectsScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: OfficeMapScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const OfficeMapScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: SavedBookmarksScreen.routeName,
+        pageBuilder: (_, GoRouterState state) {
+          return getCustomTransitionPage(
+            state: state,
+            child: const SavedBookmarksScreen(),
           );
         },
       ),

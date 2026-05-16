@@ -102,6 +102,7 @@
   "PLEASE_ENTER_PHONE": "الرجاء إدخال رقم الهاتف",
   "PLEASE_ENTER_VALID_PHONE": "الرجاء إدخال رقم هاتف صحيح (9-15 رقم)",
   "PLEASE_ENTER_AREA": "الرجاء إدخال المنطقة",
+  "PLEASE_ENTER_DESCRIPTION_DETAILS": "الرجاء إدخال الوصف أو التفاصيل الإضافية",
   "PLEASE_ENTER_LOCATION": "الرجاء إدخال الموقع",
   "PLEASE_SELECT_LOCATION": "الرجاء اختيار الموقع",
   "PLEASE_ENTER_MESSAGE": "الرجاء إدخال الرسالة",
@@ -445,5 +446,15 @@
   "ABOUT_LATEST_NEWS_ANNUAL_TITLE": "الحدث السنوي",
   "ABOUT_LATEST_NEWS_SIGNING_TITLE": "حفل التوقيع",
   "ABOUT_LATEST_NEWS_LIMITED_TITLE": "وحدات محدودة",
-  "ABOUT_LATEST_NEWS_EVENTS_BODY": "نقدّم حلولاً مبنية على الخبرة، مع دعم مهني وتخصّصاً يلبي احتياجكم."
+  "ABOUT_LATEST_NEWS_EVENTS_BODY": "نقدّم حلولاً مبنية على الخبرة، مع دعم مهني وتخصّصاً يلبي احتياجكم.",
+  "NATIVE_MAP_OFFICE_ADDRESS": "موقع المكتب",
+  "NATIVE_MAP_OPEN_IN_SYSTEM_MAPS": "فتح في الخرائط",
+  "NATIVE_SAVED_SCREEN_TITLE": "المشاريع المحفوظة",
+  "NATIVE_SAVED_SCREEN_SUBTITLE": "محفوظة على هذا الجهاز فقط",
+  "NATIVE_SAVED_EMPTY_TITLE": "لا توجد مشاريع محفوظة بعد",
+  "NATIVE_SAVED_EMPTY_HINT": "اضغط أيقونة العلامة المرجعية على أي مشروع إيجار حصرّي ليظهر هنا.",
+  "NATIVE_SAVED_GO_PROJECTS": "تصفّح مشاريع الإيجار الحصرية",
+  "NATIVE_MENU_MAP": "خريطة المكتب",
+  "NATIVE_MENU_SAVED": "المشاريع المحفوظة",
+  "NATIVE_BOOKMARK_PROJECT": "حفظ المشروع"
 }

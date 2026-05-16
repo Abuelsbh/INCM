@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,6 +16,7 @@ import '../../Widgets/animated_contact_info.dart';
 import '../../core/Language/locales.dart';
 import '../../core/Language/app_languages.dart';
 import '../../core/Contact/contact_form_phone.dart';
+import '../../core/Contact/contact_launch.dart';
 import '../../core/Contact/contact_info_provider.dart';
 import '../../core/Contact/contact_submission_service.dart';
 import '../../core/responsive/native_layout.dart';
@@ -135,23 +135,11 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
   }
 
   Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(
-      scheme: 'mailto',
-      path: email,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+    await launchContactEmail(email);
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+    await launchContactPhone(context, phoneNumber);
   }
 
   Future<void> _openLink(String link) async {

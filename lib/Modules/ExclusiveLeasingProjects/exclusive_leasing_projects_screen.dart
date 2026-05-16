@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,7 @@ import '../../Widgets/dynamic_content_widget.dart';
 import '../../core/Language/app_languages.dart';
 import '../../core/Content/content_provider.dart';
 import '../../core/Content/exclusive_leasing_projects_data.dart';
+import '../../core/NativeApp/saved_bookmarks_provider.dart';
 import '../../Utilities/font_helper.dart';
 import '../../core/Language/locales.dart';
 import '../../core/responsive/native_layout.dart';
@@ -359,9 +361,12 @@ class _ExclusiveLeasingProjectsScreenState
     final imageFallback = project['imageFallback'] as String;
     final localImages = List<String>.from(project['localImages'] as List<dynamic>? ?? []);
 
-    return Container(
+    return Stack(
       key: _projectKeys[projectId],
-      child: isMobile
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          child: isMobile
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -491,6 +496,40 @@ class _ExclusiveLeasingProjectsScreenState
                 ),
               ],
             ),
+        ),
+        if (!kIsWeb)
+          Positioned.directional(
+            textDirection: Directionality.of(context),
+            top: 0,
+            end: 0,
+            child: Material(
+              color: Colors.black.withOpacity(0.45),
+              elevation: 2,
+              shape: const CircleBorder(),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: () async {
+                  await context.read<SavedBookmarksProvider>().toggleProject(projectId);
+                  HapticFeedback.lightImpact();
+                },
+                customBorder: const CircleBorder(),
+                child: Padding(
+                  padding: EdgeInsets.all(8.w),
+                  child: Consumer<SavedBookmarksProvider>(
+                    builder: (context, bookmarks, _) {
+                      final saved = bookmarks.isProjectSaved(projectId);
+                      return Icon(
+                        saved ? Icons.bookmark : Icons.bookmark_add_outlined,
+                        color: _kExclusiveLeasingAccent,
+                        size: isMobile ? 24.sp : 28.sp,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 

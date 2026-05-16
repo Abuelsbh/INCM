@@ -12,7 +12,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.incomercial.realestate"
+    namespace = "com.incm.realestate"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -26,27 +26,12 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.incomercial.realestate"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.incm.realestate"
+        resValue("string", "app_name", "INCM")
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-    }
-
-    flavorDimensions += "app"
-    productFlavors {
-        user {
-            dimension = "app"
-            resValue("string", "app_name", "INCM")
-        }
-        admin {
-            dimension = "app"
-            applicationId = "com.incomercial.realestate.admin"
-            resValue("string", "app_name", "INCM Admin")
-        }
     }
 
     signingConfigs {

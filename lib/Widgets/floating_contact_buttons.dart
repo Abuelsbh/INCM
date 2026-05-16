@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../generated/assets.dart';
 import '../core/Contact/contact_info_provider.dart';
+import '../core/Contact/contact_launch.dart';
 import 'main_contact_button.dart';
 
 class FloatingContactButtons extends StatefulWidget {
@@ -62,13 +63,7 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
 
   // دالة لفتح رابط الاتصال
   Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+    await launchContactPhone(context, phoneNumber);
   }
 
   // دالة لفتح الواتساب
@@ -81,13 +76,7 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
 
   // دالة لفتح البريد الإلكتروني
   Future<void> _sendEmail(String email) async {
-    final Uri launchUri = Uri(
-      scheme: 'mailto',
-      path: email,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+    await launchContactEmail(email);
   }
 
   @override

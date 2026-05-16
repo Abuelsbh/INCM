@@ -242,7 +242,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
     }
 
     if (_areaController.text.trim().isEmpty) {
-      _showToast('PLEASE_ENTER_AREA'.tr(context));
+      _showToast('PLEASE_ENTER_DESCRIPTION_DETAILS'.tr(context));
       return;
     }
 
