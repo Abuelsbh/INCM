@@ -1,4 +1,4 @@
-package com.incm.realestate
+package com.incomercial.realestate
 
 import io.flutter.embedding.android.FlutterActivity
 

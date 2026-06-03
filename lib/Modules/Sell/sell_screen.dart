@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
@@ -220,6 +221,10 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
     return phoneRegex.hasMatch(phone);
   }
 
+  bool _validateNumeric(String value) {
+    return RegExp(r'^[0-9]+$').hasMatch(value.trim());
+  }
+
   Future<void> _handleSubmit() async {
     final context = this.context;
     if (_fullNameController.text.trim().isEmpty) {
@@ -257,8 +262,18 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
       return;
     }
 
+    if (!_validateNumeric(_budgetController.text)) {
+      _showToast('PLEASE_ENTER_NUMBERS_ONLY'.tr(context));
+      return;
+    }
+
     if (_sizeController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_ASKING_PRICE'.tr(context));
+      return;
+    }
+
+    if (!_validateNumeric(_sizeController.text)) {
+      _showToast('PLEASE_ENTER_NUMBERS_ONLY'.tr(context));
       return;
     }
 
@@ -510,6 +525,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
               'UNIT_SIZE_SQM'.tr(context),
               controller: _budgetController,
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -531,6 +547,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
               'ASKING_PRICE_EGP'.tr(context),
               controller: _sizeController,
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -588,6 +605,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                     'UNIT_SIZE_SQM'.tr(context),
                     controller: _budgetController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
@@ -617,6 +635,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                     'ASKING_PRICE_EGP'.tr(context),
                     controller: _sizeController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
@@ -643,6 +662,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
       String label, {
         required TextEditingController controller,
         TextInputType? keyboardType,
+        List<TextInputFormatter>? inputFormatters,
         String? hint,
         double? height,
         required bool isMobile,
@@ -680,6 +700,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
               child: TextField(
                 controller: controller,
                 keyboardType: keyboardType,
+                inputFormatters: inputFormatters,
                 decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
@@ -787,6 +808,7 @@ class _SellScreenState extends State<SellScreen> with SingleTickerProviderStateM
                     child: TextField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         hintText: '01XXXXXXXXX',
                         isDense: true,

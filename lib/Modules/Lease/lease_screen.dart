@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
@@ -226,6 +227,10 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
     return phoneRegex.hasMatch(phone);
   }
 
+  bool _validateNumeric(String value) {
+    return RegExp(r'^[0-9]+$').hasMatch(value.trim());
+  }
+
   Future<void> _handleSubmit() async {
     final context = this.context;
     if (_fullNameController.text.trim().isEmpty) {
@@ -263,8 +268,18 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
       return;
     }
 
+    if (!_validateNumeric(_budgetController.text)) {
+      _showToast('PLEASE_ENTER_NUMBERS_ONLY'.tr(context));
+      return;
+    }
+
     if (_sizeController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_RENTAL_BUDGET'.tr(context));
+      return;
+    }
+
+    if (!_validateNumeric(_sizeController.text)) {
+      _showToast('PLEASE_ENTER_NUMBERS_ONLY'.tr(context));
       return;
     }
 
@@ -647,6 +662,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
               'UNIT_SIZE_SQM'.tr(context),
               controller: _budgetController,
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -655,6 +671,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
               'BUDGET_RENTAL_PRICE_EGP'.tr(context),
               controller: _sizeController,
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -741,6 +758,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                     'BUDGET_RENTAL_PRICE_EGP'.tr(context),
                     controller: _sizeController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
@@ -751,6 +769,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                     'UNIT_SIZE_SQM'.tr(context),
                     controller: _budgetController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
@@ -778,6 +797,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
       String label, {
         required TextEditingController controller,
         TextInputType? keyboardType,
+        List<TextInputFormatter>? inputFormatters,
         String? hint,
         double? height,
         required bool isMobile,
@@ -815,6 +835,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
               child: TextField(
                 controller: controller,
                 keyboardType: keyboardType,
+                inputFormatters: inputFormatters,
                 decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
@@ -1145,6 +1166,7 @@ class _LeaseScreenState extends State<LeaseScreen> with SingleTickerProviderStat
                     child: TextField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         hintText: '01XXXXXXXXX',
                         isDense: true,

@@ -166,7 +166,7 @@ class SavedBookmarksScreen extends StatelessWidget {
             right: 0,
             child: useWebDesktopAppBar(context)
                 ? const SizedBox.shrink()
-                : SafeArea(bottom: false, child: SizedBox(height: 50.h, child: CustomAppBarMob())),
+                : const CustomAppBarMob(),
           ),
           if (showNativeChrome) const FloatingContactButtons(),
         ],

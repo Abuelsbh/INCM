@@ -25,6 +25,10 @@ class RoutePageMapping {
     '/exclusive-leasing-projects': 'exclusive-leasing-projects',
   };
 
+  /// All Firebase page IDs for static content routes (background prefetch).
+  static List<String> get contentPageIdsForPrefetch =>
+      _routeToPageId.values.toSet().toList();
+
   /// Get pageId for a route path (normalized - removes query params)
   /// For /services/:pageId, returns the pageId (supports custom services)
   static String? getPageIdForRoute(String location) {

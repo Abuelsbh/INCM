@@ -23,7 +23,7 @@ class OfficeMapScreen extends StatelessWidget {
 
   const OfficeMapScreen({super.key});
 
-  static const String _userAgentPackage = 'com.incm.realestate';
+  static const String _userAgentPackage = 'com.incomercial.realestate';
 
   Future<void> _openMapsExternally(BuildContext context) async {
     final address = Provider.of<ContactInfoProvider>(context, listen: false).address;
@@ -153,7 +153,7 @@ class OfficeMapScreen extends StatelessWidget {
             right: 0,
             child: useWebDesktopAppBar(context)
                 ? const SizedBox.shrink()
-                : SafeArea(bottom: false, child: SizedBox(height: 50.h, child: CustomAppBarMob())),
+                : const CustomAppBarMob(),
           ),
           if (showNativeChrome) const FloatingContactButtons(),
         ],

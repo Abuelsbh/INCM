@@ -72,8 +72,10 @@ class DefaultFirebaseOptions {
   );
 
 
-  /// Android package is `com.incm.realestate`. Register this app in Firebase Console
-  /// (same project is fine), then run `flutterfire configure` or paste `mobilesdk_app_id` here.
+  /// Android package is `com.incomercial.realestate` (matches iOS bundle id prefix).
+  /// After changing applicationId, add this Android app in Firebase Console (or run
+  /// `flutterfire configure`) and replace [appId] below with the new `mobilesdk_app_id`
+  /// if it differs from the old `com.incm.realestate` registration.
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB-UomzDJ7g02oF_3o_vtWYD5pcbmb924k',
     appId: '1:75851289116:android:c21e5c5500a13a652bc5d9',

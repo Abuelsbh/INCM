@@ -23,25 +23,65 @@ String contactTelDialString(String phone) {
   return buf.toString();
 }
 
+/// Digits only for `https://wa.me/<number>` (no leading `+`).
+String contactWhatsAppWaMeNumber(String phone) {
+  final dial = contactTelDialString(phone);
+  if (dial.isEmpty) return dial;
+  return dial.startsWith('+') ? dial.substring(1) : dial;
+}
+
 bool _useDesktopWebPhoneDialog(BuildContext context) {
   return kIsWeb &&
       MediaQuery.sizeOf(context).width >= kContactLaunchDesktopWebMinWidth;
 }
 
-Future<void> _launchUri(Uri uri) async {
+Future<void> _launchUri(
+  Uri uri, {
+  bool openInNewBrowserTab = false,
+}) async {
+  final mode = openInNewBrowserTab
+      ? LaunchMode.externalApplication
+      : LaunchMode.platformDefault;
+  final webWindow = openInNewBrowserTab && kIsWeb ? '_blank' : null;
   try {
-    await launchUrl(uri, mode: LaunchMode.platformDefault);
+    await launchUrl(
+      uri,
+      mode: mode,
+      webOnlyWindowName: webWindow,
+    );
   } catch (_) {
     try {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+        webOnlyWindowName: webWindow,
+      );
     } catch (_) {}
   }
 }
 
-/// Opens the default mail handler (`mailto:`).
+Uri _gmailComposeUri(String to) {
+  return Uri.https(
+    'mail.google.com',
+    '/mail/',
+    <String, String>{
+      'view': 'cm',
+      'fs': '1',
+      'to': to,
+    },
+  );
+}
+
+/// On web opens Gmail compose; on native opens the default mail handler (`mailto:`).
 Future<void> launchContactEmail(String email) async {
   final trimmed = email.trim();
   if (trimmed.isEmpty) return;
+
+  if (kIsWeb) {
+    await _launchUri(_gmailComposeUri(trimmed), openInNewBrowserTab: true);
+    return;
+  }
+
   await _launchUri(Uri(scheme: 'mailto', path: trimmed));
 }
 
@@ -72,4 +112,15 @@ Future<void> launchContactPhone(BuildContext context, String displayPhone) async
   }
 
   await _launchUri(Uri(scheme: 'tel', path: dial));
+}
+
+/// Opens WhatsApp chat via `https://wa.me/`. On web uses a new tab so mobile browsers can hand off to the app.
+Future<void> launchContactWhatsApp(String phone) async {
+  final number = contactWhatsAppWaMeNumber(phone);
+  if (number.isEmpty) return;
+
+  await _launchUri(
+    Uri.https('wa.me', number),
+    openInNewBrowserTab: kIsWeb,
+  );
 }

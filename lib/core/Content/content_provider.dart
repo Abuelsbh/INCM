@@ -3,6 +3,7 @@ import '../../Models/content_model.dart';
 import '../../Models/page_content_model.dart';
 import '../Firebase/firebase_content_service.dart';
 import 'image_compress_helper.dart';
+import 'route_page_mapping.dart';
 
 class ContentProvider extends ChangeNotifier {
   final FirebaseContentService _contentService = FirebaseContentService();
@@ -29,6 +30,29 @@ class ContentProvider extends ChangeNotifier {
   Future<void> ensurePageLoaded(String pageId) async {
     if (_contentCache.containsKey(pageId)) return;
     await getPageContent(pageId);
+  }
+
+  /// Fills the cache for other CMS routes without toggling [isLoading] (best-effort prefetch).
+  Future<void> prefetchOtherContentPages({String? exceptPageId}) async {
+    final ids = RoutePageMapping.contentPageIdsForPrefetch
+        .where((id) => id != exceptPageId)
+        .toList();
+    var anyAdded = false;
+    await Future.wait(ids.map((pageId) async {
+      if (_contentCache.containsKey(pageId)) return;
+      try {
+        final content = await _contentService.getPageContent(pageId);
+        if (_contentCache.containsKey(pageId)) return;
+        _contentCache[pageId] = content;
+        for (final c in content) {
+          _singleContentCache['$pageId-${c.sectionId}'] = c;
+        }
+        anyAdded = true;
+      } catch (_) {
+        // Prefetch only; ignore failures
+      }
+    }));
+    if (anyAdded) notifyListeners();
   }
 
   /// Get content for a specific page

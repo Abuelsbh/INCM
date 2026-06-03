@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -586,9 +587,9 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
               contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               ),
               style: TextStyle(
-                fontFamily: 'AloeveraDisplayBold',
+                //fontFamily: 'AloeveraDisplayBold',
                 color: Colors.black,
-                fontSize: 26.sp,
+                fontSize: isMobile? 14.sp :24.sp,
               ),
             ),
           ),
@@ -671,6 +672,7 @@ class _ContentServiceSectionState extends State<ContentServiceSection>
                   child: TextField(
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       isDense: true,
                       border: InputBorder.none,

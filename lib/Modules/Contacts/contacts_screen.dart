@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
@@ -876,7 +877,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                 hintText: hint,
                 hintTextDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
                 hintStyle: TextStyle(
-                  fontFamily: 'AloeveraDisplayBold',
+                  //fontFamily: 'AloeveraDisplayBold',
                   color: Colors.grey[500],
                   fontSize: isMobile ? 14.sp : (isTablet ? 18.sp : 28.sp),
                 ),
@@ -884,7 +885,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
               style: TextStyle(
                 fontSize: isMobile ? 14.sp : 28.sp,
                 color: Colors.black,
-                fontFamily: 'AloeveraDisplayBold',
+                //fontFamily: 'AloeveraDisplayBold',
               ),
             ),
           ),
@@ -976,6 +977,7 @@ class _ContactsScreenState extends State<ContactsScreen> with SingleTickerProvid
                     child: TextField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         hintText: '01XXXXXXXXX',
                         isDense: true,

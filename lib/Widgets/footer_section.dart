@@ -12,6 +12,7 @@ import '../generated/assets.dart';
 import '../core/Language/locales.dart';
 import '../core/Contact/contact_info_provider.dart';
 import '../core/Contact/contact_launch.dart';
+import '../Utilities/app_store_download.dart';
 import 'animated_contact_info.dart';
 import 'package:provider/provider.dart';
 
@@ -220,40 +221,49 @@ class _FooterSectionState extends State<FooterSection> with SingleTickerProvider
       
                         SizedBox(height: 10.h),
       
-                        // QR Code placeholder
+                        // Store links
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-      
-                            Container(
-                              width: 60.w,
-                              height: 60.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-      
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  Assets.iconsGooglePlay,
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () => launchAppListing(AppStoreUrls.googlePlay),
+                                child: Container(
                                   width: 60.w,
                                   height: 60.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: Center(
+                                    child: Image.asset(
+                                      Assets.iconsGooglePlay,
+                                      width: 60.w,
+                                      height: 60.h,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                             Gap(30.w),
-                            Container(
-                              width: 60.w,
-                              height: 60.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-      
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  Assets.iconsAppStore,
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: GestureDetector(
+                                onTap: () => launchAppListing(AppStoreUrls.appStore),
+                                child: Container(
                                   width: 60.w,
                                   height: 60.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: Center(
+                                    child: Image.asset(
+                                      Assets.iconsAppStore,
+                                      width: 60.w,
+                                      height: 60.h,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

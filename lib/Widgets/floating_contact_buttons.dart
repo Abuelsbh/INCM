@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../generated/assets.dart';
 import '../core/Contact/contact_info_provider.dart';
 import '../core/Contact/contact_launch.dart';
@@ -64,14 +63,6 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
   // دالة لفتح رابط الاتصال
   Future<void> _makePhoneCall(String phoneNumber) async {
     await launchContactPhone(context, phoneNumber);
-  }
-
-  // دالة لفتح الواتساب
-  Future<void> _openWhatsApp(String phoneNumber) async {
-    final Uri launchUri = Uri.parse('https://wa.me/$phoneNumber');
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri, mode: LaunchMode.externalApplication);
-    }
   }
 
   // دالة لفتح البريد الإلكتروني
@@ -139,7 +130,7 @@ class _FloatingContactButtonsState extends State<FloatingContactButtons>
                           child: Opacity(
                             opacity: _fadeAnimation.value,
                             child: _ContactButton(
-                              onTap: () => _openWhatsApp(info.whatsapp),
+                              onTap: () => launchContactWhatsApp(info.whatsapp),
                               backgroundColor: const Color(0xFF25D366),
                               useAsset: false,
                             ),

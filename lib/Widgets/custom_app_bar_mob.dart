@@ -26,8 +26,10 @@ import '../Modules/ExclusiveLeasingProjects/exclusive_leasing_projects_screen.da
 import '../Modules/NativeApp/office_map_screen.dart';
 import '../Modules/NativeApp/saved_bookmarks_screen.dart';
 import '../core/Content/services_provider.dart';
+import '../core/NativeApp/saved_bookmarks_provider.dart';
 import '../core/app_build_config.dart';
 import '../generated/assets.dart';
+import '../Utilities/app_store_download.dart';
 import 'custom_button.dart';
 
 class CustomAppBarMob extends StatefulWidget {
@@ -151,24 +153,48 @@ class _CustomAppBarState extends State<CustomAppBarMob> with SingleTickerProvide
                         size: 22.sp,
                       ),
                     ),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
-                      tooltip: 'NATIVE_MENU_SAVED'.tr(context),
-                      onPressed: () => context.push(SavedBookmarksScreen.routeName),
-                      icon: Icon(
-                        Icons.bookmarks_outlined,
-                        color: Colors.white,
-                        size: 22.sp,
-                      ),
+                    Consumer<SavedBookmarksProvider>(
+                      builder: (context, bookmarks, _) {
+                        final n = bookmarks.savedCount;
+                        return Badge(
+                          isLabelVisible: n > 0,
+                          backgroundColor: const Color(0xFFF4ED47),
+                          textColor: Colors.black,
+                          padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                          label: Text(
+                            n > 99 ? '99+' : '$n',
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          alignment: AlignmentDirectional.topEnd,
+                          // Slightly lower so the badge sits on the icon, not above it
+                          offset: Offset(0, 6.h),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints:
+                                BoxConstraints(minWidth: 36.w, minHeight: 36.h),
+                            tooltip: 'NATIVE_MENU_SAVED'.tr(context),
+                            onPressed: () =>
+                                context.push(SavedBookmarksScreen.routeName),
+                            icon: Icon(
+                              Icons.bookmarks_outlined,
+                              color: Colors.white,
+                              size: 22.sp,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
 
                   // Explore Us Button (Web only)
-                  if (kIsWeb) ButtonStyles.getAppButton(
+                  if (kIsWeb)
+                    ButtonStyles.getAppButton(
                       context: context,
-                      onPressed: () => {},
-                  ),
+                      onPressed: () => showAppDownloadSheet(context),
+                    ),
                   if (kIsWeb) SizedBox(width: 16.w),
 
                   // Menu Icon

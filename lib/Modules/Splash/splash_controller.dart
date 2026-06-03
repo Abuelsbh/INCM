@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:incm/core/Content/content_provider.dart';
@@ -32,4 +34,7 @@ Future<void> loadDataAndNavigate(BuildContext context, String targetRoute) async
   if (!context.mounted) return;
   GoRouterConfig.router.go(targetRoute);
   SplashSession.markFirstSplashDone();
+  unawaited(
+    contentProvider.prefetchOtherContentPages(exceptPageId: pageId),
+  );
 }

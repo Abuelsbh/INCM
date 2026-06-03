@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
@@ -219,6 +220,10 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
     return phoneRegex.hasMatch(phone);
   }
 
+  bool _validateNumeric(String value) {
+    return RegExp(r'^[0-9]+$').hasMatch(value.trim());
+  }
+
   Future<void> _handleSubmit() async {
     final context = this.context;
     if (_fullNameController.text.trim().isEmpty) {
@@ -253,6 +258,17 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
 
     if (_sizeController.text.trim().isEmpty) {
       _showToast('PLEASE_ENTER_UNIT_SIZE'.tr(context));
+      return;
+    }
+
+    if (!_validateNumeric(_sizeController.text)) {
+      _showToast('PLEASE_ENTER_NUMBERS_ONLY'.tr(context));
+      return;
+    }
+
+    if (_budgetController.text.trim().isNotEmpty &&
+        !_validateNumeric(_budgetController.text)) {
+      _showToast('PLEASE_ENTER_NUMBERS_ONLY'.tr(context));
       return;
     }
 
@@ -505,6 +521,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
               'BUDGET_EGP'.tr(context),
               controller: _budgetController,
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -527,6 +544,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
               'UNIT_SIZE_SQM'.tr(context),
               controller: _sizeController,
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               isMobile: isMobile,
               isTablet: isTablet,
             ),
@@ -610,6 +628,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                     'BUDGET_EGP'.tr(context),
                     controller: _budgetController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
@@ -639,6 +658,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                     'UNIT_SIZE_SQM'.tr(context),
                     controller: _sizeController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     isMobile: isMobile,
                     isTablet: isTablet,
                   ),
@@ -710,6 +730,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
       String label, {
         required TextEditingController controller,
         TextInputType? keyboardType,
+        List<TextInputFormatter>? inputFormatters,
         required bool isMobile,
         required bool isTablet
       }) {
@@ -745,6 +766,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
               child: TextField(
                 controller: controller,
                 keyboardType: keyboardType,
+                inputFormatters: inputFormatters,
                 decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
@@ -852,6 +874,7 @@ class _BuyScreenState extends State<BuyScreen> with SingleTickerProviderStateMix
                     child: TextField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                         hintText: '01XXXXXXXXX',
                         isDense: true,
