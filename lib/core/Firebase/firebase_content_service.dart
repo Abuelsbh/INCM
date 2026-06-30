@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import '../../Models/content_model.dart';
 import '../../Models/page_content_model.dart';
 
+const Duration _kFirestoreTimeout = Duration(seconds: 10);
+
 class FirebaseContentService {
   final String _collectionName = 'app_content';
 
@@ -38,7 +40,8 @@ class FirebaseContentService {
       final querySnapshot = await _firestore!
           .collection(_collectionName)
           .where('pageId', isEqualTo: pageId)
-          .get();
+          .get()
+          .timeout(_kFirestoreTimeout);
 
       return querySnapshot.docs
           .map((doc) => ContentModel.fromMap({

@@ -11,10 +11,16 @@ class SplashSession {
   /// Whether this session's first splash should use the typewriter animation.
   static bool get showFullLogoAnimation => !_hasCompletedFirstSplashThisSession;
 
+  /// True after the first splash has finished and navigated away.
+  static bool get hasCompletedFirstSplash => _hasCompletedFirstSplashThisSession;
+
   /// Call from splash screen [State.initState] before [loadDataAndNavigate].
   static void beginSplashFrame() {
     if (showFullLogoAnimation) {
       _animationDone = Completer<void>();
+      unawaited(
+        Future<void>.delayed(const Duration(seconds: 4), completeAnimation),
+      );
     } else {
       _animationDone = Completer<void>()..complete();
     }

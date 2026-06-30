@@ -92,9 +92,11 @@ class _EntryPointState extends State<EntryPoint> {
         final appLan = Provider.of<AppLanguage>(context, listen: false);
         final appTheme = Provider.of<ThemeProvider>(context, listen: false);
         final servicesProvider = Provider.of<ServicesProvider>(context, listen: false);
+        final contentProvider = Provider.of<ContentProvider>(context, listen: false);
         appLan.fetchLocale();
         appTheme.fetchTheme();
         servicesProvider.loadServices();
+        contentProvider.prefetchAllContentPagesInBackground();
       });
     }
   }

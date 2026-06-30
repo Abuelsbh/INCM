@@ -32,7 +32,6 @@ class Assets {
   static const String iconsSplash1 = 'assets/icons/splash1.png';
   static const String iconsSplash2 = 'assets/icons/splash2.png';
   static const String iconsTik = 'assets/icons/tik.png';
-  static const String imagesAboutUsBacground1 = 'assets/images/aboutUsBacground1.png';
   static const String imagesAboutUsBackground = 'assets/images/aboutUsBackground.png';
   static const String imagesAboutUsBackground1 = 'assets/images/aboutUsBackground1.png';
   static const String imagesAboutUsBackgroundMob = 'assets/images/aboutUsBackgroundMob.png';
@@ -41,7 +40,7 @@ class Assets {
   static const String imagesCareerViewMob = 'assets/images/careerViewMob.png';
   static const String imagesCareerViewWeb = 'assets/images/careerViewWeb.png';
   static const String imagesContactPage = 'assets/images/contactPage.png';
-  static const String imagesContactPageMob = 'assets/images/contactPageMob.JPG';
+  static const String imagesContactPageMob = 'assets/images/contactPageMob.png';
   static const String imagesContactUsBackground = 'assets/images/contactUsBackground.png';
   static const String imagesContactUsBackgroundMob = 'assets/images/contactUsBackgroundMob.png';
   static const String imagesDownloadAppStore = 'assets/images/downloadAppStore.png';
@@ -59,7 +58,7 @@ class Assets {
   static const String imagesLogoINCM = 'assets/images/logoINCM.png';
   static const String imagesPerformanceBackground = 'assets/images/performanceBackground.png';
   static const String imagesPerformanceBackgroundMob = 'assets/images/performanceBackgroundMob.png';
-  static const String imagesPic1 = 'assets/images/pic1.jpeg';
+  static const String imagesPic1 = 'assets/images/pic1.png';
   static const String imagesPic2 = 'assets/images/pic2.jpeg';
   static const String imagesPic3 = 'assets/images/pic3.jpeg';
   static const String imagesPic4 = 'assets/images/pic4.jpeg';

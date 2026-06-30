@@ -8,6 +8,8 @@ import 'package:incm/core/Contact/contact_info_provider.dart';
 import '../../Utilities/router_config.dart';
 import 'splash_session.dart';
 
+const Duration _kSplashLoadTimeout = Duration(seconds: 12);
+
 /// Loads page data from Firebase and navigates when ready.
 /// Call from splash screen initState after [SplashSession.beginSplashFrame].
 Future<void> loadDataAndNavigate(BuildContext context, String targetRoute) async {
@@ -17,24 +19,27 @@ Future<void> loadDataAndNavigate(BuildContext context, String targetRoute) async
   final pageId = RoutePageMapping.getPageIdForRoute(targetRoute);
 
   Future<void> loadData() async {
+    final tasks = <Future<void>>[
+      contactProvider.fetchContactInfo(),
+      contentProvider.prefetchOtherContentPages(exceptPageId: pageId),
+    ];
+
     if (pageId != null && !contentProvider.isPageCached(pageId)) {
-      await contentProvider.ensurePageLoaded(pageId);
+      tasks.add(contentProvider.ensurePageLoaded(pageId));
     }
 
-    // دائماً: إعدادات الاتصال وEmailJS من لوحة الأدمن (Firestore) — الموبايل يعتمد عليها
-    // وليس على --dart-define كالويب.
-    await contactProvider.fetchContactInfo();
+    await Future.wait(tasks);
   }
 
-  await Future.wait<void>([
-    loadData(),
-    SplashSession.animationEnded,
-  ]);
+  try {
+    await Future.wait<void>([
+      loadData(),
+      SplashSession.animationEnded,
+    ]).timeout(_kSplashLoadTimeout);
+  } on TimeoutException {
+    SplashSession.completeAnimation();
+  }
 
-  if (!context.mounted) return;
-  GoRouterConfig.router.go(targetRoute);
   SplashSession.markFirstSplashDone();
-  unawaited(
-    contentProvider.prefetchOtherContentPages(exceptPageId: pageId),
-  );
+  GoRouterConfig.router.go(targetRoute);
 }

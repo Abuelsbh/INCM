@@ -16,4 +16,8 @@ flutter build web -t lib/main.dart --release -o build/web \
   --dart-define=RECIPIENT_EMAIL="${RECIPIENT_EMAIL}" \
   --dart-define=EMAILJS_ACCESS_TOKEN="${EMAILJS_ACCESS_TOKEN}"
 
+# Apache/cPanel servers return 403 if copied assets keep owner-only (600) permissions.
+find build/web -type d -exec chmod 755 {} +
+find build/web -type f -exec chmod 644 {} +
+
 echo "Done. Upload folder: $(pwd)/build/web"

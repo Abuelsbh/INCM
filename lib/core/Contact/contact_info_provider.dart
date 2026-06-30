@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import '../../Models/contact_info_model.dart';
 import '../Firebase/firebase_contact_info_service.dart';
@@ -11,6 +13,7 @@ class ContactInfoProvider extends ChangeNotifier {
   ContactInfoModel _contactInfo = ContactInfoModel.defaults;
   bool _isLoaded = false;
   bool _isLoading = false;
+  Future<void>? _fetchFuture;
 
   ContactInfoModel get contactInfo => _contactInfo;
   bool get isLoaded => _isLoaded;
@@ -26,14 +29,26 @@ class ContactInfoProvider extends ChangeNotifier {
   /// إذا كانت البيانات محملة مسبقاً، لا يتم جلبها مرة أخرى
   Future<void> fetchContactInfo() async {
     if (_isLoaded && !_isLoading) return;
+    if (_fetchFuture != null) return _fetchFuture!;
+
     _isLoading = true;
     notifyListeners();
 
+    _fetchFuture = _loadContactInfo();
+    try {
+      await _fetchFuture;
+    } finally {
+      _fetchFuture = null;
+    }
+  }
+
+  Future<void> _loadContactInfo() async {
     try {
       _contactInfo = await _service.getContactInfo();
       _isLoaded = true;
     } catch (e) {
       _contactInfo = ContactInfoModel.defaults;
+      _isLoaded = true;
     } finally {
       _isLoading = false;
       notifyListeners();

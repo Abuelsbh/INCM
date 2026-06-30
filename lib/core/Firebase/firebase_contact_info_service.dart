@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../../Models/contact_info_model.dart';
 
+const Duration _kFirestoreTimeout = Duration(seconds: 10);
+
 class FirebaseContactInfoService {
   static const String _docPath = 'app_settings/contact_info';
 
@@ -29,7 +31,7 @@ class FirebaseContactInfoService {
       return ContactInfoModel.defaults;
     }
     try {
-      final doc = await _firestore!.doc(_docPath).get();
+      final doc = await _firestore!.doc(_docPath).get().timeout(_kFirestoreTimeout);
       if (doc.exists && doc.data() != null) {
         return ContactInfoModel.fromMap(doc.data());
       }

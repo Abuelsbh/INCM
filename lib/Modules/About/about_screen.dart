@@ -571,7 +571,7 @@ class _AboutScreenState extends State<AboutScreen>
                 child: DynamicBackgroundContainer(
                   pageId: _aboutPageId,
                   sectionId: 'about-background',
-                  fallbackAssetPath: Assets.imagesAboutUsBacground1,
+                  fallbackAssetPath: Assets.imagesAboutUsBackground1,
                   fit: BoxFit.fill,
                   width: double.infinity,
                   height: 1200.h,

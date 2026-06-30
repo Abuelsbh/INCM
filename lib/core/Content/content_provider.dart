@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import '../../Models/content_model.dart';
 import '../../Models/page_content_model.dart';
@@ -11,14 +13,19 @@ class ContentProvider extends ChangeNotifier {
   // Cache for content
   final Map<String, List<ContentModel>> _contentCache = {};
   final Map<String, ContentModel> _singleContentCache = {};
+  final Map<String, Future<List<ContentModel>>> _pageLoadFutures = {};
+  final Set<String> _loadingPageIds = {};
   bool _isLoading = false;
   String? _errorMessage;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  /// Check if page content is already cached
+  /// Check if page content is already cached (including empty results after load).
   bool isPageCached(String pageId) => _contentCache.containsKey(pageId);
+
+  /// True while a Firebase fetch for this page is in flight.
+  bool isPageLoading(String pageId) => _loadingPageIds.contains(pageId);
 
   /// Synchronous read of cached page content (null if not loaded yet).
   List<ContentModel>? peekCachedPageContent(String pageId) {
@@ -27,60 +34,81 @@ class ContentProvider extends ChangeNotifier {
 
   /// Ensure page content is loaded (load from Firebase if not cached)
   /// Returns when data is ready - use before showing a page to avoid default→Firebase flash
-  Future<void> ensurePageLoaded(String pageId) async {
+  Future<void> ensurePageLoaded(String pageId, {bool silent = false}) async {
     if (_contentCache.containsKey(pageId)) return;
-    await getPageContent(pageId);
+    await getPageContent(pageId, silent: silent);
+  }
+
+  /// Starts loading all CMS pages in parallel (best-effort).
+  void prefetchAllContentPagesInBackground() {
+    for (final pageId in RoutePageMapping.contentPageIdsForPrefetch) {
+      if (_contentCache.containsKey(pageId)) continue;
+      unawaited(ensurePageLoaded(pageId, silent: true));
+    }
   }
 
   /// Fills the cache for other CMS routes without toggling [isLoading] (best-effort prefetch).
   Future<void> prefetchOtherContentPages({String? exceptPageId}) async {
     final ids = RoutePageMapping.contentPageIdsForPrefetch
-        .where((id) => id != exceptPageId)
+        .where((id) => id != exceptPageId && !_contentCache.containsKey(id))
         .toList();
-    var anyAdded = false;
-    await Future.wait(ids.map((pageId) async {
-      if (_contentCache.containsKey(pageId)) return;
-      try {
-        final content = await _contentService.getPageContent(pageId);
-        if (_contentCache.containsKey(pageId)) return;
-        _contentCache[pageId] = content;
-        for (final c in content) {
-          _singleContentCache['$pageId-${c.sectionId}'] = c;
-        }
-        anyAdded = true;
-      } catch (_) {
-        // Prefetch only; ignore failures
-      }
-    }));
-    if (anyAdded) notifyListeners();
+    await Future.wait(
+      ids.map((id) => ensurePageLoaded(id, silent: true)),
+    );
   }
 
   /// Get content for a specific page
-  Future<List<ContentModel>> getPageContent(String pageId) async {
-    // Check cache first
+  Future<List<ContentModel>> getPageContent(String pageId, {bool silent = false}) async {
     if (_contentCache.containsKey(pageId)) {
       return _contentCache[pageId]!;
     }
 
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
+    final inFlight = _pageLoadFutures[pageId];
+    if (inFlight != null) return inFlight;
+
+    final loadFuture = _fetchAndCachePageContent(pageId, silent: silent);
+    _pageLoadFutures[pageId] = loadFuture;
+    try {
+      return await loadFuture;
+    } finally {
+      _pageLoadFutures.remove(pageId);
+    }
+  }
+
+  Future<List<ContentModel>> _fetchAndCachePageContent(
+    String pageId, {
+    bool silent = false,
+  }) async {
+    _loadingPageIds.add(pageId);
+    if (!silent) {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+    }
 
     try {
       final content = await _contentService.getPageContent(pageId);
       _contentCache[pageId] = content;
-      // Also populate single-content cache so getContent() hits cache
       for (final c in content) {
         _singleContentCache['$pageId-${c.sectionId}'] = c;
       }
-      _isLoading = false;
-      notifyListeners();
+      if (!silent) {
+        _isLoading = false;
+        notifyListeners();
+      }
       return content;
     } catch (e) {
-      _errorMessage = 'Error loading content: $e';
-      _isLoading = false;
-      notifyListeners();
-      return [];
+      if (!silent) {
+        _errorMessage = 'Error loading content: $e';
+      }
+      _contentCache[pageId] = const [];
+      if (!silent) {
+        _isLoading = false;
+        notifyListeners();
+      }
+      return const [];
+    } finally {
+      _loadingPageIds.remove(pageId);
     }
   }
 
@@ -338,6 +366,8 @@ class ContentProvider extends ChangeNotifier {
   void clearCache() {
     _contentCache.clear();
     _singleContentCache.clear();
+    _pageLoadFutures.clear();
+    _loadingPageIds.clear();
     notifyListeners();
   }
 

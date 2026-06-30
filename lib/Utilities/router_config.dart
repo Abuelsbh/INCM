@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +11,7 @@ import '../Modules/About/about_screen.dart';
 import '../Modules/Home/home_screen.dart';
 import '../Modules/Contacts/contacts_screen.dart';
 import '../Modules/Splash/splash_screen.dart';
+import '../Modules/Splash/splash_session.dart';
 import '../Modules/Services/Consultation/consultation_screen.dart';
 import '../Modules/Services/RetailLeasing/retail_leasing_screen.dart';
 import '../Modules/Services/MedicalLeasing/medical_leasing_screen.dart';
@@ -252,11 +255,18 @@ class GoRouterConfig{
       try {
         final contentProvider = Provider.of<ContentProvider>(context, listen: false);
         if (contentProvider.isPageCached(pageId)) return null;
+        if (contentProvider.isPageLoading(pageId)) return null;
+
+        // After the first splash, navigate immediately and load in the background.
+        if (SplashSession.hasCompletedFirstSplash) {
+          unawaited(contentProvider.ensurePageLoaded(pageId, silent: true));
+          return null;
+        }
       } catch (_) {
         return null; // Provider not ready yet
       }
 
-      // Redirect to splash to load data, then come back
+      // First visit only: show splash while Firebase loads.
       final target = state.location;
       return '${SplashScreen.routeName}?target=${Uri.encodeComponent(target)}';
     },
